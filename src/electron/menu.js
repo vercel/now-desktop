@@ -69,7 +69,7 @@ export function deploymentOptions(info) {
             await now.deleteDeployment(info.uid)
           } catch (err) {
             console.error(err)
-            error('Wasn\'t not able to remove deployment ' + info.name)
+            error('Failed to remove deployment ' + info.name)
 
             return
           }
