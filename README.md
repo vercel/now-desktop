@@ -4,11 +4,11 @@
 [![Slack Channel](https://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
-For more details, head to: https://zeit.co/now
+For more details, head to: https://zeit.co/app
 
 ## Usage
 
-You can download the latest release from [here](https://now-auto-updates.now.sh/download/osx) (macOS - more platforms soon).
+You can download the latest release [here](https://zeit.co/download).
 
 ## Caught a bug?
 
