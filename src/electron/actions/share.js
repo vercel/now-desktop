@@ -34,7 +34,7 @@ export default async item => {
       start: 'list ./content'
     },
     dependencies: {
-      'micro-list': 'latest'
+      'list': 'latest'
     }
   }
 
