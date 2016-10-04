@@ -1,12 +1,12 @@
 // Packages
-import {shell, clipboard, dialog} from 'electron'
+import {shell, clipboard} from 'electron'
 import moment from 'moment'
 import Config from 'electron-config'
 
 // Ours
-import {deploy, share, error} from './dialogs'
+import {deploy, share} from './dialogs'
 import logout from './actions/logout'
-import {connector, refreshCache} from './api'
+import removeDeployment from './actions/remove'
 import notify from './notify'
 import toggleWindow from './utils/toggle-window'
 
@@ -39,51 +39,8 @@ export function deploymentOptions(info) {
       },
       {
         label: 'Delete...',
-        click: async () => {
-          // Ask the user if it was an accident
-          const keepIt = dialog.showMessageBox({
-            type: 'question',
-            title: 'Removal of ' + info.name,
-            message: 'Do you really want to delete this deployment?',
-            detail: info.name,
-            buttons: [
-              'Yes',
-              'Hell, no!'
-            ]
-          })
-
-          // If so, do nothing
-          if (keepIt) {
-            return
-          }
-
-          notify({
-            title: `Deleting ${info.name}...`,
-            body: 'The deployment is being removed from our servers.'
-          })
-
-          // Otherwise, delete the deployment
-          const now = connector()
-
-          try {
-            await now.deleteDeployment(info.uid)
-          } catch (err) {
-            console.error(err)
-            error('Failed to remove deployment ' + info.name)
-
-            return
-          }
-
-          notify({
-            title: 'Deleted ' + info.name,
-            body: 'The deployment has successfully been deleted.'
-          })
-
-          try {
-            await refreshCache('deployments')
-          } catch (err) {
-            return error(err)
-          }
+        async click() {
+          await removeDeployment(info)
         }
       },
       {
