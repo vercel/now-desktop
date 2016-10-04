@@ -180,6 +180,7 @@ const assignAliases = (aliases, deployment) => {
   return deploymentOptions(deployment)
 }
 
+// Convert date string from API to valid date object
 const toDate = int => new Date(parseInt(int, 10))
 
 const toggleContextMenu = async windows => {
@@ -189,6 +190,7 @@ const toggleContextMenu = async windows => {
   const apps = {}
   const deploymentList = []
 
+  // Order deployments by date
   deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
 
   for (const deployment of deployments) {
