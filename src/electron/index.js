@@ -180,12 +180,16 @@ const assignAliases = (aliases, deployment) => {
   return deploymentOptions(deployment)
 }
 
+const toDate = int => new Date(parseInt(int, 10))
+
 const toggleContextMenu = async windows => {
   const deployments = config.get('now.cache.deployments')
   const aliases = config.get('now.cache.aliases')
 
   const apps = {}
   const deploymentList = []
+
+  deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
 
   for (const deployment of deployments) {
     const name = deployment.name
