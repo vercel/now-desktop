@@ -1,4 +1,4 @@
-![](http://i.imgur.com/l2ClYVD.png)
+![](https://github.com/zeit/art/blob/b30bbeda1506fb95b0b106a8a4f54c59c9dfe419/now-app/repo-banner.png)
 
 [![Build Status](https://travis-ci.org/zeit/now-app.svg?branch=master)](https://travis-ci.org/zeit/now-app)
 [![Slack Channel](https://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
