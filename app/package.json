@@ -4,7 +4,7 @@
   "description": "Realtime global deployments",
   "version": "0.2.4",
   "license": "MIT",
-  "main": "dist/electron.js",
+  "main": "dist/main.js",
   "author": {
     "name": "Zeit, Inc.",
     "email": "team@zeit.co"

@@ -15,11 +15,11 @@ const nodeEnv = process.env.NODE_ENV || 'development'
 module.exports = [
   {
     name: 'react',
-    entry: './src/react/index.js',
+    entry: './src/renderer/index.js',
     target: 'web',
     output: {
       path: outputPath,
-      filename: 'react.js'
+      filename: 'renderer.js'
     },
     externals(context, request, callback) {
       let isExternal = false
@@ -77,11 +77,11 @@ module.exports = [
   },
   {
     name: 'electron',
-    entry: './src/electron/index.js',
+    entry: './src/main/index.js',
     target: 'electron',
     output: {
       path: outputPath,
-      filename: 'electron.js'
+      filename: 'main.js'
     },
     node: {
       __dirname: true
@@ -127,7 +127,7 @@ module.exports = [
   },
   {
     name: 'styles',
-    entry: './src/react/styles/app.css',
+    entry: './src/renderer/styles/app.css',
     output: {
       path: outputPath,
       filename: 'styles.js'
