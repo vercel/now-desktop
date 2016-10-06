@@ -308,7 +308,7 @@ const fileDropped = async (event, files) => {
 
   const item = files[0]
 
-  if (!isDirectory(item) || !await isDeployable(item)) {
+  if (!await isDirectory(item) || !await isDeployable(item)) {
     await share(item)
     return
   }

@@ -66,7 +66,9 @@ export async function innerMenu(app, tray, data, windows) {
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
-      click: () => windows.about.show()
+      click() {
+        windows.about.show()
+      }
     },
     {
       type: 'separator'
@@ -74,12 +76,16 @@ export async function innerMenu(app, tray, data, windows) {
     {
       label: 'Deploy...',
       accelerator: 'CmdOrCtrl+D',
-      click: async () => await deploy(tray)
+      async click() {
+        await deploy(tray)
+      }
     },
     {
       label: 'Share...',
       accelerator: 'CmdOrCtrl+S',
-      click: async () => await share(tray)
+      async click() {
+        await share(tray)
+      }
     },
     {
       type: 'separator'
@@ -109,7 +115,9 @@ export async function innerMenu(app, tray, data, windows) {
         },
         {
           label: 'Logout',
-          click: async () => await logout(app, windows.tutorial)
+          async click() {
+            await logout(app, windows.tutorial)
+          }
         }
       ]
     },
@@ -128,7 +136,9 @@ export function outerMenu(app, windows) {
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
-      click: () => toggleWindow(null, windows.about)
+      click() {
+        toggleWindow(null, windows.about)
+      }
     },
     {
       type: 'separator'

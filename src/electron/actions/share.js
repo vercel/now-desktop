@@ -40,15 +40,17 @@ export default async item => {
 
   const identifier = 'now-app-' + uniqueIdentifier
 
-  const tmpDir = await retry(await tmp.dir({
-    // We need to use the hased directory identifier
-    // Because if we don't use the same id every time,
-    // now won't update the existing deployment and create a new one instead
-    name: identifier,
+  const tmpDir = await retry(async () => {
+    return await tmp.dir({
+      // We need to use the hased directory identifier
+      // Because if we don't use the same id every time,
+      // now won't update the existing deployment and create a new one instead
+      name: identifier,
 
-    // Keep it, because we'll remove it manually later
-    keep: true
-  }), {
+      // Keep it, because we'll remove it manually later
+      keep: true
+    })
+  }, {
     retries: 5,
     onRetry: async () => {
       const root = tmpdir()
