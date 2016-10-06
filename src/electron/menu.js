@@ -67,7 +67,7 @@ export async function innerMenu(app, tray, data, windows) {
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
-        windows.about.show()
+        toggleWindow(null, windows.about)
       }
     },
     {
