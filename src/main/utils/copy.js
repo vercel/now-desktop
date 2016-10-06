@@ -35,10 +35,7 @@ export default async (content, tmp, defaults) => {
 
   try {
     await Promise.all(copiers)
-  } catch (err) {
-    console.error(err)
-    return
-  }
+  } catch (err) {}
 
   await injectPackage(tmp, defaults)
 }
