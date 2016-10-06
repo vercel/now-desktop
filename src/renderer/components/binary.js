@@ -126,7 +126,7 @@ export default React.createClass({
 
     return (
       <article>
-        <p>Bye the way: You can use <code>now</code> from the command line for more advanced features.</p>
+        <p>By the way: You can use <code>now</code> from the command line for more advanced features.</p>
         <p>Press the button below to place <code>now</code> in <code>/usr/local/bin</code>. In the future, we&#39;ll keep it updated for you automatically.</p>
 
         <a {...binaryButton}>{installText}</a>
