@@ -31,6 +31,10 @@ export default (win, tray) => {
     const highlighted = states[state]
 
     win.on(state, () => {
+      if (process.env.FORCE_CLOSE) {
+        return
+      }
+
       // Don't toggle highlighting if one window is still open
       if (windowLeft(win)) {
         return
