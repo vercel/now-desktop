@@ -113,14 +113,16 @@ module.exports = [
   {
     name: 'icons',
     output: {
-      path: outputPath,
-      filename: 'app.ico'
+      path: path.join(outputPath, 'icons'),
+      filename: '*'
     },
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: 'build/icon.ico',
-          to: 'app.ico'
+          from: 'build/icon.icns'
+        },
+        {
+          from: 'build/icon.ico'
         }
       ])
     ]
