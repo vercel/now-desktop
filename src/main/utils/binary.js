@@ -11,6 +11,7 @@ import which from 'which-promise'
 import exists from 'path-exists'
 import log from 'electron-log'
 import sudo from 'sudo-prompt'
+import {resolve as resolvePath} from 'app-root-path'
 
 // Ours
 import {error as showError} from '../dialogs'
@@ -136,7 +137,8 @@ export const setPermissions = async baseDir => {
   }
 
   const sudoOptions = {
-    name: 'Now'
+    name: 'Now',
+    icns: resolvePath('/dist/icons/icon.icns')
   }
 
   const cmd = 'chmod +x ' + nowPath

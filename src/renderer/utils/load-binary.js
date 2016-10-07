@@ -9,6 +9,7 @@ const sudo = remote.require('sudo-prompt')
 
 export default async section => {
   const utils = remote.getGlobal('binaryUtils')
+  const resolvePath = remote.require('app-root-path').resolve
 
   if (section) {
     section.setState({
@@ -35,7 +36,8 @@ export default async section => {
   } catch (err) {}
 
   const sudoOptions = {
-    name: 'Now'
+    name: 'Now',
+    icns: resolvePath('/dist/icons/icon.icns')
   }
 
   sudo.exec(command, sudoOptions, async error => {
