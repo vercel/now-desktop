@@ -50,7 +50,11 @@ export default async section => {
     }
 
     // Copy permissions of node binary
-    await utils.setPermissions(destination)
+    try {
+      await utils.setPermissions(destination)
+    } catch (err) {
+      console.error(err)
+    }
 
     // Let the user know where finished
     if (section) {

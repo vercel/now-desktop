@@ -10,6 +10,7 @@ import fs from 'fs-promise'
 import which from 'which-promise'
 import exists from 'path-exists'
 import log from 'electron-log'
+import sudo from 'sudo-prompt'
 
 // Ours
 import {error as showError} from '../dialogs'
@@ -117,23 +118,36 @@ export const handleExisting = async () => {
 }
 
 export const setPermissions = async baseDir => {
-  let nodePath
+  const nowPath = path.join(baseDir, 'now')
+  const nodePath = await which('node')
 
-  try {
-    nodePath = await which('node')
-  } catch (err) {
+  // Get permissions from node binary
+  const nodeStats = await fs.stat(nodePath)
+
+  if (nodeStats.mode) {
+    // And copy them over to ours
+    await fs.chmod(baseDir + '/now', nodeStats.mode)
+  }
+
+  const nowStats = await fs.stat(nowPath)
+
+  if (nowStats.mode === nodeStats.mode) {
     return
   }
 
-  let nodeStats
-
-  try {
-    nodeStats = await fs.stat(nodePath)
-  } catch (err) {
-    console.error(err)
+  const sudoOptions = {
+    name: 'Now'
   }
 
-  if (nodeStats) {
-    await fs.chmod(baseDir + '/now', nodeStats.mode)
-  }
+  const cmd = 'chmod +x ' + nowPath
+
+  // Request password from user
+  return new Promise((resolve, reject) => sudo(cmd, sudoOptions, (err, stdout) => {
+    if (err) {
+      reject(err)
+      return
+    }
+
+    resolve(stdout)
+  }))
 }
