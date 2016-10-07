@@ -113,9 +113,7 @@ export const handleExisting = async () => {
 
   try {
     await fs.rename(existing, newFile)
-  } catch (err) {
-    showError('Could not rename existing binary', err)
-  }
+  } catch (err) {}
 }
 
 export const setPermissions = async baseDir => {
