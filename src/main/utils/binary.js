@@ -74,7 +74,9 @@ export const download = async url => {
   }
 
   try {
-    await retry(async () => await load(url, tempDir.path))
+    await retry(async () => {
+      await load(url, tempDir.path)
+    })
   } catch (err) {
     showError('Could not download binary', err)
     return
