@@ -42,11 +42,11 @@ const getProjectType = (nodeReady, dockerReady) => {
 }
 
 const tooBig = async directory => new Promise(resolve => {
-  const notAllowed = [
+  const notAllowed = new Set([
     '.DS_Store',
     'node_modules',
     'bower_components'
-  ]
+  ])
 
   const duOptions = {
     filter(item) {

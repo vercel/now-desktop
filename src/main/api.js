@@ -84,16 +84,16 @@ export async function refreshCache(kind, app, tutorial, interval) {
     return
   }
 
-  const sweepers = []
+  const sweepers = new Set()
 
-  const kinds = [
+  const kinds = new Set([
     'deployments',
     'aliases'
-  ]
+  ])
 
   for (const kind of kinds) {
     const refresher = refreshKind(kind, session)
-    sweepers.push(refresher)
+    sweepers.add(refresher)
   }
 
   try {

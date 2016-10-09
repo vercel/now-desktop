@@ -11,7 +11,7 @@ import injectPackage from './inject'
 
 export default async (content, tmp, defaults) => {
   let items
-  const copiers = []
+  const copiers = new Set()
 
   try {
     items = await glob(path.join(content, '**'), {
@@ -30,7 +30,7 @@ export default async (content, tmp, defaults) => {
 
   for (const item of items) {
     const target = path.join(tmp + '/content', path.relative(content, item))
-    copiers.push(fs.copy(item, target))
+    copiers.add(fs.copy(item, target))
   }
 
   try {
