@@ -187,7 +187,7 @@ const toggleContextMenu = async windows => {
   const deployments = config.get('now.cache.deployments')
   const aliases = config.get('now.cache.aliases')
 
-  const apps = {}
+  const apps = new Map()
   const deploymentList = []
 
   // Order deployments by date
@@ -196,24 +196,20 @@ const toggleContextMenu = async windows => {
   for (const deployment of deployments) {
     const name = deployment.name
 
-    if (apps[name]) {
-      apps[name].push(deployment)
+    if (apps.has(name)) {
+      const existingDeployments = apps.get(name)
+      apps.set(name, [...existingDeployments, deployment])
+
       continue
     }
 
-    apps[name] = [deployment]
+    apps.set(name, [deployment])
   }
 
-  for (const app in apps) {
-    if (!{}.hasOwnProperty.call(apps, app)) {
+  apps.forEach((deployments, label) => {
+    if (deployments.length === 1) {
+      deploymentList.push(assignAliases(aliases, deployments[0]))
       return
-    }
-
-    const appInfo = apps[app]
-
-    if (appInfo.length === 1) {
-      deploymentList.push(assignAliases(aliases, appInfo[0]))
-      continue
     }
 
     deploymentList.push({
@@ -221,18 +217,18 @@ const toggleContextMenu = async windows => {
     })
 
     deploymentList.push({
-      label: app,
+      label,
       enabled: false
     })
 
-    for (const deployment of appInfo) {
+    for (const deployment of deployments) {
       deploymentList.push(assignAliases(aliases, deployment))
     }
 
     deploymentList.push({
       type: 'separator'
     })
-  }
+  })
 
   const data = {
     deployments: deploymentList
@@ -266,10 +262,10 @@ const isLoggedIn = () => {
 }
 
 const isDeployable = async directory => {
-  const indicators = [
+  const indicators = new Set([
     'package.json',
     'Dockerfile'
-  ]
+  ])
 
   for (const indicator of indicators) {
     const pathTo = path.join(directory, indicator)
