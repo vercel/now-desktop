@@ -15,9 +15,9 @@ import Title from './components/title'
 import Login from './components/login'
 import Binary from './components/binary'
 
-import logoSVG from './vectors/logo.svg'
-import arrowSVG from './vectors/arrow.svg'
-import updatedSVG from './vectors/updated.svg'
+import logoSVG from './vectors/logo'
+import arrowSVG from './vectors/arrow'
+import updatedSVG from './vectors/updated'
 
 const anchorWelcome = document.querySelector('#welcome-to-now > div')
 const anchorAbout = document.querySelector('#about-now > div')

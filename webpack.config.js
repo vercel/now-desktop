@@ -69,7 +69,8 @@ module.exports = [
     resolve: {
       extensions: [
         '.js',
-        '.jsx'
+        '.jsx',
+        '.svg'
       ]
     },
     plugins: [
