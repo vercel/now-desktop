@@ -15,7 +15,7 @@ const nodeEnv = process.env.NODE_ENV || 'development'
 module.exports = [
   {
     name: 'react',
-    entry: './src/renderer/index.js',
+    entry: './src/renderer/index.jsx',
     target: 'web',
     output: {
       path: outputPath,
@@ -64,6 +64,12 @@ module.exports = [
           test: /\.svg$/,
           loader: 'raw-loader'
         }
+      ]
+    },
+    resolve: {
+      extensions: [
+        '.js',
+        '.jsx'
       ]
     },
     plugins: [
