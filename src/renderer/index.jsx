@@ -1,13 +1,13 @@
 // Packages
+import {remote, shell} from 'electron'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Slider from 'react-slick'
 import SVGinline from 'react-svg-inline'
-import {remote, shell} from 'electron'
 import timeAgo from 'time-ago'
 
 // Ours
-import pkg from '../../app/package.json'
+import pkg from '../../app/package'
 import showError from './utils/error'
 import tokenFromCLI from './utils/token/from-cli'
 

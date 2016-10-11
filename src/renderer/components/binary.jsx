@@ -2,8 +2,8 @@
 import {execSync} from 'child_process'
 
 // Packages
-import React from 'react'
 import {remote} from 'electron'
+import React from 'react'
 import fs from 'fs-promise'
 import compareVersion from 'compare-version'
 

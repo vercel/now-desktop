@@ -1,13 +1,13 @@
 // Native
 import path from 'path'
-import fs from 'fs-promise'
 
 // Packages
+import {clipboard, shell, dialog} from 'electron'
+import fs from 'fs-promise'
 import pathExists from 'path-exists'
 import glob from 'glob-promise'
 import {dir as isDirectory} from 'path-type'
 import {isTextSync as isText} from 'istextorbinary'
-import {clipboard, shell, dialog} from 'electron'
 import chalk from 'chalk'
 import du from 'du'
 import fileSize from 'filesize'

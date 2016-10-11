@@ -1,9 +1,9 @@
 // Packages
 import {stringify as stringifyQuery} from 'querystring'
+import {remote} from 'electron'
 import React from 'react'
 import autoSizeInput from 'autosize-input'
 import Config from 'electron-config'
-import {remote} from 'electron'
 
 // Ours
 import error from '../utils/error'
@@ -177,7 +177,7 @@ export default React.createClass({
 
     const domain = value.match(/@(.*)/)
 
-    if (domain && domain[1].length) {
+    if (domain && domain[1].length > 0) {
       const match = domain[1]
       let sug
 
