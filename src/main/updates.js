@@ -9,6 +9,7 @@ import exists from 'path-exists'
 import compareVersions from 'compare-versions'
 import fs from 'fs-promise'
 import log from 'electron-log'
+import {track} from './analytics'
 
 // Ours
 import {version} from '../../app/package'
@@ -90,6 +91,10 @@ const updateBinary = async () => {
     title: `Updated ${binaryDir}/now to v${currentRemote.version}`,
     body: 'Try it in your terminal!'
   })
+
+  track('Updated binary', {
+    'To Version': currentRemote.version
+  })
 }
 
 export default app => {
@@ -130,12 +135,15 @@ export default app => {
     process.env.UPDATE_STATUS = 'downloaded'
     log.info('Downloaded update')
 
+    track('Downloaded update')
+
     setInterval(() => {
       if (process.env.BUSYNESS !== 'ready') {
         return
       }
 
       log.info('Installing update')
+      track('Installing update')
 
       autoUpdater.quitAndInstall()
       app.quit()

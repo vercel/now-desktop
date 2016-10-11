@@ -6,6 +6,7 @@ import Cache from 'electron-config'
 import notify from '../notify'
 import {error as showError} from '../dialogs'
 import {connector} from '../api'
+import {track} from '../analytics'
 
 export default async info => {
   // Ask the user if it was an accident
@@ -69,5 +70,9 @@ export default async info => {
   notify({
     title: 'Deleted ' + info.name,
     body: 'The deployment has successfully been deleted.'
+  })
+
+  track('Deleted deployment', {
+    URL: info.host
   })
 }

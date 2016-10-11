@@ -16,6 +16,7 @@ import fileSize from 'filesize'
 import {connector} from '../api'
 import {error as showError} from '../dialogs'
 import notify from '../notify'
+import {track} from '../analytics'
 
 const getProjectType = (nodeReady, dockerReady) => {
   let projectType = 'docker'
@@ -278,6 +279,10 @@ export default async (folder, sharing) => {
 
   // Copy deployment URL to clipboard
   clipboard.writeText(url)
+
+  track('Deployed', {
+    URL: deployment.host
+  })
 
   // Let the user now
   notify({

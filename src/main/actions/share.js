@@ -15,6 +15,7 @@ import pathExists from 'path-exists'
 import injectPackage from '../utils/inject'
 import copyContents from '../utils/copy'
 import {error as showError} from '../dialogs'
+import {track} from '../analytics'
 
 export default async item => {
   if (!await pathExists(item)) {
@@ -69,6 +70,8 @@ export default async item => {
   console.log(chalk.yellow(`[${pkgDefaults.name}]`) + ' Created temporary directory for sharing')
 
   const details = await fs.lstat(item)
+
+  track('Shared')
 
   if (details.isDirectory()) {
     await copyContents(item, tmpDir.path, pkgDefaults)
