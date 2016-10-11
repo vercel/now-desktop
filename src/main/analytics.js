@@ -10,6 +10,7 @@ import mixpanel from 'mixpanel'
 import fileSize from 'filesize'
 import firstRun from 'first-run'
 import Config from 'electron-config'
+import isDev from 'electron-is-dev'
 
 // Ours
 import pkg from '../../app/package'
@@ -42,7 +43,7 @@ const analytics = mixpanel.init(pkg.mixPanel.id, {
 })
 
 export const track = (handle, details = {}) => {
-  if (!handle) {
+  if (!handle || isDev) {
     return
   }
 
@@ -54,6 +55,10 @@ export const track = (handle, details = {}) => {
 }
 
 export const init = async () => {
+  if (isDev) {
+    return
+  }
+
   process.env.MACHINE = md5(await getMacAddress())
 
   const person = {
