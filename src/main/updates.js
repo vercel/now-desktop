@@ -15,6 +15,7 @@ import {version} from '../../app/package'
 import {error as showError} from './dialogs'
 import notify from './notify'
 import * as binaryUtils from './utils/binary'
+import {track} from './analytics'
 
 const platform = process.platform ? 'osx' : process.platform === 'darwin'
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
@@ -90,6 +91,10 @@ const updateBinary = async () => {
     title: `Updated ${binaryDir}/now to v${currentRemote.version}`,
     body: 'Try it in your terminal!'
   })
+
+  track('Updated binary', {
+    'To Version': currentRemote.version
+  })
 }
 
 export default app => {
@@ -130,12 +135,15 @@ export default app => {
     process.env.UPDATE_STATUS = 'downloaded'
     log.info('Downloaded update')
 
+    track('Downloaded update')
+
     setInterval(() => {
       if (process.env.BUSYNESS !== 'ready') {
         return
       }
 
       log.info('Installing update')
+      track('Installing update')
 
       autoUpdater.quitAndInstall()
       app.quit()

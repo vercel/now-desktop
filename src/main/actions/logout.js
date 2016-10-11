@@ -9,6 +9,7 @@ import fs from 'fs-promise'
 
 // Ours
 import {error as showError} from '../dialogs'
+import {track} from '../analytics'
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/'
 
@@ -136,4 +137,6 @@ export default async (app, tutorial) => {
     showError('Could not revoke token on logout', err)
     return
   }
+
+  track('Logged out')
 }
