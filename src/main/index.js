@@ -10,10 +10,11 @@ import {dir as isDirectory} from 'path-type'
 import fs from 'fs-promise'
 import fixPath from 'fix-path'
 import log from 'electron-log'
+import {resolve as resolvePath} from 'app-root-path'
 
 // Ours
-import {resolve as resolvePath} from 'app-root-path'
 import {innerMenu, outerMenu, deploymentOptions} from './menu'
+import {init as initAnalytics, track} from './analytics'
 import {error as showError} from './dialogs'
 import deploy from './actions/deploy'
 import share from './actions/share'
@@ -254,6 +255,8 @@ const toggleContextMenu = async windows => {
 
   const menu = Menu.buildFromTemplate(generatedMenu)
   tray.popUpContextMenu(menu)
+
+  track('Context menu toggled')
 }
 
 const isLoggedIn = () => {
@@ -313,6 +316,8 @@ const fileDropped = async (event, files) => {
 }
 
 app.on('ready', async () => {
+  await initAnalytics()
+
   const onlineStatusWindow = new BrowserWindow({
     width: 0,
     height: 0,

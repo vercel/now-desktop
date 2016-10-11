@@ -9,6 +9,9 @@
     "name": "Zeit, Inc.",
     "email": "team@zeit.co"
   },
+  "mixPanel": {
+    "id": "aa2996ac2ce17db3061712db316a324b"
+  },
   "repository": "zeit/now-app",
   "homepage": "https://zeit.co/now",
   "dependencies": {
@@ -23,12 +26,15 @@
     "electron-is-dev": "0.1.2",
     "electron-log": "1.1.1",
     "filesize": "3.3.0",
+    "first-run": "1.2.0",
     "fix-path": "2.0.0",
     "fs-promise": "0.5.0",
     "glob-promise": "1.0.6",
     "istextorbinary": "2.1.0",
     "load-licenses": "0.2.0",
+    "macaddress": "0.2.8",
     "md5": "2.1.0",
+    "mixpanel": "0.5.0",
     "moment": "2.14.1",
     "ms": "0.7.1",
     "node-fetch": "1.6.0",
