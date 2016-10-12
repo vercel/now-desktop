@@ -43,7 +43,7 @@ const analytics = mixpanel.init(pkg.mixPanel.id, {
 })
 
 export const track = (handle, details = {}) => {
-  if (!handle || isDev) {
+  if (!handle || isDev || process.env.TESTING) {
     return
   }
 
