@@ -63,16 +63,6 @@ export const init = async () => {
     return
   }
 
-  let macID
-
-  try {
-    macID = await getMacAddress()
-  } catch (err) {
-    return
-  }
-
-  process.env.MACHINE = md5(macID)
-
   const person = {
     Platform: os.type(),
     Memory: fileSize(os.totalmem()),
@@ -80,11 +70,22 @@ export const init = async () => {
   }
 
   const email = getEmailAddress()
+  let identifier
 
   if (email) {
-    person.$email = email
+    identifier = person.$email = email
+  } else {
+    try {
+      identifier = await getMacAddress()
+    } catch (err) {
+      return
+    }
   }
 
+  // Generate unique identifier for user
+  process.env.MACHINE = md5(identifier)
+
+  // Create new user in Mixpanel
   analytics.people.set(process.env.MACHINE, person)
 
   if (firstRun()) {
