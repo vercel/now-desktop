@@ -47,6 +47,10 @@ export const track = (handle, details = {}) => {
     return
   }
 
+  if (!process.env.MACHINE) {
+    return
+  }
+
   // Identify session
   details.distinct_id = process.env.MACHINE
 
@@ -59,7 +63,15 @@ export const init = async () => {
     return
   }
 
-  process.env.MACHINE = md5(await getMacAddress())
+  let macID
+
+  try {
+    macID = await getMacAddress()
+  } catch (err) {
+    return
+  }
+
+  process.env.MACHINE = md5(macID)
 
   const person = {
     Platform: os.type(),
