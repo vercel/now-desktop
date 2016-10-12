@@ -281,7 +281,7 @@ export default async (folder, sharing) => {
   clipboard.writeText(url)
 
   track('Deployed', {
-    URL: deployment.host
+    URL: url
   })
 
   // Let the user now

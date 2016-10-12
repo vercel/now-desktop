@@ -14,7 +14,7 @@ import {resolve as resolvePath} from 'app-root-path'
 
 // Ours
 import {innerMenu, outerMenu, deploymentOptions} from './menu'
-import {init as initAnalytics, track} from './analytics'
+import {init as initAnalytics} from './analytics'
 import {error as showError} from './dialogs'
 import deploy from './actions/deploy'
 import share from './actions/share'
