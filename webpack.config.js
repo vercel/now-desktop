@@ -68,9 +68,11 @@ module.exports = [
     },
     resolve: {
       extensions: [
+        '',
+        '.svg',
         '.js',
         '.jsx',
-        '.svg'
+        '.json'
       ]
     },
     plugins: [
