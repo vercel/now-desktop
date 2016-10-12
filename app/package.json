@@ -2,7 +2,7 @@
   "name": "now-app",
   "productName": "Now",
   "description": "Realtime global deployments",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "MIT",
   "main": "dist/main.js",
   "author": {
