@@ -128,7 +128,7 @@ export default app => {
   // Check once in the beginning
   setTimeout(checkForUpdates, ms('10s'))
 
-  // And then every 30 minutes
+  // And then every 5 minutes
   setInterval(checkForUpdates, ms('5m'))
 
   autoUpdater.on('update-downloaded', () => {
