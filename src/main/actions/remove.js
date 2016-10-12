@@ -73,6 +73,6 @@ export default async info => {
   })
 
   track('Deleted deployment', {
-    URL: info.host
+    URL: `https://${info.host}`
   })
 }

@@ -233,7 +233,7 @@ export default async (folder, sharing) => {
     return
   }
 
-  const url = 'https://' + deployment.host
+  const url = `https://${deployment.host}`
 
   if (deployment.state === 'READY') {
     // Open the URL in the default browser
