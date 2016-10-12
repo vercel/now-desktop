@@ -55,7 +55,7 @@ const tooBig = async directory => new Promise(resolve => {
       const parts = relativePath.split('/')
 
       for (const part of parts) {
-        if (notAllowed.includes(part)) {
+        if (notAllowed.has(part)) {
           return false
         }
       }
