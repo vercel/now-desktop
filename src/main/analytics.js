@@ -63,17 +63,11 @@ export const init = async () => {
     return
   }
 
-  const person = {
-    Platform: os.type(),
-    Memory: fileSize(os.totalmem()),
-    Arch: os.arch()
-  }
-
   const email = getEmailAddress()
   let identifier
 
   if (email) {
-    identifier = person.$email = email
+    identifier = email
   } else {
     try {
       identifier = await getMacAddress()
@@ -86,7 +80,11 @@ export const init = async () => {
   process.env.MACHINE = md5(identifier)
 
   // Create new user in Mixpanel
-  analytics.people.set(process.env.MACHINE, person)
+  analytics.people.set(process.env.MACHINE, {
+    Platform: os.type(),
+    Memory: fileSize(os.totalmem()),
+    Arch: os.arch()
+  })
 
   if (firstRun()) {
     track('App installed', {
