@@ -71,6 +71,9 @@ export default React.createClass({
       return
     }
 
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.focus()
+
     this.setState({
       binaryInstalled: true
     })
