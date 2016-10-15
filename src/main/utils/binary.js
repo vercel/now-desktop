@@ -121,21 +121,28 @@ export const handleExisting = async () => {
 }
 
 export const setPermissions = async baseDir => {
+  let nodePath
+
+  try {
+    nodePath = await which('node')
+  } catch (err) {}
+
   const nowPath = path.join(baseDir, 'now')
-  const nodePath = await which('node')
 
-  // Get permissions from node binary
-  const nodeStats = await fs.stat(nodePath)
+  if (nodePath) {
+    // Get permissions from node binary
+    const nodeStats = await fs.stat(nodePath)
 
-  if (nodeStats.mode) {
-    // And copy them over to ours
-    await fs.chmod(baseDir + '/now', nodeStats.mode)
-  }
+    if (nodeStats.mode) {
+      // And copy them over to ours
+      await fs.chmod(baseDir + '/now', nodeStats.mode)
+    }
 
-  const nowStats = await fs.stat(nowPath)
+    const nowStats = await fs.stat(nowPath)
 
-  if (nowStats.mode === nodeStats.mode) {
-    return
+    if (nowStats.mode === nodeStats.mode) {
+      return
+    }
   }
 
   const sudoOptions = {
