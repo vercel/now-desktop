@@ -337,7 +337,7 @@ body {
   text-align: left;
   padding: 15px;
   box-sizing: border-box;
-  overflow: scroll;
+  overflow-y: scroll;
   -webkit-app-region: no-drag;
   -webkit-user-select: text;
   margin-top: 20px;
