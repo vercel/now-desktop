@@ -32,7 +32,7 @@ const isPlatform = name => {
   let handle
 
   switch (name) {
-    case 'windows',
+    case 'windows':
       handle = 'win32'
       break
     case 'macOS':
@@ -118,7 +118,7 @@ const onboarding = () => {
     title: 'Welcome to Now',
     resizable: false,
     center: true,
-    frame: false,
+    frame: isPlatform('windows'),
     show: false,
     fullscreenable: false,
     maximizable: false,
