@@ -28,12 +28,29 @@ import * as binaryUtils from './utils/binary'
 // Locations: megahertz/electron-log
 process.on('uncaughtException', log.info)
 
+const isPlatform = name => {
+  let handle
+
+  switch (name) {
+    case 'windows',
+      handle = 'win32'
+      break
+    case 'macOS':
+      handle = 'darwin'
+      break
+    default:
+      handle = name
+  }
+
+  return process.platform === handle
+}
+
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
 let tray = null
 
 // Hide dock icon before the app starts
-if (process.platform === 'darwin') {
+if (isPlatform('macOS')) {
   app.dock.hide()
 }
 
@@ -153,7 +170,7 @@ const aboutWindow = () => {
     maximizable: false,
     minimizable: false,
     titleBarStyle: 'hidden-inset',
-    frame: false,
+    frame: isPlatform('windows'),
     backgroundColor: '#ECECEC'
   })
 
@@ -166,7 +183,7 @@ const aboutWindow = () => {
 }
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!isPlatform('macOS')) {
     app.quit()
   }
 })
@@ -331,7 +348,7 @@ app.on('ready', async () => {
   })
 
   // Start auto updater if not in development mode
-  if (!isDev && process.platform !== 'linux') {
+  if (!isDev && !isPlatform('linux')) {
     global.autoUpdater(app)
   }
 
