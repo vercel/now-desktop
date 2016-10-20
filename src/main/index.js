@@ -33,7 +33,9 @@ process.on('uncaughtException', log.info)
 let tray = null
 
 // Hide dock icon before the app starts
-app.dock.hide()
+if (process.platform === 'darwin') {
+  app.dock.hide()
+}
 
 // Define the application name
 app.setName('Now')
