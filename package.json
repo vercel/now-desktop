@@ -69,7 +69,7 @@
     "slick-carousel": "1.6.0",
     "spectron": "3.4.0",
     "style-loader": "0.13.1",
-    "webpack": "1.13.2",
+    "webpack": "1.13.3",
     "webpack-livereload-plugin": "0.9.0",
     "xo": "0.17.0"
   }
