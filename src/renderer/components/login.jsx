@@ -142,7 +142,7 @@ export default React.createClass({
 
     const config = new Config()
 
-    // Save user information to consistant configuration
+    // Save user information to consistent configuration
     config.set('now.user.email', email)
     config.set('now.user.token', final)
 
