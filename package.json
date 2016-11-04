@@ -54,7 +54,7 @@
     "css-loader": "0.25.0",
     "cssnano": "3.8.0",
     "electron": "1.4.4",
-    "electron-builder": "7.14.2",
+    "electron-builder": "7.21.0",
     "eslint-config-xo-react": "0.10.0",
     "eslint-plugin-react": "6.4.1",
     "json-loader": "0.5.4",
