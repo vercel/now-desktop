@@ -58,7 +58,7 @@
     "eslint-config-xo-react": "0.10.0",
     "eslint-plugin-react": "6.4.1",
     "json-loader": "0.5.4",
-    "postcss-import": "8.1.2",
+    "postcss-import": "8.2.0",
     "postcss-loader": "1.0.0",
     "querystring": "0.2.0",
     "raw-loader": "0.5.1",
