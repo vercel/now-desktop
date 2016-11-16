@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "autosize-input": "0.2.1",
+    "autosize-input": "0.3.1",
     "ava": "0.16.0",
     "babel-core": "6.18.0",
     "babel-loader": "6.2.5",
