@@ -43,7 +43,7 @@ export default async item => {
 
   const tmpDir = await retry(async () => {
     return await tmp.dir({
-      // We need to use the hased directory identifier
+      // We need to use the hashed directory identifier
       // Because if we don't use the same id every time,
       // now won't update the existing deployment and create a new one instead
       name: identifier,

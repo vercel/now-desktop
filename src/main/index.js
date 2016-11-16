@@ -383,7 +383,7 @@ app.on('ready', async () => {
     }
   }
 
-  // Only allow one intance of Now running
+  // Only allow one instance of Now running
   // at the same time
   app.makeSingleInstance(toggleActivity)
 

@@ -4,7 +4,7 @@
 import os from 'os'
 
 // Packages
-import macAdress from 'macaddress'
+import macAddress from 'macaddress'
 import md5 from 'md5'
 import mixpanel from 'mixpanel'
 import fileSize from 'filesize'
@@ -17,7 +17,7 @@ import pkg from '../../app/package'
 
 const getMacAddress = () => new Promise((resolve, reject) => {
   // Get unique identifier for the current system
-  macAdress.one((err, mac) => {
+  macAddress.one((err, mac) => {
     if (err) {
       reject(err)
       return
