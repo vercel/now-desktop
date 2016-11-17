@@ -51,7 +51,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "6.18.0",
     "babel-preset-react": "6.16.0",
     "copy-webpack-plugin": "4.0.0",
-    "css-loader": "0.25.0",
+    "css-loader": "0.26.0",
     "cssnano": "3.8.0",
     "electron": "1.4.4",
     "electron-builder": "7.14.2",
