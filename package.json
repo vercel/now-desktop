@@ -46,7 +46,7 @@
     "autosize-input": "0.2.1",
     "ava": "0.16.0",
     "babel-core": "6.18.0",
-    "babel-loader": "6.2.5",
+    "babel-loader": "6.2.8",
     "babel-plugin-transform-async-to-generator": "6.16.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.18.0",
     "babel-preset-react": "6.16.0",
