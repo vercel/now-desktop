@@ -94,6 +94,17 @@ body {
   position: relative;
 }
 
+#login .security-token {
+  display: block;
+  margin-top: 35px;
+  background: #191919;
+  border-radius: 3px;
+  font-weight: normal;
+  padding: 10px;
+  font-family: Menlo;
+  font-size: 13px;
+}
+
 #login input,
 #login .auto-complete span {
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;

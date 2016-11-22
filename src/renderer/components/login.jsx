@@ -25,7 +25,7 @@ const domains = [
   'icloud.com'
 ]
 
-const getVerificationToken = async (url, email) => {
+const getVerificationData = async (url, email) => {
   const os = remote.require('os')
   const hyphens = new RegExp('-', 'g')
   const host = os.hostname().replace(hyphens, ' ').replace('.local', '')
@@ -52,7 +52,11 @@ const getVerificationToken = async (url, email) => {
   }
 
   const content = await res.json()
-  return content.token
+
+  return {
+    token: content.token,
+    securityCode: content.securityCode
+  }
 }
 
 const verify = async (url, email, token) => {
@@ -108,9 +112,9 @@ export default React.createClass({
     })
 
     const apiURL = 'https://api.zeit.co'
-    const verificationToken = await getVerificationToken(apiURL, email)
+    const {token, securityCode} = await getVerificationData(apiURL, email)
 
-    if (!verificationToken) {
+    if (!token) {
       this.setState({
         waiting: false
       })
@@ -119,7 +123,9 @@ export default React.createClass({
     }
 
     window.sliderElement.setState({
-      loginText: `We sent an email to <strong>${email}</strong>.<br>Please follow the link within it.`
+      loginText: `We sent an email to <strong>${email}</strong>.\n` +
+      `Please make sure the provided security code matches\n` +
+      `following one and click the link within it: <b class="security-token">${securityCode}</b>`
     })
 
     this.setState({
@@ -134,7 +140,7 @@ export default React.createClass({
       await sleep(2500)
 
       try {
-        final = await verify(apiURL, email, verificationToken)
+        final = await verify(apiURL, email, token)
       } catch (err) {}
 
       console.log('Waiting for token...')
@@ -267,7 +273,7 @@ export default React.createClass({
     try {
       await this.tryLogin(value)
     } catch (err) {
-      error('Not able to retrieve verification token')
+      error('Not able to retrieve verification token', err)
       return
     }
   },
