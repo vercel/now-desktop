@@ -124,8 +124,8 @@ export default React.createClass({
 
     window.sliderElement.setState({
       loginText: `We sent an email to <strong>${email}</strong>.\n` +
-      `Please make sure the provided security code matches\n` +
-      `following one and click the link within it: <b class="security-token">${securityCode}</b>`
+      `Please follow the steps provided within it and make sure\nthe security token matches this one:` +
+      `<b class="security-token">${securityCode}</b>`
     })
 
     this.setState({
