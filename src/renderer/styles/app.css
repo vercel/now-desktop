@@ -11,22 +11,22 @@ body {
 .button {
   font-weight: 700;
   text-transform: uppercase;
-  background: #191919;
+  background: #000;
+  border: 2px solid #fff;
   text-align: center;
   text-decoration: none;
-  color: #d0d0d0;
+  color: #fff;
   font-size: 12px;
-  padding: 10px 20px;
-  transition: background 0.4s ease;
+  padding: 8px 20px;
+  transition: all .2s ease;
   cursor: pointer;
   display: inline-block;
-  border-radius: 3px;
   line-height: normal;
 }
 
 .button:hover {
-  background: #272727;
-  color: #fff;
+  background: #fff;
+  color: #000;
 }
 
 #welcome-to-now {
