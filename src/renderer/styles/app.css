@@ -97,12 +97,13 @@ body {
 #login .security-token {
   display: block;
   margin-top: 35px;
-  background: #191919;
+  background: #212121;
   border-radius: 3px;
   font-weight: normal;
   padding: 10px;
-  font-family: Menlo;
+  font-weight: 700;
   font-size: 13px;
+  letter-spacing: 0.15em;
 }
 
 #login input,
