@@ -334,6 +334,9 @@ const fileDropped = async (event, files) => {
 
 app.on('ready', async () => {
   await initAnalytics()
+  setTimeout(() => {
+    showError('haha')
+  }, 5000)
 
   const onlineStatusWindow = new BrowserWindow({
     width: 0,

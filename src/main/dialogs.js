@@ -1,5 +1,5 @@
 // Packages
-import {dialog, shell} from 'electron'
+import {dialog} from 'electron'
 
 // Ours
 import deployment from './actions/deploy'
@@ -63,53 +63,10 @@ export async function deploy(tray) {
 }
 
 export function error(detail, trace, win) {
-  const app = global.appInstance
-
-  const buttons = [
-    'Go away'
-  ]
-
-  if (trace) {
-    buttons.unshift('Report it')
-  }
-
-  const goAway = dialog.showMessageBox(win || null, {
+  dialog.showMessageBox(win || null, {
     type: 'error',
     message: 'An Error Occurred',
     detail,
-    buttons
+    buttons: []
   })
-
-  let url = 'https://github.com/zeit/now-app/issues/new'
-
-  if (!trace) {
-    // Restart the application
-    app.relaunch()
-    app.quit()
-
-    return
-  }
-
-  if (trace instanceof Error) {
-    trace = trace.stack.toString()
-    console.error(trace)
-  }
-
-  // Just log it as well to be sure
-  console.error(detail)
-
-  if (!goAway) {
-    // Set the issue content
-    url += '?body=' + encodeURIComponent(trace)
-    url += '&title=' + encodeURIComponent(detail)
-
-    // Add label "patch"
-    url += '&labels=patch'
-
-    shell.openExternal(url)
-  }
-
-  // Restart the application
-  app.relaunch()
-  app.quit()
 }
