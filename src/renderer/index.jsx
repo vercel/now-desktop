@@ -311,7 +311,7 @@ const AboutContent = React.createClass({
         <span className="window-title">About</span>
 
         <img src="../dist/icons/icon.ico"/>
-        <h1>Now.app</h1>
+        <h1>Now</h1>
 
         <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
 
