@@ -13,7 +13,7 @@
     "id": "b3faf3a9c49d8cf0c40fb05e1bd8e5ed"
   },
   "repository": "zeit/now-desktop",
-  "homepage": "https://zeit.co/now",
+  "homepage": "https://zeit.co/app",
   "dependencies": {
     "app-root-path": "2.0.1",
     "async-retry": "0.2.1",
