@@ -28,7 +28,7 @@ export const getPath = () => {
 }
 
 export const getURL = async () => {
-  const url = 'https://api.github.com/repos/zeit/now/releases/latest'
+  const url = 'https://api.github.com/repos/zeit/now-cli/releases/latest'
 
   let response
 
