@@ -223,7 +223,7 @@ const AboutContent = React.createClass({
     let data
 
     try {
-      data = await fetch('https://api.github.com/repos/zeit/now-app/releases/latest')
+      data = await fetch('https://api.github.com/repos/zeit/now-desktop/releases/latest')
     } catch (err) {
       console.log(err)
       return
@@ -333,7 +333,7 @@ const AboutContent = React.createClass({
 
         <nav>
           <a href="https://zeit.co/now">Docs</a>
-          <a href="https://github.com/zeit/now-app">Source</a>
+          <a href="https://github.com/zeit/now-desktop">Source</a>
           <a onClick={this.handleTutorial}>Tutorial</a>
         </nav>
       </section>

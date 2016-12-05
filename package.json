@@ -1,5 +1,5 @@
 {
-  "repository": "zeit/now-app",
+  "repository": "zeit/now-desktop",
   "scripts": {
     "start": "electron app/dist/main",
     "postinstall": "install-app-deps && webpack",

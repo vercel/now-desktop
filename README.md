@@ -1,6 +1,6 @@
-![](https://github.com/zeit/art/blob/b30bbeda1506fb95b0b106a8a4f54c59c9dfe419/now-app/repo-banner.png)
+![](https://github.com/zeit/art/blob/b30bbeda1506fb95b0b106a8a4f54c59c9dfe419/now-desktop/repo-banner.png)
 
-[![Build Status](https://travis-ci.org/zeit/now-app.svg?branch=master)](https://travis-ci.org/zeit/now-app)
+[![Build Status](https://travis-ci.org/zeit/now-desktop.svg?branch=master)](https://travis-ci.org/zeit/now-desktop)
 [![Slack Channel](https://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 

@@ -39,7 +39,7 @@ export default async item => {
     }
   }
 
-  const identifier = 'now-app-' + uniqueIdentifier
+  const identifier = 'now-desktop-' + uniqueIdentifier
 
   const tmpDir = await retry(async () => {
     return await tmp.dir({

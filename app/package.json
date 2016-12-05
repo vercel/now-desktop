@@ -1,5 +1,5 @@
 {
-  "name": "now-app",
+  "name": "now-desktop",
   "productName": "Now",
   "description": "Realtime global deployments",
   "version": "0.4.0",
@@ -12,7 +12,7 @@
   "mixPanel": {
     "id": "b3faf3a9c49d8cf0c40fb05e1bd8e5ed"
   },
-  "repository": "zeit/now-app",
+  "repository": "zeit/now-desktop",
   "homepage": "https://zeit.co/now",
   "dependencies": {
     "app-root-path": "2.0.1",
