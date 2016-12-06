@@ -8,12 +8,7 @@ For more details, head to [this page](https://zeit.co/app).
 
 ## Usage
 
-You can download the latest release [here](https://zeit.co/download) or install it using [Homebrew Cask](https://caskroom.github.io/):
-
-```bash
-$ brew update
-$ brew cask install now
-```
+You can download the latest release [here](https://zeit.co/download).
 
 ## Caught a bug?
 
