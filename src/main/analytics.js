@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 // Native
 import os from 'os'
 
@@ -52,7 +50,9 @@ export const track = (handle, details = {}) => {
   }
 
   // Identify session
-  details.distinct_id = process.env.MACHINE
+  // XO doesn't allow properties that aren't camelcased
+  const distinctID = 'distinct_id'
+  details[distinctID] = process.env.MACHINE
 
   // Send event to MixPanel
   analytics.track(handle, details)
