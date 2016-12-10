@@ -25,25 +25,20 @@ import attachTrayState from './utils/highlight'
 import toggleWindow from './utils/toggle-window'
 import * as binaryUtils from './utils/binary'
 
+// Enable DevTools
+debug()
+
 // Log uncaught exceptions to a file
 // Locations: megahertz/electron-log
 process.on('uncaughtException', log.info)
 
 const isPlatform = name => {
-  let handle
+  const osMap = {}
 
-  switch (name) {
-    case 'windows':
-      handle = 'win32'
-      break
-    case 'macOS':
-      handle = 'darwin'
-      break
-    default:
-      handle = name
-  }
+  osMap.windows = 'win32'
+  osMap.macOS = 'darwin'
 
-  return process.platform === handle
+  return process.platform === osMap[name]
 }
 
 // Prevent garbage collection
