@@ -116,11 +116,13 @@ global.startRefresh = tutorialWindow => {
 
 const onboarding = () => {
   const win = new BrowserWindow({
+    icon: 'file://' + resolvePath('../app/assets/icons/iconTemplate.ico'),
     width: 650,
     height: 430,
     title: 'Welcome to Now',
     resizable: false,
     center: true,
+    // When https://github.com/electron/electron/issues/1335 it's fixed this should be false
     frame: isPlatform('windows'),
     show: false,
     fullscreenable: false,
