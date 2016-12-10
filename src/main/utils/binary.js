@@ -15,8 +15,9 @@ import {resolve as resolvePath} from 'app-root-path'
 
 // Ours
 import {error as showError} from '../dialogs'
+import isPlatform from './os'
 
-export const getPath = () => {
+const resolveMacOsPath = () => {
   const path = process.env.PATH.split(':')
   const first = '/usr/local/bin'
 
@@ -25,6 +26,17 @@ export const getPath = () => {
   }
 
   return '/usr/bin'
+}
+
+const resolveWindowsPath = () => {
+  // Pending windows path resolving
+}
+
+export const getPath = () => {
+  if (isPlatform('macOS')) {
+    return resolveMacOsPath()
+  }
+  return resolveWindowsPath()
 }
 
 export const getURL = async () => {
@@ -83,7 +95,7 @@ export const download = async url => {
   }
 
   return {
-    path: path.join(tempDir.path, 'now-macos'),
+    path: path.join(tempDir.path, 'now-' + process.platform),
     cleanup: tempDir.cleanup
   }
 }
