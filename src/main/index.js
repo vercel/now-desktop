@@ -50,6 +50,13 @@ if (isPlatform('macOS')) {
   app.dock.hide()
 }
 
+// Remove window border menu
+if (isPlatform('windows')) {
+  app.on('browser-window-created', (e, window) => {
+    window.setMenu(null)
+  })
+}
+
 // Define the application name
 app.setName('Now')
 
@@ -157,7 +164,7 @@ const onboarding = () => {
 const aboutWindow = () => {
   const win = new BrowserWindow({
     width: 360,
-    height: 408,
+    height: isPlatform('windows') ? 450 : 408,
     title: 'About Now',
     resizable: false,
     center: true,
