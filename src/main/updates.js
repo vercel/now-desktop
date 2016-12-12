@@ -104,7 +104,7 @@ export default app => {
     }
 
     updateBinary()
-  }, ms('25m'))
+  }, ms('15m'))
 
   autoUpdater.on('error', err => {
     console.error(err)

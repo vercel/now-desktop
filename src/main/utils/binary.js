@@ -50,6 +50,10 @@ export const getURL = async () => {
     return
   }
 
+  if (response.assets) {
+    return
+  }
+
   const downloadURL = response.assets[0].browser_download_url
 
   if (!downloadURL) {
