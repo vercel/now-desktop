@@ -64,6 +64,10 @@ export const getURL = async () => {
     forPlatform = asset
   }
 
+  if (!forPlatform) {
+    return
+  }
+
   const downloadURL = forPlatform.browser_download_url
 
   if (!downloadURL) {
