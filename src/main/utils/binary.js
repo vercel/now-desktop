@@ -50,11 +50,21 @@ export const getURL = async () => {
     return
   }
 
-  if (response.assets) {
+  if (response.assets || response.assets.length < 1) {
     return
   }
 
-  const downloadURL = response.assets[0].browser_download_url
+  let forPlatform
+
+  for (const asset of response.assets) {
+    if (asset.name !== 'now-macos') {
+      continue
+    }
+
+    forPlatform = asset
+  }
+
+  const downloadURL = forPlatform.browser_download_url
 
   if (!downloadURL) {
     showError('Latest release doesn\'t contain a binary')
