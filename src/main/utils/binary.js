@@ -27,6 +27,24 @@ export const getPath = () => {
   return '/usr/bin'
 }
 
+const platformName = () => {
+  const original = process.platform
+  let name
+
+  switch (original) {
+    case 'win32':
+      name = 'windows'
+      break
+    case 'darwin':
+      name = 'macos'
+      break
+    default:
+      name = original
+  }
+
+  return name
+}
+
 export const getURL = async () => {
   const url = 'https://now-cli-releases.now.sh'
 
@@ -55,9 +73,10 @@ export const getURL = async () => {
   }
 
   let forPlatform
+  const binaryName = `now-${platformName()}`
 
   for (const asset of response.assets) {
-    if (asset.name !== 'now-macos') {
+    if (asset.name !== binaryName) {
       continue
     }
 
