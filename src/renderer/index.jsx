@@ -223,7 +223,7 @@ const AboutContent = React.createClass({
     let data
 
     try {
-      data = await fetch('https://api.github.com/repos/zeit/now-desktop/releases/latest')
+      data = await fetch('https://api.github.com/repos/zeit/now-desktop/releases')
     } catch (err) {
       console.log(err)
       return
@@ -240,7 +240,21 @@ const AboutContent = React.createClass({
       return
     }
 
-    const ago = timeAgo().ago(new Date(data.published_at))
+    let localRelease
+
+    for (const release of data) {
+      if (release.tag_name !== pkg.version) {
+        continue
+      }
+
+      localRelease = release
+    }
+
+    if (!localRelease) {
+      return
+    }
+
+    const ago = timeAgo().ago(new Date(localRelease.published_at))
 
     this.setState({
       lastReleaseDate: `(${ago})`
