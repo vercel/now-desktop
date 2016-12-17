@@ -243,11 +243,9 @@ const AboutContent = React.createClass({
     let localRelease
 
     for (const release of data) {
-      if (release.tag_name !== pkg.version) {
-        continue
+      if (release.tag_name === pkg.version) {
+        localRelease = release
       }
-
-      localRelease = release
     }
 
     if (!localRelease) {
