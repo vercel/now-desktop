@@ -68,7 +68,7 @@ export const getURL = async () => {
     return
   }
 
-  if (response.assets || response.assets.length < 1) {
+  if (!response.assets || response.assets.length < 1) {
     return
   }
 
