@@ -22,7 +22,8 @@ const domains = [
   'inbox.com',
   'mail.com',
   'gmx.com',
-  'icloud.com'
+  'icloud.com',
+  'me.com'
 ]
 
 const getVerificationData = async (url, email) => {
