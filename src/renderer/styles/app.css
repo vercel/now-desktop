@@ -389,8 +389,17 @@ body {
   display: block;
 }
 
-#about .copyright b:before {
+#about .copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#about .copyright a:before {
   content: '\25B2'
+}
+
+#about .copyright a:hover {
+  color: #000;
 }
 
 #about nav a {

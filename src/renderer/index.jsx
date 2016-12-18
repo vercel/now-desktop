@@ -341,7 +341,7 @@ const AboutContent = React.createClass({
           <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
         </article>
 
-        <span className="copyright">Made by <b>ZEIT</b></span>
+        <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
 
         <nav>
           <a href="https://zeit.co/now">Docs</a>
