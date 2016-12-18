@@ -323,14 +323,15 @@ const AboutContent = React.createClass({
         <span className="window-title">About</span>
 
         <img src="../dist/icons/icon.ico"/>
-        <h1>Now</h1>
 
+        <h1>Now</h1>
         <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
 
         {this.updateStatus()}
 
         <article>
           <h1>Authors</h1>
+
           <p>
             <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
             <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
