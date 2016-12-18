@@ -120,7 +120,7 @@ export default React.createClass({
     if (this.state.done) {
       return (
         <article>
-          <p><strong>Hooray!</strong></p>
+          <p><strong>Hooray! 🎉</strong></p>
           <p>The binary successfully landed in <code>/usr/local/bin</code>.</p>
           <p>You can now use <code>now</code> from the command line.</p>
         </article>
