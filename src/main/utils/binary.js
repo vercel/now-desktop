@@ -27,8 +27,26 @@ export const getPath = () => {
   return '/usr/bin'
 }
 
+const platformName = () => {
+  const original = process.platform
+  let name
+
+  switch (original) {
+    case 'win32':
+      name = 'windows'
+      break
+    case 'darwin':
+      name = 'macos'
+      break
+    default:
+      name = original
+  }
+
+  return name
+}
+
 export const getURL = async () => {
-  const url = 'https://api.github.com/repos/zeit/now-cli/releases/latest'
+  const url = 'https://now-cli-releases.now.sh'
 
   let response
 
@@ -50,7 +68,26 @@ export const getURL = async () => {
     return
   }
 
-  const downloadURL = response.assets[0].browser_download_url
+  if (!response.assets || response.assets.length < 1) {
+    return
+  }
+
+  let forPlatform
+  const binaryName = `now-${platformName()}`
+
+  for (const asset of response.assets) {
+    if (asset.name !== binaryName) {
+      continue
+    }
+
+    forPlatform = asset
+  }
+
+  if (!forPlatform) {
+    return
+  }
+
+  const downloadURL = forPlatform.browser_download_url
 
   if (!downloadURL) {
     showError('Latest release doesn\'t contain a binary')

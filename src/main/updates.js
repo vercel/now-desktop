@@ -17,7 +17,7 @@ import notify from './notify'
 import * as binaryUtils from './utils/binary'
 import {track} from './analytics'
 
-const platform = process.platform ? 'osx' : process.platform === 'darwin'
+const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 
 const localBinaryVersion = () => {
@@ -104,7 +104,7 @@ export default app => {
     }
 
     updateBinary()
-  }, ms('25m'))
+  }, ms('15m'))
 
   autoUpdater.on('error', err => {
     console.error(err)

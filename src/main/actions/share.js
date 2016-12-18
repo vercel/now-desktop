@@ -32,10 +32,10 @@ export default async item => {
     name: dasherize(itemName),
     version: '1.0.0',
     scripts: {
-      start: 'list ./content'
+      start: 'serve ./content'
     },
     dependencies: {
-      list: 'latest'
+      serve: 'latest'
     }
   }
 
