@@ -332,9 +332,9 @@ const AboutContent = React.createClass({
         <article>
           <h1>Authors</h1>
           <p>
-            Leo Lamprecht (<a href="https://twitter.com/notquiteleo">@notquiteleo</a>)<br/>
-            Evil Rabbit (<a href="https://twitter.com/evilrabbit_">@evilrabbit_</a>)<br/>
-            Guillermo Rauch (<a href="https://twitter.com/rauchg">@rauchg</a>)
+            <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
+            <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
+            <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
           </p>
 
           <h1>{'3rd party software'}</h1>
