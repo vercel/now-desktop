@@ -167,7 +167,7 @@ export default React.createClass({
 
     window.sliderElement.setState({
       loginShown: false,
-      loginText: 'Congratulations! <strong>You\'re now signed in.</strong>\nAre you ready for deploying something? Then click the button:'
+      loginText: 'Congrats! <strong>You\'re now signed in.</strong>\nAre you ready for deploying something? Then click the button:'
     })
   },
   componentWillUnmount() {
