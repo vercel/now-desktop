@@ -112,7 +112,7 @@ export default React.createClass({
             <i>.</i>
             <i>.</i>
           </p>
-          <p>Please be so kind and leave the app open. We will let you know once we are done! Should not take too long.</p>
+          <p>Please be so kind and leave the app open! We&#39;ll let you know once we are done. This should not take too long.</p>
         </article>
       )
     }
