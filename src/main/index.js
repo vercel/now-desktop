@@ -11,6 +11,7 @@ import fs from 'fs-promise'
 import fixPath from 'fix-path'
 import log from 'electron-log'
 import {resolve as resolvePath} from 'app-root-path'
+import firstRun from 'first-run'
 
 // Ours
 import {innerMenu, outerMenu, deploymentOptions} from './menu'
@@ -58,7 +59,7 @@ if (isPlatform('macOS')) {
 app.setName('Now')
 
 // Make Now start automatically on login
-if (!isDev) {
+if (!isDev && firstRun()) {
   app.setLoginItemSettings({
     openAtLogin: true
   })
