@@ -24,3 +24,8 @@ $ npm run pack
 ```
 
 After that, you'll find them in the `./dist` folder!
+
+## Authors
+
+- Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - code - [▲ZEIT](https://zeit.co)
+- Evil Rabbit ([@evilrabbit_](https://twitter.com/evilrabbit_)) - design - [▲ZEIT](https://zeit.co)
