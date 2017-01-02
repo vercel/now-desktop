@@ -29,3 +29,4 @@ After that, you'll find them in the `./dist` folder!
 
 - Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - code - [▲ZEIT](https://zeit.co)
 - Evil Rabbit ([@evilrabbit_](https://twitter.com/evilrabbit_)) - design - [▲ZEIT](https://zeit.co)
+- Guillermo Rauch ([@rauchg](https://twitter.com/rauchg)) - [▲ZEIT](https://zeit.co)
