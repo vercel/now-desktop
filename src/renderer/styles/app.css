@@ -22,6 +22,11 @@ body {
   cursor: pointer;
   display: inline-block;
   line-height: normal;
+  -webkit-app-region: no-drag;
+}
+
+a {
+  -webkit-app-region: no-drag;
 }
 
 .button:hover {
@@ -136,6 +141,7 @@ body {
   margin-top: 40px;
   transition: all 0.4s ease;
   cursor: text;
+  -webkit-app-region: no-drag;
 }
 
 #login .auto-complete.focus {
@@ -205,6 +211,7 @@ body {
   cursor: pointer;
   opacity: 0;
   transition: opacity .3s ease;
+  -webkit-app-region: no-drag;
 }
 
 .slick-arrow:not(.slick-disabled) {

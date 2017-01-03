@@ -119,7 +119,7 @@ const onboarding = () => {
     title: 'Welcome to Now',
     resizable: false,
     center: true,
-    frame: isPlatform('windows'),
+    frame: false,
     show: false,
     fullscreenable: false,
     maximizable: false,
@@ -171,7 +171,7 @@ const aboutWindow = () => {
     maximizable: false,
     minimizable: false,
     titleBarStyle: 'hidden-inset',
-    frame: isPlatform('windows'),
+    frame: false,
     backgroundColor: '#ECECEC'
   })
 
