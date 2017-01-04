@@ -310,6 +310,10 @@ const AboutContent = React.createClass({
       tutorial.show()
     })
   },
+  handleCloseClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.close()
+  },
   prepareLicense(info) {
     let element = '<details>'
 
@@ -354,37 +358,42 @@ const AboutContent = React.createClass({
   },
   render() {
     return (
-      <section id="about">
-        <span className="window-title">About</span>
+      <div>
+        {isPlatform('windows') && <div className="window-controls">
+          <SVGinline onClick={this.handleCloseClick} svg={closeWindowSVG}/>
+        </div>}
+        <section id="about">
+          <span className="window-title">About</span>
 
-        <img src="../dist/icons/icon.ico"/>
+          <img src="../dist/icons/icon.ico"/>
 
-        <h1>Now</h1>
-        <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
+          <h1>Now</h1>
+          <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
 
-        {this.updateStatus()}
+          {this.updateStatus()}
 
-        <article>
-          <h1>Authors</h1>
+          <article>
+            <h1>Authors</h1>
 
-          <p>
-            <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
-            <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
-            <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
-          </p>
+            <p>
+              <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
+              <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
+              <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
+            </p>
 
-          <h1>{'3rd party software'}</h1>
-          <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
-        </article>
+            <h1>{'3rd party software'}</h1>
+            <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
+          </article>
 
-        <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
+          <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
 
-        <nav>
-          <a href="https://zeit.co/now">Docs</a>
-          <a href="https://github.com/zeit/now-desktop">Source</a>
-          <a onClick={this.handleTutorial}>Tutorial</a>
-        </nav>
-      </section>
+          <nav>
+            <a href="https://zeit.co/now">Docs</a>
+            <a href="https://github.com/zeit/now-desktop">Source</a>
+            <a onClick={this.handleTutorial}>Tutorial</a>
+          </nav>
+        </section>
+      </div>
     )
   }
 })
