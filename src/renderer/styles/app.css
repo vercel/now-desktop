@@ -45,6 +45,35 @@ a {
   background: #ECECEC;
 }
 
+.window-controls {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  right: 0;
+  z-index: 5000; /* the slick arrow is at 4000 */
+  -webkit-app-region: no-drag;
+}
+
+.window-controls span {
+  display: flex;
+  width: 40px;
+  height: 34px;
+  opacity: .5;
+  shape-rendering: crispEdges;
+}
+
+.window-controls svg {
+  width: 10px;
+  margin: auto;
+  fill: currentColor;
+}
+
+.window-controls span:nth-child(1):active,
+.window-controls span:nth-child(3):active { opacity: .3} /* TODO: why this is not working? */
+
+.window-controls span:nth-child(1):hover,
+.window-controls span:nth-child(3):hover { opacity: 1}
+
 #window-title {
   height: 37px;
   display: flex;

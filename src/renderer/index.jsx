@@ -18,9 +18,29 @@ import Binary from './components/binary'
 import logoSVG from './vectors/logo'
 import arrowSVG from './vectors/arrow'
 import updatedSVG from './vectors/updated'
+import closeWindowSVG from './vectors/close-window'
+import minimizeWindowSVG from './vectors/minimize-window'
+import maximizeWindowSVG from './vectors/maximize-window'
 
 const anchorWelcome = document.querySelector('#welcome-to-now > div')
 const anchorAbout = document.querySelector('#about-now > div')
+
+const isPlatform = name => {
+  let handle
+
+  switch (name) {
+    case 'windows':
+      handle = 'Windows'
+      break
+    case 'macOS':
+      handle = 'Mac'
+      break
+    default:
+      handle = name
+  }
+
+  return new RegExp(handle).test(navigator.userAgent)
+}
 
 const SliderArrows = React.createClass({
   render() {
@@ -88,6 +108,14 @@ const Sections = React.createClass({
     // Close the tutorial
     currentWindow.emit('open-tray', aboutWindow)
   },
+  handleMinimizeClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.minimize()
+  },
+  handleCloseClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.close()
+  },
   alreadyLoggedIn() {
     const Config = remote.require('electron-config')
     const config = new Config()
@@ -150,28 +178,35 @@ const Sections = React.createClass({
     }
 
     return (
-      <Slider {...sliderSettings} ref={setRef}>
-        <section id="intro">
-          <SVGinline svg={logoSVG} width="90px"/>
+      <div>
+        {isPlatform('windows') && <div className="window-controls">
+          <SVGinline onClick={this.handleMinimizeClick} svg={minimizeWindowSVG}/>
+          <SVGinline svg={maximizeWindowSVG}/>
+          <SVGinline onClick={this.handleCloseClick} svg={closeWindowSVG}/>
+        </div>}
+        <Slider {...sliderSettings} ref={setRef}>
+          <section id="intro">
+            <SVGinline svg={logoSVG} width="90px"/>
 
-          <h1>
-            <b>Now</b> &mdash; Realtime global deployments
-          </h1>
-        </section>
+            <h1>
+              <b>Now</b> &mdash; Realtime global deployments
+            </h1>
+          </section>
 
-        <section id="usage">
-          <video {...videoSettings}/>
-        </section>
+          <section id="usage">
+            <video {...videoSettings}/>
+          </section>
 
-        <section id="cli">
-          <Binary/>
-        </section>
+          <section id="cli">
+            <Binary/>
+          </section>
 
-        <section id="login">
-          <p ref={loginTextRef} dangerouslySetInnerHTML={{__html: this.state.loginText}}/>
-          {this.state.loginShown ? <Login/> : <a onClick={this.handleReady} className="button">Get Started</a>}
-        </section>
-      </Slider>
+          <section id="login">
+            <p ref={loginTextRef} dangerouslySetInnerHTML={{__html: this.state.loginText}}/>
+            {this.state.loginShown ? <Login/> : <a onClick={this.handleReady} className="button">Get Started</a>}
+          </section>
+        </Slider>
+      </div>
     )
   }
 })
