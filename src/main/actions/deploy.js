@@ -11,6 +11,7 @@ import {isTextSync as isText} from 'istextorbinary'
 import chalk from 'chalk'
 import du from 'du'
 import fileSize from 'filesize'
+import slash from 'slash'
 
 // Ours
 import {connector} from '../api'
@@ -182,7 +183,7 @@ export default async (folder, sharing) => {
   for (const itemPath of items) {
     const itemDetails = path.parse(itemPath)
     const fileName = itemDetails.base
-    const relativePath = path.relative(dir, itemPath)
+    const relativePath = slash(path.relative(dir, itemPath))
 
     if (!await pathExists(itemPath)) {
       continue
