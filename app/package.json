@@ -32,7 +32,7 @@
     "glob": "7.1.1",
     "glob-promise": "2.0.0",
     "istextorbinary": "2.1.0",
-    "load-licenses": "0.2.0",
+    "load-licenses": "0.2.1",
     "macaddress": "0.2.8",
     "md5": "2.2.1",
     "mixpanel": "0.5.0",
