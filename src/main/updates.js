@@ -126,7 +126,13 @@ export default app => {
   }
 
   // Check once in the beginning
-  setTimeout(checkForUpdates, ms('10s'))
+  setTimeout(() => {
+    // Update the app itself
+    checkForUpdates()
+
+    // ...and the binary
+    updateBinary()
+  }, ms('10s'))
 
   // And then every 5 minutes
   setInterval(checkForUpdates, ms('5m'))
