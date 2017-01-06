@@ -20,7 +20,7 @@ You can download the latest release [here](https://zeit.co/download).
 To make sure that your code works in the bundled application, you can generate the binaries like this:
 
 ```bash
-$ npm run pack
+npm run pack
 ```
 
 After that, you'll find them in the `./dist` folder!
