@@ -112,7 +112,7 @@ export default React.createClass({
             <i>.</i>
             <i>.</i>
           </p>
-          <p>Please be so kind and leave the app open. We will let you know once we are done! Should not take too long.</p>
+          <p>Please be so kind and leave the app open! We&#39;ll let you know once we are done. This should not take too long.</p>
         </article>
       )
     }
@@ -120,7 +120,7 @@ export default React.createClass({
     if (this.state.done) {
       return (
         <article>
-          <p><strong>Hooray!</strong></p>
+          <p><strong>Hooray! 🎉</strong></p>
           <p>The binary successfully landed in <code>/usr/local/bin</code>.</p>
           <p>You can now use <code>now</code> from the command line.</p>
         </article>
@@ -129,8 +129,8 @@ export default React.createClass({
 
     return (
       <article>
-        <p>By the way: You can use <code>now</code> from the command line for more advanced features.</p>
-        <p>Press the button below to place <code>now</code> in <code>/usr/local/bin</code>. In the future, we&#39;ll keep it updated for you automatically.</p>
+        <p>In addition to this app, you can also use <code>now</code> from the command line, if you&#39;d like to.</p>
+        <p>Press the button below to install it! When a new version gets released, we&#39;ll automatically update it for you.</p>
 
         <a {...binaryButton}>{installText}</a>
       </article>

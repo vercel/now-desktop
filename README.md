@@ -20,7 +20,13 @@ You can download the latest release [here](https://zeit.co/download).
 To make sure that your code works in the bundled application, you can generate the binaries like this:
 
 ```bash
-$ npm run pack
+npm run pack
 ```
 
 After that, you'll find them in the `./dist` folder!
+
+## Authors
+
+- Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - code - [▲ZEIT](https://zeit.co)
+- Evil Rabbit ([@evilrabbit_](https://twitter.com/evilrabbit_)) - design - [▲ZEIT](https://zeit.co)
+- Guillermo Rauch ([@rauchg](https://twitter.com/rauchg)) - [▲ZEIT](https://zeit.co)

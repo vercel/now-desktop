@@ -155,7 +155,7 @@ const Sections = React.createClass({
           <SVGinline svg={logoSVG} width="90px"/>
 
           <h1>
-            <b>now:</b> realtime global deployments
+            <b>Now</b> &mdash; Realtime global deployments
           </h1>
         </section>
 
@@ -323,25 +323,26 @@ const AboutContent = React.createClass({
         <span className="window-title">About</span>
 
         <img src="../dist/icons/icon.ico"/>
-        <h1>Now</h1>
 
+        <h1>Now</h1>
         <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
 
         {this.updateStatus()}
 
         <article>
           <h1>Authors</h1>
+
           <p>
-            Leo Lamprecht (<a href="https://twitter.com/notquiteleo">@notquiteleo</a>)<br/>
-            Evil Rabbit (<a href="https://twitter.com/evilrabbit_">@evilrabbit_</a>)<br/>
-            Guillermo Rauch (<a href="https://twitter.com/rauchg">@rauchg</a>)
+            <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
+            <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
+            <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
           </p>
 
           <h1>{'3rd party software'}</h1>
           <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
         </article>
 
-        <span className="copyright">Made by <b>ZEIT</b></span>
+        <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
 
         <nav>
           <a href="https://zeit.co/now">Docs</a>

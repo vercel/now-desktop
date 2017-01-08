@@ -22,7 +22,8 @@ const domains = [
   'inbox.com',
   'mail.com',
   'gmx.com',
-  'icloud.com'
+  'icloud.com',
+  'me.com'
 ]
 
 const getVerificationData = async (url, email) => {
@@ -124,7 +125,7 @@ export default React.createClass({
 
     window.sliderElement.setState({
       loginText: `We sent an email to <strong>${email}</strong>.\n` +
-      `Please follow the steps provided within it and make sure\nthe security token matches this one:` +
+      `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
       `<b class="security-token">${securityCode}</b>`
     })
 
@@ -166,7 +167,7 @@ export default React.createClass({
 
     window.sliderElement.setState({
       loginShown: false,
-      loginText: 'Congratulations! <strong>You\'re now signed in.</strong>\nAre you ready for deploying something? Then click the button:'
+      loginText: 'Congrats! <strong>You\'re now signed in.</strong>\nAre you ready for deploying something? Then click the button:'
     })
   },
   componentWillUnmount() {
