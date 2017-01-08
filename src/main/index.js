@@ -25,6 +25,7 @@ import {refreshCache} from './api'
 import attachTrayState from './utils/highlight'
 import toggleWindow from './utils/toggle-window'
 import * as binaryUtils from './utils/binary'
+import isPlatform from './utils/os'
 
 // Enable DevTools
 debug()
@@ -32,15 +33,6 @@ debug()
 // Log uncaught exceptions to a file
 // Locations: megahertz/electron-log
 process.on('uncaughtException', log.info)
-
-const isPlatform = name => {
-  const osMap = {}
-
-  osMap.windows = 'win32'
-  osMap.macOS = 'darwin'
-
-  return process.platform === osMap[name]
-}
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
