@@ -12,11 +12,18 @@ import exists from 'path-exists'
 import log from 'electron-log'
 import sudo from 'sudo-prompt'
 import {resolve as resolvePath} from 'app-root-path'
+import {sync as mkdir} from 'mkdirp'
+import Registry from 'winreg'
 
 // Ours
 import {error as showError} from '../dialogs'
 
 export const getPath = () => {
+  if (process.platform === 'win32') {
+    const path = `${process.env.LOCALAPPDATA}\\now`
+    mkdir(path)
+    return path
+  }
   const path = process.env.PATH.split(':')
   const first = '/usr/local/bin'
 
@@ -33,7 +40,7 @@ const platformName = () => {
 
   switch (original) {
     case 'win32':
-      name = 'windows'
+      name = 'win'
       break
     case 'darwin':
       name = 'macos'
@@ -43,6 +50,14 @@ const platformName = () => {
   }
 
   return name
+}
+
+export const getBinarySuffix = () => process.platform === 'win32' ? '.exe' : ''
+
+const getBinaryName = () => {
+  const platform = platformName()
+
+  return `now-${platform}${getBinarySuffix()}`
 }
 
 export const getURL = async () => {
@@ -73,7 +88,7 @@ export const getURL = async () => {
   }
 
   let forPlatform
-  const binaryName = `now-${platformName()}`
+  const binaryName = getBinaryName()
 
   for (const asset of response.assets) {
     if (asset.name !== binaryName) {
@@ -120,7 +135,7 @@ export const download = async url => {
   }
 
   return {
-    path: path.join(tempDir.path, 'now-macos'),
+    path: path.join(tempDir.path, getBinaryName()),
     cleanup: tempDir.cleanup
   }
 }
@@ -164,7 +179,7 @@ export const setPermissions = async baseDir => {
     nodePath = await which('node')
   } catch (err) {}
 
-  const nowPath = path.join(baseDir, 'now')
+  const nowPath = path.join(baseDir, `now${getBinarySuffix()}`)
 
   if (nodePath) {
     // Get permissions from node binary
@@ -172,7 +187,7 @@ export const setPermissions = async baseDir => {
 
     if (nodeStats.mode) {
       // And copy them over to ours
-      await fs.chmod(baseDir + '/now', nodeStats.mode)
+      await fs.chmod(nowPath, nodeStats.mode)
     }
 
     const nowStats = await fs.stat(nowPath)
@@ -197,5 +212,45 @@ export const setPermissions = async baseDir => {
     }
 
     resolve(stdout)
+  }))
+}
+
+export const ensurePath = async () => {
+  if (process.platform !== 'win32') {
+    return
+  }
+
+  const folder = getPath()
+  if (process.env.PATH.includes(folder)) {
+    return
+  }
+
+  const regKey = new Registry({
+    hive: Registry.HKCU,
+    key: '\\Environment'
+  })
+
+  return new Promise((resolve, reject) => regKey.values((err, items) => {
+    if (err) {
+      reject(err)
+      return
+    }
+
+    const pathEntry = items.find(item => String(item.name).toLowerCase() === 'path')
+
+    if (pathEntry === undefined) {
+      reject(new Error('Could not find `Path` entry in the Registry'))
+      return
+    }
+
+    // At this point we can insert now's directory in the PATH without verifying
+    // if it's already there
+    regKey.set(pathEntry.name, pathEntry.type, `${pathEntry.value};${folder}`, err => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve()
+    })
   }))
 }
