@@ -18,6 +18,7 @@ import Registry from 'winreg'
 // Ours
 import {error as showError} from '../dialogs'
 
+// Retruns the path in which the `now` binary should be saved
 export const getPath = () => {
   if (process.platform === 'win32') {
     const path = `${process.env.LOCALAPPDATA}\\now`
@@ -54,6 +55,7 @@ const platformName = () => {
 
 export const getBinarySuffix = () => process.platform === 'win32' ? '.exe' : ''
 
+// Returns the binary name used in the `artifacts` section of the GitHub release
 const getBinaryName = () => {
   const platform = platformName()
 
@@ -215,6 +217,7 @@ export const setPermissions = async baseDir => {
   }))
 }
 
+// Ensures that the `now.exe` directory is on the user's `PATH`
 export const ensurePath = async () => {
   if (process.platform !== 'win32') {
     return
