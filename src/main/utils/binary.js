@@ -8,7 +8,6 @@ import retry from 'async-retry'
 import load from 'download'
 import fs from 'fs-promise'
 import which from 'which-promise'
-import exists from 'path-exists'
 import log from 'electron-log'
 import sudo from 'sudo-prompt'
 import {path as appRootPath, resolve as resolvePath} from 'app-root-path'
@@ -168,27 +167,11 @@ export const handleExisting = async () => {
     return
   }
 
-  const details = path.parse(existing)
-  let index = 1
-
-  const newFile = await retry(async () => {
-    details.name = details.base = 'now.old.' + index.toString()
-    const newFile = path.format(details)
-
-    if (await exists(newFile)) {
-      throw new Error('Binary already exists')
-    }
-
-    return newFile
-  }, {
-    onRetry() {
-      ++index
-    }
-  })
-
   try {
-    await fs.rename(existing, newFile)
-  } catch (err) {}
+    await fs.remove(existing)
+  } catch (err) {
+    showError('Not able to remove existing binary', err)
+  }
 }
 
 export const setPermissions = async baseDir => {
