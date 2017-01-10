@@ -254,6 +254,11 @@ const AboutContent = React.createClass({
 
     const ago = timeAgo().ago(new Date(localRelease.published_at))
 
+    // Automatically update the timer if it contains minutes or seconds
+    if (ago.includes('minutes') || ago.includes('seconds')) {
+      setTimeout(this.lastReleaseDate, 1000)
+    }
+
     this.setState({
       lastReleaseDate: `(${ago})`
     })
