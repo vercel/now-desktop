@@ -26,11 +26,7 @@
     "rules": {
       "import/no-extraneous-dependencies": 0,
       "import/no-unresolved": 0,
-      "ava/no-ignored-test-files": 0,
-      "ava/no-async-fn-without-await": 0,
-      "react/jsx-filename-extension": 0,
       "react/no-danger": 0,
-      "no-unneeded-ternary": 0,
       "babel/no-await-in-loop": 0,
       "complexity": 0
     },
