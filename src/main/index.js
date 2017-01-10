@@ -6,6 +6,7 @@ import {app, Tray, Menu, BrowserWindow, ipcMain} from 'electron'
 import ms from 'ms'
 import Config from 'electron-config'
 import isDev from 'electron-is-dev'
+import debug from 'electron-debug'
 import {dir as isDirectory} from 'path-type'
 import fs from 'fs-promise'
 import fixPath from 'fix-path'
@@ -24,27 +25,14 @@ import {refreshCache} from './api'
 import attachTrayState from './utils/highlight'
 import toggleWindow from './utils/toggle-window'
 import * as binaryUtils from './utils/binary'
+import isPlatform from './utils/os'
+
+// Enable DevTools
+debug()
 
 // Log uncaught exceptions to a file
 // Locations: megahertz/electron-log
 process.on('uncaughtException', log.info)
-
-const isPlatform = name => {
-  let handle
-
-  switch (name) {
-    case 'windows':
-      handle = 'win32'
-      break
-    case 'macOS':
-      handle = 'darwin'
-      break
-    default:
-      handle = name
-  }
-
-  return process.platform === handle
-}
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -53,6 +41,13 @@ let tray = null
 // Hide dock icon before the app starts
 if (isPlatform('macOS')) {
   app.dock.hide()
+}
+
+// Remove window border menu
+if (isPlatform('windows')) {
+  app.on('browser-window-created', (e, window) => {
+    window.setMenu(null)
+  })
 }
 
 // Define the application name
@@ -114,11 +109,13 @@ global.startRefresh = tutorialWindow => {
 
 const onboarding = () => {
   const win = new BrowserWindow({
+    icon: 'file://' + resolvePath('../app/assets/icons/iconTemplate.ico'),
     width: 650,
     height: 430,
     title: 'Welcome to Now',
     resizable: false,
     center: true,
+    // When https://github.com/electron/electron/issues/1335 it's fixed this should be false
     frame: isPlatform('windows'),
     show: false,
     fullscreenable: false,
@@ -162,7 +159,7 @@ const onboarding = () => {
 const aboutWindow = () => {
   const win = new BrowserWindow({
     width: 360,
-    height: 408,
+    height: isPlatform('windows') ? 450 : 408,
     title: 'About Now',
     resizable: false,
     center: true,
