@@ -11,7 +11,7 @@ import which from 'which-promise'
 import exists from 'path-exists'
 import log from 'electron-log'
 import sudo from 'sudo-prompt'
-import {resolve as resolvePath} from 'app-root-path'
+import {path as appRootPath, resolve as resolvePath} from 'app-root-path'
 import {sync as mkdir} from 'mkdirp'
 import Registry from 'winreg'
 
@@ -146,8 +146,25 @@ export const handleExisting = async () => {
   let existing
 
   try {
-    existing = await which('now')
+    existing = await which('now', {all: true})
   } catch (err) {
+    return
+  }
+
+  // On Windows the now-desktop executable name is `Now.exe`. If we run `where now`
+  // from inside the app, the first result will be such executable.
+  // Because of that, we need to ask `which-promise` to return all the results and then
+  // ignore the first one, since it's the app itself
+  if (process.platform === 'win32') {
+    const first = path.parse(existing[0])
+    if (appRootPath.startsWith(first.dir)) {
+      existing.shift()
+    }
+  }
+
+  // `which-promise` will return an array even on macOS and Linux
+  existing = existing.shift()
+  if (existing === undefined) {
     return
   }
 

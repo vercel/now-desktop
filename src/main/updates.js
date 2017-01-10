@@ -29,7 +29,7 @@ const localBinaryVersion = () => {
 
 const updateBinary = async () => {
   const binaryDir = binaryUtils.getPath()
-  const fullPath = path.join(binaryDir, 'now')
+  const fullPath = path.join(binaryDir, 'now', binaryUtils.getBinarySuffix())
 
   if (!await exists(fullPath)) {
     return
