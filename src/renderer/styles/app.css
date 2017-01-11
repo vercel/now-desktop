@@ -68,11 +68,12 @@ a {
   fill: currentColor;
 }
 
-.window-controls span:nth-child(1):active,
-.window-controls span:nth-child(3):active { opacity: .3} /* TODO: why this is not working? */
-
 .window-controls span:nth-child(1):hover,
-.window-controls span:nth-child(3):hover { opacity: 1}
+.window-controls span:nth-child(3):hover { opacity: 1 }
+
+.window-controls span:nth-child(1):active,
+.window-controls span:nth-child(3):active { opacity: .3 }
+
 
 #window-title {
   height: 37px;
