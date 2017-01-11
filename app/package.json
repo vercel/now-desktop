@@ -22,6 +22,7 @@
     "dasherize": "^2.0.0",
     "download": "^5.0.2",
     "du": "^0.1.0",
+    "electron-auto-updater": "^0.10.1",
     "electron-config": "^0.2.1",
     "electron-is-dev": "^0.1.2",
     "electron-log": "^1.2.2",
