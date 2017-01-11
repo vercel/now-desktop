@@ -45,7 +45,7 @@ const platformName = () => {
 }
 
 export const getURL = async () => {
-  const url = 'https://now-cli-releases.now.sh'
+  const url = 'https://now-cli-latest.now.sh'
 
   let response
 
