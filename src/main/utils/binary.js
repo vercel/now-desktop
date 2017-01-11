@@ -71,9 +71,9 @@ export const getURL = async () => {
     return
   }
 
-  const forPlatform = response.assets.map(asset => {
+  const forPlatform = response.assets.filter(asset => {
     return asset.platform === platformName()
-  })
+  })[0]
 
   if (!forPlatform) {
     return
