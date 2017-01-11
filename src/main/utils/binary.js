@@ -71,22 +71,15 @@ export const getURL = async () => {
     return
   }
 
-  let forPlatform
-  const binaryName = `now-${platformName()}`
-
-  for (const asset of response.assets) {
-    if (asset.name !== binaryName) {
-      continue
-    }
-
-    forPlatform = asset
-  }
+  const forPlatform = response.assets.map(asset => {
+    return asset.platform.toLowerCase() === platformName()
+  })
 
   if (!forPlatform) {
     return
   }
 
-  const downloadURL = forPlatform.browser_download_url
+  const downloadURL = forPlatform.url
 
   if (!downloadURL) {
     showError('Latest release doesn\'t contain a binary')
