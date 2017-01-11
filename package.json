@@ -52,7 +52,7 @@
     "css-loader": "^0.26.1",
     "cssnano": "^3.9.1",
     "electron": "^1.4.13",
-    "electron-builder": "^10.9.2",
+    "electron-builder": "^11.2.4",
     "eslint-config-xo-react": "^0.10.0",
     "eslint-plugin-react": "^6.8.0",
     "json-loader": "^0.5.4",
