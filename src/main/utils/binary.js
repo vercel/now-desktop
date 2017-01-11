@@ -32,10 +32,10 @@ const platformName = () => {
 
   switch (original) {
     case 'win32':
-      name = 'windows'
+      name = 'Windows'
       break
     case 'darwin':
-      name = 'macos'
+      name = 'macOS'
       break
     default:
       name = original
@@ -72,7 +72,7 @@ export const getURL = async () => {
   }
 
   const forPlatform = response.assets.map(asset => {
-    return asset.platform.toLowerCase() === platformName()
+    return asset.platform === platformName()
   })
 
   if (!forPlatform) {
