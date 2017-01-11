@@ -74,6 +74,11 @@ a {
 .window-controls span:nth-child(1):active,
 .window-controls span:nth-child(3):active { opacity: .3 }
 
+/* There's 3 buttons for window controls in the Tutorial window */
+body#welcome-to-now .window-controls span:nth-child(3):hover { color: #FE354E }
+
+/* There's only 1 button (X) for window control in the About window */
+body#about-now .window-controls span:nth-child(1):hover { color: #FE354E }
 
 #window-title {
   height: 37px;
