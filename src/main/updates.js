@@ -1,6 +1,7 @@
 // Native
 import path from 'path'
 import {execSync as exec} from 'child_process'
+import {homedir} from 'os'
 
 // Packages
 import {autoUpdater} from 'electron-auto-updater'
@@ -21,7 +22,9 @@ const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 
 const localBinaryVersion = () => {
-  const cmd = exec('now -v').toString()
+  // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
+  // executed on Windows. On other platforms this shouldn't produce side effects.
+  const cmd = exec('now -v', {cwd: homedir()}).toString()
   const parts = cmd.split(' ')
 
   return parts[2].trim()
@@ -29,7 +32,7 @@ const localBinaryVersion = () => {
 
 const updateBinary = async () => {
   const binaryDir = binaryUtils.getPath()
-  const fullPath = path.join(binaryDir, 'now', binaryUtils.getBinarySuffix())
+  const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`)
 
   if (!await exists(fullPath)) {
     return
@@ -57,7 +60,7 @@ const updateBinary = async () => {
   let updateFile
 
   try {
-    updateFile = await binaryUtils.download(currentRemote.url)
+    updateFile = await binaryUtils.download(currentRemote.url, currentRemote.binaryName)
   } catch (err) {
     console.error('Could not download update for binary')
     return
