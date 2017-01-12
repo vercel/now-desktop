@@ -20,7 +20,7 @@ import {error as showError} from '../dialogs'
 // Retruns the path in which the `now` binary should be saved
 export const getPath = () => {
   if (process.platform === 'win32') {
-    const path = `${process.env.LOCALAPPDATA}\\now`
+    const path = `${process.env.LOCALAPPDATA}\\now-cli`
     mkdir(path)
     return path
   }
