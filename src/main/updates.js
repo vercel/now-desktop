@@ -118,7 +118,7 @@ export default app => {
     autoUpdater.setFeedURL(feedURL + '/' + version)
   } catch (err) {
     // We don't need the URL on Windows
-    if (process.platfrom !== 'win32') {
+    if (process.platform !== 'win32') {
       showError('Auto updated could not set feed URL', err)
     }
   }
