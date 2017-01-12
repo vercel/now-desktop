@@ -86,7 +86,7 @@ export const getURL = async () => {
 
   return {
     url: downloadURL,
-    version: response.tag_name
+    version: response.tag
   }
 }
 
