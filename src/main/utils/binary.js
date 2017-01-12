@@ -40,10 +40,10 @@ const platformName = () => {
 
   switch (original) {
     case 'win32':
-      name = 'win'
+      name = 'Windows'
       break
     case 'darwin':
-      name = 'macos'
+      name = 'macOS'
       break
     default:
       name = original
@@ -54,15 +54,8 @@ const platformName = () => {
 
 export const getBinarySuffix = () => process.platform === 'win32' ? '.exe' : ''
 
-// Returns the binary name used in the `artifacts` section of the GitHub release
-const getBinaryName = () => {
-  const platform = platformName()
-
-  return `now-${platform}${getBinarySuffix()}`
-}
-
 export const getURL = async () => {
-  const url = 'https://now-cli-releases.now.sh'
+  const url = 'https://now-cli-latest.now.sh'
 
   let response
 
@@ -88,22 +81,13 @@ export const getURL = async () => {
     return
   }
 
-  let forPlatform
-  const binaryName = getBinaryName()
-
-  for (const asset of response.assets) {
-    if (asset.name !== binaryName) {
-      continue
-    }
-
-    forPlatform = asset
-  }
+  const forPlatform = response.assets.find(asset => asset.platform === platformName())
 
   if (!forPlatform) {
     return
   }
 
-  const downloadURL = forPlatform.browser_download_url
+  const downloadURL = forPlatform.url
 
   if (!downloadURL) {
     showError('Latest release doesn\'t contain a binary')
@@ -112,11 +96,12 @@ export const getURL = async () => {
 
   return {
     url: downloadURL,
-    version: response.tag_name
+    version: response.tag_name,
+    binaryName: forPlatform.name
   }
 }
 
-export const download = async url => {
+export const download = async (url, binaryName) => {
   let tempDir
 
   try {
@@ -136,7 +121,7 @@ export const download = async url => {
   }
 
   return {
-    path: path.join(tempDir.path, getBinaryName()),
+    path: path.join(tempDir.path, binaryName),
     cleanup: tempDir.cleanup
   }
 }
