@@ -4,7 +4,7 @@ import {execSync as exec} from 'child_process'
 import {homedir} from 'os'
 
 // Packages
-import {autoUpdater} from 'electron-auto-updater'
+import {autoUpdater} from 'electron'
 import ms from 'ms'
 import exists from 'path-exists'
 import compareVersions from 'compare-versions'
@@ -117,10 +117,7 @@ export default app => {
   try {
     autoUpdater.setFeedURL(feedURL + '/' + version)
   } catch (err) {
-    // We don't need the URL on Windows
-    if (process.platform !== 'win32') {
-      showError('Auto updated could not set feed URL', err)
-    }
+    showError('Auto updated could not set feed URL', err)
   }
 
   const checkForUpdates = () => {
