@@ -13,7 +13,12 @@
   "build": {
     "appId": "co.zeit.now",
     "category": "public.app-category.developer-tools",
-    "asar": false
+    "asar": false,
+    "win": {
+      "target": [
+        "squirrel"
+      ]
+    }
   },
   "xo": {
     "extends": "xo-react",
@@ -53,6 +58,7 @@
     "cssnano": "^3.9.1",
     "electron": "^1.4.13",
     "electron-builder": "^11.2.4",
+    "electron-builder-squirrel-windows": "^11.2.5",
     "eslint-config-xo-react": "^0.10.0",
     "eslint-plugin-react": "^6.8.0",
     "json-loader": "^0.5.4",
