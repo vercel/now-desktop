@@ -90,8 +90,12 @@ const updateBinary = async () => {
   updateFile.cleanup()
   process.env.BINARY_UPDATE_RUNNING = 'no'
 
+  const newVersion = currentRemote.version
+  const title = process.platform === 'win32' ? `Updated now.exe to v${newVersion}` :
+    `Updated ${binaryDir}/now to v${newVersion}`
+
   notify({
-    title: `Updated ${binaryDir}/now to v${currentRemote.version}`,
+    title,
     body: 'Try it in your terminal!'
   })
 
