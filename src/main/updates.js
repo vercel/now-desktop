@@ -162,4 +162,16 @@ export default app => {
       app.quit()
     }, ms('2s'))
   })
+
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for app updates...')
+  })
+
+  autoUpdater.on('update-available', () => {
+    console.log('Found update for the app! Downloading...')
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    console.log('No updates found for the app')
+  })
 }
