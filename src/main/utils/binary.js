@@ -17,10 +17,13 @@ import {error as showError} from '../dialogs'
 
 export const getPath = () => {
   const path = process.env.PATH.split(':')
-  const first = '/usr/local/bin'
+  const first = path.join(process.env.HOME, 'bin')
+  const second = '/usr/local/bin'
 
   if (path.includes(first)) {
     return first
+  } else if (path.includes(second)) {
+    return second
   }
 
   return '/usr/bin'
