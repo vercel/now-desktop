@@ -30,7 +30,6 @@ export default async item => {
 
   const pkgDefaults = {
     name: dasherize(itemName),
-    version: '1.0.0',
     scripts: {
       start: 'serve ./content'
     },
