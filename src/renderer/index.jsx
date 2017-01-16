@@ -287,16 +287,18 @@ const AboutContent = React.createClass({
       return
     }
 
-    const ago = timeAgo().ago(new Date(localRelease.published_at))
+    const setReleaseDate = () => {
+      const ago = timeAgo().ago(new Date(localRelease.published_at))
 
-    // Automatically update the timer if it contains minutes or seconds
-    if (ago.includes('minute') || ago.includes('second')) {
-      setTimeout(this.lastReleaseDate, 1000)
+      this.setState({
+        lastReleaseDate: `(${ago})`
+      })
     }
 
-    this.setState({
-      lastReleaseDate: `(${ago})`
-    })
+    setReleaseDate()
+
+    // Make sure the date stays updated
+    setInterval(setReleaseDate, 1000)
   },
   async componentDidMount() {
     await this.loadLicenses()
