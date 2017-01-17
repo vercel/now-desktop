@@ -390,7 +390,12 @@ app.on('ready', async () => {
 
   // Only allow one instance of Now running
   // at the same time
-  app.makeSingleInstance(toggleActivity)
+  const shouldQuit = app.makeSingleInstance(toggleActivity)
+  if (shouldQuit) {
+    // We're using `exit` because `quit` didn't work
+    // on Windows (tested by matheuss)
+    return app.exit()
+  }
 
   if (isLoggedIn()) {
     // Periodically rebuild local cache every 10 seconds
