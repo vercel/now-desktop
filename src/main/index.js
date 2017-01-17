@@ -277,7 +277,7 @@ const toggleContextMenu = async windows => {
   }
 
   const menu = Menu.buildFromTemplate(generatedMenu)
-  tray.popUpContextMenu(menu)
+  tray.popUpContextMenu(menu, tray.getBounds())
 }
 
 const isLoggedIn = () => {
