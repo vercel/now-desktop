@@ -137,6 +137,19 @@ const Sections = React.createClass({
   arrowKeys(event) {
     const keyCode = event.keyCode
     const slider = this.slider
+    const loginInputElement = window.loginInputElement
+
+    if (document.activeElement === loginInputElement) {
+      if (keyCode === 27) { // esc
+        // This is necessary because on Windows and Linux
+        // you can't blur the input element by clicking
+        // outside of it
+        loginInputElement.blur()
+      }
+      // We return here to allow the user to move
+      // in the input text with the arrows
+      return
+    }
 
     switch (keyCode) {
       case 37:
