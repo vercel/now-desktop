@@ -139,8 +139,6 @@ const onboarding = () => {
   global.tutorial = win
 
   const emitTrayClick = aboutWindow => {
-    win.hide()
-
     const emitClick = () => {
       if (aboutWindow && aboutWindow.isVisible()) {
         return
@@ -155,6 +153,7 @@ const onboarding = () => {
     }
 
     win.on('hide', emitClick)
+    win.hide()
   }
 
   win.on('open-tray', emitTrayClick)
