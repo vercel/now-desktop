@@ -1,5 +1,6 @@
 // Native
 import path from 'path'
+import {spawnSync} from 'child_process'
 
 // Packages
 import fetch from 'node-fetch'
@@ -239,7 +240,20 @@ export const ensurePath = async () => {
         reject(err)
         return
       }
-      resolve()
+
+      // Here we use a very clever hack that was developed by igorklopov:
+      // When we edit the `PATH` var in the registry, the `explorer.exe` will
+      // not be notified of such change. That sid, when we tell the user
+      // to try `now` from the command line, it'll not work – `explorer.exe`
+      // will pass an old PATH value to the `cmd.exe`. To _fix_ that, we use
+      //  the `setx` command to set a temporary empty env var. Such command will
+      // broadcast all env vars to `explorer.exe` and _fix_ our problem – the
+      // user will now be able to use `now` in the command line right after
+      // the installation.
+      spawnSync('setx', ['NOW_ENSURE_PATH_TMP', '""'])
+
+      // Here we remove the temporary env var from the registry
+      regKey.remove('NOW_ENSURE_PATH_TMP', () => resolve())
     })
   }))
 }

@@ -123,7 +123,6 @@ export default React.createClass({
           <p><strong>Hooray! 🎉</strong></p>
           <p>The binary successfully landed in its directory!</p>
           <p>You can now use <code>now</code> from the command line.</p>
-          {remote.process.platform === 'win32' && <p>Please restart your device before using <code>now</code> from the command line.</p>}
         </article>
       )
     }
