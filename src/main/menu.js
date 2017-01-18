@@ -59,6 +59,15 @@ export async function innerMenu(app, tray, data, windows) {
 
   if (Array.isArray(data.deployments) && data.deployments.length > 0) {
     hasDeployments = true
+
+    // Here we make sure we don't show any extra separators in the beginning/enabled
+    // of the deployments list. macOS will just ignore them, but Windows will show them
+    if (data.deployments[0].type === 'separator') {
+      data.deployments.shift()
+    }
+    if (data.deployments[data.deployments.length - 1].type === 'separator') {
+      data.deployments.pop()
+    }
   }
 
   const config = new Config()
