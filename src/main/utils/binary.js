@@ -209,9 +209,6 @@ export const ensurePath = async () => {
   }
 
   const folder = getPath()
-  if (process.env.PATH.includes(folder)) {
-    return
-  }
 
   const regKey = new Registry({
     hive: Registry.HKCU,
@@ -231,8 +228,12 @@ export const ensurePath = async () => {
       return
     }
 
-    // At this point we can insert now's directory in the PATH without verifying
-    // if it's already there
+    // We don't want to insert the directory into the PATH if it's already there
+    if (pathEntry.value.includes(folder)) {
+      resolve()
+      return
+    }
+
     regKey.set(pathEntry.name, pathEntry.type, `${pathEntry.value};${folder}`, err => {
       if (err) {
         reject(err)
