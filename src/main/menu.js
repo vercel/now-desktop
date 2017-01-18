@@ -63,6 +63,39 @@ export async function innerMenu(app, tray, data, windows) {
 
   const config = new Config()
 
+  let shareMenu
+
+  if (process.platfom === 'darwin') {
+    shareMenu = {
+      label: 'Share...',
+      accelerator: 'CmdOrCtrl+S',
+      async click() {
+        await share(tray)
+      }
+    }
+  } else {
+    shareMenu = {
+      label: 'Share...',
+      accelerator: 'CmdOrCtrl+S',
+      submenu: [
+        {
+          label: 'A folder...',
+          async click() {
+            console.log('a')
+            await share(tray, ['openDirectory'])
+          }
+        },
+        {
+          label: 'A file...',
+          async click() {
+            console.log('b')
+            await share(tray, ['openFile'])
+          }
+        }
+      ]
+    }
+  }
+
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
@@ -80,13 +113,7 @@ export async function innerMenu(app, tray, data, windows) {
         await deploy(tray)
       }
     },
-    {
-      label: 'Share...',
-      accelerator: 'CmdOrCtrl+S',
-      async click() {
-        await share(tray)
-      }
-    },
+    shareMenu,
     {
       type: 'separator'
     },
