@@ -127,9 +127,7 @@ export async function innerMenu(app, tray, data, windows) {
       submenu: hasDeployments ? data.deployments : [],
       visible: hasDeployments
     },
-    {
-      type: 'separator'
-    },
+    (hasDeployments && {type: 'separator'}) || {visible: false},
     {
       label: 'Account',
       submenu: [
