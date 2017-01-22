@@ -48,6 +48,7 @@ const updateBinary = async () => {
   const comparision = compareVersions(currentLocal, currentRemote.version)
 
   if (comparision !== -1) {
+    process.env.BINARY_UPDATE_RUNNING = 'no'
     console.log('No updates found for binary')
     return
   }
@@ -59,6 +60,7 @@ const updateBinary = async () => {
   try {
     updateFile = await binaryUtils.download(currentRemote.url)
   } catch (err) {
+    process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error('Could not download update for binary')
     return
   }
@@ -66,6 +68,7 @@ const updateBinary = async () => {
   try {
     await fs.remove(fullPath)
   } catch (err) {
+    process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error(err)
     return
   }
@@ -73,6 +76,7 @@ const updateBinary = async () => {
   try {
     await fs.rename(updateFile.path, fullPath)
   } catch (err) {
+    process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error(err)
     return
   }
