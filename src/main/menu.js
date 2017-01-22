@@ -88,14 +88,14 @@ export async function innerMenu(app, tray, data, windows) {
       accelerator: 'CmdOrCtrl+S',
       submenu: [
         {
-          label: 'A folder...',
+          label: 'Directory...',
           async click() {
             console.log('a')
             await share(tray, ['openDirectory'])
           }
         },
         {
-          label: 'A file...',
+          label: 'File...',
           async click() {
             console.log('b')
             await share(tray, ['openFile'])
