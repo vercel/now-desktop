@@ -74,7 +74,7 @@ export async function innerMenu(app, tray, data, windows) {
 
   let shareMenu
 
-  if (process.platfom === 'darwin') {
+  if (process.platform === 'darwin') {
     shareMenu = {
       label: 'Share...',
       accelerator: 'CmdOrCtrl+S',
