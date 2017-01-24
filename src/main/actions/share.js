@@ -4,7 +4,7 @@ import path from 'path'
 // Packages
 import {tmpdir} from 'os'
 import md5 from 'md5'
-import dasherize from 'dasherize'
+import toId from 'to-id'
 import fs from 'fs-promise'
 import tmp from 'tmp-promise'
 import retry from 'async-retry'
@@ -29,7 +29,7 @@ export default async item => {
   const itemName = path.parse(item).name
 
   const pkgDefaults = {
-    name: dasherize(itemName),
+    name: toId(itemName),
     scripts: {
       start: 'serve ./content'
     },
