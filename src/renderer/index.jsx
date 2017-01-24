@@ -169,10 +169,14 @@ const Sections = React.createClass({
     document.addEventListener('keydown', this.arrowKeys, false)
   },
   render() {
+    const isWin = remote.process.platform === 'win32'
+    const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
+    const videoStyle = isWin ? {width: '80%'} : {}
     const videoSettings = {
       preload: true,
       loop: true,
-      src: '../assets/usage.webm',
+      src: `../assets/${fileName}`,
+      style: videoStyle,
       ref: c => {
         window.usageVideo = c
       }
