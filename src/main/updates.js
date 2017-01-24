@@ -97,8 +97,8 @@ const updateBinary = async () => {
   const newVersion = currentRemote.version
 
   const messages = {
-    windows: `Updated now.exe to v${newVersion}`,
-    macOS: `Updated ${binaryDir}/now to v${newVersion}`
+    windows: 'Updated `now.exe` to v' + newVersion,
+    macOS: 'Updated `now` to v' + newVersion
   }
 
   const isWin = process.platform === 'win32'
