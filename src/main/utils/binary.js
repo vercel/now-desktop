@@ -25,6 +25,7 @@ export const getPath = () => {
     mkdir(path)
     return path
   }
+
   const path = process.env.PATH.split(':')
   const first = path.join(process.env.HOME, 'bin')
   const second = '/usr/local/bin'
@@ -145,6 +146,7 @@ export const handleExisting = async () => {
   // ignore the first one, since it's the app itself
   if (process.platform === 'win32') {
     const first = path.parse(existing[0])
+
     if (appRootPath.startsWith(first.dir)) {
       existing.shift()
     }
@@ -152,6 +154,7 @@ export const handleExisting = async () => {
 
   // `which-promise` will return an array even on macOS and Linux
   existing = existing.shift()
+
   if (existing === undefined) {
     return
   }

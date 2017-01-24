@@ -146,6 +146,7 @@ const Sections = React.createClass({
         // outside of it
         loginInputElement.blur()
       }
+
       // We return here to allow the user to move
       // in the input text with the arrows
       return
@@ -172,6 +173,7 @@ const Sections = React.createClass({
     const isWin = remote.process.platform === 'win32'
     const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
     const videoStyle = isWin ? {width: '80%'} : {}
+
     const videoSettings = {
       preload: true,
       loop: true,

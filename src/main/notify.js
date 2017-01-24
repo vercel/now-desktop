@@ -23,8 +23,10 @@ const notify = details => {
       title: details.title,
       content: details.body
     })
+
     return
   }
+
   const {title, body, url} = details
   console.log(`[Notification] ${title}: ${body}`)
 
