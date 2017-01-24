@@ -405,6 +405,7 @@ const AboutContent = React.createClass({
               <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
               <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
               <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
+              <a href="https://twitter.com/matheusfrndes">Matheus Fernandes</a>
             </p>
 
             <h1>{'3rd party software'}</h1>
