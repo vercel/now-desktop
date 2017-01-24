@@ -56,7 +56,7 @@ const updateBinary = async () => {
     return
   }
 
-  console.log('Found update for binary! Downloading...')
+  console.log('Found an update for binary! Downloading...')
 
   let updateFile
 
