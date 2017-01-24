@@ -1,5 +1,8 @@
 {
   "os": "osx",
   "language": "node_js",
-  "node_js": "node"
+  "node_js": "node",
+  "after_success": [
+    "npm run dist"
+  ]
 }
