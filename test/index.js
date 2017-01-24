@@ -6,10 +6,24 @@ import test from 'ava'
 import {Application} from 'spectron'
 
 let app
+let pathToBinary
+
+switch (process.platform) {
+  case 'darwin':
+    pathToBinary = path.join(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
+    break
+
+  case 'win32':
+    pathToBinary = path.join(__dirname, '../dist/win-unpacked/Now.exe')
+    break
+
+  default:
+    throw new Error('Path to the built binary needs to be defined for this platform in test/index.js')
+}
 
 test.before(async () => {
   app = new Application({
-    path: path.join(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now'),
+    path: pathToBinary,
     env: {
       TESTING: true
     }
