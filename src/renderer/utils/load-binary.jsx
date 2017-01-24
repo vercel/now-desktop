@@ -19,7 +19,7 @@ export default async section => {
   }
 
   const downloadURL = await utils.getURL()
-  const location = await utils.download(downloadURL.url)
+  const location = await utils.download(downloadURL.url, downloadURL.binaryName)
 
   if (section) {
     section.setState({
@@ -28,7 +28,10 @@ export default async section => {
   }
 
   const destination = utils.getPath()
-  const command = 'mv ' + location.path + ' ' + destination + '/now'
+  const isWindows = /Windows/.test(navigator.userAgent)
+  const mvCommand = isWindows ? 'move' : 'mv'
+  const suffix = utils.getBinarySuffix()
+  const command = `${mvCommand} ${location.path} ${destination}/now${suffix}`
 
   // If there's an existing binary, rename it
   try {
@@ -56,6 +59,12 @@ export default async section => {
       await utils.setPermissions(destination)
     } catch (err) {
       console.error(err)
+    }
+
+    try {
+      await utils.ensurePath()
+    } catch (err) {
+      showError(err.message, err.toString())
     }
 
     // Let the user know where finished

@@ -1,3 +1,7 @@
+/* eslint-disable import/first */
+// eslint-disable-next-line curly, unicorn/no-process-exit
+if (require('electron-squirrel-startup')) process.exit()
+
 // Native
 import path from 'path'
 
@@ -119,7 +123,7 @@ const onboarding = () => {
     title: 'Welcome to Now',
     resizable: false,
     center: true,
-    frame: isPlatform('windows'),
+    frame: false,
     show: false,
     fullscreenable: false,
     maximizable: false,
@@ -135,8 +139,6 @@ const onboarding = () => {
   global.tutorial = win
 
   const emitTrayClick = aboutWindow => {
-    win.hide()
-
     const emitClick = () => {
       if (aboutWindow && aboutWindow.isVisible()) {
         return
@@ -151,6 +153,7 @@ const onboarding = () => {
     }
 
     win.on('hide', emitClick)
+    win.hide()
   }
 
   win.on('open-tray', emitTrayClick)
@@ -171,7 +174,7 @@ const aboutWindow = () => {
     maximizable: false,
     minimizable: false,
     titleBarStyle: 'hidden-inset',
-    frame: isPlatform('windows'),
+    frame: false,
     backgroundColor: '#ECECEC'
   })
 
@@ -274,7 +277,7 @@ const toggleContextMenu = async windows => {
   }
 
   const menu = Menu.buildFromTemplate(generatedMenu)
-  tray.popUpContextMenu(menu)
+  tray.popUpContextMenu(menu, tray.getBounds())
 }
 
 const isLoggedIn = () => {
@@ -359,7 +362,8 @@ app.on('ready', async () => {
 
   // I have no idea why, but path.resolve doesn't work here
   try {
-    tray = new Tray(resolvePath('/assets/icons/iconTemplate.png'))
+    const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate'
+    tray = new Tray(resolvePath(`/assets/icons/${iconName}.png`))
 
     // Opening the context menu after login should work
     global.tray = tray
@@ -386,7 +390,12 @@ app.on('ready', async () => {
 
   // Only allow one instance of Now running
   // at the same time
-  app.makeSingleInstance(toggleActivity)
+  const shouldQuit = app.makeSingleInstance(toggleActivity)
+  if (shouldQuit) {
+    // We're using `exit` because `quit` didn't work
+    // on Windows (tested by matheuss)
+    return app.exit()
+  }
 
   if (isLoggedIn()) {
     // Periodically rebuild local cache every 10 seconds

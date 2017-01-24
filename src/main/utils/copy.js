@@ -28,6 +28,10 @@ export default async (content, tmp, defaults) => {
     return
   }
 
+  // The first item of the glob is the directory itself and we don't want to copy it.
+  // Besides that, it causes a weird `operation not permited` error on Windows.
+  items.shift()
+
   for (const item of items) {
     const target = path.join(tmp + '/content', path.relative(content, item))
     copiers.add(fs.copy(item, target))

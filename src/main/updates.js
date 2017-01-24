@@ -1,6 +1,7 @@
 // Native
 import path from 'path'
 import {execSync as exec} from 'child_process'
+import {homedir} from 'os'
 
 // Packages
 import {autoUpdater} from 'electron'
@@ -21,7 +22,9 @@ const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 
 const localBinaryVersion = () => {
-  const cmd = exec('now -v').toString()
+  // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
+  // executed on Windows. On other platforms this shouldn't produce side effects.
+  const cmd = exec('now -v', {cwd: homedir()}).toString()
   const parts = cmd.split(' ')
 
   return parts[2].trim()
@@ -29,7 +32,7 @@ const localBinaryVersion = () => {
 
 const updateBinary = async () => {
   const binaryDir = binaryUtils.getPath()
-  const fullPath = path.join(binaryDir, 'now')
+  const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`)
 
   if (!await exists(fullPath)) {
     return
@@ -53,12 +56,12 @@ const updateBinary = async () => {
     return
   }
 
-  console.log('Found update for binary! Downloading...')
+  console.log('Found an update for binary! Downloading...')
 
   let updateFile
 
   try {
-    updateFile = await binaryUtils.download(currentRemote.url)
+    updateFile = await binaryUtils.download(currentRemote.url, currentRemote.binaryName)
   } catch (err) {
     process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error('Could not download update for binary')
@@ -91,8 +94,18 @@ const updateBinary = async () => {
   updateFile.cleanup()
   process.env.BINARY_UPDATE_RUNNING = 'no'
 
+  const newVersion = currentRemote.version
+
+  const messages = {
+    windows: 'Updated `now.exe` to v' + newVersion,
+    macOS: 'Updated `now` to v' + newVersion
+  }
+
+  const isWin = process.platform === 'win32'
+  const title = isWin ? messages.windows : messages.macOS
+
   notify({
-    title: `Updated ${binaryDir}/now to v${currentRemote.version}`,
+    title,
     body: 'Try it in your terminal!'
   })
 
@@ -158,5 +171,17 @@ export default app => {
       autoUpdater.quitAndInstall()
       app.quit()
     }, ms('2s'))
+  })
+
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for app updates...')
+  })
+
+  autoUpdater.on('update-available', () => {
+    console.log('Found update for the app! Downloading...')
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    console.log('No updates found for the app')
   })
 }

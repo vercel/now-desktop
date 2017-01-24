@@ -22,6 +22,11 @@ body {
   cursor: pointer;
   display: inline-block;
   line-height: normal;
+  -webkit-app-region: no-drag;
+}
+
+a {
+  -webkit-app-region: no-drag;
 }
 
 .button:hover {
@@ -38,6 +43,49 @@ body {
 
 #about-now {
   background: #ECECEC;
+}
+
+.window-controls {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  right: 0;
+  z-index: 5000; /* the slick arrow is at 4000 */
+  -webkit-app-region: no-drag;
+}
+
+.window-controls span {
+  display: flex;
+  width: 40px;
+  height: 34px;
+  opacity: .5;
+  shape-rendering: crispEdges;
+}
+
+.window-controls svg {
+  width: 10px;
+  margin: auto;
+  fill: currentColor;
+}
+
+.window-controls span:nth-child(1):hover,
+.window-controls span:nth-child(3):hover {
+  opacity: 1;
+}
+
+.window-controls span:nth-child(1):active,
+.window-controls span:nth-child(3):active {
+  opacity: .3;
+}
+
+/* There are 3 buttons for window controls in the Tutorial window */
+body#welcome-to-now .window-controls span:nth-child(3):hover {
+  color: #FE354E;
+}
+
+/* There's only 1 button (X) for window control in the About window */
+body#about-now .window-controls span:nth-child(1):hover {
+  color: #FE354E;
 }
 
 #window-title {
@@ -136,6 +184,7 @@ body {
   margin-top: 40px;
   transition: all 0.4s ease;
   cursor: text;
+  -webkit-app-region: no-drag;
 }
 
 #login .auto-complete.focus {
@@ -205,6 +254,7 @@ body {
   cursor: pointer;
   opacity: 0;
   transition: opacity .3s ease;
+  -webkit-app-region: no-drag;
 }
 
 .slick-arrow:not(.slick-disabled) {

@@ -15,16 +15,13 @@ const showDialog = details => {
   return false
 }
 
-export async function share(tray) {
+export async function share(tray, properties = ['openDirectory', 'openFile']) {
   const info = {
     title: 'Select something to share',
-    properties: [
-      'openDirectory',
-      'openFile'
-    ],
+    properties,
     buttonLabel: 'Share'
   }
-
+  console.log(properties)
   tray.setHighlightMode('always')
   const path = showDialog(info)
   tray.setHighlightMode('never')

@@ -1,5 +1,6 @@
 // Native
 import path from 'path'
+import {spawnSync} from 'child_process'
 
 // Packages
 import fetch from 'node-fetch'
@@ -10,12 +11,21 @@ import fs from 'fs-promise'
 import which from 'which-promise'
 import log from 'electron-log'
 import sudo from 'sudo-prompt'
-import {resolve as resolvePath} from 'app-root-path'
+import {path as appRootPath, resolve as resolvePath} from 'app-root-path'
+import {sync as mkdir} from 'mkdirp'
+import Registry from 'winreg'
 
 // Ours
 import {error as showError} from '../dialogs'
 
+// Retruns the path in which the `now` binary should be saved
 export const getPath = () => {
+  if (process.platform === 'win32') {
+    const path = `${process.env.LOCALAPPDATA}\\now-cli`
+    mkdir(path)
+    return path
+  }
+
   const path = process.env.PATH.split(':')
   const first = path.join(process.env.HOME, 'bin')
   const second = '/usr/local/bin'
@@ -46,6 +56,8 @@ const platformName = () => {
 
   return name
 }
+
+export const getBinarySuffix = () => process.platform === 'win32' ? '.exe' : ''
 
 export const getURL = async () => {
   const url = 'https://now-cli-latest.now.sh'
@@ -89,11 +101,12 @@ export const getURL = async () => {
 
   return {
     url: downloadURL,
-    version: response.tag
+    version: response.tag,
+    binaryName: forPlatform.name
   }
 }
 
-export const download = async url => {
+export const download = async (url, binaryName) => {
   let tempDir
 
   try {
@@ -113,7 +126,7 @@ export const download = async url => {
   }
 
   return {
-    path: path.join(tempDir.path, 'now-macos'),
+    path: path.join(tempDir.path, binaryName),
     cleanup: tempDir.cleanup
   }
 }
@@ -122,8 +135,27 @@ export const handleExisting = async () => {
   let existing
 
   try {
-    existing = await which('now')
+    existing = await which('now', {all: true})
   } catch (err) {
+    return
+  }
+
+  // On Windows the now-desktop executable name is `Now.exe`. If we run `where now`
+  // from inside the app, the first result will be such executable.
+  // Because of that, we need to ask `which-promise` to return all the results and then
+  // ignore the first one, since it's the app itself
+  if (process.platform === 'win32') {
+    const first = path.parse(existing[0])
+
+    if (appRootPath.startsWith(first.dir)) {
+      existing.shift()
+    }
+  }
+
+  // `which-promise` will return an array even on macOS and Linux
+  existing = existing.shift()
+
+  if (existing === undefined) {
     return
   }
 
@@ -141,7 +173,7 @@ export const setPermissions = async baseDir => {
     nodePath = await which('node')
   } catch (err) {}
 
-  const nowPath = path.join(baseDir, 'now')
+  const nowPath = path.join(baseDir, `now${getBinarySuffix()}`)
 
   if (nodePath) {
     // Get permissions from node binary
@@ -149,7 +181,7 @@ export const setPermissions = async baseDir => {
 
     if (nodeStats.mode) {
       // And copy them over to ours
-      await fs.chmod(baseDir + '/now', nodeStats.mode)
+      await fs.chmod(nowPath, nodeStats.mode)
     }
 
     const nowStats = await fs.stat(nowPath)
@@ -174,5 +206,60 @@ export const setPermissions = async baseDir => {
     }
 
     resolve(stdout)
+  }))
+}
+
+// Ensures that the `now.exe` directory is on the user's `PATH`
+export const ensurePath = async () => {
+  if (process.platform !== 'win32') {
+    return
+  }
+
+  const folder = getPath()
+
+  const regKey = new Registry({
+    hive: Registry.HKCU,
+    key: '\\Environment'
+  })
+
+  return new Promise((resolve, reject) => regKey.values((err, items) => {
+    if (err) {
+      reject(err)
+      return
+    }
+
+    const pathEntry = items.find(item => String(item.name).toLowerCase() === 'path')
+
+    if (pathEntry === undefined) {
+      reject(new Error('Could not find `Path` entry in the Registry'))
+      return
+    }
+
+    // We don't want to insert the directory into the PATH if it's already there
+    if (pathEntry.value.includes(folder)) {
+      resolve()
+      return
+    }
+
+    regKey.set(pathEntry.name, pathEntry.type, `${pathEntry.value};${folder}`, err => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      // Here we use a very clever hack that was developed by igorklopov:
+      // When we edit the `PATH` var in the registry, the `explorer.exe` will
+      // not be notified of such change. That sid, when we tell the user
+      // to try `now` from the command line, it'll not work – `explorer.exe`
+      // will pass an old PATH value to the `cmd.exe`. To _fix_ that, we use
+      //  the `setx` command to set a temporary empty env var. Such command will
+      // broadcast all env vars to `explorer.exe` and _fix_ our problem – the
+      // user will now be able to use `now` in the command line right after
+      // the installation.
+      spawnSync('setx', ['NOW_ENSURE_PATH_TMP', '""'])
+
+      // Here we remove the temporary env var from the registry
+      regKey.remove('NOW_ENSURE_PATH_TMP', () => resolve())
+    })
   }))
 }

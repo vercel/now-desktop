@@ -18,9 +18,29 @@ import Binary from './components/binary'
 import logoSVG from './vectors/logo'
 import arrowSVG from './vectors/arrow'
 import updatedSVG from './vectors/updated'
+import closeWindowSVG from './vectors/close-window'
+import minimizeWindowSVG from './vectors/minimize-window'
+import maximizeWindowSVG from './vectors/maximize-window'
 
 const anchorWelcome = document.querySelector('#welcome-to-now > div')
 const anchorAbout = document.querySelector('#about-now > div')
+
+const isPlatform = name => {
+  let handle
+
+  switch (name) {
+    case 'windows':
+      handle = 'Windows'
+      break
+    case 'macOS':
+      handle = 'Mac'
+      break
+    default:
+      handle = name
+  }
+
+  return new RegExp(handle).test(navigator.userAgent)
+}
 
 const SliderArrows = React.createClass({
   render() {
@@ -88,6 +108,14 @@ const Sections = React.createClass({
     // Close the tutorial
     currentWindow.emit('open-tray', aboutWindow)
   },
+  handleMinimizeClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.minimize()
+  },
+  handleCloseClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.close()
+  },
   alreadyLoggedIn() {
     const Config = remote.require('electron-config')
     const config = new Config()
@@ -109,6 +137,20 @@ const Sections = React.createClass({
   arrowKeys(event) {
     const keyCode = event.keyCode
     const slider = this.slider
+    const loginInputElement = window.loginInputElement
+
+    if (document.activeElement === loginInputElement) {
+      if (keyCode === 27) { // esc
+        // This is necessary because on Windows and Linux
+        // you can't blur the input element by clicking
+        // outside of it
+        loginInputElement.blur()
+      }
+
+      // We return here to allow the user to move
+      // in the input text with the arrows
+      return
+    }
 
     switch (keyCode) {
       case 37:
@@ -128,10 +170,15 @@ const Sections = React.createClass({
     document.addEventListener('keydown', this.arrowKeys, false)
   },
   render() {
+    const isWin = remote.process.platform === 'win32'
+    const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
+    const videoStyle = isWin ? {width: '80%'} : {}
+
     const videoSettings = {
       preload: true,
       loop: true,
-      src: '../assets/usage.webm',
+      src: `../assets/${fileName}`,
+      style: videoStyle,
       ref: c => {
         window.usageVideo = c
       }
@@ -150,28 +197,35 @@ const Sections = React.createClass({
     }
 
     return (
-      <Slider {...sliderSettings} ref={setRef}>
-        <section id="intro">
-          <SVGinline svg={logoSVG} width="90px"/>
+      <div>
+        {isPlatform('windows') && <div className="window-controls">
+          <SVGinline onClick={this.handleMinimizeClick} svg={minimizeWindowSVG}/>
+          <SVGinline svg={maximizeWindowSVG}/>
+          <SVGinline onClick={this.handleCloseClick} svg={closeWindowSVG}/>
+        </div>}
+        <Slider {...sliderSettings} ref={setRef}>
+          <section id="intro">
+            <SVGinline svg={logoSVG} width="90px"/>
 
-          <h1>
-            <b>Now</b> &mdash; Realtime global deployments
-          </h1>
-        </section>
+            <h1>
+              <b>Now</b> &mdash; Realtime global deployments
+            </h1>
+          </section>
 
-        <section id="usage">
-          <video {...videoSettings}/>
-        </section>
+          <section id="usage">
+            <video {...videoSettings}/>
+          </section>
 
-        <section id="cli">
-          <Binary/>
-        </section>
+          <section id="cli">
+            <Binary/>
+          </section>
 
-        <section id="login">
-          <p ref={loginTextRef} dangerouslySetInnerHTML={{__html: this.state.loginText}}/>
-          {this.state.loginShown ? <Login/> : <a onClick={this.handleReady} className="button">Get Started</a>}
-        </section>
-      </Slider>
+          <section id="login">
+            <p ref={loginTextRef} dangerouslySetInnerHTML={{__html: this.state.loginText}}/>
+            {this.state.loginShown ? <Login/> : <a onClick={this.handleReady} className="button">Get Started</a>}
+          </section>
+        </Slider>
+      </div>
     )
   }
 })
@@ -282,6 +336,10 @@ const AboutContent = React.createClass({
       tutorial.show()
     })
   },
+  handleCloseClick() {
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.close()
+  },
   prepareLicense(info) {
     let element = '<details>'
 
@@ -326,37 +384,43 @@ const AboutContent = React.createClass({
   },
   render() {
     return (
-      <section id="about">
-        <span className="window-title">About</span>
+      <div>
+        {isPlatform('windows') && <div className="window-controls">
+          <SVGinline onClick={this.handleCloseClick} svg={closeWindowSVG}/>
+        </div>}
+        <section id="about">
+          <span className="window-title">About</span>
 
-        <img src="../dist/icons/icon.ico"/>
+          <img src="../dist/icons/icon.ico"/>
 
-        <h1>Now</h1>
-        <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
+          <h1>Now</h1>
+          <h2>Version <b>{pkg.version}</b> {this.state.lastReleaseDate}</h2>
 
-        {this.updateStatus()}
+          {this.updateStatus()}
 
-        <article>
-          <h1>Authors</h1>
+          <article>
+            <h1>Authors</h1>
 
-          <p>
-            <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
-            <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
-            <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
-          </p>
+            <p>
+              <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br/>
+              <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br/>
+              <a href="https://twitter.com/rauchg">Guillermo Rauch</a>
+              <a href="https://twitter.com/matheusfrndes">Matheus Fernandes</a>
+            </p>
 
-          <h1>{'3rd party software'}</h1>
-          <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
-        </article>
+            <h1>{'3rd party software'}</h1>
+            <section dangerouslySetInnerHTML={{__html: this.readLicenses()}}/>
+          </article>
 
-        <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
+          <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
 
-        <nav>
-          <a href="https://zeit.co/now">Docs</a>
-          <a href="https://github.com/zeit/now-desktop">Source</a>
-          <a onClick={this.handleTutorial}>Tutorial</a>
-        </nav>
-      </section>
+          <nav>
+            <a href="https://zeit.co/now">Docs</a>
+            <a href="https://github.com/zeit/now-desktop">Source</a>
+            <a onClick={this.handleTutorial}>Tutorial</a>
+          </nav>
+        </section>
+      </div>
     )
   }
 })

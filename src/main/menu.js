@@ -59,9 +59,51 @@ export async function innerMenu(app, tray, data, windows) {
 
   if (Array.isArray(data.deployments) && data.deployments.length > 0) {
     hasDeployments = true
+
+    // Here we make sure we don't show any extra separators in the beginning/enabled
+    // of the deployments list. macOS will just ignore them, but Windows will show them
+    if (data.deployments[0].type === 'separator') {
+      data.deployments.shift()
+    }
+    if (data.deployments[data.deployments.length - 1].type === 'separator') {
+      data.deployments.pop()
+    }
   }
 
   const config = new Config()
+
+  let shareMenu
+
+  if (process.platform === 'darwin') {
+    shareMenu = {
+      label: 'Share...',
+      accelerator: 'CmdOrCtrl+S',
+      async click() {
+        await share(tray)
+      }
+    }
+  } else {
+    shareMenu = {
+      label: 'Share...',
+      accelerator: 'CmdOrCtrl+S',
+      submenu: [
+        {
+          label: 'Directory...',
+          async click() {
+            console.log('a')
+            await share(tray, ['openDirectory'])
+          }
+        },
+        {
+          label: 'File...',
+          async click() {
+            console.log('b')
+            await share(tray, ['openFile'])
+          }
+        }
+      ]
+    }
+  }
 
   return [
     {
@@ -80,13 +122,7 @@ export async function innerMenu(app, tray, data, windows) {
         await deploy(tray)
       }
     },
-    {
-      label: 'Share...',
-      accelerator: 'CmdOrCtrl+S',
-      async click() {
-        await share(tray)
-      }
-    },
+    shareMenu,
     {
       type: 'separator'
     },
@@ -100,9 +136,7 @@ export async function innerMenu(app, tray, data, windows) {
       submenu: hasDeployments ? data.deployments : [],
       visible: hasDeployments
     },
-    {
-      type: 'separator'
-    },
+    (hasDeployments && {type: 'separator'}) || {visible: false},
     {
       label: 'Account',
       submenu: [

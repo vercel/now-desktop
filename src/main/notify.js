@@ -11,7 +11,22 @@ let win
 
 let buffer = []
 
+const icon = resolvePath('../app/assets/icons/windows-notification-icon.png')
+
 const notify = details => {
+  // On Windows we use the balloon API instead of HTML5's Notification API
+  // because the latter doesn't show the app icon/name
+  // Also, on Window 7 the Notification API is not available
+  if (process.platform === 'win32') {
+    global.tray.displayBalloon({
+      icon,
+      title: details.title,
+      content: details.body
+    })
+
+    return
+  }
+
   const {title, body, url} = details
   console.log(`[Notification] ${title}: ${body}`)
 

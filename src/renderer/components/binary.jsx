@@ -53,7 +53,7 @@ export default React.createClass({
   },
   async componentDidMount() {
     const binaryUtils = remote.getGlobal('binaryUtils')
-    const binaryPath = binaryUtils.getPath() + '/now'
+    const binaryPath = binaryUtils.getPath() + '/now' + binaryUtils.getBinarySuffix()
 
     let stat
 
@@ -121,7 +121,7 @@ export default React.createClass({
       return (
         <article>
           <p><strong>Hooray! 🎉</strong></p>
-          <p>The binary successfully landed in <code>/usr/local/bin</code>.</p>
+          <p>The binary successfully landed in its directory!</p>
           <p>You can now use <code>now</code> from the command line.</p>
         </article>
       )
