@@ -34,7 +34,7 @@ export default async item => {
       start: 'serve ./content'
     },
     dependencies: {
-      serve: '^3.0.2'
+      serve: '^3.1.0'
     }
   }
 
