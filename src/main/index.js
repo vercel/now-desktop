@@ -1,6 +1,6 @@
-/* eslint-disable import/first */
-// eslint-disable-next-line curly, unicorn/no-process-exit
-if (require('electron-squirrel-startup')) process.exit()
+if (require('electron-squirrel-startup')) {
+  process.exit()
+}
 
 // Native
 import path from 'path'
