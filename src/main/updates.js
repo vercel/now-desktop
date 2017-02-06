@@ -115,12 +115,16 @@ const updateBinary = async () => {
 }
 
 export default app => {
-  setInterval(() => {
+  setInterval(async () => {
     if (process.env.CONNECTION === 'offline') {
       return
     }
 
-    updateBinary()
+    try {
+      await updateBinary()
+    } catch (err) {
+      process.env.BINARY_UPDATE_RUNNING = 'no'
+    }
   }, ms('15m'))
 
   autoUpdater.on('error', err => {
@@ -143,12 +147,16 @@ export default app => {
   }
 
   // Check once in the beginning
-  setTimeout(() => {
+  setTimeout(async () => {
     // Update the app itself
     checkForUpdates()
 
     // ...and the binary
-    updateBinary()
+    try {
+      await updateBinary()
+    } catch (err) {
+      process.env.BINARY_UPDATE_RUNNING = 'no'
+    }
   }, ms('10s'))
 
   // And then every 5 minutes
