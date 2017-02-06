@@ -29,10 +29,6 @@ import attachTrayState from './utils/highlight'
 import toggleWindow from './utils/toggle-window'
 import * as binaryUtils from './utils/binary'
 
-// Log uncaught exceptions to a file
-// Locations: megahertz/electron-log
-process.on('uncaughtException', log.info)
-
 const isPlatform = name => {
   let handle
 
