@@ -13,7 +13,6 @@ import isDev from 'electron-is-dev'
 import {dir as isDirectory} from 'path-type'
 import fs from 'fs-promise'
 import fixPath from 'fix-path'
-import log from 'electron-log'
 import {resolve as resolvePath} from 'app-root-path'
 import firstRun from 'first-run'
 
