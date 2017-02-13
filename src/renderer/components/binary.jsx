@@ -5,7 +5,7 @@ import {execSync} from 'child_process'
 import {remote} from 'electron'
 import React from 'react'
 import fs from 'fs-promise'
-import compareVersion from 'compare-version'
+import semVer from 'semver'
 
 // Ours
 import installBinary from '../utils/load-binary'
@@ -43,7 +43,7 @@ export default React.createClass({
     }
 
     localVersion = String(localVersion.split(' ')[2])
-    const comparision = compareVersion(remoteVersion, localVersion)
+    const comparision = semVer.compare(remoteVersion, localVersion)
 
     if (comparision === 1) {
       return true
