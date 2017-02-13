@@ -9,7 +9,7 @@ import ms from 'ms'
 import semVer from 'semver'
 import fs from 'fs-promise'
 import log from 'electron-log'
-import which from 'which'
+import which from 'which-promise'
 import pathType from 'path-type'
 
 // Ours
