@@ -6,10 +6,10 @@ import {homedir} from 'os'
 // Packages
 import {autoUpdater} from 'electron'
 import ms from 'ms'
-import exists from 'path-exists'
 import semVer from 'semver'
 import fs from 'fs-promise'
 import log from 'electron-log'
+import which from 'which'
 
 // Ours
 import {version} from '../../app/package'
@@ -37,10 +37,11 @@ const localBinaryVersion = () => {
 }
 
 const updateBinary = async () => {
-  const binaryDir = binaryUtils.getPath()
-  const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`)
+  let binaryPath
 
-  if (!await exists(fullPath)) {
+  try {
+    binaryPath = await which('now')
+  } catch (err) {
     return
   }
 
@@ -75,7 +76,7 @@ const updateBinary = async () => {
   }
 
   try {
-    await fs.remove(fullPath)
+    await fs.remove(binaryPath)
   } catch (err) {
     process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error(err)
@@ -83,7 +84,7 @@ const updateBinary = async () => {
   }
 
   try {
-    await fs.rename(updateFile.path, fullPath)
+    await fs.rename(updateFile.path, binaryPath)
   } catch (err) {
     process.env.BINARY_UPDATE_RUNNING = 'no'
     console.error(err)
@@ -92,7 +93,7 @@ const updateBinary = async () => {
 
   // Make the binary executable
   try {
-    await binaryUtils.setPermissions(binaryDir)
+    await binaryUtils.setPermissions(path.dirname(binaryPath))
   } catch (err) {
     console.error(err)
   }
