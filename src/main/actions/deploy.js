@@ -47,7 +47,9 @@ const tooBig = async directory => new Promise(resolve => {
   const notAllowed = new Set([
     '.DS_Store',
     'node_modules',
-    'bower_components'
+    'bower_components',
+    '.git',
+    '.hg'
   ])
 
   const duOptions = {
@@ -172,7 +174,8 @@ export default async (folder, sharing) => {
       mark: true,
       ignore: [
         '**/node_modules/**',
-        '**/.git/**'
+        '**/.git/**',
+        '**/.hg/**'
       ]
     })
   } catch (err) {
