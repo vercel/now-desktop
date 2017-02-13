@@ -42,9 +42,6 @@
       "app/**"
     ]
   },
-  "greenkeeper": {
-    "emails": false
-  },
   "license": "MIT",
   "devDependencies": {
     "autosize-input": "^0.4.0",
