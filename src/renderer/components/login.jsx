@@ -112,6 +112,17 @@ export default React.createClass({
       waiting: true
     })
 
+    window.sliderElement.setState({
+      loginText: `Sending an email for the verification of your address` +
+      `<span class="sending-status"><i>.</i><i>.</i><i>.</i></span>`
+    })
+
+    this.setState({
+      classes: [
+        'verifying'
+      ]
+    })
+
     const apiURL = 'https://api.zeit.co'
     const {token, securityCode} = await getVerificationData(apiURL, email)
 
@@ -127,12 +138,6 @@ export default React.createClass({
       loginText: `We sent an email to <strong>${email}</strong>.\n` +
       `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
       `<b class="security-token">${securityCode}</b>`
-    })
-
-    this.setState({
-      classes: [
-        'verifying'
-      ]
     })
 
     let final

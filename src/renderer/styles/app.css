@@ -521,7 +521,8 @@ body#about-now .window-controls span:nth-child(1):hover {
   cursor: default;
 }
 
-#cli article .install-status i {
+#cli article .install-status i,
+#login .sending-status i {
   font-weight: 700;
   font-style: normal;
   animation-name: blink;
@@ -531,11 +532,13 @@ body#about-now .window-controls span:nth-child(1):hover {
   font-size: 150%;
 }
 
-#cli article .install-status i:nth-child(3) {
+#cli article .install-status i:nth-child(3),
+#login .sending-status i:nth-child(3) {
   animation-delay: .2s;
 }
 
-#cli article .install-status i:nth-child(4) {
+#cli article .install-status i:nth-child(4),
+#login .sending-status i:nth-child(4) {
   animation-delay: .4s;
 }
 
