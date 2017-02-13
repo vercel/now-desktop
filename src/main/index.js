@@ -15,6 +15,7 @@ import fs from 'fs-promise'
 import fixPath from 'fix-path'
 import {resolve as resolvePath} from 'app-root-path'
 import firstRun from 'first-run'
+import {moveToApplications} from 'electron-lets-move'
 
 // Ours
 import {innerMenu, outerMenu, deploymentOptions} from './menu'
@@ -332,6 +333,18 @@ const fileDropped = async (event, files) => {
 }
 
 app.on('ready', async () => {
+  if (!config.has('no-move-wanted')) {
+    try {
+      const moved = await moveToApplications()
+
+      if (!moved) {
+        config.set('no-move-wanted', true)
+      }
+    } catch (err) {
+      showError(err)
+    }
+  }
+
   await initAnalytics()
 
   const onlineStatusWindow = new BrowserWindow({
