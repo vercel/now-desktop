@@ -4,8 +4,8 @@ import {execSync} from 'child_process'
 // Packages
 import {remote} from 'electron'
 import React from 'react'
-import fs from 'fs-promise'
 import semVer from 'semver'
+import pathType from 'path-type'
 
 // Ours
 import installBinary from '../utils/load-binary'
@@ -55,15 +55,7 @@ export default React.createClass({
     const binaryUtils = remote.getGlobal('binaryUtils')
     const binaryPath = binaryUtils.getPath() + '/now' + binaryUtils.getBinarySuffix()
 
-    let stat
-
-    try {
-      stat = await fs.lstat(binaryPath)
-    } catch (err) {
-      return
-    }
-
-    if (stat.isSymbolicLink()) {
+    if (await pathType.symlink(binaryPath)) {
       return
     }
 
