@@ -7,7 +7,7 @@ import {homedir} from 'os'
 import {autoUpdater} from 'electron'
 import ms from 'ms'
 import exists from 'path-exists'
-import compareVersions from 'compare-versions'
+import semVer from 'semver'
 import fs from 'fs-promise'
 import log from 'electron-log'
 
@@ -48,7 +48,7 @@ const updateBinary = async () => {
   const currentRemote = await binaryUtils.getURL()
   const currentLocal = localBinaryVersion()
 
-  const comparision = compareVersions(currentLocal, currentRemote.version)
+  const comparision = semVer.compare(currentLocal, currentRemote.version)
 
   if (comparision !== -1) {
     process.env.BINARY_UPDATE_RUNNING = 'no'
