@@ -30,7 +30,8 @@ module.exports = [
         'fs-promise',
         'now-client',
         'child_process',
-        'time-ago'
+        'time-ago',
+        'path-type'
       ]
 
       if (load.includes(request)) {
