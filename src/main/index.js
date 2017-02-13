@@ -333,7 +333,7 @@ const fileDropped = async (event, files) => {
 }
 
 app.on('ready', async () => {
-  if (!config.has('no-move-wanted')) {
+  if (!config.has('no-move-wanted') && !isDev) {
     try {
       const moved = await moveToApplications()
 
