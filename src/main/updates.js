@@ -25,9 +25,15 @@ const localBinaryVersion = () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
   const cmd = exec('now -v', {cwd: homedir()}).toString()
-  const parts = cmd.split(' ')
 
-  return parts[2].trim()
+  if (semVer.valid(cmd)) {
+    return cmd
+  }
+
+  // This is for the old version output
+  // Example: "𝚫 now 4.3.0"
+  // The new one (handled above) looks like this: "4.3.0"
+  return cmd.split(' ')[2].trim()
 }
 
 const updateBinary = async () => {
