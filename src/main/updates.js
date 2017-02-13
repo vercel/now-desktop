@@ -37,6 +37,11 @@ const localBinaryVersion = () => {
   return cmd.split(' ')[2].trim()
 }
 
+const stopBinaryUpdate = reason => {
+  process.env.BINARY_UPDATE_RUNNING = 'no'
+  console.log(reason)
+}
+
 const updateBinary = async () => {
   let binaryPath
 
@@ -75,32 +80,26 @@ const updateBinary = async () => {
   try {
     updateFile = await binaryUtils.download(currentRemote.url, currentRemote.binaryName)
   } catch (err) {
-    process.env.BINARY_UPDATE_RUNNING = 'no'
-    console.error('Could not download update for binary')
-    return
+    return stopBinaryUpdate('Could not download update for binary')
   }
 
   try {
     await fs.remove(binaryPath)
   } catch (err) {
-    process.env.BINARY_UPDATE_RUNNING = 'no'
-    console.error(err)
-    return
+    return stopBinaryUpdate(err)
   }
 
   try {
     await fs.rename(updateFile.path, binaryPath)
   } catch (err) {
-    process.env.BINARY_UPDATE_RUNNING = 'no'
-    console.error(err)
-    return
+    return stopBinaryUpdate(err)
   }
 
   // Make the binary executable
   try {
     await binaryUtils.setPermissions(path.dirname(binaryPath))
   } catch (err) {
-    console.error(err)
+    return stopBinaryUpdate(err)
   }
 
   updateFile.cleanup()
