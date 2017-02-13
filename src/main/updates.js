@@ -23,9 +23,15 @@ const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 
 const localBinaryVersion = () => {
-  // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
-  // executed on Windows. On other platforms this shouldn't produce side effects.
-  const cmd = exec('now -v', {cwd: homedir()}).toString()
+  let cmd
+
+  try {
+    // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
+    // executed on Windows. On other platforms this shouldn't produce side effects.
+    cmd = exec('now -v', {cwd: homedir()}).toString()
+  } catch (err) {
+    return false
+  }
 
   if (semVer.valid(cmd)) {
     return cmd
@@ -65,15 +71,16 @@ const updateBinary = async () => {
   const currentRemote = await binaryUtils.getURL()
   const currentLocal = localBinaryVersion()
 
-  const comparision = semVer.compare(currentLocal, currentRemote.version)
+  // Force an update if "now -v" fails
+  if (currentLocal) {
+    const comparision = semVer.compare(currentLocal, currentRemote.version)
 
-  if (comparision !== -1) {
-    process.env.BINARY_UPDATE_RUNNING = 'no'
-    console.log('No updates found for binary')
-    return
+    if (comparision !== -1) {
+      return stopBinaryUpdate('No updates found for binary')
+    }
+
+    console.log('Found an update for binary! Downloading...')
   }
-
-  console.log('Found an update for binary! Downloading...')
 
   let updateFile
 
@@ -105,7 +112,11 @@ const updateBinary = async () => {
   updateFile.cleanup()
   process.env.BINARY_UPDATE_RUNNING = 'no'
 
-  const newVersion = currentRemote.version
+  const newVersion = localBinaryVersion()
+
+  if (!newVersion) {
+    updateBinary()
+  }
 
   const messages = {
     windows: 'Updated `now.exe` to v' + newVersion,
