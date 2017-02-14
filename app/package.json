@@ -48,6 +48,7 @@
     "time-ago": "0.1.0",
     "tmp-promise": "1.0.3",
     "to-id": "1.0.5",
+    "trim": "0.0.1",
     "which-promise": "1.0.0",
     "winreg": "1.2.3"
   }

@@ -11,6 +11,7 @@ import fs from 'fs-promise'
 import log from 'electron-log'
 import which from 'which-promise'
 import pathType from 'path-type'
+import trimWhitespace from 'trim'
 
 // Ours
 import {version} from '../../app/package'
@@ -32,6 +33,9 @@ const localBinaryVersion = () => {
   } catch (err) {
     return false
   }
+
+  // Make version tag parsable
+  cmd = trimWhitespace(cmd)
 
   if (semVer.valid(cmd)) {
     return cmd
