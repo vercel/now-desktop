@@ -121,7 +121,7 @@ const updateBinary = async () => {
   // If the CLI is broken (not runnable)
   // We need to update again
   if (!newVersion) {
-    updateBinary()
+    return stopBinaryUpdate('Binary not executable')
   }
 
   const messages = {
