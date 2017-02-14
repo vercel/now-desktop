@@ -9,9 +9,9 @@ import ms from 'ms'
 import semVer from 'semver'
 import fs from 'fs-promise'
 import log from 'electron-log'
-import which from 'which-promise'
 import pathType from 'path-type'
 import trimWhitespace from 'trim'
+import exists from 'path-exists'
 
 // Ours
 import {version} from '../../app/package'
@@ -53,15 +53,10 @@ const stopBinaryUpdate = reason => {
 }
 
 const updateBinary = async () => {
-  let binaryPath
+  const binaryDir = binaryUtils.getPath()
+  const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`)
 
-  try {
-    binaryPath = await which('now')
-  } catch (err) {
-    return
-  }
-
-  if (await pathType.symlink(binaryPath)) {
+  if (!await exists(fullPath) || await pathType.symlink(fullPath)) {
     return
   }
 
@@ -95,20 +90,20 @@ const updateBinary = async () => {
   }
 
   try {
-    await fs.remove(binaryPath)
+    await fs.remove(fullPath)
   } catch (err) {
     return stopBinaryUpdate(err)
   }
 
   try {
-    await fs.rename(updateFile.path, binaryPath)
+    await fs.rename(updateFile.path, fullPath)
   } catch (err) {
     return stopBinaryUpdate(err)
   }
 
   // Make the binary executable
   try {
-    await binaryUtils.setPermissions(path.dirname(binaryPath))
+    await binaryUtils.setPermissions(binaryDir)
   } catch (err) {
     return stopBinaryUpdate(err)
   }
