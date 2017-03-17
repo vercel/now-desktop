@@ -415,7 +415,7 @@ const AboutContent = React.createClass({
           <span className="copyright">Made by <a href="https://zeit.co">ZEIT</a></span>
 
           <nav>
-            <a href="https://zeit.co/now">Docs</a>
+            <a href="https://zeit.co/docs">Docs</a>
             <a href="https://github.com/zeit/now-desktop">Source</a>
             <a onClick={this.handleTutorial}>Tutorial</a>
           </nav>
