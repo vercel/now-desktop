@@ -8,8 +8,6 @@ For more details, head to [this page](https://zeit.co/desktop).
 
 ## Usage
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/zeit/now-desktop.svg)](https://greenkeeper.io/)
-
 You can download the latest release [here](https://zeit.co/download).
 
 ## Caught a bug?
