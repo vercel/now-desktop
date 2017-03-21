@@ -11,7 +11,7 @@ let win
 
 let buffer = []
 
-const icon = resolvePath('../app/assets/icons/dialogs/windows.png')
+const icon = resolvePath('../app/assets/icons/single.ico')
 
 const notify = details => {
   // On Windows we use the balloon API instead of HTML5's Notification API

@@ -19,7 +19,11 @@
     "win": {
       "target": [
         "squirrel"
-      ]
+      ],
+      "icon": "app/assets/icons/single.ico"
+    },
+    "mac": {
+      "icon": "app/assets/icons/multi.icns"
     }
   },
   "lint-staged": {

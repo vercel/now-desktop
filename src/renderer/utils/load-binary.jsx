@@ -40,7 +40,7 @@ export default async section => {
 
   const sudoOptions = {
     name: 'Now',
-    icns: resolvePath('/dist/icons/icon.icns')
+    icns: resolvePath('/assets/icons/multi.icns')
   }
 
   sudo.exec(command, sudoOptions, async error => {

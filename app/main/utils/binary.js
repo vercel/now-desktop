@@ -193,7 +193,7 @@ exports.setPermissions = async baseDir => {
 
   const sudoOptions = {
     name: 'Now',
-    icns: resolvePath('/dist/icons/icon.icns')
+    icns: resolvePath('/assets/icons/multi.icns')
   }
 
   const cmd = 'chmod +x ' + nowPath
