@@ -56,6 +56,11 @@
     ]
   },
   "license": "MIT",
+  "greenkeeper": {
+    "ignore": [
+      "webpack"
+    ]
+  },
   "devDependencies": {
     "autosize-input": "0.4.0",
     "ava": "0.18.2",
@@ -85,7 +90,7 @@
     "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
     "style-loader": "0.14.1",
-    "webpack": "2.2.1",
+    "webpack": "1.14.0",
     "webpack-livereload-plugin": "0.10.0",
     "xo": "0.18.0"
   }
