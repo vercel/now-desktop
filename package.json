@@ -80,7 +80,7 @@
     "react-svg-inline": "1.2.0",
     "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
-    "style-loader": "0.14.1",
+    "style-loader": "0.15.0",
     "webpack": "2.2.1",
     "webpack-livereload-plugin": "0.10.0",
     "xo": "0.18.0"
