@@ -64,7 +64,6 @@
     "babel-plugin-transform-async-to-generator": "6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.0",
     "babel-preset-react": "6.23.0",
-    "copy-webpack-plugin": "4.0.1",
     "cross-env": "3.2.4",
     "css-loader": "0.27.3",
     "cssnano": "3.10.0",

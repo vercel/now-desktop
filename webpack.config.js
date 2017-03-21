@@ -4,7 +4,6 @@ const path = require('path')
 // Packages
 const webpack = require('webpack')
 const LiveReloadPlugin = require('webpack-livereload-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const cssNano = require('cssnano')
 const cssImport = require('postcss-import')
@@ -83,58 +82,6 @@ module.exports = [
         }
       }),
       new LiveReloadPlugin()
-    ]
-  },
-  {
-    name: 'electron',
-    entry: './src/main/index.js',
-    target: 'electron',
-    output: {
-      path: outputPath,
-      filename: 'main.js'
-    },
-    node: {
-      __dirname: true
-    },
-    externals(context, request, callback) {
-      callback(null, request.charAt(0) === '.' ? false : 'require("' + request + '")')
-    },
-    module: {
-      loaders: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'babel',
-          query: {
-            cacheDirectory: true,
-            plugins: [
-              'transform-es2015-modules-commonjs',
-              'transform-async-to-generator'
-            ]
-          }
-        },
-        {
-          test: /\.json/,
-          loader: 'json'
-        }
-      ]
-    }
-  },
-  {
-    name: 'icons',
-    output: {
-      path: path.join(outputPath, 'icons'),
-      filename: '*'
-    },
-    plugins: [
-      new CopyWebpackPlugin([
-        {
-          from: 'build/icon.icns'
-        },
-        {
-          from: 'build/icon.ico'
-        }
-      ])
     ]
   },
   {
