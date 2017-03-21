@@ -100,8 +100,7 @@ exports.refreshCache = async function (kind, app, tutorial, interval) {
     await Promise.all(sweepers)
   } catch (err) {
     const errorParts = err.split(' ')
-    const statusCodeIndex = errorParts.length - 1
-    const statusCode = parseInt(errorParts[statusCodeIndex], 10)
+    const statusCode = parseInt(errorParts[1], 10)
 
     if (statusCode && statusCode === 403) {
       // Stop trying to load data
