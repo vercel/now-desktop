@@ -14,7 +14,6 @@
   },
   "build": {
     "appId": "co.zeit.now",
-    "category": "public.app-category.developer-tools",
     "asar": false,
     "win": {
       "target": [
@@ -23,6 +22,7 @@
       "icon": "app/assets/icons/single.ico"
     },
     "mac": {
+      "category": "public.app-category.developer-tools",
       "icon": "app/assets/icons/multi.icns"
     }
   },
