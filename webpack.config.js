@@ -14,7 +14,7 @@ const nodeEnv = process.env.NODE_ENV || 'development'
 module.exports = [
   {
     name: 'react',
-    entry: './src/renderer/index.jsx',
+    entry: './renderer/index.jsx',
     target: 'web',
     output: {
       path: outputPath,
@@ -86,7 +86,7 @@ module.exports = [
   },
   {
     name: 'styles',
-    entry: './src/renderer/styles/app.css',
+    entry: './renderer/styles/app.css',
     output: {
       path: outputPath,
       filename: 'styles.js'

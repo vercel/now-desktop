@@ -7,7 +7,7 @@ import SVGinline from 'react-svg-inline'
 import timeAgo from 'time-ago'
 
 // Ours
-import pkg from '../../app/package'
+import pkg from '../app/package'
 import showError from './utils/error'
 import tokenFromCLI from './utils/token/from-cli'
 
