@@ -371,7 +371,7 @@ app.on('ready', async () => {
   // I have no idea why, but path.resolve doesn't work here
   try {
     const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate'
-    tray = new Tray(resolvePath(`/assets/icons/${iconName}.png`))
+    tray = new Tray(resolvePath(`/assets/icons/tray/${iconName}.png`))
 
     // Opening the context menu after login should work
     global.tray = tray
