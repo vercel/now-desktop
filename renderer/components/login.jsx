@@ -1,14 +1,14 @@
 // Packages
-import {stringify as stringifyQuery} from 'querystring'
-import {remote} from 'electron'
-import React from 'react'
-import autoSizeInput from 'autosize-input'
-import Config from 'electron-config'
+import { stringify as stringifyQuery } from 'querystring';
+import { remote } from 'electron';
+import React from 'react';
+import autoSizeInput from 'autosize-input';
+import Config from 'electron-config';
 
 // Ours
-import error from '../utils/error'
-import startRefreshment from '../utils/refresh'
-import saveToCLI from '../utils/token/to-cli'
+import error from '../utils/error';
+import startRefreshment from '../utils/refresh';
+import saveToCLI from '../utils/token/to-cli';
 
 const domains = [
   'aol.com',
@@ -24,19 +24,19 @@ const domains = [
   'gmx.com',
   'icloud.com',
   'me.com'
-]
+];
 
 const getVerificationData = async (url, email) => {
-  const os = remote.require('os')
-  const hyphens = new RegExp('-', 'g')
-  const host = os.hostname().replace(hyphens, ' ').replace('.local', '')
+  const os = remote.require('os');
+  const hyphens = new RegExp('-', 'g');
+  const host = os.hostname().replace(hyphens, ' ').replace('.local', '');
 
   const body = JSON.stringify({
     email,
     tokenName: 'Now on ' + host
-  })
+  });
 
-  const apiURL = `${url}/now/registration`
+  const apiURL = `${url}/now/registration`;
 
   const res = await fetch(apiURL, {
     method: 'POST',
@@ -45,39 +45,41 @@ const getVerificationData = async (url, email) => {
       'Content-Length': JSON.stringify(body).length
     },
     body
-  })
+  });
 
   if (res.status !== 200) {
-    error('Verification error', res.json())
-    return
+    error('Verification error', res.json());
+    return;
   }
 
-  const content = await res.json()
+  const content = await res.json();
 
   return {
     token: content.token,
     securityCode: content.securityCode
-  }
-}
+  };
+};
 
 const verify = async (url, email, token) => {
   const query = {
     email,
     token
-  }
+  };
 
-  const apiURL = url + '/now/registration/verify?' + stringifyQuery(query)
-  const res = await fetch(apiURL)
+  const apiURL = url + '/now/registration/verify?' + stringifyQuery(query);
+  const res = await fetch(apiURL);
 
-  const body = await res.json()
-  return body.token
-}
+  const body = await res.json();
+  return body.token;
+};
 
-const sleep = ms => new Promise(resolve => {
-  setTimeout(resolve, ms)
-})
+const sleep = ms =>
+  new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 
 export default React.createClass({
+  displayName: 'Login',
   getInitialState() {
     return {
       value: '',
@@ -85,231 +87,229 @@ export default React.createClass({
       classes: [],
       suggestion: '',
       waiting: false
-    }
+    };
   },
   handleChange(event) {
-    const value = event.target.value
+    const value = event.target.value;
 
     this.setState({
       value
-    })
+    });
 
-    this.prepareSuggestion(value)
+    this.prepareSuggestion(value);
   },
   async tryLogin(email) {
-    const onlineStatus = remote.process.env.CONNECTION
+    const onlineStatus = remote.process.env.CONNECTION;
 
     if (onlineStatus === 'offline') {
-      error('You\'re offline!')
-      return
+      error("You're offline!");
+      return;
     }
 
     if (this.state.waiting) {
-      return
+      return;
     }
 
     this.setState({
       waiting: true
-    })
+    });
 
     window.sliderElement.setState({
       loginText: `Sending an email for the verification of your address` +
-      `<span class="sending-status"><i>.</i><i>.</i><i>.</i></span>`
-    })
+        `<span class="sending-status"><i>.</i><i>.</i><i>.</i></span>`
+    });
 
     this.setState({
-      classes: [
-        'verifying'
-      ]
-    })
+      classes: ['verifying']
+    });
 
-    const apiURL = 'https://api.zeit.co'
-    const {token, securityCode} = await getVerificationData(apiURL, email)
+    const apiURL = 'https://api.zeit.co';
+    const { token, securityCode } = await getVerificationData(apiURL, email);
 
     if (!token) {
       this.setState({
         waiting: false
-      })
+      });
 
-      return
+      return;
     }
 
     window.sliderElement.setState({
       loginText: `We sent an email to <strong>${email}</strong>.\n` +
-      `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
-      `<b class="security-token">${securityCode}</b>`
-    })
+        `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
+        `<b class="security-token">${securityCode}</b>`
+    });
 
-    let final
+    let final;
 
     do {
-      await sleep(2500)
+      await sleep(2500);
 
       try {
-        final = await verify(apiURL, email, token)
+        final = await verify(apiURL, email, token);
       } catch (err) {}
 
-      console.log('Waiting for token...')
-    } while (!final)
+      console.log('Waiting for token...');
+    } while (!final);
 
-    const config = new Config()
+    const config = new Config();
 
     // Save user information to consistent configuration
-    config.set('now.user.email', email)
-    config.set('now.user.token', final)
+    config.set('now.user.email', email);
+    config.set('now.user.token', final);
 
     // Also save it to now.json
-    await saveToCLI(email, final)
+    await saveToCLI(email, final);
 
-    const currentWindow = remote.getCurrentWindow()
+    const currentWindow = remote.getCurrentWindow();
 
     // Load fresh data and auto-update it
-    await startRefreshment(currentWindow)
+    await startRefreshment(currentWindow);
 
     if (currentWindow) {
-      currentWindow.focus()
+      currentWindow.focus();
     }
 
     window.sliderElement.setState({
       loginShown: false,
-      loginText: 'Congrats! <strong>You\'re now signed in.</strong>\nAre you ready for deploying something? Then click the button:'
-    })
+      loginText: "Congrats! <strong>You're now signed in.</strong>\nAre you ready for deploying something? Then click the button:"
+    });
   },
   componentWillUnmount() {
     if (!this.apiRequest) {
-      return
+      return;
     }
 
-    this.apiRequest.abort()
+    this.apiRequest.abort();
   },
   prepareSuggestion(value) {
     if (value === '') {
-      return
+      return;
     }
 
-    const domain = value.match(/@(.*)/)
+    const domain = value.match(/@(.*)/);
 
     if (domain && domain[1].length > 0) {
-      const match = domain[1]
-      let sug
+      const match = domain[1];
+      let sug;
 
       domains.some(dm => {
-        // don't suggest if complete match
-        if (match.toLowerCase() === dm.substr(0, match.length) && match !== dm) {
-          sug = dm
-          return true
+        // Don't suggest if complete match
+        if (
+          match.toLowerCase() === dm.substr(0, match.length) && match !== dm
+        ) {
+          sug = dm;
+          return true;
         }
 
-        return false
-      })
+        return false;
+      });
 
       if (sug) {
-        const receiver = value.trim().split('@')[0]
-        const suggestion = receiver + '@' + sug
+        const receiver = value.trim().split('@')[0];
+        const suggestion = receiver + '@' + sug;
 
-        const suffix = suggestion.replace(value, '')
+        const suffix = suggestion.replace(value, '');
 
         this.setState({
           suggestion: '<i>' + value + '</i>' + suffix
-        })
+        });
 
-        return
+        return;
       }
     }
 
     this.setState({
       suggestion: ''
-    })
+    });
   },
   async handleKey(event) {
     this.setState({
       classes: []
-    })
+    });
 
-    const keyCode = event.keyCode
+    const keyCode = event.keyCode;
 
-    const isEnter = keyCode === 13
-    const initialValue = this.getInitialState().value
+    const isEnter = keyCode === 13;
+    const initialValue = this.getInitialState().value;
 
     if (initialValue === this.state.value && !isEnter) {
       this.setState({
         value: ''
-      })
+      });
     }
 
-    const suggestion = this.state.suggestion
+    const suggestion = this.state.suggestion;
 
-    if (suggestion && (
-      keyCode === 39 /* right */ ||
-      keyCode === 9 /* tab */ ||
-      isEnter /* enter */
-    )) {
+    if (
+      suggestion &&
+      (keyCode === 39 /* Right */ ||
+        keyCode === 9 /* Tab */ ||
+        isEnter) /* Enter */
+    ) {
       // Strip HTML tags and set value
       this.setState({
         value: suggestion.replace(/(<([^>]+)>)/ig, ''),
         suggestion: ''
-      })
+      });
 
-      event.preventDefault()
-      return
+      event.preventDefault();
+      return;
     }
 
     if (!isEnter || this.state.value === '') {
-      return
+      return;
     }
 
-    const value = this.state.value
+    const value = this.state.value;
 
     if (!/^.+@.+\..+$/.test(value)) {
       this.setState({
-        classes: [
-          'error'
-        ]
-      })
+        classes: ['error']
+      });
 
-      console.log('Not a valid email')
-      return
+      console.log('Not a valid email');
+      return;
     }
 
     // Don't trigger login if placeholder defined as value
     if (value === initialValue) {
-      return
+      return;
     }
 
     try {
-      await this.tryLogin(value)
+      await this.tryLogin(value);
     } catch (err) {
-      error('Not able to retrieve verification token', err)
-      return
+      error('Not able to retrieve verification token', err);
     }
   },
   toggleFocus() {
     this.setState({
       focus: !this.state.focus
-    })
+    });
 
     // If input is empty, bring placeholder back
     if (this.state.focus && this.state.value === '') {
       this.setState({
         value: this.getInitialState().value
-      })
+      });
     }
   },
   initializeAutoSize() {
-    const input = this.loginInput
+    const input = this.loginInput;
 
     autoSizeInput(input, {
       minWidth: false
-    })
+    });
   },
   componentDidMount() {
-    this.initializeAutoSize()
+    this.initializeAutoSize();
   },
   componentDidUpdate() {
-    this.initializeAutoSize()
+    this.initializeAutoSize();
   },
   render() {
-    const classes = this.state.classes
+    const classes = this.state.classes;
 
     const inputProps = {
       type: 'email',
@@ -320,43 +320,46 @@ export default React.createClass({
       onFocus: this.toggleFocus,
       onBlur: this.toggleFocus,
       ref: item => {
-        window.loginInputElement = item
-        this.loginInput = item
+        window.loginInputElement = item;
+        this.loginInput = item;
       },
       onClick: event => event.stopPropagation()
-    }
+    };
 
     if (classes.indexOf('auto-complete') === -1) {
-      classes.push('auto-complete')
+      classes.push('auto-complete');
     }
 
-    const focusPosition = classes.indexOf('focus')
+    const focusPosition = classes.indexOf('focus');
 
     if (focusPosition > -1) {
-      classes.splice(focusPosition, 1)
+      classes.splice(focusPosition, 1);
     }
 
     if (this.state.focus) {
-      classes.push('focus')
+      classes.push('focus');
     }
 
     const autoCompleteProps = {
       ref: () => {
-        window.loginInput = this
+        window.loginInput = this;
       },
       onClick: () => this.loginInput.focus(),
       className: classes.join(' ')
-    }
+    };
 
-    const suggestionClass = this.state.focus ? '' : 'hidden'
+    const suggestionClass = this.state.focus ? '' : 'hidden';
 
     return (
       <aside {...autoCompleteProps}>
         <div>
-          <input {...inputProps}/>
-          <span className={suggestionClass} dangerouslySetInnerHTML={{__html: this.state.suggestion}}/>
+          <input {...inputProps} />
+          <span
+            className={suggestionClass}
+            dangerouslySetInnerHTML={{ __html: this.state.suggestion }}
+          />
         </div>
       </aside>
-    )
+    );
   }
-})
+});

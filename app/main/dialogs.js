@@ -1,70 +1,71 @@
 // Packages
-const {dialog} = require('electron')
+const { dialog } = require('electron');
 
 // Ours
-const deployment = require('./actions/deploy')
-const sharing = require('./actions/share')
+const deployment = require('./actions/deploy');
+const sharing = require('./actions/share');
 
 const showDialog = details => {
-  const filePath = dialog.showOpenDialog(details)
+  const filePath = dialog.showOpenDialog(details);
 
   if (filePath) {
-    return filePath[0]
+    return filePath[0];
   }
 
-  return false
-}
+  return false;
+};
 
-exports.share = async function (tray, properties = ['openDirectory', 'openFile']) {
+exports.share = async function(
+  tray,
+  properties = ['openDirectory', 'openFile']
+) {
   const info = {
     title: 'Select something to share',
     properties,
     buttonLabel: 'Share'
-  }
+  };
 
-  console.log(properties)
-  tray.setHighlightMode('always')
-  const path = showDialog(info)
-  tray.setHighlightMode('never')
+  console.log(properties);
+  tray.setHighlightMode('always');
+  const path = showDialog(info);
+  tray.setHighlightMode('never');
 
   if (!path) {
-    return
+    return;
   }
 
   try {
-    await sharing(path)
+    await sharing(path);
   } catch (err) {
-    exports.error('Not able to share', err)
+    exports.error('Not able to share', err);
   }
-}
+};
 
-exports.deploy = async function (tray) {
+exports.deploy = async function(tray) {
   const info = {
     title: 'Select a folder to deploy',
-    properties: [
-      'openDirectory'
-    ],
+    properties: ['openDirectory'],
     buttonLabel: 'Deploy'
-  }
+  };
 
-  tray.setHighlightMode('always')
-  const path = showDialog(info)
-  tray.setHighlightMode('never')
+  tray.setHighlightMode('always');
+  const path = showDialog(info);
+  tray.setHighlightMode('never');
 
   if (path) {
     try {
-      await deployment(path)
+      await deployment(path);
     } catch (err) {
-      exports.error('Not able to deploy', err)
+      exports.error('Not able to deploy', err);
     }
   }
-}
+};
 
-exports.error = function (detail, trace, win) {
+exports.error = function(detail, trace, win) {
   dialog.showMessageBox(win || null, {
     type: 'error',
     message: 'An Error Occurred',
     detail,
     buttons: []
-  })
-}
+  });
+};

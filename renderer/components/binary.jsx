@@ -1,99 +1,102 @@
 // Native
-import {execSync} from 'child_process'
+import { execSync } from 'child_process';
 
 // Packages
-import {remote} from 'electron'
-import React from 'react'
-import semVer from 'semver'
-import pathType from 'path-type'
+import { remote } from 'electron';
+import React from 'react';
+import semVer from 'semver';
+import pathType from 'path-type';
 
 // Ours
-import installBinary from '../utils/load-binary'
+import installBinary from '../utils/load-binary';
 
 export default React.createClass({
+  displayName: 'Binary',
   getInitialState() {
     return {
       binaryInstalled: false,
       installing: false,
       done: false,
       downloading: false
-    }
+    };
   },
   async isOlderThanLatest(utils, binaryPath) {
-    let current
+    let current;
 
     try {
-      current = await utils.getURL()
+      current = await utils.getURL();
     } catch (err) {
-      return
+      return;
     }
 
     if (!current) {
-      return
+      return;
     }
 
-    const remoteVersion = current.version
+    const remoteVersion = current.version;
 
-    let localVersion
+    let localVersion;
 
     try {
-      localVersion = execSync(binaryPath + ' -v').toString()
+      localVersion = execSync(binaryPath + ' -v').toString();
     } catch (err) {
-      return
+      return;
     }
 
-    localVersion = String(localVersion.split(' ')[2])
-    const comparision = semVer.compare(remoteVersion, localVersion)
+    localVersion = String(localVersion.split(' ')[2]);
+    const comparision = semVer.compare(remoteVersion, localVersion);
 
     if (comparision === 1) {
-      return true
+      return true;
     }
 
-    return false
+    return false;
   },
   async componentDidMount() {
-    const binaryUtils = remote.getGlobal('binaryUtils')
-    const binaryPath = binaryUtils.getPath() + '/now' + binaryUtils.getBinarySuffix()
+    const binaryUtils = remote.getGlobal('binaryUtils');
+    const binaryPath = binaryUtils.getPath() +
+      '/now' +
+      binaryUtils.getBinarySuffix();
 
     if (await pathType.symlink(binaryPath)) {
-      return
+      return;
     }
 
     if (await this.isOlderThanLatest(binaryUtils, binaryPath)) {
-      return
+      return;
     }
 
-    const currentWindow = remote.getCurrentWindow()
-    currentWindow.focus()
+    const currentWindow = remote.getCurrentWindow();
+    currentWindow.focus();
 
     this.setState({
       binaryInstalled: true
-    })
+    });
   },
   render() {
-    const element = this
+    const element = this;
 
-    let classes = 'button install'
-    let installText = 'Install now'
+    let classes = 'button install';
+    let installText = 'Install now';
 
     if (this.state.binaryInstalled) {
-      classes += ' off'
-      installText = 'Already installed'
+      classes += ' off';
+      installText = 'Already installed';
     }
 
     const binaryButton = {
       className: classes,
       async onClick() {
         if (element.state.binaryInstalled) {
-          return
+          return;
         }
 
-        await installBinary(element)
+        await installBinary(element);
       }
-    }
+    };
 
     if (this.state.installing) {
-      const loadingText = this.state.downloading ? 'Downloading' : 'Installing'
+      const loadingText = this.state.downloading ? 'Downloading' : 'Installing';
 
       return (
         <article>
@@ -104,9 +107,11 @@ export default React.createClass({
             <i>.</i>
             <i>.</i>
           </p>
-          <p>Please be so kind and leave the app open! We&#39;ll let you know once we are done. This should not take too long.</p>
+          <p>
+            Please be so kind and leave the app open! We'll let you know once we are done. This should not take too long.
+          </p>
         </article>
-      )
+      );
     }
 
     if (this.state.done) {
@@ -116,16 +121,24 @@ export default React.createClass({
           <p>The binary successfully landed in its directory!</p>
           <p>You can now use <code>now</code> from the command line.</p>
         </article>
-      )
+      );
     }
 
     return (
       <article>
-        <p>In addition to this app, you can also use <code>now</code> from the command line, if you&#39;d like to.</p>
-        <p>Press the button below to install it! When a new version gets released, we&#39;ll automatically update it for you.</p>
+        <p>
+          In addition to this app, you can also use
+          {' '}
+          <code>now</code>
+          {' '}
+          from the command line, if you'd like to.
+        </p>
+        <p>
+          Press the button below to install it! When a new version gets released, we'll automatically update it for you.
+        </p>
 
         <a {...binaryButton}>{installText}</a>
       </article>
-    )
+    );
   }
-})
+});

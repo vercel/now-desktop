@@ -1,17 +1,17 @@
 // Packages
-const {app, BrowserWindow} = require('electron')
-const {resolve: resolvePath} = require('app-root-path')
+const { app, BrowserWindow } = require('electron');
+const { resolve: resolvePath } = require('app-root-path');
 
-let win
+let win;
 
 // The hack of all hacks
 // electron doesn't have a built in notification thing,
 // so we launch a window on which we can use the
 // HTML5 `Notification` API :'(
 
-let buffer = []
+let buffer = [];
 
-const icon = resolvePath('../app/assets/icons/single.ico')
+const icon = resolvePath('../app/assets/icons/single.ico');
 
 const notify = details => {
   // On Windows we use the balloon API instead of HTML5's Notification API
@@ -22,43 +22,39 @@ const notify = details => {
       icon,
       title: details.title,
       content: details.body
-    })
+    });
 
-    return
+    return;
   }
 
-  const {title, body, url} = details
-  console.log(`[Notification] ${title}: ${body}`)
+  const { title, body, url } = details;
+  console.log(`[Notification] ${title}: ${body}`);
 
   if (win) {
     win.webContents.send('notification', {
       title,
       body,
       url
-    })
+    });
   } else {
-    buffer.push([
-      title,
-      body,
-      url
-    ])
+    buffer.push([title, body, url]);
   }
-}
+};
 
 app.on('ready', () => {
   const win_ = new BrowserWindow({
     show: false
-  })
+  });
 
-  const url = 'file://' + resolvePath('../app/pages/notify.html')
-  win_.loadURL(url)
+  const url = 'file://' + resolvePath('../app/pages/notify.html');
+  win_.loadURL(url);
 
   win_.webContents.on('dom-ready', () => {
-    win = win_
+    win = win_;
 
-    buffer.forEach(([details]) => notify(details))
-    buffer = null
-  })
-})
+    buffer.forEach(([details]) => notify(details));
+    buffer = null;
+  });
+});
 
-module.exports = notify
+module.exports = notify;

@@ -4,56 +4,56 @@ const states = {
   minimize: false,
   restore: true,
   focus: true
-}
+};
 
 const windowLeft = win => {
   if (global.tutorial && global.about === win && global.tutorial.isVisible()) {
-    return true
+    return true;
   }
 
   if (global.about && global.tutorial === win && global.about.isVisible()) {
-    return true
+    return true;
   }
 
-  return false
-}
+  return false;
+};
 
 module.exports = (win, tray) => {
   if (!tray) {
-    return
+    return;
   }
 
   for (const state in states) {
     if (!{}.hasOwnProperty.call(states, state)) {
-      return
+      return;
     }
 
-    const highlighted = states[state]
+    const highlighted = states[state];
 
     win.on(state, () => {
       if (process.env.FORCE_CLOSE) {
-        return
+        return;
       }
 
       // Don't toggle highlighting if one window is still open
       if (windowLeft(win)) {
-        return
+        return;
       }
 
       // Record busyness for auto updater
-      process.env.BUSYNESS = highlighted ? 'window-open' : 'ready'
+      process.env.BUSYNESS = highlighted ? 'window-open' : 'ready';
 
       // Highlight the tray or don't
-      tray.setHighlightMode(highlighted ? 'always' : 'never')
-    })
+      tray.setHighlightMode(highlighted ? 'always' : 'never');
+    });
   }
 
   win.on('close', event => {
     if (process.env.FORCE_CLOSE) {
-      return
+      return;
     }
 
-    win.hide()
-    event.preventDefault()
-  })
-}
+    win.hide();
+    event.preventDefault();
+  });
+};

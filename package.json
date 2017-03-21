@@ -28,15 +28,17 @@
   },
   "lint-staged": {
     "*.js": [
-      "xo --fix",
+      "npm run lint",
+      "prettier --single-quote --write",
       "git add"
     ]
   },
   "xo": {
-    "extends": "xo-react",
-    "esnext": true,
-    "space": true,
-    "semicolon": false,
+    "extends": [
+      "prettier",
+      "prettier/react",
+      "plugin:react/recommended"
+    ],
     "env": [
       "browser",
       "node"
@@ -50,10 +52,7 @@
       "unicorn/no-process-exit": 0,
       "jsx-sort-props": 0,
       "no-await-in-loop": 0
-    },
-    "ignores": [
-      "app/**"
-    ]
+    }
   },
   "license": "MIT",
   "greenkeeper": {
@@ -75,13 +74,14 @@
     "electron": "1.6.2",
     "electron-builder": "15.6.3",
     "electron-builder-squirrel-windows": "16.0.0",
-    "eslint-config-xo-react": "0.11.1",
+    "eslint-config-prettier": "1.5.0",
     "eslint-plugin-react": "6.10.3",
     "husky": "0.13.2",
     "json-loader": "0.5.4",
     "lint-staged": "3.4.0",
     "postcss-import": "9.1.0",
     "postcss-loader": "1.3.3",
+    "prettier": "0.22.0",
     "raw-loader": "0.5.1",
     "react": "15.4.2",
     "react-dom": "15.4.2",

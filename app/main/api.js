@@ -1,120 +1,117 @@
 // Packages
-const Now = require('now-client')
-const Config = require('electron-config')
-const chalk = require('chalk')
+const Now = require('now-client');
+const Config = require('electron-config');
+const chalk = require('chalk');
 
 // Ours
-const {error: showError} = require('./dialogs')
-const logout = require('./actions/logout')
+const { error: showError } = require('./dialogs');
+const logout = require('./actions/logout');
 
-exports.connector = function (userToken) {
-  const config = new Config()
-  const token = userToken || config.get('now.user.token')
+exports.connector = function(userToken) {
+  const config = new Config();
+  const token = userToken || config.get('now.user.token');
 
   if (!token) {
-    console.error('No token defined. Not able to load data!')
-    return false
+    console.error('No token defined. Not able to load data!');
+    return false;
   }
 
-  return new Now(token)
-}
+  return new Now(token);
+};
 
 const refreshKind = async (name, session) => {
-  let method
+  let method;
 
   switch (name) {
     case 'deployments':
-      method = 'getDeployments'
-      break
+      method = 'getDeployments';
+      break;
     case 'aliases':
-      method = 'getAliases'
-      break
+      method = 'getAliases';
+      break;
     default:
-      method = false
+      method = false;
   }
 
   if (!method) {
-    console.error(`Not able to refresh ${name} cache`)
-    return
+    console.error(`Not able to refresh ${name} cache`);
+    return;
   }
 
   return new Promise(async (resolve, reject) => {
-    let freshData
+    let freshData;
 
     try {
-      freshData = await session[method]()
+      freshData = await session[method]();
     } catch (err) {
-      reject(err)
-      return
+      reject(err);
+      return;
     }
 
-    const config = new Config()
-    const configProperty = 'now.cache.' + name
+    const config = new Config();
+    const configProperty = 'now.cache.' + name;
 
-    config.set(configProperty, freshData)
-    resolve()
-  })
-}
+    config.set(configProperty, freshData);
+    resolve();
+  });
+};
 
 const stopInterval = interval => {
   if (!interval) {
-    return
+    return;
   }
 
-  console.log('Stopping the refreshing process...')
-  clearInterval(interval)
-}
+  console.log('Stopping the refreshing process...');
+  clearInterval(interval);
+};
 
-exports.refreshCache = async function (kind, app, tutorial, interval) {
-  const session = exports.connector()
+exports.refreshCache = async function(kind, app, tutorial, interval) {
+  const session = exports.connector();
 
   if (!session) {
-    stopInterval(interval)
-    return
+    stopInterval(interval);
+    return;
   }
 
   if (kind) {
     try {
-      await refreshKind(kind, session)
+      await refreshKind(kind, session);
     } catch (err) {
-      showError('Not able to refresh ' + kind, err)
-      stopInterval(interval)
+      showError('Not able to refresh ' + kind, err);
+      stopInterval(interval);
     }
 
-    return
+    return;
   }
 
-  const sweepers = new Set()
+  const sweepers = new Set();
 
-  const kinds = new Set([
-    'deployments',
-    'aliases'
-  ])
+  const kinds = new Set(['deployments', 'aliases']);
 
   for (const kind of kinds) {
-    const refresher = refreshKind(kind, session)
-    sweepers.add(refresher)
+    const refresher = refreshKind(kind, session);
+    sweepers.add(refresher);
   }
 
   try {
-    await Promise.all(sweepers)
+    await Promise.all(sweepers);
   } catch (err) {
-    const errorParts = err.split(' ')
-    const statusCode = parseInt(errorParts[1], 10)
+    const errorParts = err.split(' ');
+    const statusCode = parseInt(errorParts[1], 10);
 
     if (statusCode && statusCode === 403) {
       // Stop trying to load data
-      stopInterval(interval)
+      stopInterval(interval);
 
       // If token has been revoked, the server will not respond with data
       // In turn, we need to log out
-      await logout(app, tutorial)
+      await logout(app, tutorial);
     }
 
     // Stop executing the function
-    return
+    return;
   }
 
-  const currentTime = new Date().toLocaleTimeString()
-  console.log(chalk.green(`[${currentTime}]`) + ' Refreshed entire cache')
-}
+  const currentTime = new Date().toLocaleTimeString();
+  console.log(chalk.green(`[${currentTime}]`) + ' Refreshed entire cache');
+};

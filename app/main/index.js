@@ -1,116 +1,119 @@
 if (require('electron-squirrel-startup')) {
-  process.exit()
+  process.exit();
 }
 
 // Native
-const path = require('path')
+const path = require('path');
 
 // Packages
-const {app, Tray, Menu, BrowserWindow, ipcMain} = require('electron')
-const ms = require('ms')
-const Config = require('electron-config')
-const isDev = require('electron-is-dev')
-const {dir: isDirectory} = require('path-type')
-const fs = require('fs-promise')
-const fixPath = require('fix-path')
-const {resolve: resolvePath} = require('app-root-path')
-const firstRun = require('first-run')
-const {moveToApplications} = require('electron-lets-move')
+const { app, Tray, Menu, BrowserWindow, ipcMain } = require('electron');
+const ms = require('ms');
+const Config = require('electron-config');
+const isDev = require('electron-is-dev');
+const { dir: isDirectory } = require('path-type');
+const fs = require('fs-promise');
+const fixPath = require('fix-path');
+const { resolve: resolvePath } = require('app-root-path');
+const firstRun = require('first-run');
+const { moveToApplications } = require('electron-lets-move');
 
 // Ours
-const {innerMenu, outerMenu, deploymentOptions} = require('./menu')
-const {init: initAnalytics} = require('./analytics')
-const {error: showError} = require('./dialogs')
-const deploy = require('./actions/deploy')
-const share = require('./actions/share')
-const autoUpdater = require('./updates')
-const {refreshCache} = require('./api')
-const attachTrayState = require('./utils/highlight')
-const toggleWindow = require('./utils/toggle-window')
-const binaryUtils = require('./utils/binary')
+const { innerMenu, outerMenu, deploymentOptions } = require('./menu');
+const { init: initAnalytics } = require('./analytics');
+const { error: showError } = require('./dialogs');
+const deploy = require('./actions/deploy');
+const share = require('./actions/share');
+const autoUpdater = require('./updates');
+const { refreshCache } = require('./api');
+const attachTrayState = require('./utils/highlight');
+const toggleWindow = require('./utils/toggle-window');
+const binaryUtils = require('./utils/binary');
 
 const isPlatform = name => {
-  let handle
+  let handle;
 
   switch (name) {
     case 'windows':
-      handle = 'win32'
-      break
+      handle = 'win32';
+      break;
     case 'macOS':
-      handle = 'darwin'
-      break
+      handle = 'darwin';
+      break;
     default:
-      handle = name
+      handle = name;
   }
 
-  return process.platform === handle
-}
+  return process.platform === handle;
+};
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
-let tray = null
+let tray = null;
 
 // Hide dock icon before the app starts
 if (isPlatform('macOS')) {
-  app.dock.hide()
+  app.dock.hide();
 }
 
 // Define the application name
-app.setName('Now')
+app.setName('Now');
 
 // Make Now start automatically on login
 if (!isDev && firstRun()) {
   app.setLoginItemSettings({
     openAtLogin: true
-  })
+  });
 }
 
 // We need this method in the renderer process
 // So that we can load all data after the user has logged in
 // And before he opens the context menu
-global.refreshCache = refreshCache
+global.refreshCache = refreshCache;
 
 // Immediately after login, we'll start the auto updater
 // = the renderer process
-global.autoUpdater = autoUpdater
-global.isDev = isDev
+global.autoUpdater = autoUpdater;
+global.isDev = isDev;
 
 // Share these  between renderer process and the main one
-global.errorHandler = showError
-global.binaryUtils = binaryUtils
+global.errorHandler = showError;
+global.binaryUtils = binaryUtils;
 
 // Make the error handler kill the app
-global.appInstance = app
+global.appInstance = app;
 
 // Makes sure where inheriting the correct path
 // Within the bundled app, the path would otherwise be different
-fixPath()
+fixPath();
 
 // Keep track of the app's busyness for telling
 // the autoupdater if it can restart the application
-process.env.BUSYNESS = 'ready'
+process.env.BUSYNESS = 'ready';
 
 // Make sure that unhandled errors get handled
 process.on('uncaughtException', err => {
-  console.error(err)
-  showError('Unhandled error appeared', err)
-})
+  console.error(err);
+  showError('Unhandled error appeared', err);
+});
 
-const config = new Config()
+const config = new Config();
 
 // For starting the refreshment right after login
 global.startRefresh = tutorialWindow => {
-  const timeSpan = ms('10s')
+  const timeSpan = ms('10s');
 
   // Periodically rebuild local cache every 10 seconds
-  const interval = setInterval(async () => {
-    if (process.env.CONNECTION === 'offline') {
-      return
-    }
+  const interval = setInterval(
+    async () => {
+      if (process.env.CONNECTION === 'offline') {
+        return;
+      }
 
-    await refreshCache(null, app, tutorialWindow, interval)
-  }, timeSpan)
-}
+      await refreshCache(null, app, tutorialWindow, interval);
+    },
+    timeSpan
+  );
+};
 
 const onboarding = () => {
   const win = new BrowserWindow({
@@ -125,38 +128,38 @@ const onboarding = () => {
     maximizable: false,
     titleBarStyle: 'hidden-inset',
     backgroundColor: '#000'
-  })
+  });
 
-  win.loadURL('file://' + resolvePath('../app/pages/main.html'))
-  attachTrayState(win, tray)
+  win.loadURL('file://' + resolvePath('../app/pages/main.html'));
+  attachTrayState(win, tray);
 
   // We need to access it = the "About" window
   // To be able to open it = there
-  global.tutorial = win
+  global.tutorial = win;
 
   const emitTrayClick = aboutWindow => {
     const emitClick = () => {
       if (aboutWindow && aboutWindow.isVisible()) {
-        return
+        return;
       }
 
       // Automatically open the context menu
       if (tray) {
-        tray.emit('click')
+        tray.emit('click');
       }
 
-      win.removeListener('hide', emitClick)
-    }
+      win.removeListener('hide', emitClick);
+    };
 
-    win.on('hide', emitClick)
-    win.hide()
-  }
+    win.on('hide', emitClick);
+    win.hide();
+  };
 
-  win.on('open-tray', emitTrayClick)
+  win.on('open-tray', emitTrayClick);
 
   // Just hand it back
-  return win
-}
+  return win;
+};
 
 const aboutWindow = () => {
   const win = new BrowserWindow({
@@ -172,196 +175,197 @@ const aboutWindow = () => {
     titleBarStyle: 'hidden-inset',
     frame: false,
     backgroundColor: '#ECECEC'
-  })
+  });
 
-  win.loadURL('file://' + resolvePath('../app/pages/main.html'))
-  attachTrayState(win, tray)
+  win.loadURL('file://' + resolvePath('../app/pages/main.html'));
+  attachTrayState(win, tray);
 
-  global.about = win
+  global.about = win;
 
-  return win
-}
+  return win;
+};
 
 app.on('window-all-closed', () => {
   if (!isPlatform('macOS')) {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 const assignAliases = (aliases, deployment) => {
   if (aliases) {
-    const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId)
+    const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId);
 
     if (aliasInfo) {
-      deployment.url = aliasInfo.alias
+      deployment.url = aliasInfo.alias;
     }
   }
 
-  return deploymentOptions(deployment)
-}
+  return deploymentOptions(deployment);
+};
 
 // Convert date string = API to valid date object
-const toDate = int => new Date(parseInt(int, 10))
+const toDate = int => new Date(parseInt(int, 10));
 
 const toggleContextMenu = async windows => {
-  const deployments = config.get('now.cache.deployments')
-  const aliases = config.get('now.cache.aliases')
+  const deployments = config.get('now.cache.deployments');
+  const aliases = config.get('now.cache.aliases');
 
-  const apps = new Map()
-  const deploymentList = []
+  const apps = new Map();
+  const deploymentList = [];
 
   // Order deployments by date
-  deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
+  deployments.sort((a, b) => toDate(b.created) - toDate(a.created));
 
   for (const deployment of deployments) {
-    const name = deployment.name
+    const name = deployment.name;
 
     if (apps.has(name)) {
-      const existingDeployments = apps.get(name)
-      apps.set(name, [...existingDeployments, deployment])
+      const existingDeployments = apps.get(name);
+      apps.set(name, [...existingDeployments, deployment]);
 
-      continue
+      continue;
     }
 
-    apps.set(name, [deployment])
+    apps.set(name, [deployment]);
   }
 
   apps.forEach((deployments, label) => {
     if (deployments.length === 1) {
-      deploymentList.push(assignAliases(aliases, deployments[0]))
-      return
+      deploymentList.push(assignAliases(aliases, deployments[0]));
+      return;
     }
 
     deploymentList.push({
       type: 'separator'
-    })
+    });
 
     deploymentList.push({
       label,
       enabled: false
-    })
+    });
 
     for (const deployment of deployments) {
-      deploymentList.push(assignAliases(aliases, deployment))
+      deploymentList.push(assignAliases(aliases, deployment));
     }
 
     deploymentList.push({
       type: 'separator'
-    })
-  })
+    });
+  });
 
   const data = {
     deployments: deploymentList
-  }
+  };
 
-  let generatedMenu = await innerMenu(app, tray, data, windows)
+  let generatedMenu = await innerMenu(app, tray, data, windows);
 
   if (process.env.CONNECTION === 'offline') {
-    const last = generatedMenu.slice(-1)[0]
+    const last = generatedMenu.slice(-1)[0];
 
     generatedMenu = [
       {
-        label: 'You\'re offline!',
+        label: "You're offline!",
         enabled: false
       },
       {
         type: 'separator'
       }
-    ]
+    ];
 
-    generatedMenu.push(last)
+    generatedMenu.push(last);
   }
 
-  const menu = Menu.buildFromTemplate(generatedMenu)
-  tray.popUpContextMenu(menu, tray.getBounds())
-}
+  const menu = Menu.buildFromTemplate(generatedMenu);
+  tray.popUpContextMenu(menu, tray.getBounds());
+};
 
 const isLoggedIn = () => {
-  const userProperty = config.has('now.user')
-  return userProperty
-}
+  const userProperty = config.has('now.user');
+  return userProperty;
+};
 
 const isDeployable = async directory => {
-  const indicators = new Set([
-    'package.json',
-    'Dockerfile'
-  ])
+  const indicators = new Set(['package.json', 'Dockerfile']);
 
   for (const indicator of indicators) {
-    const pathTo = path.join(directory, indicator)
-    let stats
+    const pathTo = path.join(directory, indicator);
+    let stats;
 
     try {
-      stats = await fs.lstat(pathTo)
+      stats = await fs.lstat(pathTo);
     } catch (err) {}
 
     if (stats) {
-      return true
+      return true;
     }
   }
 
-  return false
-}
+  return false;
+};
 
 const fileDropped = async (event, files) => {
-  event.preventDefault()
+  event.preventDefault();
 
   if (process.env.CONNECTION === 'offline') {
-    showError('You\'re offline')
-    return
+    showError("You're offline");
+    return;
   }
 
-  const loggedIn = isLoggedIn()
+  const loggedIn = isLoggedIn();
 
   if (!loggedIn) {
-    return
+    return;
   }
 
   if (files.length > 1) {
-    showError('It\'s not yet possible to share multiple files/directories at once.')
-    return
+    showError(
+      "It's not yet possible to share multiple files/directories at once."
+    );
+    return;
   }
 
-  const item = files[0]
+  const item = files[0];
 
   if (!await isDirectory(item) || !await isDeployable(item)) {
-    await share(item)
-    return
+    await share(item);
+    return;
   }
 
-  await deploy(item)
-}
+  await deploy(item);
+};
 
 app.on('ready', async () => {
   if (!config.has('no-move-wanted') && !isDev) {
     try {
-      const moved = await moveToApplications()
+      const moved = await moveToApplications();
 
       if (!moved) {
-        config.set('no-move-wanted', true)
+        config.set('no-move-wanted', true);
       }
     } catch (err) {
-      showError(err)
+      showError(err);
     }
   }
 
-  await initAnalytics()
+  await initAnalytics();
 
   const onlineStatusWindow = new BrowserWindow({
     width: 0,
     height: 0,
     show: false
-  })
+  });
 
-  onlineStatusWindow.loadURL('file://' + resolvePath('../app/pages/status.html'))
+  onlineStatusWindow.loadURL(
+    'file://' + resolvePath('../app/pages/status.html')
+  );
 
   ipcMain.on('online-status-changed', (event, status) => {
-    process.env.CONNECTION = status
-  })
+    process.env.CONNECTION = status;
+  });
 
   // Start auto updater if not in development mode
   if (!isDev && !isPlatform('linux')) {
-    global.autoUpdater(app)
+    global.autoUpdater(app);
   }
 
   // DO NOT create the tray icon BEFORE the login status has been checked!
@@ -370,77 +374,78 @@ app.on('ready', async () => {
 
   // I have no idea why, but path.resolve doesn't work here
   try {
-    const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate'
-    tray = new Tray(resolvePath(`/assets/icons/tray/${iconName}.png`))
+    const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate';
+    tray = new Tray(resolvePath(`/assets/icons/tray/${iconName}.png`));
 
     // Opening the context menu after login should work
-    global.tray = tray
+    global.tray = tray;
   } catch (err) {
-    showError('Could not spawn tray item', err)
-    return
+    showError('Could not spawn tray item', err);
+    return;
   }
 
   const windows = {
     tutorial: onboarding(),
     about: aboutWindow()
-  }
+  };
 
   const toggleActivity = event => {
-    const loggedIn = isLoggedIn()
+    const loggedIn = isLoggedIn();
 
     if (loggedIn && !windows.tutorial.isVisible()) {
-      tray.setHighlightMode('selection')
-      toggleContextMenu(windows)
+      tray.setHighlightMode('selection');
+      toggleContextMenu(windows);
     } else {
-      toggleWindow(event || null, windows.tutorial)
+      toggleWindow(event || null, windows.tutorial);
     }
-  }
+  };
 
   // Only allow one instance of Now running
   // at the same time
-  const shouldQuit = app.makeSingleInstance(toggleActivity)
+  const shouldQuit = app.makeSingleInstance(toggleActivity);
 
   if (shouldQuit) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheuss)
-    return app.exit()
+    return app.exit();
   }
 
   if (isLoggedIn()) {
     // Periodically rebuild local cache every 10 seconds
-    global.startRefresh(windows.tutorial)
+    global.startRefresh(windows.tutorial);
   }
 
   if (!isLoggedIn()) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    windows.tutorial.on('ready-to-show', () => toggleWindow(null, windows.tutorial))
+    windows.tutorial.on('ready-to-show', () =>
+      toggleWindow(null, windows.tutorial));
   }
 
   // When quitting the app, force close the tutorial and about windows
   app.on('before-quit', () => {
-    process.env.FORCE_CLOSE = true
-  })
+    process.env.FORCE_CLOSE = true;
+  });
 
   // Define major event listeners for tray
-  tray.on('drop-files', fileDropped)
-  tray.on('click', toggleActivity)
+  tray.on('drop-files', fileDropped);
+  tray.on('click', toggleActivity);
 
-  let isHighlighted = false
-  let submenuShown = false
+  let isHighlighted = false;
+  let submenuShown = false;
 
   tray.on('right-click', async event => {
-    const menu = Menu.buildFromTemplate(outerMenu(app, windows))
+    const menu = Menu.buildFromTemplate(outerMenu(app, windows));
 
     if (!windows.tutorial.isVisible()) {
-      isHighlighted = !isHighlighted
-      tray.setHighlightMode(isHighlighted ? 'always' : 'never')
+      isHighlighted = !isHighlighted;
+      tray.setHighlightMode(isHighlighted ? 'always' : 'never');
     }
 
     // Toggle submenu
-    tray.popUpContextMenu(submenuShown ? null : menu)
-    submenuShown = !submenuShown
+    tray.popUpContextMenu(submenuShown ? null : menu);
+    submenuShown = !submenuShown;
 
-    event.preventDefault()
-  })
-})
+    event.preventDefault();
+  });
+});
