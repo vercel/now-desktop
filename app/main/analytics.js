@@ -1,17 +1,17 @@
 // Native
-import os from 'os'
+const os = require('os')
 
 // Packages
-import macAddress from 'macaddress'
-import md5 from 'md5'
-import mixpanel from 'mixpanel'
-import fileSize from 'filesize'
-import firstRun from 'first-run'
-import Config from 'electron-config'
-import isDev from 'electron-is-dev'
+const macAddress = require('macaddress')
+const md5 = require('md5')
+const mixpanel = require('mixpanel')
+const fileSize = require('filesize')
+const firstRun = require('first-run')
+const Config = require('electron-config')
+const isDev = require('electron-is-dev')
 
 // Ours
-import pkg from '../../app/package'
+const pkg = require('../../app/package')
 
 const getMacAddress = () => new Promise((resolve, reject) => {
   // Get unique identifier for the current system
@@ -40,7 +40,7 @@ const analytics = mixpanel.init(pkg.mixPanel.id, {
   protocol: 'https'
 })
 
-export const track = (handle, details = {}) => {
+exports.track = (handle, details = {}) => {
   if (!handle || isDev || process.env.TESTING) {
     return
   }
@@ -58,7 +58,7 @@ export const track = (handle, details = {}) => {
   analytics.track(handle, details)
 }
 
-export const init = async () => {
+exports.init = async () => {
   if (isDev) {
     return
   }
@@ -87,10 +87,10 @@ export const init = async () => {
   })
 
   if (firstRun()) {
-    track('App installed', {
+    exports.track('App installed', {
       Version: pkg.version
     })
   }
 
-  track('App booted')
+  exports.track('App booted')
 }

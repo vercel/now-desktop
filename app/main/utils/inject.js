@@ -1,14 +1,14 @@
 // Native
-import path from 'path'
+const path = require('path')
 
 // Packages
-import fs from 'fs-promise'
+const fs = require('fs-promise')
 
 // Ours
-import deploy from '../actions/deploy'
-import {error as showError} from '../dialogs'
+const deploy = require('../actions/deploy')
+const {error: showError} = require('../dialogs')
 
-export default async (tmpDir, defaults) => {
+module.exports = async (tmpDir, defaults) => {
   const pkgPath = path.join(tmpDir, 'package.json')
 
   try {

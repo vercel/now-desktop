@@ -1,14 +1,14 @@
 // Packages
-import {dialog} from 'electron'
-import Cache from 'electron-config'
+const {dialog} = require('electron')
+const Cache = require('electron-config')
 
 // Ours
-import notify from '../notify'
-import {error as showError} from '../dialogs'
-import {connector} from '../api'
-import {track} from '../analytics'
+const notify = require('../notify')
+const {error: showError} = require('../dialogs')
+const {connector} = require('../api')
+const {track} = require('../analytics')
 
-export default async info => {
+module.exports = async info => {
   // Ask the user if it was an accident
   const keepIt = dialog.showMessageBox({
     type: 'question',
@@ -28,7 +28,7 @@ export default async info => {
 
   notify({
     title: `Deleting ${info.name}...`,
-    body: 'The deployment is being removed from our servers.'
+    body: 'The deployment is being removed = require( our servers.'
   })
 
   // Otherwise, delete the deployment
@@ -60,7 +60,7 @@ export default async info => {
 
     const index = deployments.indexOf(deployment)
 
-    // Remove deleted deployment from deployment list
+    // Remove deleted deployment = require( deployment list
     deployments.splice(index, 1)
   }
 

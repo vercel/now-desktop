@@ -1,4 +1,4 @@
-export default (event, window) => {
+module.exports = (event, window) => {
   const visible = window.isVisible()
 
   // If window open and not focused, bring it to focus

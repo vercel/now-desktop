@@ -1,9 +1,9 @@
 // Packages
-import {dialog} from 'electron'
+const {dialog} = require('electron')
 
 // Ours
-import deployment from './actions/deploy'
-import sharing from './actions/share'
+const deployment = require('./actions/deploy')
+const sharing = require('./actions/share')
 
 const showDialog = details => {
   const filePath = dialog.showOpenDialog(details)
@@ -15,12 +15,13 @@ const showDialog = details => {
   return false
 }
 
-export async function share(tray, properties = ['openDirectory', 'openFile']) {
+exports.share = async function (tray, properties = ['openDirectory', 'openFile']) {
   const info = {
     title: 'Select something to share',
     properties,
     buttonLabel: 'Share'
   }
+
   console.log(properties)
   tray.setHighlightMode('always')
   const path = showDialog(info)
@@ -33,11 +34,11 @@ export async function share(tray, properties = ['openDirectory', 'openFile']) {
   try {
     await sharing(path)
   } catch (err) {
-    error('Not able to share', err)
+    exports.error('Not able to share', err)
   }
 }
 
-export async function deploy(tray) {
+exports.deploy = async function (tray) {
   const info = {
     title: 'Select a folder to deploy',
     properties: [
@@ -54,12 +55,12 @@ export async function deploy(tray) {
     try {
       await deployment(path)
     } catch (err) {
-      error('Not able to deploy', err)
+      exports.error('Not able to deploy', err)
     }
   }
 }
 
-export function error(detail, trace, win) {
+exports.error = function (detail, trace, win) {
   dialog.showMessageBox(win || null, {
     type: 'error',
     message: 'An Error Occurred',

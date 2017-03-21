@@ -1,16 +1,16 @@
 // Packages
-import {shell, clipboard} from 'electron'
-import moment from 'moment'
-import Config from 'electron-config'
+const {shell, clipboard} = require('electron')
+const moment = require('moment')
+const Config = require('electron-config')
 
 // Ours
-import {deploy, share} from './dialogs'
-import logout from './actions/logout'
-import removeDeployment from './actions/remove'
-import notify from './notify'
-import toggleWindow from './utils/toggle-window'
+const {deploy, share} = require('./dialogs')
+const logout = require('./actions/logout')
+const removeDeployment = require('./actions/remove')
+const notify = require('./notify')
+const toggleWindow = require('./utils/toggle-window')
 
-export function deploymentOptions(info) {
+exports.deploymentOptions = function (info) {
   const created = moment(new Date(parseInt(info.created, 10)))
   const url = 'https://' + info.url
 
@@ -54,7 +54,7 @@ export function deploymentOptions(info) {
   }
 }
 
-export async function innerMenu(app, tray, data, windows) {
+exports.innerMenu = async function (app, tray, data, windows) {
   let hasDeployments = false
 
   if (Array.isArray(data.deployments) && data.deployments.length > 0) {
@@ -166,7 +166,7 @@ export async function innerMenu(app, tray, data, windows) {
   ]
 }
 
-export function outerMenu(app, windows) {
+exports.outerMenu = function (app, windows) {
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',

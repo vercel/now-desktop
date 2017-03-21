@@ -1,23 +1,23 @@
 // Native
-import path from 'path'
+const path = require('path')
 
 // Packages
-import {tmpdir} from 'os'
-import md5 from 'md5'
-import toId from 'to-id'
-import fs from 'fs-promise'
-import tmp from 'tmp-promise'
-import retry from 'async-retry'
-import chalk from 'chalk'
-import pathExists from 'path-exists'
+const {tmpdir} = require('os')
+const md5 = require('md5')
+const toId = require('to-id')
+const fs = require('fs-promise')
+const tmp = require('tmp-promise')
+const retry = require('async-retry')
+const chalk = require('chalk')
+const pathExists = require('path-exists')
 
 // Ours
-import injectPackage from '../utils/inject'
-import copyContents from '../utils/copy'
-import {error as showError} from '../dialogs'
-import {track} from '../analytics'
+const injectPackage = require('../utils/inject')
+const copyContents = require('../utils/copy')
+const {error: showError} = require('../dialogs')
+const {track} = require('../analytics')
 
-export default async item => {
+module.exports = async item => {
   if (!await pathExists(item)) {
     showError('Path doesn\'t exist!')
     return
@@ -41,7 +41,7 @@ export default async item => {
   const identifier = 'now-desktop-' + uniqueIdentifier
 
   const tmpDir = await retry(async () => {
-    return await tmp.dir({
+    return tmp.dir({
       // We need to use the hashed directory identifier
       // Because if we don't use the same id every time,
       // now won't update the existing deployment and create a new one instead

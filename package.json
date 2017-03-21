@@ -1,7 +1,7 @@
 {
   "repository": "zeit/now-desktop",
   "scripts": {
-    "start": "electron app/dist/main",
+    "start": "electron app/main",
     "postinstall": "install-app-deps && webpack",
     "dev": "webpack -w",
     "clean": "chmod u+x dist && rm -rf node_modules app/node_modules dist app/dist",
@@ -42,9 +42,10 @@
       "import/no-unresolved": 0,
       "import/first": 0,
       "react/no-danger": 0,
-      "babel/no-await-in-loop": 0,
       "complexity": 0,
-      "unicorn/no-process-exit": 0
+      "unicorn/no-process-exit": 0,
+      "jsx-sort-props": 0,
+      "no-await-in-loop": 0
     },
     "ignores": [
       "app/**"

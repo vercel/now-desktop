@@ -1,15 +1,15 @@
 // Native
-import path from 'path'
+const path = require('path')
 
 // Packages
-import glob from 'glob-promise'
-import fs from 'fs-promise'
+const glob = require('glob-promise')
+const fs = require('fs-promise')
 
 // Ours
-import {error as showError} from '../dialogs'
-import injectPackage from './inject'
+const {error: showError} = require('../dialogs')
+const injectPackage = require('./inject')
 
-export default async (content, tmp, defaults) => {
+module.exports = async (content, tmp, defaults) => {
   let items
   const copiers = new Set()
 

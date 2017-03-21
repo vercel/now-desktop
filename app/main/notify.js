@@ -1,10 +1,10 @@
 // Packages
-import {app, BrowserWindow} from 'electron'
-import {resolve as resolvePath} from 'app-root-path'
+const {app, BrowserWindow} = require('electron')
+const {resolve: resolvePath} = require('app-root-path')
 
 let win
 
-// the hack of all hacks
+// The hack of all hacks
 // electron doesn't have a built in notification thing,
 // so we launch a window on which we can use the
 // HTML5 `Notification` API :'(
@@ -61,4 +61,4 @@ app.on('ready', () => {
   })
 })
 
-export default notify
+module.exports = notify

@@ -1,23 +1,23 @@
 // Native
-import path from 'path'
+const path = require('path')
 
 // Packages
-import {clipboard, shell, dialog} from 'electron'
-import fs from 'fs-promise'
-import pathExists from 'path-exists'
-import glob from 'glob-promise'
-import {dir as isDirectory} from 'path-type'
-import {isTextSync as isText} from 'istextorbinary'
-import chalk from 'chalk'
-import du from 'du'
-import fileSize from 'filesize'
-import slash from 'slash'
+const {clipboard, shell, dialog} = require('electron')
+const fs = require('fs-promise')
+const pathExists = require('path-exists')
+const glob = require('glob-promise')
+const {dir: isDirectory} = require('path-type')
+const {isTextSync: isText} = require('istextorbinary')
+const chalk = require('chalk')
+const du = require('du')
+const fileSize = require('filesize')
+const slash = require('slash')
 
 // Ours
-import {connector} from '../api'
-import {error as showError} from '../dialogs'
-import notify from '../notify'
-import {track} from '../analytics'
+const {connector} = require('../api')
+const {error: showError} = require('../dialogs')
+const notify = require('../notify')
+const {track} = require('../analytics')
 
 const getProjectType = (nodeReady, dockerReady) => {
   let projectType = 'docker'
@@ -104,7 +104,7 @@ const genTitle = (deployment, sharing) => {
   return (sharing ? 'Sharing' : 'Deploying') + '...'
 }
 
-export default async (folder, sharing) => {
+module.exports = async (folder, sharing) => {
   const details = {}
   const folderTooBig = await tooBig(folder)
 

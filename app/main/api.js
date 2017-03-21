@@ -1,13 +1,13 @@
 // Packages
-import Now from 'now-client'
-import Config from 'electron-config'
-import chalk from 'chalk'
+const Now = require('now-client')
+const Config = require('electron-config')
+const chalk = require('chalk')
 
 // Ours
-import {error as showError} from './dialogs'
-import logout from './actions/logout'
+const {error: showError} = require('./dialogs')
+const logout = require('./actions/logout')
 
-export function connector(userToken) {
+exports.connector = function (userToken) {
   const config = new Config()
   const token = userToken || config.get('now.user.token')
 
@@ -65,8 +65,8 @@ const stopInterval = interval => {
   clearInterval(interval)
 }
 
-export async function refreshCache(kind, app, tutorial, interval) {
-  const session = connector()
+exports.refreshCache = async function (kind, app, tutorial, interval) {
+  const session = exports.connector()
 
   if (!session) {
     stopInterval(interval)

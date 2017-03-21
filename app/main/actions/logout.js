@@ -1,15 +1,15 @@
 // Native
-import os from 'os'
-import path from 'path'
+const os = require('os')
+const path = require('path')
 
 // Packages
-import Config from 'electron-config'
-import fetch from 'node-fetch'
-import fs from 'fs-promise'
+const Config = require('electron-config')
+const fetch = require('node-fetch')
+const fs = require('fs-promise')
 
 // Ours
-import {error as showError} from '../dialogs'
-import {track} from '../analytics'
+const {error: showError} = require('../dialogs')
+const {track} = require('../analytics')
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/'
 
@@ -82,7 +82,7 @@ const logoutConfig = async () => {
   await fs.writeJSON(file, currentContent)
 }
 
-export default async (app, tutorial) => {
+module.exports = async (app, tutorial) => {
   const config = new Config()
 
   const noUser = config.has('now.user') === false

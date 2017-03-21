@@ -18,7 +18,7 @@ const windowLeft = win => {
   return false
 }
 
-export default (win, tray) => {
+module.exports = (win, tray) => {
   if (!tray) {
     return
   }

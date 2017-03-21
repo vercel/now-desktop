@@ -3,31 +3,31 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Native
-import path from 'path'
+const path = require('path')
 
 // Packages
-import {app, Tray, Menu, BrowserWindow, ipcMain} from 'electron'
-import ms from 'ms'
-import Config from 'electron-config'
-import isDev from 'electron-is-dev'
-import {dir as isDirectory} from 'path-type'
-import fs from 'fs-promise'
-import fixPath from 'fix-path'
-import {resolve as resolvePath} from 'app-root-path'
-import firstRun from 'first-run'
-import {moveToApplications} from 'electron-lets-move'
+const {app, Tray, Menu, BrowserWindow, ipcMain} = require('electron')
+const ms = require('ms')
+const Config = require('electron-config')
+const isDev = require('electron-is-dev')
+const {dir: isDirectory} = require('path-type')
+const fs = require('fs-promise')
+const fixPath = require('fix-path')
+const {resolve: resolvePath} = require('app-root-path')
+const firstRun = require('first-run')
+const {moveToApplications} = require('electron-lets-move')
 
 // Ours
-import {innerMenu, outerMenu, deploymentOptions} from './menu'
-import {init as initAnalytics} from './analytics'
-import {error as showError} from './dialogs'
-import deploy from './actions/deploy'
-import share from './actions/share'
-import autoUpdater from './updates'
-import {refreshCache} from './api'
-import attachTrayState from './utils/highlight'
-import toggleWindow from './utils/toggle-window'
-import * as binaryUtils from './utils/binary'
+const {innerMenu, outerMenu, deploymentOptions} = require('./menu')
+const {init: initAnalytics} = require('./analytics')
+const {error: showError} = require('./dialogs')
+const deploy = require('./actions/deploy')
+const share = require('./actions/share')
+const autoUpdater = require('./updates')
+const {refreshCache} = require('./api')
+const attachTrayState = require('./utils/highlight')
+const toggleWindow = require('./utils/toggle-window')
+const binaryUtils = require('./utils/binary')
 
 const isPlatform = name => {
   let handle
@@ -71,7 +71,7 @@ if (!isDev && firstRun()) {
 global.refreshCache = refreshCache
 
 // Immediately after login, we'll start the auto updater
-// from the renderer process
+// = the renderer process
 global.autoUpdater = autoUpdater
 global.isDev = isDev
 
@@ -130,8 +130,8 @@ const onboarding = () => {
   win.loadURL('file://' + resolvePath('../app/pages/main.html'))
   attachTrayState(win, tray)
 
-  // We need to access it from the "About" window
-  // To be able to open it from there
+  // We need to access it = the "About" window
+  // To be able to open it = there
   global.tutorial = win
 
   const emitTrayClick = aboutWindow => {
@@ -200,7 +200,7 @@ const assignAliases = (aliases, deployment) => {
   return deploymentOptions(deployment)
 }
 
-// Convert date string from API to valid date object
+// Convert date string = API to valid date object
 const toDate = int => new Date(parseInt(int, 10))
 
 const toggleContextMenu = async windows => {
@@ -399,6 +399,7 @@ app.on('ready', async () => {
   // Only allow one instance of Now running
   // at the same time
   const shouldQuit = app.makeSingleInstance(toggleActivity)
+
   if (shouldQuit) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheuss)

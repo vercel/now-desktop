@@ -1,24 +1,24 @@
 // Native
-import path from 'path'
-import {execSync as exec} from 'child_process'
-import {homedir} from 'os'
+const path = require('path')
+const {execSync: exec} = require('child_process')
+const {homedir} = require('os')
 
 // Packages
-import {autoUpdater} from 'electron'
-import ms from 'ms'
-import semVer from 'semver'
-import fs from 'fs-promise'
-import log from 'electron-log'
-import pathType from 'path-type'
-import trimWhitespace from 'trim'
-import exists from 'path-exists'
+const {autoUpdater} = require('electron')
+const ms = require('ms')
+const semVer = require('semver')
+const fs = require('fs-promise')
+const log = require('electron-log')
+const pathType = require('path-type')
+const trimWhitespace = require('trim')
+const exists = require('path-exists')
 
 // Ours
-import {version} from '../../app/package'
-import {error as showError} from './dialogs'
-import notify from './notify'
-import * as binaryUtils from './utils/binary'
-import {track} from './analytics'
+const {version} = require('../../app/package')
+const {error: showError} = require('./dialogs')
+const notify = require('./notify')
+const binaryUtils = require('./utils/binary')
+const {track} = require('./analytics')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
@@ -137,7 +137,7 @@ const updateBinary = async () => {
   })
 }
 
-export default app => {
+module.exports = app => {
   setInterval(async () => {
     if (process.env.CONNECTION === 'offline') {
       return

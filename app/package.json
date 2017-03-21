@@ -4,7 +4,7 @@
   "description": "Realtime global deployments",
   "version": "0.7.2",
   "license": "MIT",
-  "main": "dist/main.js",
+  "main": "main/index.js",
   "author": {
     "name": "Zeit, Inc.",
     "email": "team@zeit.co"
