@@ -1,5 +1,7 @@
 # build output
-app/dist
+.next
+
+# packed binaries
 dist
 
 # dependencies
