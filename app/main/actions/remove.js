@@ -25,7 +25,7 @@ module.exports = async info => {
 
   notify({
     title: `Deleting ${info.name}...`,
-    body: 'The deployment is being removed = require( our servers.'
+    body: 'The deployment is being removed from our servers.'
   });
 
   // Otherwise, delete the deployment
