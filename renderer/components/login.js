@@ -2,8 +2,10 @@
 import { stringify as stringifyQuery } from 'querystring';
 import { remote } from 'electron';
 import React from 'react';
-import autoSizeInput from 'autosize-input';
 import Config from 'electron-config';
+
+// Components
+import AutosizeInput from 'react-input-autosize'
 
 // Ours
 import error from '../utils/error';
@@ -297,19 +299,6 @@ export default React.createClass({
       });
     }
   },
-  initializeAutoSize() {
-    const input = this.loginInput;
-
-    autoSizeInput(input, {
-      minWidth: false
-    });
-  },
-  componentDidMount() {
-    this.initializeAutoSize();
-  },
-  componentDidUpdate() {
-    this.initializeAutoSize();
-  },
   render() {
     const classes = this.state.classes;
 
@@ -355,7 +344,7 @@ export default React.createClass({
     return (
       <aside {...autoCompleteProps}>
         <div>
-          <input {...inputProps} />
+          <AutosizeInput {...inputProps} />
           <span
             className={suggestionClass}
             dangerouslySetInnerHTML={{ __html: this.state.suggestion }}

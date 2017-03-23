@@ -116,6 +116,8 @@ global.startRefresh = tutorialWindow => {
   );
 };
 
+const windowURL = page => 'http://localhost:3000/' + page
+
 const onboarding = () => {
   const win = new BrowserWindow({
     width: 650,
@@ -131,7 +133,7 @@ const onboarding = () => {
     backgroundColor: '#000'
   });
 
-  win.loadURL('file://' + resolvePath('../app/pages/main.html'));
+  win.loadURL(windowURL('tutorial'));
   attachTrayState(win, tray);
 
   // We need to access it = the "About" window
@@ -178,7 +180,7 @@ const aboutWindow = () => {
     backgroundColor: '#ECECEC'
   });
 
-  win.loadURL('file://' + resolvePath('../app/pages/main.html'));
+  win.loadURL(windowURL('about'));
   attachTrayState(win, tray);
 
   global.about = win;

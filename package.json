@@ -2,8 +2,8 @@
   "repository": "zeit/now-desktop",
   "scripts": {
     "start": "electron app/main",
-    "postinstall": "install-app-deps && webpack",
-    "dev": "next app",
+    "postinstall": "install-app-deps",
+    "dev": "next renderer",
     "clean": "chmod u+x dist && rm -rf node_modules app/node_modules dist app/dist",
     "build": "cross-env NODE_ENV=production next build",
     "lint": "xo",
@@ -50,7 +50,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "autosize-input": "0.4.0",
     "ava": "0.18.2",
     "cross-env": "3.2.4",
     "electron": "1.6.2",
@@ -64,10 +63,12 @@
     "prettier": "0.22.0",
     "react": "15.4.2",
     "react-dom": "15.4.2",
+    "react-input-autosize": "1.1.0",
     "react-slick": "0.14.7",
     "react-svg-inline": "1.2.0",
     "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
+    "webpack-node-externals": "1.5.4",
     "xo": "0.18.0"
   }
 }
