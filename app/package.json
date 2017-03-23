@@ -39,6 +39,7 @@
     "mkdirp": "0.5.1",
     "moment": "2.18.0",
     "ms": "1.0.0",
+    "next": "2.0.0-beta.39",
     "node-fetch": "1.6.3",
     "now-client": "0.7.0",
     "path-exists": "3.0.0",
