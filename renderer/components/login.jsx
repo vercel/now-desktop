@@ -142,6 +142,7 @@ export default React.createClass({
 
     let final;
 
+    /* eslint-disable no-await-in-loop */
     do {
       await sleep(2500);
 
@@ -151,6 +152,7 @@ export default React.createClass({
 
       console.log('Waiting for token...');
     } while (!final);
+    /* eslint-enable no-await-in-loop */
 
     const config = new Config();
 

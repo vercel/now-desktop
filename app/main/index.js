@@ -1,4 +1,5 @@
 if (require('electron-squirrel-startup')) {
+  // eslint-disable-next-line unicorn/no-process-exit
   process.exit();
 }
 
@@ -292,7 +293,7 @@ const isDeployable = async directory => {
     let stats;
 
     try {
-      stats = await fs.lstat(pathTo);
+      stats = fs.lstatSync(pathTo);
     } catch (err) {}
 
     if (stats) {

@@ -6,7 +6,6 @@ const { clipboard, shell, dialog } = require('electron');
 const fs = require('fs-promise');
 const pathExists = require('path-exists');
 const glob = require('glob-promise');
-const { dir: isDirectory } = require('path-type');
 const { isTextSync: isText } = require('istextorbinary');
 const chalk = require('chalk');
 const du = require('du');
@@ -173,55 +172,75 @@ module.exports = async (folder, sharing) => {
       strict: true,
       recursive: true,
       mark: true,
-      ignore: ['**/node_modules/**', '**/.git/**', '**/.hg/**']
+      ignore: ['**/node_modules/**', '**/.git/**', '**/.hg/**'],
+      nodir: true
     });
   } catch (err) {
     showError('Could not read directory to deploy', err);
     return;
   }
 
-  for (const itemPath of items) {
-    const itemDetails = path.parse(itemPath);
-    const fileName = itemDetails.base;
-    const relativePath = slash(path.relative(dir, itemPath));
+  let existing = [];
 
-    if (!await pathExists(itemPath)) {
+  for (const itemPath of items) {
+    existing.push(pathExists(itemPath));
+  }
+
+  try {
+    existing = await Promise.all(existing);
+  } catch (err) {
+    showError('Not able to check if path exists', err);
+    return;
+  }
+
+  let readers = [];
+
+  for (let i = 0; i < existing.length; i++) {
+    const exists = existing[i];
+    const item = items[i];
+
+    if (!exists) {
       continue;
     }
 
-    let isDir;
+    const relativePath = slash(path.relative(dir, item));
 
-    try {
-      isDir = await isDirectory(itemPath);
-    } catch (err) {
-      showError('Not able to test if item is a directory', err);
-      return;
+    if (relativePath === 'package.json') {
+      continue;
     }
 
-    if (!isDir && relativePath !== 'package.json') {
-      let fileContent;
+    const reader = fs.readFile(item);
+    readers.push(reader);
+  }
 
-      try {
-        fileContent = await fs.readFile(itemPath);
-      } catch (err) {
-        showError('Could not read file for deployment', err);
-        continue;
-      }
+  try {
+    readers = await Promise.all(readers);
+  } catch (err) {
+    showError('Could not read file for deployment', err);
+    return;
+  }
 
-      // Find out if the file is text-based or binary
-      const fileIsText = isText(fileName, fileContent);
+  for (let i = 0; i < readers.length; i++) {
+    const file = readers[i];
+    const filePath = items[i];
 
-      if (!fileIsText) {
-        details[relativePath] = {
-          binary: true,
-          content: fileContent.toString('base64')
-        };
+    const itemDetails = path.parse(filePath);
+    const fileName = itemDetails.base;
+    const relativePath = slash(path.relative(dir, filePath));
 
-        continue;
-      }
+    // Find out if the file is text-based or binary
+    const fileIsText = isText(fileName, file);
 
-      details[relativePath] = fileContent.toString();
+    if (!fileIsText) {
+      details[relativePath] = {
+        binary: true,
+        content: file.toString('base64')
+      };
+
+      continue;
     }
+
+    details[relativePath] = file.toString();
   }
 
   let deployment;

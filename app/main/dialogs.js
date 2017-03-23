@@ -1,10 +1,6 @@
 // Packages
 const { dialog } = require('electron');
 
-// Ours
-const deployment = require('./actions/deploy');
-const sharing = require('./actions/share');
-
 const showDialog = details => {
   const filePath = dialog.showOpenDialog(details);
 
@@ -34,6 +30,8 @@ exports.share = async function(
     return;
   }
 
+  const sharing = require('./actions/share');
+
   try {
     await sharing(path);
   } catch (err) {
@@ -53,6 +51,8 @@ exports.deploy = async function(tray) {
   tray.setHighlightMode('never');
 
   if (path) {
+    const deployment = require('./actions/deploy');
+
     try {
       await deployment(path);
     } catch (err) {
