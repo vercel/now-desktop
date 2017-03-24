@@ -11,7 +11,7 @@ const Config = require('electron-config');
 const isDev = require('electron-is-dev');
 
 // Ours
-const pkg = require('../../app/package');
+const pkg = require('../app/package');
 
 const getMacAddress = () =>
   new Promise((resolve, reject) => {
