@@ -106,7 +106,6 @@
     "react-svg-inline": "1.2.0",
     "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
-    "webpack-node-externals": "1.5.4",
     "xo": "0.18.0"
   }
 }

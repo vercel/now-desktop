@@ -29,6 +29,7 @@ const { refreshCache } = require('./api');
 const attachTrayState = require('./utils/highlight');
 const toggleWindow = require('./utils/toggle-window');
 const binaryUtils = require('./utils/binary');
+const server = require('./server');
 
 const isPlatform = name => {
   let handle;
@@ -116,7 +117,7 @@ global.startRefresh = tutorialWindow => {
   );
 };
 
-const windowURL = page => 'http://localhost:3000/' + page;
+const windowURL = page => 'http://localhost:5000/' + page;
 
 const onboarding = () => {
   const win = new BrowserWindow({
@@ -384,6 +385,13 @@ app.on('ready', async () => {
     global.tray = tray;
   } catch (err) {
     showError('Could not spawn tray item', err);
+    return;
+  }
+
+  try {
+    await server();
+  } catch (err) {
+    showError('Not able to start server', err);
     return;
   }
 
