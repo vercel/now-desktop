@@ -1,0 +1,705 @@
+/* Slider */
+.slick-slider
+{
+    position: relative;
+
+    display: block;
+    box-sizing: border-box;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+    -khtml-user-select: none;
+    -ms-touch-action: pan-y;
+        touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.slick-list
+{
+    position: relative;
+
+    display: block;
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
+}
+.slick-list:focus
+{
+    outline: none;
+}
+.slick-list.dragging
+{
+    cursor: pointer;
+    cursor: hand;
+}
+
+.slick-slider .slick-track,
+.slick-slider .slick-list
+{
+    -webkit-transform: translate3d(0, 0, 0);
+       -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+         -o-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+}
+
+.slick-track
+{
+    position: relative;
+    top: 0;
+    left: 0;
+
+    display: block;
+}
+.slick-track:before,
+.slick-track:after
+{
+    display: table;
+
+    content: '';
+}
+.slick-track:after
+{
+    clear: both;
+}
+.slick-loading .slick-track
+{
+    visibility: hidden;
+}
+
+.slick-slide
+{
+    display: none;
+    float: left;
+
+    height: 100%;
+    min-height: 1px;
+}
+[dir='rtl'] .slick-slide
+{
+    float: right;
+}
+.slick-slide img
+{
+    display: block;
+}
+.slick-slide.slick-loading img
+{
+    display: none;
+}
+.slick-slide.dragging img
+{
+    pointer-events: none;
+}
+.slick-initialized .slick-slide
+{
+    display: block;
+}
+.slick-loading .slick-slide
+{
+    visibility: hidden;
+}
+.slick-vertical .slick-slide
+{
+    display: block;
+
+    height: auto;
+
+    border: 1px solid transparent;
+}
+.slick-arrow.slick-hidden {
+    display: none;
+}
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+  margin: 0;
+}
+
+.button {
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #000;
+  border: 2px solid #fff;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  font-size: 12px;
+  padding: 8px 20px;
+  transition: all .2s ease;
+  cursor: pointer;
+  display: inline-block;
+  line-height: normal;
+  -webkit-app-region: no-drag;
+}
+
+a {
+  -webkit-app-region: no-drag;
+}
+
+.button:hover {
+  background: #fff;
+  color: #000;
+}
+
+#welcome-to-now {
+  color: #fff;
+  background: #000;
+  height: 100vh;
+  width: 100vw;
+}
+
+.window-controls {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  right: 0;
+  z-index: 5000; /* the slick arrow is at 4000 */
+  -webkit-app-region: no-drag;
+}
+
+.window-controls span {
+  display: flex;
+  width: 40px;
+  height: 34px;
+  opacity: .5;
+  shape-rendering: crispEdges;
+}
+
+.window-controls svg {
+  width: 10px;
+  margin: auto;
+  fill: currentColor;
+}
+
+.window-controls span:nth-child(1):hover,
+.window-controls span:nth-child(3):hover {
+  opacity: 1;
+}
+
+.window-controls span:nth-child(1):active,
+.window-controls span:nth-child(3):active {
+  opacity: .3;
+}
+
+/* There are 3 buttons for window controls in the Tutorial window */
+body#welcome-to-now .window-controls span:nth-child(3):hover {
+  color: #FE354E;
+}
+
+/* There's only 1 button (X) for window control in the About window */
+body#about-now .window-controls span:nth-child(1):hover {
+  color: #FE354E;
+}
+
+#window-title {
+  height: 37px;
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #000;
+  z-index: 5;
+}
+
+#window-title h1 {
+  margin: 0;
+  color: #9B9B9B;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  font-weight: 400
+}
+
+#intro h1 {
+  font-size: 15px;
+  font-weight: 400;
+  margin: 25px 0 0 0;
+  cursor: default;
+}
+
+#usage video {
+  width: 582px;
+  position: relative;
+  z-index: 0;
+}
+
+#anchor {
+  height: inherit;
+  width: inherit;
+}
+
+#login input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 12px;
+  color: #666;
+  height: 32px;
+  line-height: 32px;
+  text-align: left;
+  transition: border, background, color .1s ease-in;
+  max-width: 380px;
+  z-index: 300;
+  position: relative;
+}
+
+#login .security-token {
+  display: block;
+  margin-top: 35px;
+  background: #212121;
+  border-radius: 3px;
+  font-weight: normal;
+  padding: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+}
+
+#login input,
+#login .auto-complete span {
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
+}
+
+#login input:focus {
+  color: #fff;
+}
+
+#login p {
+  text-align: center;
+  margin: 0;
+  font-size: 15px;
+  line-height: 24px;
+  white-space: pre;
+}
+
+#login a {
+  margin-top: 30px;
+}
+
+#login .auto-complete {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #626262;
+  min-width: 250px;
+  text-align: center;
+  margin-top: 40px;
+  transition: all 0.4s ease;
+  cursor: text;
+  -webkit-app-region: no-drag;
+}
+
+#login .auto-complete.focus {
+  border-bottom-color: #fff;
+}
+
+#login .auto-complete.verifying {
+  display: none;
+}
+
+#login .auto-complete.error {
+  border-bottom-color: #ff286a;
+  animation: shake 1s both;
+}
+
+#login .auto-complete.error input {
+  color: #ff286a;
+}
+
+#login .auto-complete div {
+  position: relative;
+  display: inline-block;
+}
+
+#login .auto-complete span {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  color: #999;
+  line-height: 35px;
+  font-size: 12px;
+  text-align: left;
+  text-indent: 1px;
+}
+
+#login .auto-complete span.hidden {
+  opacity: 0;
+}
+
+#login .auto-complete i {
+  font-style: normal;
+  visibility: hidden;
+}
+
+.slick-initialized .slick-slide {
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.slick-arrow {
+  height: 100vh !important;
+  z-index: 4000;
+  top: 0;
+  position: fixed;
+  width: 50px !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to left, #000, transparent);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .3s ease;
+  -webkit-app-region: no-drag;
+}
+
+.slick-arrow:not(.slick-disabled) {
+  opacity: .5 !important;
+}
+
+.slick-arrow:not(.slick-disabled):hover {
+  opacity: 1 !important;
+}
+
+.slick-arrow.slick-prev {
+  left: 0;
+  transform: rotate(180deg);
+}
+
+.slick-arrow.slick-next {
+  right: 0;
+}
+
+.slick-dots {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  display: flex !important;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  z-index: 100;
+}
+
+.slick-dots li {
+  display: block;
+  -webkit-app-region: no-drag;
+  margin: 0 4px;
+}
+
+.slick-dots li button {
+  display: block;
+  height: 10px;
+  width: 10px;
+  background: #fff;
+  border: 0;
+  text-indent: -999px;
+  border-radius: 100%;
+  padding: 0;
+  opacity: .5;
+  cursor: pointer;
+  transition: opacity .4s;
+}
+
+.slick-dots li button:focus {
+  outline: 0;
+}
+
+.slick-dots li button:hover,
+.slick-dots li.slick-active button {
+  opacity: 1;
+}
+
+.slick-arrow {
+  display: block;
+  height: 40px;
+  width: 20px;
+}
+
+#about {
+  text-align: center;
+  padding-top: 40px;
+  color: #434343;
+}
+
+#about img {
+  width: 100px;
+}
+
+#about h1,
+#about h2 {
+  margin: 0;
+}
+
+#about h1 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 5px 0 15px 0;
+}
+
+#about h2 {
+  font-size: 12px;
+  font-weight: 400;
+  cursor: default;
+}
+
+#about h2 span {
+  color: #5319e7;
+  cursor: pointer;
+}
+
+#about .update {
+  font-size: 11px;
+  margin-top: 5px;
+  display: none;
+}
+
+#about .update.latest {
+  color: #00A819;
+}
+
+#about .update.latest span {
+  cursor: default;
+}
+
+#about .update.latest svg {
+  margin-bottom: -3px;
+  margin-right: 5px;
+}
+
+#about .update.development {
+  color: #0080c1;
+}
+
+#about .window-title {
+  font-size: 12px;
+  color: #434343;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 37px;
+  line-height: 37px;
+}
+
+#about article {
+  background: #fff;
+  border-top: 1px solid #BFBFBF;
+  border-bottom: 1px solid #BFBFBF;
+  height: 135px;
+  text-align: left;
+  padding: 15px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: text;
+  margin-top: 20px;
+}
+
+#about article h1,
+#about article p {
+  color: #707070;
+  font-size: 11px;
+}
+
+#about article h1 {
+  text-transform: uppercase;
+  margin-top: 15px;
+}
+
+#about article h1:first-child {
+  margin-top: 0;
+}
+
+#about article p {
+  line-height: 19px;
+}
+
+#about article a {
+  color: #707070;
+  text-decoration: none;
+}
+
+#about article a:hover {
+  color: #2b2b2b;
+}
+
+#about .copyright {
+  font-size: 11px;
+  margin-top: 11px;
+  display: block;
+}
+
+#about .copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#about .copyright a:before {
+  content: '\25B2'
+}
+
+#about .copyright a:hover {
+  color: #000;
+}
+
+#about nav a {
+  font-size: 11px;
+  color: #434343;
+  text-decoration: none;
+  padding: 0 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+#about nav a:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1px;
+  height: 10px;
+  background: #434343;
+  top: 2px;
+}
+
+#about nav a:hover {
+  color: #000;
+}
+
+#about nav a:last-child:after {
+  display: none;
+}
+
+#about article details {
+  margin-bottom: 10px;
+}
+
+#about article details summary {
+  color: #707070;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color .2s ease;
+  display: inline-block;
+}
+
+#about article details summary:focus {
+  outline: none;
+}
+
+#about article details[open] summary {
+  color: #000;
+}
+
+#about article details summary:hover {
+  color: #000;
+}
+
+#cli article {
+  width: 415px;
+  font-size: 14px;
+  text-align: center;
+  line-height: 22px;
+}
+
+#cli article .install {
+  margin-top: 20px;
+  display: inline-block;
+}
+
+#cli article .install.off {
+  background: transparent;
+  font-size: 13px;
+  cursor: default;
+}
+
+#cli article .install-status i,
+#login .sending-status i {
+  font-weight: 700;
+  font-style: normal;
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  font-size: 150%;
+}
+
+#cli article .install-status i:nth-child(3),
+#login .sending-status i:nth-child(3) {
+  animation-delay: .2s;
+}
+
+#cli article .install-status i:nth-child(4),
+#login .sending-status i:nth-child(4) {
+  animation-delay: .4s;
+}
+
+#cli article .install.off:hover {
+  color: #d0d0d0;
+}
+
+#cli article code {
+  font-weight: 700;
+  background: #212121;
+  padding: 1px 7px;
+  border-radius: 3px;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%, 40%, 60%, 80% {
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.1;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: .2;
+  }
+}

@@ -4,7 +4,7 @@
     "start": "electron main",
     "dev": "next renderer",
     "clean": "chmod u+x dist && rm -rf node_modules app/node_modules dist app/dist",
-    "build": "cross-env NODE_ENV=production next build",
+    "build": "cross-env NODE_ENV=production next build renderer",
     "lint": "xo",
     "precommit": "lint-staged",
     "test": "npm run dist && npm run lint && ava",
@@ -103,7 +103,6 @@
     "react-dom": "15.4.2",
     "react-input-autosize": "1.1.0",
     "react-slick": "0.14.7",
-    "react-svg-inline": "1.2.0",
     "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
     "xo": "0.18.0"
