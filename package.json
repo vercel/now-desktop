@@ -73,7 +73,7 @@
     "cssnano": "3.10.0",
     "electron": "1.6.2",
     "electron-builder": "16.1.0",
-    "electron-builder-squirrel-windows": "16.0.0",
+    "electron-builder-squirrel-windows": "16.4.0",
     "eslint-config-prettier": "1.5.0",
     "eslint-plugin-react": "6.10.3",
     "husky": "0.13.2",
