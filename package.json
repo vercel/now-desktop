@@ -1,5 +1,13 @@
 {
+  "name": "now-desktop",
+  "description": "Realtime global deployments",
+  "version": "0.7.2",
+  "author": {
+    "name": "Zeit, Inc.",
+    "email": "team@zeit.co"
+  },
   "repository": "zeit/now-desktop",
+  "main": "main/index.js",
   "scripts": {
     "start": "electron main",
     "build": "next build renderer",
@@ -20,7 +28,21 @@
     },
     "mac": {
       "category": "public.app-category.developer-tools"
-    }
+    },
+    "files": [
+      "main",
+      "node_modules"
+    ],
+    "extraResources": [
+      {
+        "from": "renderer",
+        "to": "app/renderer",
+        "filter": [
+          ".next",
+          "static"
+        ]
+      }
+    ]
   },
   "lint-staged": {
     "*.js": [
@@ -71,11 +93,17 @@
     "mkdirp": "0.5.1",
     "moment": "2.18.0",
     "ms": "1.0.0",
+    "next": "2.0.0",
     "node-fetch": "1.6.3",
     "now-client": "0.7.0",
     "path-exists": "3.0.0",
     "path-type": "2.0.0",
+    "react": "15.4.2",
+    "react-dom": "15.4.2",
+    "react-input-autosize": "1.1.0",
+    "react-slick": "0.14.7",
     "slash": "1.0.0",
+    "slick-carousel": "1.6.0",
     "sudo-prompt": "7.0.0",
     "time-ago": "0.1.0",
     "tmp-promise": "1.0.3",
@@ -93,13 +121,7 @@
     "eslint-plugin-react": "6.10.3",
     "husky": "0.13.2",
     "lint-staged": "3.4.0",
-    "next": "2.0.0",
     "prettier": "0.22.0",
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
-    "react-input-autosize": "1.1.0",
-    "react-slick": "0.14.7",
-    "slick-carousel": "1.6.0",
     "spectron": "3.6.0",
     "xo": "0.18.0"
   }
