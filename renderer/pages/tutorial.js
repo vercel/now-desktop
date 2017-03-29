@@ -4,6 +4,7 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import Slider from 'react-slick';
+import Head from 'next/head';
 
 // Helpers
 import remote from '../utils/electron';
@@ -223,6 +224,10 @@ const Sections = React.createClass({
 
 const Tutorial = () => (
   <main>
+    <Head>
+      <link rel="stylesheet" href="/static/app.css" />
+    </Head>
+
     <Title />
     <Sections />
 
