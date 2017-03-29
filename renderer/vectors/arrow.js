@@ -1,5 +1,5 @@
 // Packages
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 const Arrow = () => (
   <svg width="10px" height="21px" viewBox="0 0 34 72" version="1.1">
@@ -11,9 +11,5 @@ const Arrow = () => (
     </g>
   </svg>
 );
-
-Arrow.propTypes = {
-  width: PropTypes.number.isRequired
-};
 
 export default Arrow;
