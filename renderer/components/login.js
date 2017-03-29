@@ -347,6 +347,164 @@ const Login = React.createClass({
             dangerouslySetInnerHTML={{ __html: this.state.suggestion }}
           />
         </div>
+
+        <style jsx global>
+          {
+            `
+          #login input {
+            border: 0;
+            outline: 0;
+            background: transparent;
+            font-size: 12px;
+            color: #666;
+            height: 32px;
+            line-height: 32px;
+            text-align: left;
+            transition: border, background, color .1s ease-in;
+            max-width: 380px;
+            z-index: 300;
+            position: relative;
+          }
+
+          #login .security-token {
+            display: block;
+            margin-top: 35px;
+            background: #212121;
+            border-radius: 3px;
+            font-weight: normal;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.15em;
+          }
+
+          #login input,
+          #login .auto-complete span {
+            font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
+          }
+
+          #login input:focus {
+            color: #fff;
+          }
+
+          #login p {
+            text-align: center;
+            margin: 0;
+            font-size: 15px;
+            line-height: 24px;
+            white-space: pre;
+          }
+
+          #login a {
+            margin-top: 30px;
+          }
+
+          #login .auto-complete {
+            border-bottom-style: solid;
+            border-bottom-width: 2px;
+            border-bottom-color: #626262;
+            min-width: 250px;
+            text-align: center;
+            margin-top: 40px;
+            transition: all 0.4s ease;
+            cursor: text;
+            -webkit-app-region: no-drag;
+          }
+
+          #login .auto-complete.focus {
+            border-bottom-color: #fff;
+          }
+
+          #login .auto-complete.verifying {
+            display: none;
+          }
+
+          #login .auto-complete.error {
+            border-bottom-color: #ff286a;
+            animation: shake 1s both;
+          }
+
+          #login .auto-complete.error input {
+            color: #ff286a;
+          }
+
+          #login .auto-complete div {
+            position: relative;
+            display: inline-block;
+          }
+
+          #login .auto-complete span {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            color: #999;
+            line-height: 35px;
+            font-size: 12px;
+            text-align: left;
+            text-indent: 1px;
+          }
+
+          #login .auto-complete span.hidden {
+            opacity: 0;
+          }
+
+          #login .auto-complete i {
+            font-style: normal;
+            visibility: hidden;
+          }
+
+          #login .sending-status i {
+            font-weight: 700;
+            font-style: normal;
+            animation-name: blink;
+            animation-duration: 1.4s;
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
+            font-size: 150%;
+          }
+
+          #login .sending-status i:nth-child(3) {
+            animation-delay: .2s;
+          }
+
+          #login .sending-status i:nth-child(4) {
+            animation-delay: .4s;
+          }
+
+          @keyframes shake {
+            0%, 100% {
+              transform: translate3d(0, 0, 0);
+            }
+
+            10%, 30%, 50%, 70%, 90% {
+              transform: translate3d(-10px, 0, 0);
+            }
+
+            20%, 40%, 60%, 80% {
+              transform: translate3d(10px, 0, 0);
+            }
+          }
+
+          @keyframes blink {
+            0% {
+              opacity: 0.1;
+            }
+
+            20% {
+              opacity: 1;
+            }
+
+            100% {
+              opacity: .2;
+            }
+          }
+        `
+          }
+        </style>
       </aside>
     );
   }

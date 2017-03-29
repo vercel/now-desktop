@@ -4,7 +4,6 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import Slider from 'react-slick';
-import Head from 'next/head';
 
 // Helpers
 import remote from '../utils/electron';
@@ -21,12 +20,13 @@ import LogoSVG from '../vectors/logo';
 import Title from '../components/title';
 import Login from '../components/login';
 import Binary from '../components/binary';
+import Container from '../components/container';
 
 const SliderArrows = React.createClass({
   render() {
     return (
       <div {...this.props}>
-        <ArrowSVG width="20px" />
+        <ArrowSVG />
       </div>
     );
   }
@@ -190,7 +190,7 @@ const Sections = React.createClass({
           </div>}
         <Slider {...sliderSettings} ref={setRef}>
           <section id="intro">
-            <LogoSVG width="90px" />
+            <LogoSVG />
 
             <h1>
               <b>Now</b> — Realtime global deployments
@@ -217,30 +217,125 @@ const Sections = React.createClass({
                 </a>}
           </section>
         </Slider>
+
+        <style jsx>
+          {
+            `
+            .button {
+              font-weight: 700;
+              text-transform: uppercase;
+              background: #000;
+              border: 2px solid #fff;
+              text-align: center;
+              text-decoration: none;
+              color: #fff;
+              font-size: 12px;
+              padding: 8px 20px;
+              transition: all .2s ease;
+              cursor: pointer;
+              display: inline-block;
+              line-height: normal;
+              -webkit-app-region: no-drag;
+            }
+
+            a {
+              -webkit-app-region: no-drag;
+            }
+
+            .button:hover {
+              background: #fff;
+              color: #000;
+            }
+
+            .window-controls span:nth-child(3):hover {
+              color: #FE354E;
+            }
+
+            .window-controls {
+              display: flex;
+              justify-content: space-between;
+              position: fixed;
+              right: 0;
+              z-index: 5000; /* the slick arrow is at 4000 */
+              -webkit-app-region: no-drag;
+            }
+
+            .window-controls span {
+              display: flex;
+              width: 40px;
+              height: 34px;
+              opacity: .5;
+              shape-rendering: crispEdges;
+            }
+
+            .window-controls svg {
+              width: 10px;
+              margin: auto;
+              fill: currentColor;
+            }
+
+            .window-controls span:nth-child(1):hover,
+            .window-controls span:nth-child(3):hover {
+              opacity: 1;
+            }
+
+            .window-controls span:nth-child(1):active,
+            .window-controls span:nth-child(3):active {
+              opacity: .3;
+            }
+
+            #intro h1 {
+              font-size: 15px;
+              font-weight: 400;
+              margin: 25px 0 0 0;
+              cursor: default;
+            }
+
+            #usage video {
+              width: 582px;
+              position: relative;
+              z-index: 0;
+            }
+
+            #login p {
+              text-align: center;
+              margin: 0;
+              font-size: 15px;
+              line-height: 24px;
+              white-space: pre;
+            }
+
+            #login a {
+              margin-top: 30px;
+            }
+        `
+          }
+        </style>
       </div>
     );
   }
 });
 
 const Tutorial = () => (
-  <main>
-    <Head>
-      <link rel="stylesheet" href="/static/app.css" />
-    </Head>
+  <Container>
+    <main>
+      <Title />
+      <Sections />
 
-    <Title />
-    <Sections />
-
-    <style jsx>
-      {
-        `
-      main {
-        height: 'inherit';
-      }
-    `
-      }
-    </style>
-  </main>
+      <style jsx>
+        {
+          `
+        main {
+          color: #fff;
+          background: #000;
+          height: 100vh;
+          width: 100vw;
+        }
+      `
+        }
+      </style>
+    </main>
+  </Container>
 );
 
 export default Tutorial;

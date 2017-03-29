@@ -4,44 +4,33 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import timeAgo from 'time-ago';
-import Head from 'next/head';
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window';
 import UpdatedSVG from '../vectors/updated';
 
+// Components
+import Container from '../components/container';
+import Licenses from '../components/licenses';
+
 // Helpers
 import showError from '../utils/error';
 import remote from '../utils/electron';
 
+const openLink = event => {
+  const link = event.target;
+
+  remote.shell.openExternal(link.href);
+  event.preventDefault();
+};
+
 const About = React.createClass({
   getInitialState() {
     return {
-      licenses: [],
       lastReleaseDate: ''
     };
   },
-  async loadLicenses() {
-    const links = document.querySelectorAll('a');
-
-    for (const link of links) {
-      const url = link.href;
-
-      if (url) {
-        link.addEventListener('click', event => {
-          remote.shell.openExternal(url);
-          event.preventDefault();
-        });
-      }
-    }
-
-    const getLicenses = remote.require('load-licenses');
-    const mainModule = remote.process.mainModule;
-
-    this.setState({
-      licenses: getLicenses(mainModule)
-    });
-
+  async componentDidMount() {
     await this.lastReleaseDate();
   },
   async lastReleaseDate() {
@@ -92,9 +81,6 @@ const About = React.createClass({
     // Make sure the date stays updated
     setInterval(setReleaseDate, 1000);
   },
-  async componentDidMount() {
-    await this.loadLicenses();
-  },
   handleTutorial() {
     const tutorial = remote.getGlobal('tutorial');
 
@@ -113,113 +99,298 @@ const About = React.createClass({
     const currentWindow = remote.getCurrentWindow();
     currentWindow.close();
   },
-  prepareLicense(info) {
-    let element = '<details>';
-
-    element += `<summary>${info.name}</summary>`;
-    element += `<p>${info.license}</p>`;
-    element += '</details>';
-
-    return element;
-  },
-  readLicenses() {
-    const licenses = this.state.licenses;
-
-    if (licenses.length === 0) {
-      return '';
-    }
-
-    let elements = '';
-
-    for (const license of licenses) {
-      elements += this.prepareLicense(license);
-    }
-
-    return elements;
-  },
   updateStatus() {
     const isDev = remote.require('electron-is-dev');
 
-    if (isDev) {
-      return (
-        <h2 className="update development">
-          {"You're in development mode. No updates!"}
-        </h2>
-      );
-    }
-
-    return (
-      <h2 className="update latest">
-        <UpdatedSVG onClick={this.handleCloseClick} width="13px" />
-        {"You're running the latest version!"}
-      </h2>
-    );
-  },
-  render() {
     return (
       <div>
-        <Head>
-          <link rel="stylesheet" href="/static/app.css" />
-        </Head>
-
-        {platform() === 'win32' &&
-          <div className="window-controls">
-            <CloseWindowSVG onClick={this.handleCloseClick} />
-          </div>}
-        <section id="about">
-          <span className="window-title">About</span>
-
-          <img src="/static/app-icon.png" />
-
-          <h1>Now</h1>
-          <h2>
-            Version
-            {' '}
-            <b>{remote.app.getVersion()}</b>
-            {' '}
-            {this.state.lastReleaseDate}
-          </h2>
-
-          {this.updateStatus()}
-
-          <article>
-            <h1>Authors</h1>
-
-            <p>
-              <a href="https://twitter.com/notquiteleo">Leo Lamprecht</a><br />
-              <a href="https://twitter.com/evilrabbit_">Evil Rabbit</a><br />
-              <a href="https://twitter.com/rauchg">Guillermo Rauch</a><br />
-              <a href="https://twitter.com/matheusfrndes">Matheus Fernandes</a>
-            </p>
-
-            <h1>{'3rd party software'}</h1>
-            <section
-              dangerouslySetInnerHTML={{ __html: this.readLicenses() }}
-            />
-          </article>
-
-          <span className="copyright">
-            Made by <a href="https://zeit.co">ZEIT</a>
-          </span>
-
-          <nav>
-            <a href="https://zeit.co/docs">Docs</a>
-            <a href="https://github.com/zeit/now-desktop">Source</a>
-            <a onClick={this.handleTutorial}>Tutorial</a>
-          </nav>
-        </section>
+        {isDev
+          ? <h2 className="update development">
+              {"You're in development mode. No updates!"}
+            </h2>
+          : <h2 className="update latest">
+              <UpdatedSVG onClick={this.handleCloseClick} />
+              {"You're running the latest version!"}
+            </h2>}
 
         <style jsx>
           {
             `
-          div {
-            background: #ECECEC;
-            height: 100vh;
+          .update {
+            font-size: 11px;
+            margin-top: 5px;
+            display: none;
+          }
+
+          .update.latest {
+            color: #00A819;
+          }
+
+          .update.latest span {
+            cursor: default;
+          }
+
+          .update.latest svg {
+            margin-bottom: -3px;
+            margin-right: 5px;
+          }
+
+          .update.development {
+            color: #0080c1;
           }
         `
           }
         </style>
       </div>
+    );
+  },
+  render() {
+    return (
+      <Container>
+        <div>
+          {platform() === 'win32' &&
+            <div className="window-controls">
+              <CloseWindowSVG onClick={this.handleCloseClick} />
+            </div>}
+          <section className="wrapper">
+            <span className="window-title">About</span>
+
+            <img src="/static/app-icon.png" />
+
+            <h1>Now</h1>
+            <h2>
+              Version
+              {' '}
+              <b>{remote.app.getVersion()}</b>
+              {' '}
+              {this.state.lastReleaseDate}
+            </h2>
+
+            {this.updateStatus()}
+
+            <article>
+              <h1>Authors</h1>
+
+              <p>
+                <a href="https://twitter.com/notquiteleo" onClick={openLink}>
+                  Leo Lamprecht
+                </a>
+                <br />
+                <a href="https://twitter.com/evilrabbit_" onClick={openLink}>
+                  Evil Rabbit
+                </a>
+                <br />
+                <a href="https://twitter.com/rauchg" onClick={openLink}>
+                  Guillermo Rauch
+                </a>
+                <br />
+                <a href="https://twitter.com/matheusfrndes" onClick={openLink}>
+                  Matheus Fernandes
+                </a>
+              </p>
+
+              <h1>{'3rd party software'}</h1>
+              <Licenses />
+            </article>
+
+            <span className="copyright">
+              Made by <a href="https://zeit.co" onClick={openLink}>ZEIT</a>
+            </span>
+
+            <nav>
+              <a href="https://zeit.co/docs" onClick={openLink}>Docs</a>
+              <a href="https://github.com/zeit/now-desktop" onClick={openLink}>
+                Source
+              </a>
+              <a onClick={this.handleTutorial}>Tutorial</a>
+            </nav>
+          </section>
+
+          <style jsx>
+            {
+              `
+            div {
+              background: #ECECEC;
+              height: 100vh;
+            }
+
+            .window-controls {
+              display: flex;
+              justify-content: space-between;
+              position: fixed;
+              right: 0;
+              z-index: 5000; /* the slick arrow is at 4000 */
+              -webkit-app-region: no-drag;
+            }
+
+            .window-controls span {
+              display: flex;
+              width: 40px;
+              height: 34px;
+              opacity: .5;
+              shape-rendering: crispEdges;
+            }
+
+            .window-controls svg {
+              width: 10px;
+              margin: auto;
+              fill: currentColor;
+            }
+
+            .window-controls span:nth-child(1):hover,
+            .window-controls span:nth-child(3):hover {
+              opacity: 1;
+            }
+
+            .window-controls span:nth-child(1):active,
+            .window-controls span:nth-child(3):active {
+              opacity: .3;
+            }
+
+            .window-controls span:nth-child(1):hover {
+              color: #FE354E;
+            }
+
+            a {
+              -webkit-app-region: no-drag;
+            }
+
+            .wrapper {
+              text-align: center;
+              padding-top: 40px;
+              color: #434343;
+            }
+
+            img {
+              width: 100px;
+            }
+
+            h1,
+            h2 {
+              margin: 0;
+            }
+
+            h1 {
+              font-size: 15px;
+              font-weight: 700;
+              margin: 5px 0 15px 0;
+            }
+
+            h2 {
+              font-size: 12px;
+              font-weight: 400;
+              cursor: default;
+            }
+
+            h2 span {
+              color: #5319e7;
+              cursor: pointer;
+            }
+
+            .window-title {
+              font-size: 12px;
+              color: #434343;
+              text-align: center;
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 37px;
+              line-height: 37px;
+            }
+
+            article {
+              background: #fff;
+              border-top: 1px solid #BFBFBF;
+              border-bottom: 1px solid #BFBFBF;
+              height: 135px;
+              text-align: left;
+              padding: 15px;
+              box-sizing: border-box;
+              overflow-y: scroll;
+              -webkit-app-region: no-drag;
+              -webkit-user-select: text;
+              margin-top: 20px;
+            }
+
+            article h1,
+            article p {
+              color: #707070;
+              font-size: 11px;
+            }
+
+            article h1 {
+              text-transform: uppercase;
+              margin-top: 15px;
+            }
+
+            article h1:first-child {
+              margin-top: 0;
+            }
+
+            article p {
+              line-height: 19px;
+            }
+
+            article a {
+              color: #707070;
+              text-decoration: none;
+            }
+
+            article a:hover {
+              color: #2b2b2b;
+            }
+
+            .copyright {
+              font-size: 11px;
+              margin-top: 11px;
+              display: block;
+            }
+
+            .copyright a {
+              color: inherit;
+              text-decoration: none;
+            }
+
+            .copyright a:before {
+              content: '\\25B2';
+            }
+
+            .copyright a:hover {
+              color: #000;
+            }
+
+            nav a {
+              font-size: 11px;
+              color: #434343;
+              text-decoration: none;
+              padding: 0 10px;
+              position: relative;
+              cursor: pointer;
+            }
+
+            nav a:after {
+              content: '';
+              position: absolute;
+              right: 0;
+              width: 1px;
+              height: 10px;
+              background: #434343;
+              top: 2px;
+            }
+
+            nav a:hover {
+              color: #000;
+            }
+
+            nav a:last-child:after {
+              display: none;
+            }
+          `
+            }
+          </style>
+        </div>
+      </Container>
     );
   }
 });
