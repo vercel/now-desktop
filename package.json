@@ -16,7 +16,7 @@
     "win": {
       "target": [
         "squirrel"
-      ],
+      ]
     },
     "mac": {
       "category": "public.app-category.developer-tools"

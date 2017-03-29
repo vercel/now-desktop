@@ -5,6 +5,7 @@ const path = require('path');
 // Packages
 const { app } = require('electron');
 const next = require('next');
+const dev = require('electron-is-dev');
 
 const prepareServer = nextHandler =>
   createServer((req, res) => {
@@ -28,7 +29,6 @@ const prepareServer = nextHandler =>
 
 module.exports = () =>
   new Promise(async (resolve, reject) => {
-    const dev = process.env.NODE_ENV !== 'production';
     const nextApp = next({ dev, dir: path.resolve('./renderer') });
     const nextHandler = nextApp.getRequestHandler();
 
