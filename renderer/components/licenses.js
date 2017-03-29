@@ -13,9 +13,9 @@ const loadLicenses = () => {
 
 const Licenses = () => (
   <section>
-    {loadLicenses().map(item => {
+    {loadLicenses().map((item, index) => {
       return (
-        <details>
+        <details key={index}>
           <summary>{item.name}</summary>
           <p>{item.license}</p>
         </details>

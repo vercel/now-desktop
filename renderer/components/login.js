@@ -1,14 +1,13 @@
 // Packages
 import { stringify as stringifyQuery } from 'querystring';
-import { remote } from 'electron';
 import React from 'react';
-// Import Config from 'electron-config';
 import AutoSizeInput from 'react-input-autosize';
 
 // Ours
 import error from '../utils/error';
 import startRefreshment from '../utils/refresh';
 import saveToCLI from '../utils/token/to-cli';
+import remote from '../utils/electron';
 
 const domains = [
   'aol.com',
@@ -154,11 +153,12 @@ const Login = React.createClass({
     } while (!final);
     /* eslint-enable no-await-in-loop */
 
-    // const config = new Config();
+    const Config = remote.require('electron-config');
+    const config = new Config();
 
     // Save user information to consistent configuration
-    // config.set('now.user.email', email);
-    // config.set('now.user.token', final);
+    config.set('now.user.email', email);
+    config.set('now.user.token', final);
 
     // Also save it to now.json
     await saveToCLI(email, final);

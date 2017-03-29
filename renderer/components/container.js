@@ -10,6 +10,10 @@ const Container = ({ children }) => (
       <style
         dangerouslySetInnerHTML={{
           __html: `
+        ::selection {
+          background: #A7D8FF;
+        }
+
         body {
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Helvetica Neue, sans-serif;
           -webkit-font-smoothing: antialiased;

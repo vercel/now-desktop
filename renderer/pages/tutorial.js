@@ -24,8 +24,16 @@ import Container from '../components/container';
 
 const SliderArrows = React.createClass({
   render() {
+    const props = Object.assign({}, this.props);
+
+    const uselessProps = ['currentSlide', 'slideCount'];
+
+    for (const prop of uselessProps) {
+      delete props[prop];
+    }
+
     return (
-      <div {...this.props}>
+      <div {...props}>
         <ArrowSVG />
       </div>
     );

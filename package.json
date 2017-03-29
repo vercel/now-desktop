@@ -2,8 +2,6 @@
   "repository": "zeit/now-desktop",
   "scripts": {
     "start": "electron main",
-    "dev": "next renderer",
-    "clean": "chmod u+x dist && rm -rf node_modules app/node_modules dist app/dist",
     "build": "cross-env NODE_ENV=production next build renderer",
     "lint": "xo",
     "precommit": "lint-staged",
