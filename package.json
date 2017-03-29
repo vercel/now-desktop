@@ -2,7 +2,7 @@
   "repository": "zeit/now-desktop",
   "scripts": {
     "start": "electron main",
-    "build": "cross-env NODE_ENV=production next build renderer",
+    "build": "next build renderer",
     "lint": "xo",
     "precommit": "lint-staged",
     "test": "npm run dist && npm run lint && ava",
@@ -85,7 +85,6 @@
   },
   "devDependencies": {
     "ava": "0.18.2",
-    "cross-env": "3.2.4",
     "electron": "1.6.2",
     "electron-builder": "16.2.0",
     "electron-builder-squirrel-windows": "16.0.0",
