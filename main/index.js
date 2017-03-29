@@ -117,9 +117,9 @@ global.startRefresh = tutorialWindow => {
   );
 };
 
-const windowURL = page => 'http://localhost:5000/' + page;
+const windowURL = (page, port) => `http://localhost:${port}/${page}`;
 
-const onboarding = () => {
+const onboarding = rendererPort => {
   const win = new BrowserWindow({
     width: 650,
     height: 430,
@@ -134,7 +134,7 @@ const onboarding = () => {
     backgroundColor: '#000'
   });
 
-  win.loadURL(windowURL('tutorial'));
+  win.loadURL(windowURL('tutorial', rendererPort));
   attachTrayState(win, tray);
 
   // We need to access it = the "About" window
@@ -165,7 +165,7 @@ const onboarding = () => {
   return win;
 };
 
-const aboutWindow = () => {
+const aboutWindow = rendererPort => {
   const win = new BrowserWindow({
     width: 360,
     height: 408,
@@ -181,7 +181,7 @@ const aboutWindow = () => {
     backgroundColor: '#ECECEC'
   });
 
-  win.loadURL(windowURL('about'));
+  win.loadURL(windowURL('about', rendererPort));
   attachTrayState(win, tray);
 
   global.about = win;
@@ -388,16 +388,18 @@ app.on('ready', async () => {
     return;
   }
 
+  let rendererPort;
+
   try {
-    await server();
+    rendererPort = await server();
   } catch (err) {
     showError('Not able to start server', err);
     return;
   }
 
   const windows = {
-    tutorial: onboarding(),
-    about: aboutWindow()
+    tutorial: onboarding(rendererPort),
+    about: aboutWindow(rendererPort)
   };
 
   const toggleActivity = event => {

@@ -6,6 +6,7 @@ const path = require('path');
 const { app } = require('electron');
 const next = require('next');
 const dev = require('electron-is-dev');
+const getPort = require('get-port');
 
 const prepareServer = nextHandler =>
   createServer((req, res) => {
@@ -33,15 +34,17 @@ module.exports = () =>
     const nextHandler = nextApp.getRequestHandler();
 
     await nextApp.prepare();
-    const server = prepareServer(nextHandler);
 
-    server.listen(5000, error => {
+    const server = prepareServer(nextHandler);
+    const freePort = await getPort();
+
+    server.listen(freePort, error => {
       if (error) {
         reject(error);
         return;
       }
 
       app.on('quit', () => server.close());
-      resolve(server);
+      resolve(freePort);
     });
   });
