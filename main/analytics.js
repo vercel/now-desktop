@@ -2,6 +2,7 @@
 const os = require('os');
 
 // Packages
+const { app } = require('electron');
 const macAddress = require('macaddress');
 const md5 = require('md5');
 const mixpanel = require('mixpanel');
@@ -9,9 +10,8 @@ const fileSize = require('filesize');
 const firstRun = require('first-run');
 const Config = require('electron-config');
 const isDev = require('electron-is-dev');
-const {app} = require('electron')
 
-const mixPanelID = 'b3faf3a9c49d8cf0c40fb05e1bd8e5ed'
+const mixPanelID = 'b3faf3a9c49d8cf0c40fb05e1bd8e5ed';
 
 const getMacAddress = () =>
   new Promise((resolve, reject) => {
