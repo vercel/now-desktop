@@ -14,7 +14,6 @@ const trimWhitespace = require('trim');
 const exists = require('path-exists');
 
 // Ours
-const { version } = require('../app/package');
 const { error: showError } = require('./dialogs');
 const notify = require('./notify');
 const binaryUtils = require('./utils/binary');
@@ -162,7 +161,7 @@ module.exports = app => {
   });
 
   try {
-    autoUpdater.setFeedURL(feedURL + '/' + version);
+    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion());
   } catch (err) {
     showError('Auto updated could not set feed URL', err);
   }

@@ -360,7 +360,7 @@ app.on('ready', async () => {
   });
 
   onlineStatusWindow.loadURL(
-    'file://' + resolvePath('../app/pages/status.html')
+    'file://' + resolvePath('./main/static/pages/status.html')
   );
 
   ipcMain.on('online-status-changed', (event, status) => {
@@ -379,7 +379,7 @@ app.on('ready', async () => {
   // I have no idea why, but path.resolve doesn't work here
   try {
     const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate';
-    tray = new Tray(resolvePath(`./app/assets/icons/tray/${iconName}.png`));
+    tray = new Tray(resolvePath(`./main/static/tray/${iconName}.png`));
 
     // Opening the context menu after login should work
     global.tray = tray;

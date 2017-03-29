@@ -46,7 +46,7 @@ app.on('ready', () => {
     show: false
   });
 
-  const url = 'file://' + resolvePath('../app/pages/notify.html');
+  const url = 'file://' + resolvePath('./main/static/pages/notify.html');
   win_.loadURL(url);
 
   win_.webContents.on('dom-ready', () => {

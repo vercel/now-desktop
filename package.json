@@ -17,11 +17,9 @@
       "target": [
         "squirrel"
       ],
-      "icon": "app/assets/icons/single.ico"
     },
     "mac": {
-      "category": "public.app-category.developer-tools",
-      "icon": "app/assets/icons/multi.icns"
+      "category": "public.app-category.developer-tools"
     }
   },
   "lint-staged": {

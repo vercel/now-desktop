@@ -9,9 +9,9 @@ const fileSize = require('filesize');
 const firstRun = require('first-run');
 const Config = require('electron-config');
 const isDev = require('electron-is-dev');
+const {app} = require('electron')
 
-// Ours
-const pkg = require('../app/package');
+const mixPanelID = 'b3faf3a9c49d8cf0c40fb05e1bd8e5ed'
 
 const getMacAddress = () =>
   new Promise((resolve, reject) => {
@@ -37,7 +37,7 @@ const getEmailAddress = () => {
   return config.get(identifier);
 };
 
-const analytics = mixpanel.init(pkg.mixPanel.id, {
+const analytics = mixpanel.init(mixPanelID, {
   protocol: 'https'
 });
 
@@ -89,7 +89,7 @@ exports.init = async () => {
 
   if (firstRun()) {
     exports.track('App installed', {
-      Version: pkg.version
+      Version: app.getVersion()
     });
   }
 
