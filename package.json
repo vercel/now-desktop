@@ -76,12 +76,12 @@
     "electron-config": "0.2.1",
     "electron-is-dev": "0.1.2",
     "electron-lets-move": "0.0.5",
-    "electron-log": "2.0.0",
+    "electron-log": "2.0.2",
     "electron-squirrel-startup": "1.0.0",
     "filesize": "3.5.6",
     "first-run": "1.2.0",
     "fix-path": "2.1.0",
-    "fs-promise": "2.0.0",
+    "fs-promise": "2.0.2",
     "get-port": "3.0.0",
     "glob": "7.1.1",
     "glob-promise": "3.1.0",
@@ -91,7 +91,7 @@
     "md5": "2.2.1",
     "mixpanel": "0.6.0",
     "mkdirp": "0.5.1",
-    "moment": "2.18.0",
+    "moment": "2.18.1",
     "ms": "1.0.0",
     "next": "2.0.0",
     "node-fetch": "1.6.3",
@@ -115,14 +115,14 @@
   "devDependencies": {
     "ava": "0.18.2",
     "electron": "1.6.2",
-    "electron-builder": "16.2.0",
-    "electron-builder-squirrel-windows": "16.0.0",
+    "electron-builder": "16.6.0",
+    "electron-builder-squirrel-windows": "16.6.0",
     "eslint-config-prettier": "1.5.0",
     "eslint-plugin-react": "6.10.3",
-    "husky": "0.13.2",
+    "husky": "0.13.3",
     "lint-staged": "3.4.0",
     "prettier": "0.22.0",
     "spectron": "3.6.0",
-    "xo": "0.18.0"
+    "xo": "0.18.1"
   }
 }
