@@ -1,15 +1,11 @@
 // Packages
 import React from 'react';
+import getLicenses from 'load-licenses';
 
 // Helpers
 import remote from '../utils/electron';
 
-const loadLicenses = () => {
-  const getLicenses = remote.require('load-licenses');
-  const mainModule = remote.process.mainModule;
-
-  return getLicenses(mainModule);
-};
+const loadLicenses = () => getLicenses(remote.process.mainModule);
 
 const Licenses = () => (
   <section>
