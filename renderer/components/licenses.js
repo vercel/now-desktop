@@ -14,12 +14,12 @@ const loadLicenses = () => {
 const Licenses = () => (
   <section>
     {loadLicenses().map((item, index) => {
-      return (
-        <details key={index}>
-          <summary>{item.name}</summary>
-          <p>{item.license}</p>
-        </details>
-      );
+      return item.name === 'now-desktop'
+        ? false
+        : <details key={index}>
+            <summary>{item.name}</summary>
+            <p>{item.license}</p>
+          </details>;
     })}
     <style jsx>
       {
