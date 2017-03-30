@@ -126,8 +126,8 @@ module.exports = async (folder, sharing) => {
   }
 
   notify({
-    title: 'Uploading files...',
-    body: 'Your files are being uploaded to our servers.'
+    title: 'Uploading Files...',
+    body: 'Your files are being uploaded to now.'
   });
 
   // Log separator
@@ -284,7 +284,7 @@ module.exports = async (folder, sharing) => {
           process.env.BUSYNESS = 'ready';
 
           notify({
-            title: 'Done ' + (sharing ? 'sharing' : 'deploying') + '!',
+            title: 'Done ' + (sharing ? 'Sharing' : 'Deploying') + '!',
             body: 'Opening the URL in your browser...',
             url
           });
