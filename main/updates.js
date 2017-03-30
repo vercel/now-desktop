@@ -1,6 +1,5 @@
 // Native
 const path = require('path');
-const { execSync: exec } = require('child_process');
 const { homedir } = require('os');
 
 // Packages
@@ -11,6 +10,7 @@ const fs = require('fs-promise');
 const pathType = require('path-type');
 const trimWhitespace = require('trim');
 const exists = require('path-exists');
+const { exec } = require('child-process-promise');
 
 // Ours
 const { error: showError } = require('./dialogs');
@@ -20,28 +20,26 @@ const binaryUtils = require('./utils/binary');
 const platform = process.platform === 'darwin' ? 'osx' : process.platform;
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform;
 
-const localBinaryVersion = () => {
-  let cmd;
+const localBinaryVersion = async () => {
+  // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
+  // executed on Windows. On other platforms this shouldn't produce side effects.
+  const cmd = await exec('now -v', { cwd: homedir() });
 
-  try {
-    // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
-    // executed on Windows. On other platforms this shouldn't produce side effects.
-    cmd = exec('now -v', { cwd: homedir() }).toString();
-  } catch (err) {
-    return false;
+  if (!cmd.stdout) {
+    throw new Error('Not version tag received from `now -v`');
   }
 
   // Make version tag parsable
-  cmd = trimWhitespace(cmd);
+  const output = trimWhitespace(cmd.stdout.toString());
 
-  if (semVer.valid(cmd)) {
-    return cmd;
+  if (semVer.valid(output)) {
+    return output;
   }
 
   // This is for the old version output
   // Example: "𝚫 now 4.3.0"
   // The new one (handled above) looks like this: "4.3.0"
-  return cmd.split(' ')[2].trim();
+  return output.split(' ')[2].trim();
 };
 
 const updateBinary = async () => {
@@ -59,7 +57,7 @@ const updateBinary = async () => {
   console.log('Checking for binary updates...');
 
   const currentRemote = await binaryUtils.getURL();
-  const currentLocal = localBinaryVersion();
+  const currentLocal = await localBinaryVersion();
 
   // Force an update if "now -v" fails
   if (currentLocal) {
@@ -89,14 +87,7 @@ const updateBinary = async () => {
   updateFile.cleanup();
 
   // Check the version of the installed binary
-  // This will return `false` if the binary is not executable
-  const newVersion = localBinaryVersion();
-
-  // If the CLI is broken (not runnable)
-  // We need to update again
-  if (!newVersion) {
-    throw new Error('Binary not executable');
-  }
+  const newVersion = await localBinaryVersion();
 
   const messages = {
     windows: 'Updated `now.exe` to v' + newVersion,
