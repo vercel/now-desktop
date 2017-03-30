@@ -58,7 +58,7 @@ const platformName = () => {
 
 exports.getBinarySuffix = () => process.platform === 'win32' ? '.exe' : '';
 
-exports.getURL = async () => {
+exports.getURL = async visibleErrors => {
   const url = 'https://now-cli-latest.now.sh';
 
   let response;
@@ -76,7 +76,11 @@ exports.getURL = async () => {
   try {
     response = await response.json();
   } catch (err) {
-    showError('Could not parse response as JSON', err);
+    if (visibleErrors) {
+      showError('Could not parse JSON', err);
+    }
+
+    console.log(err);
     return;
   }
 

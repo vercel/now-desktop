@@ -23,7 +23,7 @@ const Binary = React.createClass({
     let current;
 
     try {
-      current = await utils.getURL();
+      current = await utils.getURL(true);
     } catch (err) {
       return;
     }

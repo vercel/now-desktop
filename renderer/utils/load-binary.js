@@ -16,7 +16,7 @@ export default async section => {
     });
   }
 
-  const downloadURL = await utils.getURL();
+  const downloadURL = await utils.getURL(true);
   const location = await utils.download(
     downloadURL.url,
     downloadURL.binaryName
