@@ -9,7 +9,6 @@ const retry = require('async-retry');
 const load = require('download');
 const fs = require('fs-promise');
 const which = require('which-promise');
-const log = require('electron-log');
 const sudo = require('sudo-prompt');
 const { path: appRootPath, resolve: resolvePath } = require('app-root-path');
 const { sync: mkdir } = require('mkdirp');
@@ -67,7 +66,6 @@ exports.getURL = async () => {
   try {
     response = await fetch(url);
   } catch (err) {
-    log.info(err);
     return;
   }
 

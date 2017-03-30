@@ -8,7 +8,6 @@ const { autoUpdater } = require('electron');
 const ms = require('ms');
 const semVer = require('semver');
 const fs = require('fs-promise');
-const log = require('electron-log');
 const pathType = require('path-type');
 const trimWhitespace = require('trim');
 const exists = require('path-exists');
@@ -150,10 +149,7 @@ module.exports = app => {
     ms('15m')
   );
 
-  autoUpdater.on('error', err => {
-    console.error(err);
-    log.info(err);
-  });
+  autoUpdater.on('error', console.error);
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion());
@@ -190,15 +186,12 @@ module.exports = app => {
 
   autoUpdater.on('update-downloaded', () => {
     process.env.UPDATE_STATUS = 'downloaded';
-    log.info('Downloaded update');
 
     setInterval(
       () => {
         if (process.env.BUSYNESS !== 'ready') {
           return;
         }
-
-        log.info('Installing update');
 
         autoUpdater.quitAndInstall();
         app.quit();
