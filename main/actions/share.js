@@ -2,8 +2,6 @@
 const path = require('path');
 
 // Packages
-const { tmpdir } = require('os');
-const md5 = require('md5');
 const toId = require('to-id');
 const fs = require('fs-promise');
 const tmp = require('tmp-promise');
@@ -18,13 +16,11 @@ const { error: showError } = require('../dialogs');
 
 module.exports = async item => {
   if (!await pathExists(item)) {
-    showError("Path doesn't exist!");
+    showError(`Path doesn't exist!`);
     return;
   }
 
   process.env.BUSYNESS = 'sharing';
-
-  const uniqueIdentifier = md5(item);
   const itemName = path.parse(item).name;
 
   const pkgDefaults = {
@@ -37,35 +33,17 @@ module.exports = async item => {
     }
   };
 
-  const identifier = 'now-desktop-' + uniqueIdentifier;
-
   const tmpDir = await retry(
     async () => {
       return tmp.dir({
-        // We need to use the hashed directory identifier
-        // Because if we don't use the same id every time,
-        // now won't update the existing deployment and create a new one instead
-        name: identifier,
+        prefix: 'now-desktop-',
 
         // Keep it, because we'll remove it manually later
         keep: true
       });
     },
     {
-      retries: 5,
-      onRetry: async () => {
-        const root = tmpdir();
-        const created = path.join(root, identifier);
-
-        try {
-          await fs.remove(created);
-        } catch (err) {
-          showError(
-            'Could not rm temporary directory for creating new one',
-            err
-          );
-        }
-      }
+      retries: 5
     }
   );
 
