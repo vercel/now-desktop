@@ -27,7 +27,6 @@ const autoUpdater = require('./updates');
 const { refreshCache } = require('./api');
 const attachTrayState = require('./utils/highlight');
 const toggleWindow = require('./utils/toggle-window');
-const binaryUtils = require('./utils/binary');
 const server = require('./server');
 
 // Prevent garbage collection
@@ -48,22 +47,6 @@ if (!isDev && firstRun()) {
     openAtLogin: true
   });
 }
-
-// We need this method in the renderer process
-// So that we can load all data after the user has logged in
-// And before he opens the context menu
-global.refreshCache = refreshCache;
-
-// Immediately after login, we'll start the auto updater
-// = the renderer process
-global.autoUpdater = autoUpdater;
-
-// Share these  between renderer process and the main one
-global.errorHandler = showError;
-global.binaryUtils = binaryUtils;
-
-// Make the error handler kill the app
-global.appInstance = app;
 
 // Makes sure where inheriting the correct path
 // Within the bundled app, the path would otherwise be different

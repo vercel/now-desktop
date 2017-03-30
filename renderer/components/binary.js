@@ -52,7 +52,7 @@ const Binary = React.createClass({
     return false;
   },
   async componentDidMount() {
-    const binaryUtils = remote.getGlobal('binaryUtils');
+    const binaryUtils = remote.require('./utils/binary');
     const binaryPath = binaryUtils.getPath() +
       '/now' +
       binaryUtils.getBinarySuffix();

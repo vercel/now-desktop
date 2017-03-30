@@ -3,11 +3,11 @@ import { remote } from 'electron';
 
 export default (detail, trace) => {
   const current = remote.getCurrentWindow();
-  const handler = remote.getGlobal('errorHandler');
+  const { error } = remote.require('./dialogs');
 
   if (!trace) {
     trace = null;
   }
 
-  handler(detail, trace, current);
+  error(detail, trace, current);
 };

@@ -6,7 +6,7 @@ import remote from './electron';
 const sudo = remote.require('sudo-prompt');
 
 export default async section => {
-  const utils = remote.getGlobal('binaryUtils');
+  const utils = remote.require('./utils/binary');
   const resolvePath = remote.require('app-root-path').resolve;
 
   if (section) {
