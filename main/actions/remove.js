@@ -22,10 +22,16 @@ module.exports = async info => {
     return;
   }
 
-  notify({
-    title: `Deleting ${info.name}...`,
-    body: 'The deployment is being removed from our servers.'
-  });
+  // We only want to show this message if the deletion takes long
+  const deletionNotice = setTimeout(
+    () => {
+      notify({
+        title: `Deleting ${info.name}...`,
+        body: 'The deployment is being removed from our servers.'
+      });
+    },
+    1000
+  );
 
   // Otherwise, delete the deployment
   const now = connector();
@@ -38,6 +44,13 @@ module.exports = async info => {
 
     return;
   }
+
+  clearTimeout(deletionNotice);
+
+  notify({
+    title: 'Deleted ' + info.name,
+    body: 'The deployment has successfully been deleted.'
+  });
 
   const cache = new Cache();
   const cacheIdentifier = 'now.cache.deployments';
@@ -62,9 +75,4 @@ module.exports = async info => {
 
   // And update the list in the cache
   cache.set(cacheIdentifier, deployments);
-
-  notify({
-    title: 'Deleted ' + info.name,
-    body: 'The deployment has successfully been deleted.'
-  });
 };
