@@ -269,6 +269,11 @@ module.exports = async (folder, sharing) => {
         try {
           current = await apiSession.getDeployment(deployment.uid);
         } catch (err) {
+          if (err.includes('404')) {
+            clearInterval(checker);
+            return;
+          }
+
           showError('Not able to get deployment', err);
           return;
         }
