@@ -28,7 +28,12 @@ const Licenses = () => (
         margin-bottom: 10px;
       }
 
-      details summary {
+      p {
+        font-size: 13px;
+        line-height: 19px;
+      }
+
+      summary {
         color: #707070;
         font-size: 12px;
         cursor: pointer;
@@ -36,15 +41,15 @@ const Licenses = () => (
         display: inline-block;
       }
 
-      details summary:focus {
+      summary:focus {
         outline: none;
       }
 
-      details[open] summary {
+      summary:hover {
         color: #000;
       }
 
-      details summary:hover {
+      details[open] summary {
         color: #000;
       }
     `
