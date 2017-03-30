@@ -100,6 +100,37 @@ const genTitle = (deployment, sharing) => {
   return (sharing ? 'Sharing' : 'Deploying') + '...';
 };
 
+const getContents = async dir => {
+  let items;
+
+  try {
+    items = await glob(path.join(dir, '**'), {
+      dot: true,
+      strict: true,
+      recursive: true,
+      mark: true,
+      ignore: ['**/node_modules/**', '**/.git/**', '**/.hg/**'],
+      nodir: true
+    });
+  } catch (err) {
+    showError('Could not read directory to deploy', err);
+    return;
+  }
+
+  return items;
+};
+
+const removeTempDir = async (dir, logStatus) => {
+  try {
+    await fs.remove(dir);
+  } catch (err) {
+    showError('Could not remove temporary directory', err);
+    return;
+  }
+
+  logStatus('Removed temporary directory');
+};
+
 module.exports = async (folder, sharing) => {
   const details = {};
   const folderTooBig = await tooBig(folder);
@@ -163,22 +194,7 @@ module.exports = async (folder, sharing) => {
   const logStatus = message =>
     console.log(chalk.yellow(`[${projectName}]`) + ' ' + message);
 
-  let items;
-
-  try {
-    items = await glob(path.join(dir, '**'), {
-      dot: true,
-      strict: true,
-      recursive: true,
-      mark: true,
-      ignore: ['**/node_modules/**', '**/.git/**', '**/.hg/**'],
-      nodir: true
-    });
-  } catch (err) {
-    showError('Could not read directory to deploy', err);
-    return;
-  }
-
+  const items = await getContents(dir);
   let existing = [];
 
   for (const itemPath of items) {
@@ -316,13 +332,6 @@ module.exports = async (folder, sharing) => {
 
   // Delete the local deployed directory if required
   if (sharing) {
-    try {
-      await fs.remove(folder);
-    } catch (err) {
-      showError('Could not remove temporary directory', err);
-      return;
-    }
-
-    logStatus('Removed temporary directory');
+    await removeTempDir(folder, logStatus);
   }
 };
