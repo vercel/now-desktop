@@ -10,7 +10,7 @@ const removeDeployment = require('./actions/remove');
 const notify = require('./notify');
 const toggleWindow = require('./utils/toggle-window');
 
-exports.deploymentOptions = function(info) {
+exports.deploymentOptions = info => {
   const created = moment(new Date(parseInt(info.created, 10)));
   const url = 'https://' + info.url;
 
@@ -47,10 +47,7 @@ exports.deploymentOptions = function(info) {
         type: 'separator'
       },
       {
-        label: 'Created on ' +
-          created.format('MMMM Do YYYY') +
-          ', ' +
-          created.format('h:mm a'),
+        label: created.format('[Created on] MMM Do YYYY, h:mm a'),
         enabled: false
       }
     ]
@@ -68,13 +65,13 @@ exports.innerMenu = async function(app, tray, data, windows) {
     if (data.deployments[0].type === 'separator') {
       data.deployments.shift();
     }
+
     if (data.deployments[data.deployments.length - 1].type === 'separator') {
       data.deployments.pop();
     }
   }
 
   const config = new Config();
-
   let shareMenu;
 
   if (process.platform === 'darwin') {
