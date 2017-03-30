@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import React from 'react';
 import semVer from 'semver';
 import pathType from 'path-type';
+import exists from 'path-exists';
 
 // Utilities
 import installBinary from '../utils/load-binary';
@@ -23,7 +24,7 @@ const Binary = React.createClass({
     let current;
 
     try {
-      current = await utils.getURL(true);
+      current = await utils.getURL();
     } catch (err) {
       return;
     }
@@ -56,6 +57,10 @@ const Binary = React.createClass({
     const binaryPath = binaryUtils.getPath() +
       '/now' +
       binaryUtils.getBinarySuffix();
+
+    if (!await exists(binaryPath)) {
+      return;
+    }
 
     if (await pathType.symlink(binaryPath)) {
       return;

@@ -16,7 +16,15 @@ export default async section => {
     });
   }
 
-  const downloadURL = await utils.getURL(true);
+  let downloadURL;
+
+  try {
+    downloadURL = await utils.getURL();
+  } catch (err) {
+    showError('Not able to get URL of latest binary', err);
+    return;
+  }
+
   const location = await utils.download(
     downloadURL.url,
     downloadURL.binaryName
@@ -41,8 +49,11 @@ export default async section => {
 
   const sudoOptions = {
     name: 'Now',
-    icns: resolvePath('/assets/icons/multi.icns')
+    icns: resolvePath('./main/static/icons/mac.icns')
   };
+
+  console.log(command);
+  console.log(sudoOptions);
 
   sudo.exec(command, sudoOptions, async error => {
     if (error) {

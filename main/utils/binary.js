@@ -58,54 +58,37 @@ const platformName = () => {
 
 exports.getBinarySuffix = () => process.platform === 'win32' ? '.exe' : '';
 
-exports.getURL = async visibleErrors => {
+exports.getURL = async () => {
   const url = 'https://now-cli-latest.now.sh';
-
-  let response;
-
-  try {
-    response = await fetch(url);
-  } catch (err) {
-    return;
-  }
+  const response = await fetch(url);
 
   if (!response.ok) {
-    return;
+    throw new Error('Binary response not okay');
   }
 
-  try {
-    response = await response.json();
-  } catch (err) {
-    if (visibleErrors) {
-      showError('Could not parse JSON', err);
-    }
+  const responseParsed = await response.json();
 
-    console.log(err);
-    return;
+  if (!responseParsed.assets || responseParsed.assets.length < 1) {
+    throw new Error('Not able to get URL of latest binary');
   }
 
-  if (!response.assets || response.assets.length < 1) {
-    return;
-  }
-
-  const forPlatform = response.assets.find(
+  const forPlatform = responseParsed.assets.find(
     asset => asset.platform === platformName()
   );
 
   if (!forPlatform) {
-    return;
+    throw new Error('Not able to select platform of latest binary');
   }
 
   const downloadURL = forPlatform.url;
 
   if (!downloadURL) {
-    showError("Latest release doesn't contain a binary");
-    return;
+    throw new Error(`Latest release doesn't contain a binary`);
   }
 
   return {
     url: downloadURL,
-    version: response.tag,
+    version: responseParsed.tag,
     binaryName: forPlatform.name
   };
 };
@@ -197,7 +180,7 @@ exports.setPermissions = async baseDir => {
 
   const sudoOptions = {
     name: 'Now',
-    icns: resolvePath('/assets/icons/multi.icns')
+    icns: resolvePath('./main/static/icons/mac.icns')
   };
 
   const cmd = 'chmod +x ' + nowPath;
