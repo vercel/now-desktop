@@ -22,14 +22,30 @@ exports.deploymentOptions = info => {
         click: () => shell.openExternal(url)
       },
       {
+        type: 'separator'
+      },
+      {
         label: 'Copy URL to Clipboard',
         click() {
           clipboard.writeText(url);
 
           // Let the user know
           notify({
-            title: 'Copied to clipboard',
+            title: 'Copied to Clipboard',
             body: 'Your clipboard now contains the URL of your deployment.',
+            url
+          });
+        }
+      },
+      {
+        label: 'Copy ID to Clipboard',
+        click() {
+          clipboard.writeText(info.uid);
+
+          // Let the user know
+          notify({
+            title: 'Copied to Clipboard',
+            body: 'Your clipboard now contains the ID of your deployment.',
             url
           });
         }
