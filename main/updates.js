@@ -90,12 +90,6 @@ const updateBinary = async () => {
   }
 
   try {
-    await fs.remove(fullPath);
-  } catch (err) {
-    return stopBinaryUpdate(err);
-  }
-
-  try {
     await fs.rename(updateFile.path, fullPath);
   } catch (err) {
     return stopBinaryUpdate(err);
