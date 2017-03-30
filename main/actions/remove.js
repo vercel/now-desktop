@@ -6,7 +6,6 @@ const Cache = require('electron-config');
 const notify = require('../notify');
 const { error: showError } = require('../dialogs');
 const { connector } = require('../api');
-const { track } = require('../analytics');
 
 module.exports = async info => {
   // Ask the user if it was an accident
@@ -67,9 +66,5 @@ module.exports = async info => {
   notify({
     title: 'Deleted ' + info.name,
     body: 'The deployment has successfully been deleted.'
-  });
-
-  track('Deleted deployment', {
-    URL: `https://${info.host}`
   });
 };

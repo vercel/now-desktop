@@ -15,7 +15,6 @@ const pathExists = require('path-exists');
 const injectPackage = require('../utils/inject');
 const copyContents = require('../utils/copy');
 const { error: showError } = require('../dialogs');
-const { track } = require('../analytics');
 
 module.exports = async item => {
   if (!await pathExists(item)) {
@@ -78,8 +77,6 @@ module.exports = async item => {
   );
 
   const details = await fs.lstat(item);
-
-  track('Shared');
 
   if (details.isDirectory()) {
     await copyContents(item, tmpDir.path, pkgDefaults);

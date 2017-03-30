@@ -9,7 +9,6 @@ const fs = require('fs-promise');
 
 // Ours
 const { error: showError } = require('../dialogs');
-const { track } = require('../analytics');
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/';
 
@@ -135,8 +134,5 @@ module.exports = async (app, tutorial) => {
     await revokeToken(userDetails.token, tokenId);
   } catch (err) {
     showError('Could not revoke token on logout', err);
-    return;
   }
-
-  track('Logged out');
 };

@@ -16,7 +16,6 @@ const slash = require('slash');
 const { connector } = require('../api');
 const { error: showError } = require('../dialogs');
 const notify = require('../notify');
-const { track } = require('../analytics');
 
 const getProjectType = (nodeReady, dockerReady) => {
   let projectType = 'docker';
@@ -302,10 +301,6 @@ module.exports = async (folder, sharing) => {
 
   // Copy deployment URL to clipboard
   clipboard.writeText(url);
-
-  track('Deployed', {
-    URL: url
-  });
 
   // Let the user now
   notify({

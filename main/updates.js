@@ -17,7 +17,6 @@ const exists = require('path-exists');
 const { error: showError } = require('./dialogs');
 const notify = require('./notify');
 const binaryUtils = require('./utils/binary');
-const { track } = require('./analytics');
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform;
 const feedURL = 'https://now-auto-updates.now.sh/update/' + platform;
@@ -133,10 +132,6 @@ const updateBinary = async () => {
     title,
     body: 'Try it in your terminal!'
   });
-
-  track('Updated binary', {
-    'To Version': currentRemote.version
-  });
 };
 
 module.exports = app => {
@@ -197,8 +192,6 @@ module.exports = app => {
     process.env.UPDATE_STATUS = 'downloaded';
     log.info('Downloaded update');
 
-    track('Downloaded update');
-
     setInterval(
       () => {
         if (process.env.BUSYNESS !== 'ready') {
@@ -206,7 +199,6 @@ module.exports = app => {
         }
 
         log.info('Installing update');
-        track('Installing update');
 
         autoUpdater.quitAndInstall();
         app.quit();

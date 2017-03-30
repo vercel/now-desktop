@@ -20,7 +20,6 @@ const { moveToApplications } = require('electron-lets-move');
 
 // Ours
 const { innerMenu, outerMenu, deploymentOptions } = require('./menu');
-const { init: initAnalytics } = require('./analytics');
 const { error: showError } = require('./dialogs');
 const deploy = require('./actions/deploy');
 const share = require('./actions/share');
@@ -350,8 +349,6 @@ app.on('ready', async () => {
       showError(err);
     }
   }
-
-  await initAnalytics();
 
   const onlineStatusWindow = new BrowserWindow({
     width: 0,
