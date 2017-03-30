@@ -24,10 +24,15 @@
     "win": {
       "target": [
         "squirrel"
-      ]
+      ],
+      "icon": "main/static/icons/windows.ico"
+    },
+    "squirrelWindows": {
+      "loadingGif": "main/static/install-spinner.gif"
     },
     "mac": {
-      "category": "public.app-category.developer-tools"
+      "category": "public.app-category.developer-tools",
+      "icon": "main/static/icons/mac.icns"
     },
     "files": [
       "main",
