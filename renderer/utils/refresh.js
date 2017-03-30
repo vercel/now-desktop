@@ -9,11 +9,7 @@ export default async currentWindow => {
   // Start periodically refreshing data after login
   remote.getGlobal('startRefresh')(currentWindow);
 
-  const isDev = remote.getGlobal('isDev');
-
   // Immediately after logging in, we start checking
   // for updates
-  if (!isDev && remote.process.platform !== 'linux') {
-    remote.getGlobal('autoUpdater')(remote.app);
-  }
+  remote.getGlobal('autoUpdater')();
 };

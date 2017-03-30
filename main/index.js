@@ -30,29 +30,12 @@ const toggleWindow = require('./utils/toggle-window');
 const binaryUtils = require('./utils/binary');
 const server = require('./server');
 
-const isPlatform = name => {
-  let handle;
-
-  switch (name) {
-    case 'windows':
-      handle = 'win32';
-      break;
-    case 'macOS':
-      handle = 'darwin';
-      break;
-    default:
-      handle = name;
-  }
-
-  return process.platform === handle;
-};
-
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
 let tray = null;
 
 // Hide dock icon before the app starts
-if (isPlatform('macOS')) {
+if (process.platform === 'darwin') {
   app.dock.hide();
 }
 
@@ -74,7 +57,6 @@ global.refreshCache = refreshCache;
 // Immediately after login, we'll start the auto updater
 // = the renderer process
 global.autoUpdater = autoUpdater;
-global.isDev = isDev;
 
 // Share these  between renderer process and the main one
 global.errorHandler = showError;
@@ -189,7 +171,7 @@ const aboutWindow = rendererPort => {
 };
 
 app.on('window-all-closed', () => {
-  if (!isPlatform('macOS')) {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
@@ -364,10 +346,8 @@ app.on('ready', async () => {
     process.env.CONNECTION = status;
   });
 
-  // Start auto updater if not in development mode
-  if (!isDev && !isPlatform('linux')) {
-    global.autoUpdater(app);
-  }
+  // Provide application and the CLI with automatic updates
+  autoUpdater();
 
   // DO NOT create the tray icon BEFORE the login status has been checked!
   // Otherwise, the user will start clicking...
@@ -375,7 +355,9 @@ app.on('ready', async () => {
 
   // I have no idea why, but path.resolve doesn't work here
   try {
-    const iconName = isPlatform('windows') ? 'iconWhite' : 'iconTemplate';
+    const iconName = process.platform === 'win32'
+      ? 'iconWhite'
+      : 'iconTemplate';
     tray = new Tray(resolvePath(`./main/static/tray/${iconName}.png`));
 
     // Opening the context menu after login should work

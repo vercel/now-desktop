@@ -3,7 +3,7 @@ const path = require('path');
 const { homedir } = require('os');
 
 // Packages
-const { autoUpdater } = require('electron');
+const { app, autoUpdater } = require('electron');
 const ms = require('ms');
 const semVer = require('semver');
 const fs = require('fs-promise');
@@ -11,6 +11,7 @@ const pathType = require('path-type');
 const trimWhitespace = require('trim');
 const exists = require('path-exists');
 const { exec } = require('child-process-promise');
+const isDev = require('electron-is-dev');
 
 // Ours
 const { error: showError } = require('./dialogs');
@@ -121,7 +122,7 @@ const startBinaryUpdates = () => {
   binaryUpdateTimer(ms('2s'));
 };
 
-const startAppUpdates = app => {
+const startAppUpdates = () => {
   autoUpdater.on('error', console.error);
 
   try {
@@ -173,7 +174,14 @@ const startAppUpdates = app => {
   });
 };
 
-module.exports = app => {
+module.exports = () => {
+  if (process.platform === 'linux') {
+    return;
+  }
+
   startBinaryUpdates();
-  startAppUpdates(app);
+
+  if (!isDev) {
+    startAppUpdates();
+  }
 };
