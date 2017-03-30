@@ -44,12 +44,11 @@ const localBinaryVersion = () => {
   return cmd.split(' ')[2].trim();
 };
 
-const stopBinaryUpdate = reason => {
-  process.env.BINARY_UPDATE_RUNNING = 'no';
-  console.log(reason);
-};
-
 const updateBinary = async () => {
+  if (process.env.CONNECTION === 'offline') {
+    return;
+  }
+
   const binaryDir = binaryUtils.getPath();
   const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`);
 
@@ -57,11 +56,6 @@ const updateBinary = async () => {
     return;
   }
 
-  if (process.env.BINARY_UPDATE_RUNNING === 'yes') {
-    return;
-  }
-
-  process.env.BINARY_UPDATE_RUNNING = 'yes';
   console.log('Checking for binary updates...');
 
   const currentRemote = await binaryUtils.getURL();
@@ -72,45 +66,36 @@ const updateBinary = async () => {
     const comparision = semVer.compare(currentLocal, currentRemote.version);
 
     if (comparision !== -1) {
-      return stopBinaryUpdate('No updates found for binary');
+      console.log('No updates found for binary');
+      return;
     }
 
     console.log('Found an update for binary! Downloading...');
   }
 
-  let updateFile;
+  const updateFile = await binaryUtils.download(
+    currentRemote.url,
+    currentRemote.binaryName
+  );
 
-  try {
-    updateFile = await binaryUtils.download(
-      currentRemote.url,
-      currentRemote.binaryName
-    );
-  } catch (err) {
-    return stopBinaryUpdate('Could not download update for binary');
-  }
+  // Move binary update into the place of the old one
+  // This step automatically overwrites the existing (old) binary
+  await fs.rename(updateFile.path, fullPath);
 
-  try {
-    await fs.rename(updateFile.path, fullPath);
-  } catch (err) {
-    return stopBinaryUpdate(err);
-  }
+  // Make sure the binary is executable
+  await binaryUtils.setPermissions(binaryDir);
 
-  // Make the binary executable
-  try {
-    await binaryUtils.setPermissions(binaryDir);
-  } catch (err) {
-    return stopBinaryUpdate(err);
-  }
-
+  // Remove temporary directory that contained the update
   updateFile.cleanup();
-  process.env.BINARY_UPDATE_RUNNING = 'no';
 
+  // Check the version of the installed binary
+  // This will return `false` if the binary is not executable
   const newVersion = localBinaryVersion();
 
   // If the CLI is broken (not runnable)
   // We need to update again
   if (!newVersion) {
-    return stopBinaryUpdate('Binary not executable');
+    throw new Error('Binary not executable');
   }
 
   const messages = {
@@ -127,22 +112,25 @@ const updateBinary = async () => {
   });
 };
 
-module.exports = app => {
-  setInterval(
-    async () => {
-      if (process.env.CONNECTION === 'offline') {
-        return;
-      }
+const startBinaryUpdates = () => {
+  const binaryUpdateTimer = time =>
+    setTimeout(
+      async () => {
+        try {
+          await updateBinary();
+          binaryUpdateTimer(ms('10m'));
+        } catch (err) {
+          console.log(err);
+          binaryUpdateTimer(ms('1m'));
+        }
+      },
+      time
+    );
 
-      try {
-        await updateBinary();
-      } catch (err) {
-        process.env.BINARY_UPDATE_RUNNING = 'no';
-      }
-    },
-    ms('15m')
-  );
+  binaryUpdateTimer(ms('2s'));
+};
 
+const startAppUpdates = app => {
   autoUpdater.on('error', console.error);
 
   try {
@@ -159,21 +147,8 @@ module.exports = app => {
     autoUpdater.checkForUpdates();
   };
 
-  // Check once in the beginning
-  setTimeout(
-    async () => {
-      // Update the app itself
-      checkForUpdates();
-
-      // ...and the binary
-      try {
-        await updateBinary();
-      } catch (err) {
-        process.env.BINARY_UPDATE_RUNNING = 'no';
-      }
-    },
-    ms('10s')
-  );
+  // Check for app update after startup
+  setTimeout(checkForUpdates, ms('10s'));
 
   // And then every 5 minutes
   setInterval(checkForUpdates, ms('5m'));
@@ -205,4 +180,9 @@ module.exports = app => {
   autoUpdater.on('update-not-available', () => {
     console.log('No updates found for the app');
   });
+};
+
+module.exports = app => {
+  startBinaryUpdates();
+  startAppUpdates(app);
 };
