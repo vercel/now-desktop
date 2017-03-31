@@ -13,7 +13,7 @@
     "build": "next build renderer",
     "lint": "xo",
     "precommit": "lint-staged",
-    "test": "npm run dist && npm run lint && ava",
+    "test": "npm run lint && npm run pack && ava",
     "pack": "npm run build && build --dir",
     "dist": "npm run build && build"
   },
