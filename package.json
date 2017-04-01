@@ -95,7 +95,7 @@
     "mkdirp": "0.5.1",
     "moment": "2.18.1",
     "ms": "1.0.0",
-    "next": "2.0.0",
+    "next": "2.0.1",
     "node-fetch": "1.6.3",
     "now-client": "0.7.0",
     "path-exists": "3.0.0",
@@ -117,14 +117,14 @@
   "devDependencies": {
     "ava": "0.18.2",
     "electron": "1.6.2",
-    "electron-builder": "16.6.0",
+    "electron-builder": "16.6.1",
     "electron-builder-squirrel-windows": "16.6.0",
     "eslint-config-prettier": "1.5.0",
     "eslint-plugin-react": "6.10.3",
     "husky": "0.13.3",
     "lint-staged": "3.4.0",
     "prettier": "0.22.0",
-    "spectron": "3.6.0",
+    "spectron": "3.6.1",
     "xo": "0.18.1"
   }
 }
