@@ -33,6 +33,9 @@ const server = require('./server');
 // Otherwise the tray icon would randomly hide after some time
 let tray = null;
 
+// Set the application's name
+app.setName('Now');
+
 // Hide dock icon before the app starts
 if (process.platform === 'darwin') {
   app.dock.hide();
