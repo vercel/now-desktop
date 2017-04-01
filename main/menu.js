@@ -12,11 +12,13 @@ const toggleWindow = require('./utils/toggle-window');
 
 exports.deploymentOptions = info => {
   const created = moment(new Date(parseInt(info.created, 10)));
-  const url = 'https://' + info.url;
+  const submenu = [];
 
-  return {
-    label: info.url,
-    submenu: [
+  // Incomplete deployments have this field set to `null`
+  if (info.url) {
+    const url = 'https://' + info.url;
+
+    submenu.push(
       {
         label: 'Open in Browser...',
         click: () => shell.openExternal(url)
@@ -52,21 +54,29 @@ exports.deploymentOptions = info => {
       },
       {
         type: 'separator'
-      },
-      {
-        label: 'Delete...',
-        async click() {
-          await removeDeployment(info);
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: created.format('[Created on] MMM Do YYYY, h:mm a'),
-        enabled: false
       }
-    ]
+    );
+  }
+
+  submenu.push(
+    {
+      label: 'Delete...',
+      async click() {
+        await removeDeployment(info);
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: created.format('[Created on] MMM Do YYYY, h:mm a'),
+      enabled: false
+    }
+  );
+
+  return {
+    label: info.url || 'Incomplete Deployment',
+    submenu
   };
 };
 
