@@ -1,5 +1,6 @@
 {
   "name": "now-desktop",
+  "productName": "Now",
   "description": "Realtime global deployments",
   "version": "0.7.2",
   "author": {
@@ -19,7 +20,6 @@
   },
   "build": {
     "appId": "co.zeit.now",
-    "productName": "Now",
     "asar": false,
     "win": {
       "target": [

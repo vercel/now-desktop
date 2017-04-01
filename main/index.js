@@ -38,9 +38,6 @@ if (process.platform === 'darwin') {
   app.dock.hide();
 }
 
-// Define the application name
-app.setName('Now');
-
 // Make Now start automatically on login
 if (!isDev && firstRun()) {
   app.setLoginItemSettings({
