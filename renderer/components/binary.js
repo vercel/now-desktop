@@ -252,10 +252,8 @@ const Binary = React.createClass({
             background: transparent;
             font-size: 13px;
             cursor: default;
-          }
-
-          .install.off:hover {
-            color: #d0d0d0;
+            color: #636363;
+            border-color: currentColor;
           }
         `
           }
