@@ -4,11 +4,10 @@ import remote from './electron';
 
 // Load from main process
 const sudo = remote.require('sudo-prompt');
+const { resolve: resolvePath } = remote.require('app-root-path');
+const utils = remote.require('./utils/binary');
 
 export default async section => {
-  const utils = remote.require('./utils/binary');
-  const resolvePath = remote.require('app-root-path').resolve;
-
   if (section) {
     section.setState({
       installing: true,
@@ -51,9 +50,6 @@ export default async section => {
     name: 'Now',
     icns: resolvePath('./main/static/icons/mac.icns')
   };
-
-  console.log(command);
-  console.log(sudoOptions);
 
   sudo.exec(command, sudoOptions, async error => {
     if (error) {
