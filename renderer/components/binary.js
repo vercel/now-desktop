@@ -34,7 +34,6 @@ const Binary = React.createClass({
     }
 
     const remoteVersion = current.version;
-
     let localVersion;
 
     try {
@@ -43,7 +42,6 @@ const Binary = React.createClass({
       return;
     }
 
-    localVersion = String(localVersion.split(' ')[2]);
     const comparision = semVer.compare(remoteVersion, localVersion);
 
     if (comparision === 1) {
