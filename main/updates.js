@@ -1,12 +1,10 @@
 // Native
-const path = require('path');
 const { homedir } = require('os');
 
 // Packages
 const { app, autoUpdater } = require('electron');
 const ms = require('ms');
 const semVer = require('semver');
-const fs = require('fs-promise');
 const pathType = require('path-type');
 const trimWhitespace = require('trim');
 const exists = require('path-exists');
@@ -48,8 +46,7 @@ const updateBinary = async () => {
     return;
   }
 
-  const binaryDir = binaryUtils.getPath();
-  const fullPath = path.join(binaryDir, `now${binaryUtils.getBinarySuffix()}`);
+  const fullPath = binaryUtils.getFile();
 
   if (!await exists(fullPath) || (await pathType.symlink(fullPath))) {
     return;
@@ -77,12 +74,7 @@ const updateBinary = async () => {
     currentRemote.binaryName
   );
 
-  // Move binary update into the place of the old one
-  // This step automatically overwrites the existing (old) binary
-  await fs.rename(updateFile.path, fullPath);
-
-  // Make sure the binary is executable
-  await binaryUtils.setPermissions(binaryDir);
+  await binaryUtils.handleExisting(updateFile.path);
 
   // Remove temporary directory that contained the update
   updateFile.cleanup();

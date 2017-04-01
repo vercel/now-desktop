@@ -54,9 +54,7 @@ const Binary = React.createClass({
   },
   async componentDidMount() {
     const binaryUtils = remote.require('./utils/binary');
-    const binaryPath = binaryUtils.getPath() +
-      '/now' +
-      binaryUtils.getBinarySuffix();
+    const binaryPath = binaryUtils.getFile();
 
     if (!await exists(binaryPath)) {
       return;
