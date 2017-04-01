@@ -17,6 +17,23 @@ const Registry = require('winreg');
 // Ours
 const { error: showError } = require('../dialogs');
 
+const runAsRoot = command =>
+  new Promise((resolve, reject) => {
+    const options = {
+      name: 'Now',
+      icns: resolvePath('./main/static/icons/mac.icns')
+    };
+
+    sudo.exec(command, options, async error => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve();
+    });
+  });
+
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
   if (process.platform !== 'win32') {
@@ -105,23 +122,8 @@ const setPermissions = async () => {
     }
   }
 
-  const sudoOptions = {
-    name: 'Now',
-    icns: resolvePath('./main/static/icons/mac.icns')
-  };
-
-  const cmd = 'chmod +x ' + nowPath;
-
-  // Request password = require(user
-  return new Promise((resolve, reject) =>
-    sudo(cmd, sudoOptions, (err, stdout) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(stdout);
-    }));
+  const sudoCommand = `chmod +x ${nowPath}`;
+  return runAsRoot(sudoCommand);
 };
 
 const platformName = () => {
@@ -182,26 +184,12 @@ exports.handleExisting = async next => {
     const mvCommand = isWindows ? 'move' : 'mv';
     const command = `${mvCommand} ${location.path} ${destFile}`;
 
-    const sudoOptions = {
-      name: 'Now',
-      icns: resolvePath('./main/static/icons/mac.icns')
-    };
-
     // We need to remove the old file first
     // Because `mv` does not overwrite
     await fs.remove(destFile);
 
     // Then move the new binary into position
-    await new Promise((resolve, reject) => {
-      sudo.exec(command, sudoOptions, async error => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve();
-      });
-    });
+    await runAsRoot(command);
   }
 
   await setPermissions();
