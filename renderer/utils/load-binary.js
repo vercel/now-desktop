@@ -2,10 +2,9 @@
 import showError from './error';
 import remote from './electron';
 
-// Load from main process
-const utils = remote.require('./utils/binary');
-
 export default async section => {
+  const utils = remote.require('./utils/binary');
+
   if (section) {
     section.setState({
       installing: true,
