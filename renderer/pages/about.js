@@ -89,15 +89,11 @@ const About = React.createClass({
       return;
     }
 
-    tutorial.reload();
-
-    tutorial.on('ready-to-show', () => {
-      tutorial.show();
-    });
+    tutorial.show();
   },
   handleCloseClick() {
     const currentWindow = remote.getCurrentWindow();
-    currentWindow.close();
+    currentWindow.hide();
   },
   updateStatus() {
     const isDev = remote.require('electron-is-dev');

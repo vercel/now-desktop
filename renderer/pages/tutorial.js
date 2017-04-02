@@ -104,7 +104,7 @@ const Sections = React.createClass({
   },
   handleCloseClick() {
     const currentWindow = remote.getCurrentWindow();
-    currentWindow.close();
+    currentWindow.hide();
   },
   alreadyLoggedIn() {
     const Config = remote.require('electron-config');
