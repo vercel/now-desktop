@@ -272,11 +272,11 @@ const Sections = React.createClass({
             }
 
             .window-controls span {
-              shape-rendering: crispEdges;
               opacity: .5;
               font-size: 0;
               display: block;
               -webkit-app-region: no-drag;
+              margin-left: 10px;
             }
 
             .window-controls span:nth-child(1):hover,
