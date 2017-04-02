@@ -226,7 +226,6 @@ const About = React.createClass({
               height: 10px;
               padding: 10px;
               z-index: 5000; /* the slick arrow is at 4000 */
-              -webkit-app-region: no-drag;
               background: transparent;
             }
 
@@ -235,6 +234,7 @@ const About = React.createClass({
               opacity: .5;
               font-size: 0;
               display: block;
+              -webkit-app-region: no-drag;
             }
 
             .window-controls span:nth-child(1):hover,
