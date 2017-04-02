@@ -180,15 +180,22 @@ exports.handleExisting = async next => {
     // If it doesn't work, ask for password
     await fs.rename(next, destFile);
   } catch (err) {
-    const mvCommand = process.platform === 'win32' ? 'move' : 'mv';
-    const command = `${mvCommand} ${next} ${destFile}`;
-
     // We need to remove the old file first
-    // Because `mv` does not overwrite
-    await fs.remove(destFile);
+    // Because neither `mv`, nor `move` overwrite
+    try {
+      await fs.remove(destFile);
+    } catch (err) {
+      const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f';
+      const removalCommand = `${removalPrefix} ${destFile}`;
+
+      await runAsRoot(removalCommand);
+    }
+
+    const movePrefix = process.platform === 'win32' ? 'move' : 'mv';
+    const moveCommand = `${movePrefix} ${next} ${destFile}`;
 
     // Then move the new binary into position
-    await runAsRoot(command);
+    await runAsRoot(moveCommand);
   }
 
   await setPermissions();
