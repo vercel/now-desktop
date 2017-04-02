@@ -11,7 +11,6 @@ import tokenFromCLI from '../utils/token/from-cli';
 
 // Vectors
 import ArrowSVG from '../vectors/arrow';
-import MaximizeSVG from '../vectors/maximize-window';
 import MinimizeSVG from '../vectors/minimize-window';
 import CloseSVG from '../vectors/close-window';
 import LogoSVG from '../vectors/logo';
@@ -194,10 +193,6 @@ const Sections = React.createClass({
           <div className="window-controls">
             <span onClick={this.handleMinimizeClick}>
               <MinimizeSVG />
-            </span>
-
-            <span>
-              <MaximizeSVG />
             </span>
 
             <span onClick={this.handleCloseClick}>
