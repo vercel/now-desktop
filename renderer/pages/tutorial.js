@@ -255,41 +255,40 @@ const Sections = React.createClass({
               color: #000;
             }
 
-            .window-controls span:nth-child(3):hover {
-              color: #FE354E;
-            }
-
             .window-controls {
               display: flex;
-              justify-content: space-between;
+              justify-content: flex-end;
               position: fixed;
               right: 0;
+              top: 0;
+              left: 0;
+              height: 10px;
+              padding: 10px;
               z-index: 5000; /* the slick arrow is at 4000 */
               -webkit-app-region: no-drag;
-            }
-
-            .window-controls span {
-              display: flex;
-              width: 40px;
-              height: 34px;
-              opacity: .5;
-              shape-rendering: crispEdges;
+              background: transparent;
             }
 
             .window-controls svg {
+              shape-rendering: crispEdges;
+              opacity: .5;
               width: 10px;
               margin: auto;
               fill: currentColor;
             }
 
-            .window-controls span:nth-child(1):hover,
-            .window-controls span:nth-child(3):hover {
+            .window-controls svg:nth-child(1):hover,
+            .window-controls svg:nth-child(3):hover {
               opacity: 1;
             }
 
-            .window-controls span:nth-child(1):active,
-            .window-controls span:nth-child(3):active {
+            .window-controls svg:nth-child(1):active,
+            .window-controls svg:nth-child(3):active {
               opacity: .3;
+            }
+
+            .window-controls span:nth-child(3):hover {
+              color: #FE354E;
             }
 
             #intro h1 {
