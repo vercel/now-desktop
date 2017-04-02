@@ -181,7 +181,7 @@ exports.handleExisting = async next => {
     await fs.rename(next, destFile);
   } catch (err) {
     const mvCommand = process.platform === 'win32' ? 'move' : 'mv';
-    const command = `${mvCommand} ${location.path} ${destFile}`;
+    const command = `${mvCommand} ${next} ${destFile}`;
 
     // We need to remove the old file first
     // Because `mv` does not overwrite
