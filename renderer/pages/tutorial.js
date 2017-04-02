@@ -279,14 +279,8 @@ const Sections = React.createClass({
               margin-left: 10px;
             }
 
-            .window-controls span:nth-child(1):hover,
-            .window-controls span:nth-child(3):hover {
+            .window-controls span:hover {
               opacity: 1;
-            }
-
-            .window-controls span:nth-child(1):active,
-            .window-controls span:nth-child(3):active {
-              opacity: .3;
             }
 
             #intro h1 {
