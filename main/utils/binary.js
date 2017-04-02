@@ -180,8 +180,7 @@ exports.handleExisting = async next => {
     // If it doesn't work, ask for password
     await fs.rename(next, destFile);
   } catch (err) {
-    const isWindows = /Windows/.test(navigator.userAgent);
-    const mvCommand = isWindows ? 'move' : 'mv';
+    const mvCommand = process.platform === 'win32' ? 'move' : 'mv';
     const command = `${mvCommand} ${location.path} ${destFile}`;
 
     // We need to remove the old file first
