@@ -21,7 +21,6 @@ exports.share = async function(
     buttonLabel: 'Share'
   };
 
-  console.log(properties);
   tray.setHighlightMode('always');
   const path = showDialog(info);
   tray.setHighlightMode('never');

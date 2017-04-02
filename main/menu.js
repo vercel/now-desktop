@@ -116,14 +116,12 @@ exports.innerMenu = async function(app, tray, data, windows) {
         {
           label: 'Directory...',
           async click() {
-            console.log('a');
             await share(tray, ['openDirectory']);
           }
         },
         {
           label: 'File...',
           async click() {
-            console.log('b');
             await share(tray, ['openFile']);
           }
         }
