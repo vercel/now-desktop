@@ -169,7 +169,7 @@ exports.getFile = () => {
   const destDirectory = exports.getDirectory();
   const suffix = exports.getBinarySuffix();
 
-  return path.join(destDirectory, 'now', suffix);
+  return path.join(destDirectory, 'now' + suffix);
 };
 
 exports.handleExisting = async next => {
