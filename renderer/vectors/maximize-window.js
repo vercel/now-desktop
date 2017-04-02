@@ -2,7 +2,7 @@
 import React from 'react';
 
 const MaximizeWindow = () => (
-  <svg viewBox="0 0 10 10" version="1.1">
+  <svg height="10px" width="10px" viewBox="0 0 10 10" version="1.1">
     <defs>
       <polygon id="maximize-window-a" points="0 0 10 0 10 10 0 10" />
       <mask id="maximize-window-b" width="10" height="10" x="0" y="0">

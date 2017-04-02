@@ -2,7 +2,7 @@
 import React from 'react';
 
 const CloseWindow = () => (
-  <svg viewBox="0 0 10 10" version="1.1">
+  <svg height="10px" width="10px" viewBox="0 0 10 10" version="1.1">
     <g fill="none" fillRule="evenodd">
       <g
         stroke="currentColor"

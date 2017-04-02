@@ -192,9 +192,17 @@ const Sections = React.createClass({
       <div>
         {platform() === 'win32' &&
           <div className="window-controls">
-            <MinimizeSVG onClick={this.handleMinimizeClick} />
-            <MaximizeSVG />
-            <CloseSVG onClick={this.handleCloseClick} />
+            <span onClick={this.handleMinimizeClick}>
+              <MinimizeSVG />
+            </span>
+
+            <span>
+              <MaximizeSVG />
+            </span>
+
+            <span onClick={this.handleCloseClick}>
+              <CloseSVG />
+            </span>
           </div>}
         <Slider {...sliderSettings} ref={setRef}>
           <section id="intro">
@@ -269,26 +277,21 @@ const Sections = React.createClass({
               background: transparent;
             }
 
-            .window-controls svg {
+            .window-controls span {
               shape-rendering: crispEdges;
               opacity: .5;
-              width: 10px;
-              margin: auto;
-              fill: currentColor;
+              font-size: 0;
+              display: block;
             }
 
-            .window-controls svg:nth-child(1):hover,
-            .window-controls svg:nth-child(3):hover {
+            .window-controls span:nth-child(1):hover,
+            .window-controls span:nth-child(3):hover {
               opacity: 1;
             }
 
-            .window-controls svg:nth-child(1):active,
-            .window-controls svg:nth-child(3):active {
+            .window-controls span:nth-child(1):active,
+            .window-controls span:nth-child(3):active {
               opacity: .3;
-            }
-
-            .window-controls span:nth-child(3):hover {
-              color: #FE354E;
             }
 
             #intro h1 {
