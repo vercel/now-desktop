@@ -9,7 +9,6 @@ const path = require('path');
 // Packages
 const { app, Tray, Menu, BrowserWindow, ipcMain } = require('electron');
 const ms = require('ms');
-const Config = require('electron-config');
 const isDev = require('electron-is-dev');
 const { dir: isDirectory } = require('path-type');
 const fs = require('fs-promise');
@@ -24,7 +23,7 @@ const { error: showError } = require('./dialogs');
 const deploy = require('./actions/deploy');
 const share = require('./actions/share');
 const autoUpdater = require('./updates');
-const { refreshCache } = require('./api');
+const { prepareCache, refreshCache } = require('./api');
 const attachTrayState = require('./utils/highlight');
 const toggleWindow = require('./utils/toggle-window');
 const server = require('./server');
@@ -63,7 +62,7 @@ process.on('uncaughtException', err => {
   showError('Unhandled error appeared', err);
 });
 
-const config = new Config();
+const cache = prepareCache();
 
 // For starting the refreshment right after login
 global.startRefresh = tutorialWindow => {
@@ -176,8 +175,8 @@ const assignAliases = (aliases, deployment) => {
 const toDate = int => new Date(parseInt(int, 10));
 
 const toggleContextMenu = async windows => {
-  const deployments = config.get('now.cache.deployments');
-  const aliases = config.get('now.cache.aliases');
+  const deployments = cache.get('deployments');
+  const aliases = cache.get('aliases');
 
   const apps = new Map();
   const deploymentList = [];
@@ -307,12 +306,12 @@ const fileDropped = async (event, files) => {
 };
 
 app.on('ready', async () => {
-  if (!config.has('no-move-wanted') && !isDev) {
+  if (!cache.has('no-move-wanted') && !isDev) {
     try {
       const moved = await moveToApplications();
 
       if (!moved) {
-        config.set('no-move-wanted', true);
+        cache.set('no-move-wanted', true);
       }
     } catch (err) {
       showError(err);

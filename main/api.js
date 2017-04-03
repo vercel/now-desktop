@@ -1,7 +1,8 @@
 // Packages
 const Now = require('now-client');
-const Config = require('electron-config');
+const Cache = require('electron-config');
 const chalk = require('chalk');
+const isDev = require('electron-is-dev');
 
 // Utilities
 const { error: showError } = require('./dialogs');
@@ -18,6 +19,11 @@ exports.connector = async () => {
   }
 
   return new Now(config.token);
+};
+
+exports.prepareCache = () => {
+  const name = isDev ? 'now-cache' : 'cache';
+  return new Cache({ name });
 };
 
 const refreshKind = async (name, session) => {
@@ -49,10 +55,10 @@ const refreshKind = async (name, session) => {
       return;
     }
 
-    const config = new Config();
-    const configProperty = 'now.cache.' + name;
+    // Save fresh data to cache
+    const cache = exports.prepareCache();
+    cache.set(name, freshData);
 
-    config.set(configProperty, freshData);
     resolve();
   });
 };

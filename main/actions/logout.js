@@ -1,10 +1,10 @@
 // Packages
-const Config = require('electron-config');
 const fetch = require('node-fetch');
 
 // Utilities
 const { error: showError } = require('../dialogs');
 const { remove: removeConfig, get: getConfig } = require('../utils/config');
+const { prepareCache } = require('../api');
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/';
 
@@ -63,7 +63,6 @@ const revokeToken = async (token, tokenId) => {
 };
 
 module.exports = async (app, tutorial) => {
-  const config = new Config();
   const offline = process.env.CONNECTION === 'offline';
 
   // The app shouldn't log out if an error occurs while offline
@@ -71,9 +70,6 @@ module.exports = async (app, tutorial) => {
   if (offline) {
     return;
   }
-
-  // Clear app cache
-  config.clear();
 
   // Cache user information
   const userDetails = await getConfig();
@@ -83,6 +79,10 @@ module.exports = async (app, tutorial) => {
   } catch (err) {
     showError(`Couldn't remove config while logging out`, err);
   }
+
+  // Clear app cache
+  const cache = prepareCache();
+  cache.clear();
 
   if (tutorial) {
     // Prepare the tutorial by reloading its contents

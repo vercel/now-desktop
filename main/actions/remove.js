@@ -53,7 +53,7 @@ module.exports = async info => {
   });
 
   const cache = new Cache();
-  const cacheIdentifier = 'now.cache.deployments';
+  const cacheIdentifier = 'deployments';
 
   if (!cache.has(cacheIdentifier)) {
     return;
