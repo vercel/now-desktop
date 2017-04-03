@@ -50,27 +50,47 @@ const Binary = React.createClass({
 
     return false;
   },
-  async componentDidMount() {
+  async binaryInstalled() {
     const binaryUtils = remote.require('./utils/binary');
     const binaryPath = binaryUtils.getFile();
 
     if (!await exists(binaryPath)) {
-      return;
+      return false;
     }
 
     if (await pathType.symlink(binaryPath)) {
-      return;
+      return false;
     }
 
     if (await this.isOlderThanLatest(binaryUtils, binaryPath)) {
-      return;
+      return false;
     }
 
+    return true;
+  },
+  async componentDidMount() {
     const currentWindow = remote.getCurrentWindow();
-    currentWindow.focus();
 
-    this.setState({
-      binaryInstalled: true
+    if (await this.binaryInstalled()) {
+      currentWindow.focus();
+
+      this.setState({
+        binaryInstalled: true
+      });
+    }
+
+    // We need to refresh the state of the binary section
+    // each time the window gets opened
+    // because the user might deleted the binary
+    currentWindow.on('show', async () => {
+      if (this.state.installing) {
+        return;
+      }
+
+      const initialState = this.getInitialState();
+      initialState.binaryInstalled = await this.binaryInstalled();
+
+      this.setState(initialState);
     });
   },
   render() {
@@ -231,7 +251,7 @@ const Binary = React.createClass({
             color: #fff;
             font-size: 12px;
             padding: 8px 20px;
-            transition: all .2s ease;
+            transition: color .2s ease, background .2s ease;
             cursor: pointer;
             display: inline-block;
             line-height: normal;
