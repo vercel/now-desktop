@@ -263,8 +263,8 @@ exports.download = (url, binaryName) =>
       return;
     }
 
-    return {
+    resolve({
       path: path.join(tempDir.path, binaryName),
       cleanup: tempDir.cleanup
-    };
+    });
   });
