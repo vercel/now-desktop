@@ -14,7 +14,7 @@
     "build": "next build renderer",
     "lint": "xo",
     "precommit": "lint-staged",
-    "test": "npm run lint && npm run pack && ava",
+    "test": "npm run lint && npm run dist && ava",
     "pack": "npm run build && build --dir",
     "dist": "npm run build && build"
   },
