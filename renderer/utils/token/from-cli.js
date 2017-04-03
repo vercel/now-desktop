@@ -13,7 +13,9 @@ export default async root => {
 
   try {
     config = await getConfig();
-  } catch (err) {}
+  } catch (err) {
+    return;
+  }
 
   if (!config.token) {
     return;
