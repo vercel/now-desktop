@@ -78,9 +78,16 @@ module.exports = async (app, tutorial) => {
     showError(`Couldn't remove config while logging out`, err);
   }
 
-  // Clear app cache
   const cache = prepareCache();
+  const noMoveWanted = cache.has('no-move-wanted');
+
+  // Clear app cache
   cache.clear();
+
+  // Keep user selection of moving the app binary
+  if (noMoveWanted) {
+    cache.set('no-move-wanted', true);
+  }
 
   if (tutorial) {
     // Prepare the tutorial by reloading its contents
