@@ -388,7 +388,11 @@ app.on('ready', async () => {
     return app.exit();
   }
 
-  if (await isLoggedIn()) {
+  // If the user is logged in and the app isn't running
+  // the first time, immediately start refreshing the data
+
+  // Otherwise, ask the user to log in using the tutorial
+  if ((await isLoggedIn()) && !firstRun()) {
     // Periodically rebuild local cache every 10 seconds
     global.startRefresh(windows.tutorial);
   } else {
