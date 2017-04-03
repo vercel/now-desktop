@@ -164,7 +164,9 @@ const Sections = React.createClass({
     const currentWindow = remote.getCurrentWindow();
 
     currentWindow.on('hide', () => {
-      this.slider.slickGoTo(0);
+      if (this.slider) {
+        this.slider.slickGoTo(0);
+      }
     });
   },
   render() {

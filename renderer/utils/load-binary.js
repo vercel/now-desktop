@@ -3,6 +3,13 @@ import showError from './error';
 import remote from './electron';
 
 export default async section => {
+  const onlineStatus = remote.process.env.CONNECTION;
+
+  if (onlineStatus && onlineStatus === 'offline') {
+    showError(`Could not download binary. You're offline!`);
+    return;
+  }
+
   const utils = remote.require('./utils/binary');
 
   if (section) {
@@ -17,14 +24,28 @@ export default async section => {
   try {
     downloadURL = await utils.getURL();
   } catch (err) {
+    section.setState({
+      installing: false,
+      done: false
+    });
+
     showError('Not able to get URL of latest binary', err);
     return;
   }
 
-  const location = await utils.download(
-    downloadURL.url,
-    downloadURL.binaryName
-  );
+  let location;
+
+  try {
+    location = await utils.download(downloadURL.url, downloadURL.binaryName);
+  } catch (err) {
+    section.setState({
+      installing: false,
+      done: false
+    });
+
+    showError('Could not download binary', err);
+    return;
+  }
 
   if (section) {
     section.setState({

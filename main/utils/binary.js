@@ -250,9 +250,17 @@ exports.download = async (url, binaryName) => {
   }
 
   try {
-    await retry(async () => {
-      await load(url, tempDir.path);
-    });
+    await retry(
+      async () => {
+        await load(url, tempDir.path);
+      },
+      {
+        retries: 5,
+        onRetry(err) {
+          console.log(err);
+        }
+      }
+    );
   } catch (err) {
     showError('Could not download binary', err);
     return;
