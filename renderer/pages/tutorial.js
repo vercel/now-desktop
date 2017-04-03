@@ -160,6 +160,12 @@ const Sections = React.createClass({
   async componentDidMount() {
     await this.alreadyLoggedIn();
     document.addEventListener('keydown', this.arrowKeys, false);
+
+    const currentWindow = remote.getCurrentWindow();
+
+    currentWindow.on('hide', () => {
+      this.slider.slickGoTo(0);
+    });
   },
   render() {
     const isWin = platform() === 'win32';
