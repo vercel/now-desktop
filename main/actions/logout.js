@@ -8,13 +8,11 @@ const { prepareCache } = require('../api');
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/';
 
-const requestHeaders = token => {
-  return {
-    headers: {
-      Authorization: `bearer ${token}`
-    }
-  };
-};
+const requestHeaders = token => ({
+  headers: {
+    Authorization: `bearer ${token}`
+  }
+});
 
 const getTokenId = async token => {
   let result;

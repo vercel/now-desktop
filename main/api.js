@@ -6,7 +6,6 @@ const isDev = require('electron-is-dev');
 
 // Utilities
 const { error: showError } = require('./dialogs');
-const logout = require('./actions/logout');
 const { get: getConfig } = require('./utils/config');
 
 exports.connector = async () => {
@@ -72,7 +71,7 @@ const stopInterval = interval => {
   clearInterval(interval);
 };
 
-exports.refreshCache = async function(kind, app, tutorial, interval) {
+exports.refreshCache = async (kind, app, tutorial, interval) => {
   const session = await exports.connector();
 
   if (!session) {
@@ -111,6 +110,7 @@ exports.refreshCache = async function(kind, app, tutorial, interval) {
 
       // If token has been revoked, the server will not respond with data
       // In turn, we need to log out
+      const logout = require('./actions/logout');
       await logout(app, tutorial);
     }
 
