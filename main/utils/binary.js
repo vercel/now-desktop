@@ -3,9 +3,9 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 // Packages
+const { ipcMain } = require('electron');
 const fetch = require('node-fetch');
 const tmp = require('tmp-promise');
-const retry = require('async-retry');
 const load = require('download');
 const fs = require('fs-promise');
 const which = require('which-promise');
@@ -13,9 +13,6 @@ const sudo = require('sudo-prompt');
 const { resolve: resolvePath } = require('app-root-path');
 const { sync: mkdir } = require('mkdirp');
 const Registry = require('winreg');
-
-// Ours
-const { error: showError } = require('../dialogs');
 
 const runAsRoot = command =>
   new Promise((resolve, reject) => {
@@ -239,35 +236,35 @@ exports.getURL = async () => {
   };
 };
 
-exports.download = async (url, binaryName) => {
-  let tempDir;
+exports.download = (url, binaryName) =>
+  new Promise(async (resolve, reject) => {
+    let tempDir;
 
-  try {
-    tempDir = await tmp.dir();
-  } catch (err) {
-    showError('Could not create temporary directory', err);
-    return;
-  }
+    try {
+      tempDir = await tmp.dir();
+    } catch (err) {
+      reject(err);
+      return;
+    }
 
-  try {
-    await retry(
-      async () => {
-        await load(url, tempDir.path);
-      },
-      {
-        retries: 5,
-        onRetry(err) {
-          console.log(err);
-        }
+    ipcMain.once('online-status-changed', (event, status) => {
+      if (status === 'offline') {
+        const error = new Error(`You wen't offline! Stopping download...`);
+        error.name = 'offline';
+
+        reject(error);
       }
-    );
-  } catch (err) {
-    showError('Could not download binary', err);
-    return;
-  }
+    });
 
-  return {
-    path: path.join(tempDir.path, binaryName),
-    cleanup: tempDir.cleanup
-  };
-};
+    try {
+      await load(url, tempDir.path);
+    } catch (err) {
+      reject(err);
+      return;
+    }
+
+    return {
+      path: path.join(tempDir.path, binaryName),
+      cleanup: tempDir.cleanup
+    };
+  });

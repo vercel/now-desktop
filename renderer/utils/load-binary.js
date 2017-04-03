@@ -43,6 +43,11 @@ export default async section => {
       done: false
     });
 
+    if (err instanceof Error && err.name && err.name === 'offline') {
+      showError(err.message);
+      return;
+    }
+
     showError('Could not download binary', err);
     return;
   }
