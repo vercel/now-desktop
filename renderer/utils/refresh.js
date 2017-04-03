@@ -7,7 +7,8 @@ export default async currentWindow => {
   await refreshCache(null, remote.app, currentWindow);
 
   // Start periodically refreshing data after login
-  remote.getGlobal('startRefresh')(currentWindow);
+  const startRefreshing = remote.getGlobal('startRefresh');
+  await startRefreshing(currentWindow);
 
   // Start checking for app and CLI updates
   remote.require('./updates')();

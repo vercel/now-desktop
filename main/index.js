@@ -65,10 +65,13 @@ process.on('uncaughtException', err => {
 const cache = prepareCache();
 
 // For starting the refreshment right after login
-global.startRefresh = tutorialWindow => {
+global.startRefresh = async tutorialWindow => {
   const timeSpan = ms('10s');
 
-  // Periodically rebuild local cache every 10 seconds
+  // Refresh cache once in the beginning
+  await refreshCache(null, app, tutorialWindow);
+
+  // After that, oeriodically refresh it every 10 seconds
   const interval = setInterval(
     async () => {
       if (process.env.CONNECTION === 'offline') {
@@ -394,7 +397,7 @@ app.on('ready', async () => {
   // Otherwise, ask the user to log in using the tutorial
   if ((await isLoggedIn()) && !firstRun()) {
     // Periodically rebuild local cache every 10 seconds
-    global.startRefresh(windows.tutorial);
+    await global.startRefresh(windows.tutorial);
   } else {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
