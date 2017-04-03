@@ -18,7 +18,7 @@ const { resolve: resolvePath } = require('app-root-path');
 const firstRun = require('first-run');
 const { moveToApplications } = require('electron-lets-move');
 
-// Ours
+// Utilities
 const { innerMenu, outerMenu, deploymentOptions } = require('./menu');
 const { error: showError } = require('./dialogs');
 const deploy = require('./actions/deploy');
@@ -28,6 +28,7 @@ const { refreshCache } = require('./api');
 const attachTrayState = require('./utils/highlight');
 const toggleWindow = require('./utils/toggle-window');
 const server = require('./server');
+const { get: getConfig } = require('./utils/config');
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -247,9 +248,14 @@ const toggleContextMenu = async windows => {
   tray.popUpContextMenu(menu, tray.getBounds());
 };
 
-const isLoggedIn = () => {
-  const userProperty = config.has('now.user');
-  return userProperty;
+const isLoggedIn = async () => {
+  try {
+    await getConfig();
+  } catch (err) {
+    return false;
+  }
+
+  return true;
 };
 
 const isDeployable = async directory => {
@@ -279,9 +285,7 @@ const fileDropped = async (event, files) => {
     return;
   }
 
-  const loggedIn = isLoggedIn();
-
-  if (!loggedIn) {
+  if (!await isLoggedIn()) {
     return;
   }
 
@@ -364,8 +368,8 @@ app.on('ready', async () => {
     about: aboutWindow(rendererPort)
   };
 
-  const toggleActivity = event => {
-    const loggedIn = isLoggedIn();
+  const toggleActivity = async event => {
+    const loggedIn = await isLoggedIn();
 
     if (loggedIn && !windows.tutorial.isVisible()) {
       tray.setHighlightMode('selection');
@@ -385,12 +389,10 @@ app.on('ready', async () => {
     return app.exit();
   }
 
-  if (isLoggedIn()) {
+  if (await isLoggedIn()) {
     // Periodically rebuild local cache every 10 seconds
     global.startRefresh(windows.tutorial);
-  }
-
-  if (!isLoggedIn()) {
+  } else {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     windows.tutorial.on('ready-to-show', () =>

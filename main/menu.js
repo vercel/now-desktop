@@ -1,7 +1,6 @@
 // Packages
 const { shell, clipboard } = require('electron');
 const moment = require('moment');
-const Config = require('electron-config');
 
 // Ours
 const { deploy, share } = require('./dialogs');
@@ -9,6 +8,7 @@ const logout = require('./actions/logout');
 const removeDeployment = require('./actions/remove');
 const notify = require('./notify');
 const toggleWindow = require('./utils/toggle-window');
+const { get: getConfig } = require('./utils/config');
 
 exports.deploymentOptions = info => {
   const created = moment(new Date(parseInt(info.created, 10)));
@@ -97,7 +97,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
     }
   }
 
-  const config = new Config();
+  const config = await getConfig();
   let shareMenu;
 
   if (process.platform === 'darwin') {
@@ -165,7 +165,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
       label: 'Account',
       submenu: [
         {
-          label: config.get('now.user.email') || 'No user defined',
+          label: config.email || 'No user defined',
           enabled: false
         },
         {

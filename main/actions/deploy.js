@@ -259,7 +259,7 @@ module.exports = async (folder, sharing) => {
   }
 
   let deployment;
-  const apiSession = connector();
+  const apiSession = await connector();
 
   try {
     deployment = await apiSession.createDeployment(details);

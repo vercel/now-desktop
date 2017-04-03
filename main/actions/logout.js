@@ -1,14 +1,10 @@
-// Native
-const os = require('os');
-const path = require('path');
-
 // Packages
 const Config = require('electron-config');
 const fetch = require('node-fetch');
-const fs = require('fs-promise');
 
-// Ours
+// Utilities
 const { error: showError } = require('../dialogs');
+const { remove: removeConfig, get: getConfig } = require('../utils/config');
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/';
 
@@ -66,48 +62,27 @@ const revokeToken = async (token, tokenId) => {
   }
 };
 
-const logoutConfig = async () => {
-  const file = path.join(os.homedir(), '.now.json');
-  const currentContent = await fs.readJSON(file);
-
-  if (currentContent.email) {
-    delete currentContent.email;
-  }
-
-  if (currentContent.token) {
-    delete currentContent.token;
-  }
-
-  await fs.writeJSON(file, currentContent);
-};
-
 module.exports = async (app, tutorial) => {
   const config = new Config();
-
-  const noUser = config.has('now.user') === false;
   const offline = process.env.CONNECTION === 'offline';
 
   // The app shouldn't log out if an error occurs while offline
   // Only do that while online
-  if (offline || noUser) {
+  if (offline) {
     return;
   }
 
-  // Cache user information
-  const userDetails = config.get('now.user');
-
-  // Remove configuration information
+  // Clear app cache
   config.clear();
 
-  const existent = config.has('now.user');
-
-  if (existent) {
-    showError("Couldn't log out");
-  }
+  // Cache user information
+  const userDetails = await getConfig();
 
   try {
-    await logoutConfig();
-  } catch (err) {}
+    await removeConfig();
+  } catch (err) {
+    showError(`Couldn't remove config while logging out`, err);
+  }
 
   if (tutorial) {
     // Prepare the tutorial by reloading its contents

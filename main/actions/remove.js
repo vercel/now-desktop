@@ -34,7 +34,7 @@ module.exports = async info => {
   );
 
   // Otherwise, delete the deployment
-  const now = connector();
+  const now = await connector();
 
   try {
     await now.deleteDeployment(info.uid);

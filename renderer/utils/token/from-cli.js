@@ -3,38 +3,31 @@ import remote from '../electron';
 import startRefreshment from '../refresh';
 import tokenValidated from './validate';
 
-export default root => {
-  const path = remote.require('path');
-  const os = remote.require('os');
-  const fs = remote.require('fs-promise');
-  const Config = remote.require('electron-config');
-
+export default async root => {
+  const { get: getConfig, remove: removeConfig } = remote.require(
+    './utils/config'
+  );
   window.sliderElement = root;
 
-  const filePath = path.join(os.homedir(), '.now.json');
-  const loader = fs.readJSON(filePath);
+  let config;
 
-  loader
-    .then(async content => {
-      if (!content.token) {
-        return;
-      }
+  try {
+    config = await getConfig();
+  } catch (err) {}
 
-      if (!await tokenValidated(content.token)) {
-        return;
-      }
+  if (!config.token) {
+    return;
+  }
 
-      const config = new Config();
+  if (!await tokenValidated(config.token)) {
+    await removeConfig();
+    return;
+  }
 
-      config.set('now.user.token', content.token);
-      config.set('now.user.email', content.email);
+  root.setState({
+    loginShown: false,
+    loginText: `You've already signed in once in the now CLI.\nBecause of this, you've now been logged in automatically.`
+  });
 
-      root.setState({
-        loginShown: false,
-        loginText: `You've already signed in once in the now CLI.\nBecause of this, you've now been logged in automatically.`
-      });
-
-      await startRefreshment(remote.getCurrentWindow());
-    })
-    .catch(() => {});
+  await startRefreshment(remote.getCurrentWindow());
 };

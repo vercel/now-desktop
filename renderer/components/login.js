@@ -6,7 +6,6 @@ import AutoSizeInput from 'react-input-autosize';
 // Ours
 import error from '../utils/error';
 import startRefreshment from '../utils/refresh';
-import saveToCLI from '../utils/token/to-cli';
 import remote from '../utils/electron';
 
 const domains = [
@@ -153,15 +152,15 @@ const Login = React.createClass({
     } while (!final);
     /* eslint-enable no-await-in-loop */
 
-    const Config = remote.require('electron-config');
-    const config = new Config();
-
-    // Save user information to consistent configuration
-    config.set('now.user.email', email);
-    config.set('now.user.token', final);
-
     // Also save it to now.json
-    await saveToCLI(email, final);
+    const { save: saveConfig } = remote.require('./utils/config');
+
+    try {
+      await saveConfig(email, final);
+    } catch (err) {
+      error('Could not save config', err);
+      return;
+    }
 
     const currentWindow = remote.getCurrentWindow();
 

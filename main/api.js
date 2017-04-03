@@ -3,20 +3,21 @@ const Now = require('now-client');
 const Config = require('electron-config');
 const chalk = require('chalk');
 
-// Ours
+// Utilities
 const { error: showError } = require('./dialogs');
 const logout = require('./actions/logout');
+const { get: getConfig } = require('./utils/config');
 
-exports.connector = function(userToken) {
-  const config = new Config();
-  const token = userToken || config.get('now.user.token');
+exports.connector = async () => {
+  let config;
 
-  if (!token) {
-    console.error('No token defined. Not able to load data!');
+  try {
+    config = await getConfig();
+  } catch (err) {
     return false;
   }
 
-  return new Now(token);
+  return new Now(config.token);
 };
 
 const refreshKind = async (name, session) => {
@@ -66,7 +67,7 @@ const stopInterval = interval => {
 };
 
 exports.refreshCache = async function(kind, app, tutorial, interval) {
-  const session = exports.connector();
+  const session = await exports.connector();
 
   if (!session) {
     stopInterval(interval);
@@ -85,7 +86,6 @@ exports.refreshCache = async function(kind, app, tutorial, interval) {
   }
 
   const sweepers = new Set();
-
   const kinds = new Set(['deployments', 'aliases']);
 
   for (const kind of kinds) {

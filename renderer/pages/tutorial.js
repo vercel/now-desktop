@@ -106,22 +106,23 @@ const Sections = React.createClass({
     const currentWindow = remote.getCurrentWindow();
     currentWindow.hide();
   },
-  alreadyLoggedIn() {
-    const Config = remote.require('electron-config');
-    const config = new Config();
+  async alreadyLoggedIn() {
+    const { get: getConfig } = remote.require('./utils/config');
 
-    if (config.has('now.user')) {
+    try {
+      await getConfig();
+    } catch (err) {
       this.setState({
-        tested: true,
-        loginShown: false,
-        loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
+        tested: true
       });
 
       return;
     }
 
     this.setState({
-      tested: true
+      tested: true,
+      loginShown: false,
+      loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
     });
   },
   arrowKeys(event) {
@@ -156,8 +157,8 @@ const Sections = React.createClass({
 
     event.preventDefault();
   },
-  componentDidMount() {
-    this.alreadyLoggedIn();
+  async componentDidMount() {
+    await this.alreadyLoggedIn();
     document.addEventListener('keydown', this.arrowKeys, false);
   },
   render() {
