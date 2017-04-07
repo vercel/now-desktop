@@ -84,7 +84,7 @@ global.startRefresh = async tutorialWindow => {
   );
 };
 
-const windowURL = page => `next://${page}`;
+const windowURL = page => `next://app/${page}`;
 
 const onboarding = () => {
   const win = new BrowserWindow({
