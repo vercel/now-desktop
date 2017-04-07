@@ -84,9 +84,9 @@ global.startRefresh = async tutorialWindow => {
   );
 };
 
-const windowURL = (page, port) => `http://localhost:${port}/${page}`;
+const windowURL = page => `next://${page}`;
 
-const onboarding = rendererPort => {
+const onboarding = () => {
   const win = new BrowserWindow({
     width: 650,
     height: 430,
@@ -101,7 +101,7 @@ const onboarding = rendererPort => {
     backgroundColor: '#000'
   });
 
-  win.loadURL(windowURL('tutorial', rendererPort));
+  win.loadURL(windowURL('tutorial'));
   attachTrayState(win, tray);
 
   // We need to access it = the "About" window
@@ -132,7 +132,7 @@ const onboarding = rendererPort => {
   return win;
 };
 
-const aboutWindow = rendererPort => {
+const aboutWindow = () => {
   const win = new BrowserWindow({
     width: 360,
     height: 408,
@@ -148,7 +148,7 @@ const aboutWindow = rendererPort => {
     backgroundColor: '#ECECEC'
   });
 
-  win.loadURL(windowURL('about', rendererPort));
+  win.loadURL(windowURL('about'));
   attachTrayState(win, tray);
 
   global.about = win;
