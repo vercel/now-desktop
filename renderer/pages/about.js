@@ -4,6 +4,7 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import timeAgo from 'time-ago';
+import { rendererPreload } from '@marshallofsound/electron-router';
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window';
@@ -16,6 +17,8 @@ import Licenses from '../components/licenses';
 // Helpers
 import showError from '../utils/error';
 import remote from '../utils/electron';
+
+if (process.type === 'renderer') rendererPreload();
 
 const openLink = event => {
   const link = event.target;

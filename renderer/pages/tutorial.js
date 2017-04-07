@@ -4,6 +4,7 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import Slider from 'react-slick';
+import { rendererPreload } from '@marshallofsound/electron-router';
 
 // Helpers
 import remote from '../utils/electron';
@@ -20,6 +21,8 @@ import Title from '../components/title';
 import Login from '../components/login';
 import Binary from '../components/binary';
 import Container from '../components/container';
+
+if (process.type === 'renderer') rendererPreload();
 
 const SliderArrows = React.createClass({
   render() {
