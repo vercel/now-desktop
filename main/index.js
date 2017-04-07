@@ -356,18 +356,16 @@ app.on('ready', async () => {
     return;
   }
 
-  let rendererPort;
-
   try {
-    rendererPort = await server();
+    await server();
   } catch (err) {
     showError('Not able to start server', err);
     return;
   }
 
   const windows = {
-    tutorial: onboarding(rendererPort),
-    about: aboutWindow(rendererPort)
+    tutorial: onboarding(),
+    about: aboutWindow()
   };
 
   const toggleActivity = async event => {
