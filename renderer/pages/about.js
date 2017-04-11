@@ -5,6 +5,7 @@ import { platform } from 'os';
 import React from 'react';
 import timeAgo from 'time-ago';
 import { rendererPreload } from 'electron-routes';
+import { resolve } from 'app-root-path';
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window';
@@ -60,9 +61,10 @@ const About = React.createClass({
     }
 
     let localRelease;
+    const pkg = require(resolve('package.json'));
 
     for (const release of data) {
-      if (release.tag_name === remote.app.getVersion()) {
+      if (release.tag_name === pkg.version) {
         localRelease = release;
       }
     }
@@ -144,6 +146,8 @@ const About = React.createClass({
     );
   },
   render() {
+    const pkg = require(resolve('package.json'));
+
     return (
       <Container>
         <div>
@@ -162,7 +166,7 @@ const About = React.createClass({
             <h2>
               Version
               {' '}
-              <b>{remote.app.getVersion()}</b>
+              <b>{pkg.version}</b>
               {' '}
               {this.state.lastReleaseDate}
             </h2>
