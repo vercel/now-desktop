@@ -4,7 +4,7 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import Slider from 'react-slick';
-import { rendererPreload } from '@marshallofsound/electron-router';
+import { rendererPreload } from 'electron-routes';
 
 // Helpers
 import remote from '../utils/electron';

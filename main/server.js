@@ -3,7 +3,7 @@ const fs = require('fs');
 const next = require('next');
 const dev = require('electron-is-dev');
 const { resolve: resolvePath } = require('app-root-path');
-const { Router } = require('@marshallofsound/electron-router');
+const { Router } = require('electron-routes');
 
 const router = new Router('next');
 

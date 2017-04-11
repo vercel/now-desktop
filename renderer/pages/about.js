@@ -4,7 +4,7 @@ import { platform } from 'os';
 // Packages
 import React from 'react';
 import timeAgo from 'time-ago';
-import { rendererPreload } from '@marshallofsound/electron-router';
+import { rendererPreload } from 'electron-routes';
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window';
