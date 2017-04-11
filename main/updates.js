@@ -82,17 +82,10 @@ const updateBinary = async () => {
   // Check the version of the installed binary
   const newVersion = await localBinaryVersion();
 
-  const messages = {
-    windows: 'Updated `now.exe` to v' + newVersion,
-    macOS: 'Updated `now` to v' + newVersion
-  };
-
-  const isWin = process.platform === 'win32';
-  const title = isWin ? messages.windows : messages.macOS;
-
   notify({
-    title,
-    body: 'Try it in your terminal!'
+    title: `Updated now CLI to Version ${newVersion}`,
+    body: 'Feel free to try it in your terminal or click to see what has changed!',
+    url: `https://github.com/zeit/now-cli/releases/tag/${newVersion}`
   });
 };
 

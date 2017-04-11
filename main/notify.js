@@ -10,7 +10,6 @@ let win;
 // HTML5 `Notification` API :'(
 
 let buffer = [];
-
 const icon = resolvePath('./main/static/icons/windows.ico');
 
 const notify = details => {
