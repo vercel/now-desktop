@@ -1,22 +1,22 @@
 // Packages
-const { shell, clipboard } = require('electron');
-const moment = require('moment');
+const { shell, clipboard } = require('electron')
+const moment = require('moment')
 
 // Ours
-const { deploy, share } = require('./dialogs');
-const logout = require('./actions/logout');
-const removeDeployment = require('./actions/remove');
-const notify = require('./notify');
-const toggleWindow = require('./utils/toggle-window');
-const { get: getConfig } = require('./utils/config');
+const { deploy, share } = require('./dialogs')
+const logout = require('./actions/logout')
+const removeDeployment = require('./actions/remove')
+const notify = require('./notify')
+const toggleWindow = require('./utils/toggle-window')
+const { get: getConfig } = require('./utils/config')
 
 exports.deploymentOptions = info => {
-  const created = moment(new Date(parseInt(info.created, 10)));
-  const submenu = [];
+  const created = moment(new Date(parseInt(info.created, 10)))
+  const submenu = []
 
   // Incomplete deployments have this field set to `null`
   if (info.url) {
-    const url = 'https://' + info.url;
+    const url = 'https://' + info.url
 
     submenu.push(
       {
@@ -29,40 +29,40 @@ exports.deploymentOptions = info => {
       {
         label: 'Copy URL to Clipboard',
         click() {
-          clipboard.writeText(url);
+          clipboard.writeText(url)
 
           // Let the user know
           notify({
             title: 'Copied to Clipboard',
             body: 'Your clipboard now contains the URL of your deployment.',
             url
-          });
+          })
         }
       },
       {
         label: 'Copy ID to Clipboard',
         click() {
-          clipboard.writeText(info.uid);
+          clipboard.writeText(info.uid)
 
           // Let the user know
           notify({
             title: 'Copied to Clipboard',
             body: 'Your clipboard now contains the ID of your deployment.',
             url
-          });
+          })
         }
       },
       {
         type: 'separator'
       }
-    );
+    )
   }
 
   submenu.push(
     {
       label: 'Delete...',
       async click() {
-        await removeDeployment(info);
+        await removeDeployment(info)
       }
     },
     {
@@ -72,42 +72,42 @@ exports.deploymentOptions = info => {
       label: created.format('[Created on] MMM Do YYYY, h:mm a'),
       enabled: false
     }
-  );
+  )
 
   return {
     label: info.url || 'Incomplete Deployment',
     submenu
-  };
-};
+  }
+}
 
 exports.innerMenu = async function(app, tray, data, windows) {
-  let hasDeployments = false;
+  let hasDeployments = false
 
   if (Array.isArray(data.deployments) && data.deployments.length > 0) {
-    hasDeployments = true;
+    hasDeployments = true
 
     // Here we make sure we don't show any extra separators in the beginning/enabled
     // of the deployments list. macOS will just ignore them, but Windows will show them
     if (data.deployments[0].type === 'separator') {
-      data.deployments.shift();
+      data.deployments.shift()
     }
 
     if (data.deployments[data.deployments.length - 1].type === 'separator') {
-      data.deployments.pop();
+      data.deployments.pop()
     }
   }
 
-  const config = await getConfig();
-  let shareMenu;
+  const config = await getConfig()
+  let shareMenu
 
   if (process.platform === 'darwin') {
     shareMenu = {
       label: 'Share...',
       accelerator: 'CmdOrCtrl+S',
       async click() {
-        await share(tray);
+        await share(tray)
       }
-    };
+    }
   } else {
     shareMenu = {
       label: 'Share...',
@@ -116,24 +116,24 @@ exports.innerMenu = async function(app, tray, data, windows) {
         {
           label: 'Directory...',
           async click() {
-            await share(tray, ['openDirectory']);
+            await share(tray, ['openDirectory'])
           }
         },
         {
           label: 'File...',
           async click() {
-            await share(tray, ['openFile']);
+            await share(tray, ['openFile'])
           }
         }
       ]
-    };
+    }
   }
 
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
-        toggleWindow(null, windows.about);
+        toggleWindow(null, windows.about)
       }
     },
     {
@@ -143,7 +143,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
       label: 'Deploy...',
       accelerator: 'CmdOrCtrl+D',
       async click() {
-        await deploy(tray);
+        await deploy(tray)
       }
     },
     shareMenu,
@@ -174,7 +174,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
         {
           label: 'Logout',
           async click() {
-            await logout(app, windows.tutorial);
+            await logout(app, windows.tutorial)
           }
         }
       ]
@@ -187,15 +187,15 @@ exports.innerMenu = async function(app, tray, data, windows) {
       click: app.quit,
       role: 'quit'
     }
-  ];
-};
+  ]
+}
 
 exports.outerMenu = function(app, windows) {
   return [
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
-        toggleWindow(null, windows.about);
+        toggleWindow(null, windows.about)
       }
     },
     {
@@ -205,5 +205,5 @@ exports.outerMenu = function(app, windows) {
       label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
       role: 'quit'
     }
-  ];
-};
+  ]
+}

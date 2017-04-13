@@ -1,35 +1,35 @@
 // Utilities
-import remote from '../electron';
-import startRefreshment from '../refresh';
-import tokenValidated from './validate';
+import remote from '../electron'
+import startRefreshment from '../refresh'
+import tokenValidated from './validate'
 
 export default async root => {
   const { get: getConfig, remove: removeConfig } = remote.require(
     './utils/config'
-  );
-  window.sliderElement = root;
+  )
+  window.sliderElement = root
 
-  let config;
+  let config
 
   try {
-    config = await getConfig();
+    config = await getConfig()
   } catch (err) {
-    return;
+    return
   }
 
   if (!config.token) {
-    return;
+    return
   }
 
   if (!await tokenValidated(config.token)) {
-    await removeConfig();
-    return;
+    await removeConfig()
+    return
   }
 
   root.setState({
     loginShown: false,
     loginText: `You've already signed in once in the now CLI.\nBecause of this, you've now been logged in automatically.`
-  });
+  })
 
-  await startRefreshment(remote.getCurrentWindow());
-};
+  await startRefreshment(remote.getCurrentWindow())
+}

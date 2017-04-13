@@ -1,6 +1,6 @@
 // Packages
-import React from 'react';
-import Head from 'next/head';
+import React from 'react'
+import Head from 'next/head'
 
 const Container = ({ children }) => (
   <section>
@@ -206,10 +206,10 @@ const Container = ({ children }) => (
       />
     </Head>
   </section>
-);
+)
 
 Container.propTypes = {
   children: React.PropTypes.element.isRequired
-};
+}
 
-export default Container;
+export default Container

@@ -1,46 +1,46 @@
 // Native
-import { platform } from 'os';
+import { platform } from 'os'
 
 // Packages
-import React from 'react';
-import Slider from 'react-slick';
-import { rendererPreload } from 'electron-routes';
+import React from 'react'
+import Slider from 'react-slick'
+import { rendererPreload } from 'electron-routes'
 
 // Helpers
-import remote from '../utils/electron';
-import tokenFromCLI from '../utils/token/from-cli';
+import remote from '../utils/electron'
+import tokenFromCLI from '../utils/token/from-cli'
 
 // Vectors
-import ArrowSVG from '../vectors/arrow';
-import MinimizeSVG from '../vectors/minimize-window';
-import CloseSVG from '../vectors/close-window';
-import LogoSVG from '../vectors/logo';
+import ArrowSVG from '../vectors/arrow'
+import MinimizeSVG from '../vectors/minimize-window'
+import CloseSVG from '../vectors/close-window'
+import LogoSVG from '../vectors/logo'
 
 // Components
-import Title from '../components/title';
-import Login from '../components/login';
-import Binary from '../components/binary';
-import Container from '../components/container';
+import Title from '../components/title'
+import Login from '../components/login'
+import Binary from '../components/binary'
+import Container from '../components/container'
 
-if (process.type === 'renderer') rendererPreload();
+if (process.type === 'renderer') rendererPreload()
 
 const SliderArrows = React.createClass({
   render() {
-    const props = Object.assign({}, this.props);
+    const props = Object.assign({}, this.props)
 
-    const uselessProps = ['currentSlide', 'slideCount'];
+    const uselessProps = ['currentSlide', 'slideCount']
 
     for (const prop of uselessProps) {
-      delete props[prop];
+      delete props[prop]
     }
 
     return (
       <div {...props}>
         <ArrowSVG />
       </div>
-    );
+    )
   }
-});
+})
 
 const sliderSettings = {
   speed: 500,
@@ -51,40 +51,37 @@ const sliderSettings = {
   nextArrow: <SliderArrows direction="next" />,
   prevArrow: <SliderArrows direction="prev" />,
   afterChange(index) {
-    const input = window.loginInput;
-    const inputElement = window.loginInputElement;
-    const video = window.usageVideo;
+    const input = window.loginInput
+    const inputElement = window.loginInputElement
+    const video = window.usageVideo
 
     if (!input || !video) {
-      return;
+      return
     }
 
-    const slider = document.querySelector('.slick-track');
-    const slideCount = slider.childElementCount;
+    const slider = document.querySelector('.slick-track')
+    const slideCount = slider.childElementCount
 
     // If it's the last slide, auto-focus on input
     if (inputElement && input) {
       if (index === slideCount - 1) {
-        inputElement.focus();
+        inputElement.focus()
       } else if (!input.state.classes.includes('verifying')) {
         // Reset value of login form if not verifying
-        input.setState(input.getInitialState());
+        input.setState(input.getInitialState())
       }
     }
 
     if (index === 1) {
-      video.play();
+      video.play()
     } else {
-      setTimeout(
-        () => {
-          video.pause();
-          video.currentTime = 0;
-        },
-        500
-      );
+      setTimeout(() => {
+        video.pause()
+        video.currentTime = 0
+      }, 500)
     }
   }
-};
+}
 
 const Sections = React.createClass({
   getInitialState() {
@@ -92,46 +89,46 @@ const Sections = React.createClass({
       loginShown: true,
       loginText: 'To start using the app, simply enter\nyour email address below.',
       tested: false
-    };
+    }
   },
   handleReady() {
-    const currentWindow = remote.getCurrentWindow();
-    const aboutWindow = remote.getGlobal('about');
+    const currentWindow = remote.getCurrentWindow()
+    const aboutWindow = remote.getGlobal('about')
 
     // Close the tutorial
-    currentWindow.emit('open-tray', aboutWindow);
+    currentWindow.emit('open-tray', aboutWindow)
   },
   handleMinimizeClick() {
-    const currentWindow = remote.getCurrentWindow();
-    currentWindow.minimize();
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.minimize()
   },
   handleCloseClick() {
-    const currentWindow = remote.getCurrentWindow();
-    currentWindow.hide();
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.hide()
   },
   async alreadyLoggedIn() {
-    const { get: getConfig } = remote.require('./utils/config');
+    const { get: getConfig } = remote.require('./utils/config')
 
     try {
-      await getConfig();
+      await getConfig()
     } catch (err) {
       this.setState({
         tested: true
-      });
+      })
 
-      return;
+      return
     }
 
     this.setState({
       tested: true,
       loginShown: false,
       loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
-    });
+    })
   },
   arrowKeys(event) {
-    const keyCode = event.keyCode;
-    const slider = this.slider;
-    const loginInputElement = window.loginInputElement;
+    const keyCode = event.keyCode
+    const slider = this.slider
+    const loginInputElement = window.loginInputElement
 
     if (document.activeElement === loginInputElement) {
       if (keyCode === 27) {
@@ -139,43 +136,43 @@ const Sections = React.createClass({
         // This is necessary because on Windows and Linux
         // you can't blur the input element by clicking
         // outside of it
-        loginInputElement.blur();
+        loginInputElement.blur()
       }
 
       // We return here to allow the user to move
       // in the input text with the arrows
-      return;
+      return
     }
 
     switch (keyCode) {
       case 37:
-        slider.slickPrev();
-        break;
+        slider.slickPrev()
+        break
       case 39:
-        slider.slickNext();
-        break;
+        slider.slickNext()
+        break
       default:
-        return;
+        return
     }
 
-    event.preventDefault();
+    event.preventDefault()
   },
   async componentDidMount() {
-    await this.alreadyLoggedIn();
-    document.addEventListener('keydown', this.arrowKeys, false);
+    await this.alreadyLoggedIn()
+    document.addEventListener('keydown', this.arrowKeys, false)
 
-    const currentWindow = remote.getCurrentWindow();
+    const currentWindow = remote.getCurrentWindow()
 
     currentWindow.on('hide', () => {
       if (this.slider) {
-        this.slider.slickGoTo(0);
+        this.slider.slickGoTo(0)
       }
-    });
+    })
   },
   render() {
-    const isWin = platform() === 'win32';
-    const fileName = isWin ? 'usage-win.webm' : 'usage.webm';
-    const videoStyle = isWin ? { width: '80%' } : {};
+    const isWin = platform() === 'win32'
+    const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
+    const videoStyle = isWin ? { width: '80%' } : {}
 
     const videoSettings = {
       preload: true,
@@ -183,21 +180,21 @@ const Sections = React.createClass({
       src: `/static/${fileName}`,
       style: videoStyle,
       ref: c => {
-        window.usageVideo = c;
+        window.usageVideo = c
       }
-    };
+    }
 
     const loginTextRef = element => {
-      window.loginText = element;
-    };
+      window.loginText = element
+    }
 
     if (this.state.loginShown && this.state.tested) {
-      tokenFromCLI(this);
+      tokenFromCLI(this)
     }
 
     const setRef = c => {
-      this.slider = c;
-    };
+      this.slider = c
+    }
 
     return (
       <div>
@@ -242,8 +239,7 @@ const Sections = React.createClass({
         </Slider>
 
         <style jsx>
-          {
-            `
+          {`
             .button {
               font-weight: 700;
               text-transform: uppercase;
@@ -319,13 +315,12 @@ const Sections = React.createClass({
             #login a {
               margin-top: 30px;
             }
-        `
-          }
+        `}
         </style>
       </div>
-    );
+    )
   }
-});
+})
 
 const Tutorial = () => (
   <Container>
@@ -334,19 +329,17 @@ const Tutorial = () => (
       <Sections />
 
       <style jsx>
-        {
-          `
+        {`
         main {
           color: #fff;
           background: #000;
           height: 100vh;
           width: 100vw;
         }
-      `
-        }
+      `}
       </style>
     </main>
   </Container>
-);
+)
 
-export default Tutorial;
+export default Tutorial

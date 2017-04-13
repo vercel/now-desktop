@@ -1,172 +1,166 @@
 // Native
-const { homedir } = require('os');
+const { homedir } = require('os')
 
 // Packages
-const { app, autoUpdater } = require('electron');
-const ms = require('ms');
-const semVer = require('semver');
-const pathType = require('path-type');
-const trimWhitespace = require('trim');
-const exists = require('path-exists');
-const { exec } = require('child-process-promise');
-const isDev = require('electron-is-dev');
+const { app, autoUpdater } = require('electron')
+const ms = require('ms')
+const semVer = require('semver')
+const pathType = require('path-type')
+const trimWhitespace = require('trim')
+const exists = require('path-exists')
+const { exec } = require('child-process-promise')
+const isDev = require('electron-is-dev')
 
 // Ours
-const { error: showError } = require('./dialogs');
-const notify = require('./notify');
-const binaryUtils = require('./utils/binary');
+const { error: showError } = require('./dialogs')
+const notify = require('./notify')
+const binaryUtils = require('./utils/binary')
 
-const platform = process.platform === 'darwin' ? 'osx' : process.platform;
-const feedURL = 'https://now-auto-updates.now.sh/update/' + platform;
+const platform = process.platform === 'darwin' ? 'osx' : process.platform
+const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
-  const cmd = await exec('now -v', { cwd: homedir() });
+  const cmd = await exec('now -v', { cwd: homedir() })
 
   if (!cmd.stdout) {
-    throw new Error('Not version tag received from `now -v`');
+    throw new Error('Not version tag received from `now -v`')
   }
 
   // Make version tag parsable
-  const output = trimWhitespace(cmd.stdout.toString());
+  const output = trimWhitespace(cmd.stdout.toString())
 
   if (semVer.valid(output)) {
-    return output;
+    return output
   }
 
   // This is for the old version output
   // Example: "𝚫 now 4.3.0"
   // The new one (handled above) looks like this: "4.3.0"
-  return output.split(' ')[2].trim();
-};
+  return output.split(' ')[2].trim()
+}
 
 const updateBinary = async () => {
   if (process.env.CONNECTION === 'offline') {
-    return;
+    return
   }
 
-  const fullPath = binaryUtils.getFile();
+  const fullPath = binaryUtils.getFile()
 
   if (!await exists(fullPath) || (await pathType.symlink(fullPath))) {
-    return;
+    return
   }
 
-  console.log('Checking for binary updates...');
+  console.log('Checking for binary updates...')
 
-  const currentRemote = await binaryUtils.getURL();
-  const currentLocal = await localBinaryVersion();
+  const currentRemote = await binaryUtils.getURL()
+  const currentLocal = await localBinaryVersion()
 
   // Force an update if "now -v" fails
   if (currentLocal) {
-    const comparision = semVer.compare(currentLocal, currentRemote.version);
+    const comparision = semVer.compare(currentLocal, currentRemote.version)
 
     if (comparision !== -1) {
-      console.log('No updates found for binary');
-      return;
+      console.log('No updates found for binary')
+      return
     }
 
-    console.log('Found an update for binary! Downloading...');
+    console.log('Found an update for binary! Downloading...')
   }
 
   const updateFile = await binaryUtils.download(
     currentRemote.url,
     currentRemote.binaryName
-  );
+  )
 
-  await binaryUtils.handleExisting(updateFile.path);
+  await binaryUtils.handleExisting(updateFile.path)
 
   // Remove temporary directory that contained the update
-  updateFile.cleanup();
+  updateFile.cleanup()
 
   // Check the version of the installed binary
-  const newVersion = await localBinaryVersion();
+  const newVersion = await localBinaryVersion()
 
   notify({
     title: `Updated now CLI to Version ${newVersion}`,
     body: 'Feel free to try it in your terminal or click to see what has changed!',
     url: `https://github.com/zeit/now-cli/releases/tag/${newVersion}`
-  });
-};
+  })
+}
 
 const startBinaryUpdates = () => {
   const binaryUpdateTimer = time =>
-    setTimeout(
-      async () => {
-        try {
-          await updateBinary();
-          binaryUpdateTimer(ms('10m'));
-        } catch (err) {
-          console.log(err);
-          binaryUpdateTimer(ms('1m'));
-        }
-      },
-      time
-    );
+    setTimeout(async () => {
+      try {
+        await updateBinary()
+        binaryUpdateTimer(ms('10m'))
+      } catch (err) {
+        console.log(err)
+        binaryUpdateTimer(ms('1m'))
+      }
+    }, time)
 
-  binaryUpdateTimer(ms('2s'));
-};
+  binaryUpdateTimer(ms('2s'))
+}
 
 const startAppUpdates = () => {
-  autoUpdater.on('error', console.error);
+  autoUpdater.on('error', console.error)
 
   try {
-    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion());
+    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
   } catch (err) {
-    showError('Auto updated could not set feed URL', err);
+    showError('Auto updated could not set feed URL', err)
   }
 
   const checkForUpdates = () => {
     if (process.env.CONNECTION === 'offline') {
-      return;
+      return
     }
 
-    autoUpdater.checkForUpdates();
-  };
+    autoUpdater.checkForUpdates()
+  }
 
   // Check for app update after startup
-  setTimeout(checkForUpdates, ms('10s'));
+  setTimeout(checkForUpdates, ms('10s'))
 
   // And then every 5 minutes
-  setInterval(checkForUpdates, ms('5m'));
+  setInterval(checkForUpdates, ms('5m'))
 
   autoUpdater.on('update-downloaded', () => {
-    process.env.UPDATE_STATUS = 'downloaded';
+    process.env.UPDATE_STATUS = 'downloaded'
 
-    setInterval(
-      () => {
-        if (process.env.BUSYNESS !== 'ready') {
-          return;
-        }
+    setInterval(() => {
+      if (process.env.BUSYNESS !== 'ready') {
+        return
+      }
 
-        autoUpdater.quitAndInstall();
-        app.quit();
-      },
-      ms('2s')
-    );
-  });
+      autoUpdater.quitAndInstall()
+      app.quit()
+    }, ms('2s'))
+  })
 
   autoUpdater.on('checking-for-update', () => {
-    console.log('Checking for app updates...');
-  });
+    console.log('Checking for app updates...')
+  })
 
   autoUpdater.on('update-available', () => {
-    console.log('Found update for the app! Downloading...');
-  });
+    console.log('Found update for the app! Downloading...')
+  })
 
   autoUpdater.on('update-not-available', () => {
-    console.log('No updates found for the app');
-  });
-};
+    console.log('No updates found for the app')
+  })
+}
 
 module.exports = () => {
   if (process.platform === 'linux') {
-    return;
+    return
   }
 
-  startBinaryUpdates();
+  startBinaryUpdates()
 
   if (!isDev) {
-    startAppUpdates();
+    startAppUpdates()
   }
-};
+}

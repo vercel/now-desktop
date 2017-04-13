@@ -1,5 +1,5 @@
 // Packages
-import React from 'react';
+import React from 'react'
 
 const Updated = () => (
   <svg width="13px" height="13px" viewBox="0 0 13 13" version="1.1">
@@ -16,6 +16,6 @@ const Updated = () => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default Updated;
+export default Updated

@@ -1,13 +1,12 @@
 // Packages
-import React from 'react';
+import React from 'react'
 
 const WindowTitle = () => (
   <aside>
     <h1>Welcome to Now</h1>
 
     <style jsx>
-      {
-        `
+      {`
       aside {
         height: 37px;
         display: flex;
@@ -28,10 +27,9 @@ const WindowTitle = () => (
         letter-spacing: 0.02em;
         font-weight: 400
       }
-    `
-      }
+    `}
     </style>
   </aside>
-);
+)
 
-export default WindowTitle;
+export default WindowTitle

@@ -1,5 +1,5 @@
 // Packages
-import React from 'react';
+import React from 'react'
 
 const Logo = () => (
   <svg width="90px" height="81px" viewBox="0 0 42 38" version="1.1">
@@ -11,6 +11,6 @@ const Logo = () => (
       />
     </g>
   </svg>
-);
+)
 
-export default Logo;
+export default Logo

@@ -1,107 +1,107 @@
 // Native
-import { platform } from 'os';
+import { platform } from 'os'
 
 // Packages
-import React from 'react';
-import timeAgo from 'time-ago';
-import { rendererPreload } from 'electron-routes';
-import { resolve } from 'app-root-path';
+import React from 'react'
+import timeAgo from 'time-ago'
+import { rendererPreload } from 'electron-routes'
+import { resolve } from 'app-root-path'
 
 // Vectors
-import CloseWindowSVG from '../vectors/close-window';
-import UpdatedSVG from '../vectors/updated';
+import CloseWindowSVG from '../vectors/close-window'
+import UpdatedSVG from '../vectors/updated'
 
 // Components
-import Container from '../components/container';
-import Licenses from '../components/licenses';
+import Container from '../components/container'
+import Licenses from '../components/licenses'
 
 // Helpers
-import showError from '../utils/error';
-import remote from '../utils/electron';
+import showError from '../utils/error'
+import remote from '../utils/electron'
 
-if (process.type === 'renderer') rendererPreload();
+if (process.type === 'renderer') rendererPreload()
 
 const openLink = event => {
-  const link = event.target;
+  const link = event.target
 
-  remote.shell.openExternal(link.href);
-  event.preventDefault();
-};
+  remote.shell.openExternal(link.href)
+  event.preventDefault()
+}
 
 const About = React.createClass({
   getInitialState() {
     return {
       lastReleaseDate: ''
-    };
+    }
   },
   async componentDidMount() {
-    await this.lastReleaseDate();
+    await this.lastReleaseDate()
   },
   async lastReleaseDate() {
-    let data;
+    let data
 
     try {
       data = await fetch(
         'https://api.github.com/repos/zeit/now-desktop/releases'
-      );
+      )
     } catch (err) {
-      console.log(err);
-      return;
+      console.log(err)
+      return
     }
 
     if (!data.ok) {
-      return;
+      return
     }
 
     try {
-      data = await data.json();
+      data = await data.json()
     } catch (err) {
-      console.log(err);
-      return;
+      console.log(err)
+      return
     }
 
-    let localRelease;
-    const pkg = require(resolve('package.json'));
+    let localRelease
+    const pkg = require(resolve('package.json'))
 
     for (const release of data) {
       if (release.tag_name === pkg.version) {
-        localRelease = release;
+        localRelease = release
       }
     }
 
     if (!localRelease) {
-      return;
+      return
     }
 
     const setReleaseDate = () => {
-      const ago = timeAgo().ago(new Date(localRelease.published_at));
+      const ago = timeAgo().ago(new Date(localRelease.published_at))
 
       this.setState({
         lastReleaseDate: `(${ago})`
-      });
-    };
-
-    setReleaseDate();
-
-    // Make sure the date stays updated
-    setInterval(setReleaseDate, 1000);
-  },
-  handleTutorial() {
-    const tutorial = remote.getGlobal('tutorial');
-
-    if (!tutorial) {
-      showError('Not able to open tutorial window');
-      return;
+      })
     }
 
-    tutorial.show();
+    setReleaseDate()
+
+    // Make sure the date stays updated
+    setInterval(setReleaseDate, 1000)
+  },
+  handleTutorial() {
+    const tutorial = remote.getGlobal('tutorial')
+
+    if (!tutorial) {
+      showError('Not able to open tutorial window')
+      return
+    }
+
+    tutorial.show()
   },
   handleCloseClick() {
-    const currentWindow = remote.getCurrentWindow();
-    currentWindow.hide();
+    const currentWindow = remote.getCurrentWindow()
+    currentWindow.hide()
   },
   updateStatus() {
-    const isDev = remote.require('electron-is-dev');
+    const isDev = remote.require('electron-is-dev')
 
     return (
       <div>
@@ -115,8 +115,7 @@ const About = React.createClass({
             </h2>}
 
         <style jsx>
-          {
-            `
+          {`
           .update {
             font-size: 11px;
             margin-top: 5px;
@@ -139,14 +138,13 @@ const About = React.createClass({
           .update.development {
             color: #0080c1;
           }
-        `
-          }
+        `}
         </style>
       </div>
-    );
+    )
   },
   render() {
-    const pkg = require(resolve('package.json'));
+    const pkg = require(resolve('package.json'))
 
     return (
       <Container>
@@ -212,8 +210,7 @@ const About = React.createClass({
           </section>
 
           <style jsx>
-            {
-              `
+            {`
             div {
               background: #ECECEC;
               height: 100vh;
@@ -379,13 +376,12 @@ const About = React.createClass({
             nav a:last-child:after {
               display: none;
             }
-          `
-            }
+          `}
           </style>
         </div>
       </Container>
-    );
+    )
   }
-});
+})
 
-export default About;
+export default About

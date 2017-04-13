@@ -1,90 +1,87 @@
 if (require('electron-squirrel-startup')) {
   // eslint-disable-next-line unicorn/no-process-exit
-  process.exit();
+  process.exit()
 }
 
 // Native
-const path = require('path');
+const path = require('path')
 
 // Packages
-const { app, Tray, Menu, BrowserWindow, ipcMain } = require('electron');
-const ms = require('ms');
-const isDev = require('electron-is-dev');
-const { dir: isDirectory } = require('path-type');
-const fs = require('fs-promise');
-const fixPath = require('fix-path');
-const { resolve: resolvePath } = require('app-root-path');
-const firstRun = require('first-run');
-const { moveToApplications } = require('electron-lets-move');
+const { app, Tray, Menu, BrowserWindow, ipcMain } = require('electron')
+const ms = require('ms')
+const isDev = require('electron-is-dev')
+const { dir: isDirectory } = require('path-type')
+const fs = require('fs-promise')
+const fixPath = require('fix-path')
+const { resolve: resolvePath } = require('app-root-path')
+const firstRun = require('first-run')
+const { moveToApplications } = require('electron-lets-move')
 
 // Utilities
-const { innerMenu, outerMenu, deploymentOptions } = require('./menu');
-const { error: showError } = require('./dialogs');
-const deploy = require('./actions/deploy');
-const share = require('./actions/share');
-const autoUpdater = require('./updates');
-const { prepareCache, refreshCache } = require('./api');
-const attachTrayState = require('./utils/highlight');
-const toggleWindow = require('./utils/toggle-window');
-const server = require('./server');
-const { get: getConfig } = require('./utils/config');
+const { innerMenu, outerMenu, deploymentOptions } = require('./menu')
+const { error: showError } = require('./dialogs')
+const deploy = require('./actions/deploy')
+const share = require('./actions/share')
+const autoUpdater = require('./updates')
+const { prepareCache, refreshCache } = require('./api')
+const attachTrayState = require('./utils/highlight')
+const toggleWindow = require('./utils/toggle-window')
+const server = require('./server')
+const { get: getConfig } = require('./utils/config')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
-let tray = null;
+let tray = null
 
 // Set the application's name
-app.setName('Now');
+app.setName('Now')
 
 // Hide dock icon before the app starts
 if (process.platform === 'darwin') {
-  app.dock.hide();
+  app.dock.hide()
 }
 
 // Make Now start automatically on login
 if (!isDev && firstRun()) {
   app.setLoginItemSettings({
     openAtLogin: true
-  });
+  })
 }
 
 // Makes sure where inheriting the correct path
 // Within the bundled app, the path would otherwise be different
-fixPath();
+fixPath()
 
 // Keep track of the app's busyness for telling
 // the autoupdater if it can restart the application
-process.env.BUSYNESS = 'ready';
+process.env.BUSYNESS = 'ready'
 
 // Make sure that unhandled errors get handled
 process.on('uncaughtException', err => {
-  console.error(err);
-  showError('Unhandled error appeared', err);
-});
+  console.error(err)
+  showError('Unhandled error appeared', err)
+})
 
-const cache = prepareCache();
+const cache = prepareCache()
 
 // For starting the refreshment right after login
 global.startRefresh = async tutorialWindow => {
-  const timeSpan = ms('10s');
+  const timeSpan = ms('10s')
 
   // Refresh cache once in the beginning
-  await refreshCache(null, app, tutorialWindow);
+  await refreshCache(null, app, tutorialWindow)
 
   // After that, oeriodically refresh it every 10 seconds
-  const interval = setInterval(
-    async () => {
-      if (process.env.CONNECTION === 'offline') {
-        return;
-      }
+  const interval = setInterval(async () => {
+    if (process.env.CONNECTION === 'offline') {
+      return
+    }
 
-      await refreshCache(null, app, tutorialWindow, interval);
-    },
-    timeSpan
-  );
-};
+    await refreshCache(null, app, tutorialWindow, interval)
+  }, timeSpan)
+}
 
-const windowURL = page => `next://app/${page}`;
+const windowURL = page => `next://app/${page}`
 
 const onboarding = () => {
   const win = new BrowserWindow({
@@ -99,38 +96,38 @@ const onboarding = () => {
     maximizable: false,
     titleBarStyle: 'hidden-inset',
     backgroundColor: '#000'
-  });
+  })
 
-  win.loadURL(windowURL('tutorial'));
-  attachTrayState(win, tray);
+  win.loadURL(windowURL('tutorial'))
+  attachTrayState(win, tray)
 
   // We need to access it = the "About" window
   // To be able to open it = there
-  global.tutorial = win;
+  global.tutorial = win
 
   const emitTrayClick = aboutWindow => {
     const emitClick = () => {
       if (aboutWindow && aboutWindow.isVisible()) {
-        return;
+        return
       }
 
       // Automatically open the context menu
       if (tray) {
-        tray.emit('click');
+        tray.emit('click')
       }
 
-      win.removeListener('hide', emitClick);
-    };
+      win.removeListener('hide', emitClick)
+    }
 
-    win.on('hide', emitClick);
-    win.hide();
-  };
+    win.on('hide', emitClick)
+    win.hide()
+  }
 
-  win.on('open-tray', emitTrayClick);
+  win.on('open-tray', emitTrayClick)
 
   // Just hand it back
-  return win;
-};
+  return win
+}
 
 const aboutWindow = () => {
   const win = new BrowserWindow({
@@ -146,92 +143,92 @@ const aboutWindow = () => {
     titleBarStyle: 'hidden-inset',
     frame: false,
     backgroundColor: '#ECECEC'
-  });
+  })
 
-  win.loadURL(windowURL('about'));
-  attachTrayState(win, tray);
+  win.loadURL(windowURL('about'))
+  attachTrayState(win, tray)
 
-  global.about = win;
+  global.about = win
 
-  return win;
-};
+  return win
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 const assignAliases = (aliases, deployment) => {
   if (aliases) {
-    const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId);
+    const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId)
 
     if (aliasInfo) {
-      deployment.url = aliasInfo.alias;
+      deployment.url = aliasInfo.alias
     }
   }
 
-  return deploymentOptions(deployment);
-};
+  return deploymentOptions(deployment)
+}
 
 // Convert date string = API to valid date object
-const toDate = int => new Date(parseInt(int, 10));
+const toDate = int => new Date(parseInt(int, 10))
 
 const toggleContextMenu = async windows => {
-  const deployments = cache.get('deployments');
-  const aliases = cache.get('aliases');
+  const deployments = cache.get('deployments')
+  const aliases = cache.get('aliases')
 
-  const apps = new Map();
-  const deploymentList = [];
+  const apps = new Map()
+  const deploymentList = []
 
   // Order deployments by date
-  deployments.sort((a, b) => toDate(b.created) - toDate(a.created));
+  deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
 
   for (const deployment of deployments) {
-    const name = deployment.name;
+    const name = deployment.name
 
     if (apps.has(name)) {
-      const existingDeployments = apps.get(name);
-      apps.set(name, [...existingDeployments, deployment]);
+      const existingDeployments = apps.get(name)
+      apps.set(name, [...existingDeployments, deployment])
 
-      continue;
+      continue
     }
 
-    apps.set(name, [deployment]);
+    apps.set(name, [deployment])
   }
 
   apps.forEach((deployments, label) => {
     if (deployments.length === 1) {
-      deploymentList.push(assignAliases(aliases, deployments[0]));
-      return;
+      deploymentList.push(assignAliases(aliases, deployments[0]))
+      return
     }
 
     deploymentList.push({
       type: 'separator'
-    });
+    })
 
     deploymentList.push({
       label,
       enabled: false
-    });
+    })
 
     for (const deployment of deployments) {
-      deploymentList.push(assignAliases(aliases, deployment));
+      deploymentList.push(assignAliases(aliases, deployment))
     }
 
     deploymentList.push({
       type: 'separator'
-    });
-  });
+    })
+  })
 
   const data = {
     deployments: deploymentList
-  };
+  }
 
-  let generatedMenu = await innerMenu(app, tray, data, windows);
+  let generatedMenu = await innerMenu(app, tray, data, windows)
 
   if (process.env.CONNECTION === 'offline') {
-    const last = generatedMenu.slice(-1)[0];
+    const last = generatedMenu.slice(-1)[0]
 
     generatedMenu = [
       {
@@ -241,83 +238,83 @@ const toggleContextMenu = async windows => {
       {
         type: 'separator'
       }
-    ];
+    ]
 
-    generatedMenu.push(last);
+    generatedMenu.push(last)
   }
 
-  const menu = Menu.buildFromTemplate(generatedMenu);
-  tray.popUpContextMenu(menu, tray.getBounds());
-};
+  const menu = Menu.buildFromTemplate(generatedMenu)
+  tray.popUpContextMenu(menu, tray.getBounds())
+}
 
 const isLoggedIn = async () => {
   try {
-    await getConfig();
+    await getConfig()
   } catch (err) {
-    return false;
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 const isDeployable = async directory => {
-  const indicators = new Set(['package.json', 'Dockerfile']);
+  const indicators = new Set(['package.json', 'Dockerfile'])
 
   for (const indicator of indicators) {
-    const pathTo = path.join(directory, indicator);
-    let stats;
+    const pathTo = path.join(directory, indicator)
+    let stats
 
     try {
-      stats = fs.lstatSync(pathTo);
+      stats = fs.lstatSync(pathTo)
     } catch (err) {}
 
     if (stats) {
-      return true;
+      return true
     }
   }
 
-  return false;
-};
+  return false
+}
 
 const fileDropped = async (event, files) => {
-  event.preventDefault();
+  event.preventDefault()
 
   if (process.env.CONNECTION === 'offline') {
-    showError("You're offline");
-    return;
+    showError("You're offline")
+    return
   }
 
   if (!await isLoggedIn()) {
-    return;
+    return
   }
 
   if (files.length > 1) {
     showError(
       "It's not yet possible to share multiple files/directories at once."
-    );
-    return;
+    )
+    return
   }
 
-  const item = files[0];
+  const item = files[0]
 
   if (!await isDirectory(item) || !await isDeployable(item)) {
-    await share(item);
-    return;
+    await share(item)
+    return
   }
 
-  await deploy(item);
-};
+  await deploy(item)
+}
 
 app.on('ready', async () => {
   if (!cache.has('no-move-wanted') && !isDev) {
     try {
-      const moved = await moveToApplications();
+      const moved = await moveToApplications()
 
       if (!moved) {
-        cache.set('no-move-wanted', true);
+        cache.set('no-move-wanted', true)
       }
     } catch (err) {
-      showError(err);
+      showError(err)
     }
   }
 
@@ -325,18 +322,18 @@ app.on('ready', async () => {
     width: 0,
     height: 0,
     show: false
-  });
+  })
 
   onlineStatusWindow.loadURL(
     'file://' + resolvePath('./main/static/pages/status.html')
-  );
+  )
 
   ipcMain.on('online-status-changed', (event, status) => {
-    process.env.CONNECTION = status;
-  });
+    process.env.CONNECTION = status
+  })
 
   // Provide application and the CLI with automatic updates
-  autoUpdater();
+  autoUpdater()
 
   // DO NOT create the tray icon BEFORE the login status has been checked!
   // Otherwise, the user will start clicking...
@@ -344,49 +341,47 @@ app.on('ready', async () => {
 
   // I have no idea why, but path.resolve doesn't work here
   try {
-    const iconName = process.platform === 'win32'
-      ? 'iconWhite'
-      : 'iconTemplate';
-    tray = new Tray(resolvePath(`./main/static/tray/${iconName}.png`));
+    const iconName = process.platform === 'win32' ? 'iconWhite' : 'iconTemplate'
+    tray = new Tray(resolvePath(`./main/static/tray/${iconName}.png`))
 
     // Opening the context menu after login should work
-    global.tray = tray;
+    global.tray = tray
   } catch (err) {
-    showError('Could not spawn tray item', err);
-    return;
+    showError('Could not spawn tray item', err)
+    return
   }
 
   try {
-    await server();
+    await server()
   } catch (err) {
-    showError('Not able to start server', err);
-    return;
+    showError('Not able to start server', err)
+    return
   }
 
   const windows = {
     tutorial: onboarding(),
     about: aboutWindow()
-  };
+  }
 
   const toggleActivity = async event => {
-    const loggedIn = await isLoggedIn();
+    const loggedIn = await isLoggedIn()
 
     if (loggedIn && !windows.tutorial.isVisible()) {
-      tray.setHighlightMode('selection');
-      toggleContextMenu(windows);
+      tray.setHighlightMode('selection')
+      toggleContextMenu(windows)
     } else {
-      toggleWindow(event || null, windows.tutorial);
+      toggleWindow(event || null, windows.tutorial)
     }
-  };
+  }
 
   // Only allow one instance of Now running
   // at the same time
-  const shouldQuit = app.makeSingleInstance(toggleActivity);
+  const shouldQuit = app.makeSingleInstance(toggleActivity)
 
   if (shouldQuit) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheuss)
-    return app.exit();
+    return app.exit()
   }
 
   // If the user is logged in and the app isn't running
@@ -395,38 +390,39 @@ app.on('ready', async () => {
   // Otherwise, ask the user to log in using the tutorial
   if ((await isLoggedIn()) && !firstRun()) {
     // Periodically rebuild local cache every 10 seconds
-    await global.startRefresh(windows.tutorial);
+    await global.startRefresh(windows.tutorial)
   } else {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     windows.tutorial.on('ready-to-show', () =>
-      toggleWindow(null, windows.tutorial));
+      toggleWindow(null, windows.tutorial)
+    )
   }
 
   // When quitting the app, force close the tutorial and about windows
   app.on('before-quit', () => {
-    process.env.FORCE_CLOSE = true;
-  });
+    process.env.FORCE_CLOSE = true
+  })
 
   // Define major event listeners for tray
-  tray.on('drop-files', fileDropped);
-  tray.on('click', toggleActivity);
+  tray.on('drop-files', fileDropped)
+  tray.on('click', toggleActivity)
 
-  let isHighlighted = false;
-  let submenuShown = false;
+  let isHighlighted = false
+  let submenuShown = false
 
   tray.on('right-click', async event => {
-    const menu = Menu.buildFromTemplate(outerMenu(app, windows));
+    const menu = Menu.buildFromTemplate(outerMenu(app, windows))
 
     if (!windows.tutorial.isVisible()) {
-      isHighlighted = !isHighlighted;
-      tray.setHighlightMode(isHighlighted ? 'always' : 'never');
+      isHighlighted = !isHighlighted
+      tray.setHighlightMode(isHighlighted ? 'always' : 'never')
     }
 
     // Toggle submenu
-    tray.popUpContextMenu(submenuShown ? null : menu);
-    submenuShown = !submenuShown;
+    tray.popUpContextMenu(submenuShown ? null : menu)
+    submenuShown = !submenuShown
 
-    event.preventDefault();
-  });
-});
+    event.preventDefault()
+  })
+})

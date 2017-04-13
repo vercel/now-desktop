@@ -3,14 +3,17 @@ import path from 'path'
 
 // Packages
 import test from 'ava'
-import {Application} from 'spectron'
+import { Application } from 'spectron'
 
 let app
 let pathToBinary
 
 switch (process.platform) {
   case 'darwin':
-    pathToBinary = path.join(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
+    pathToBinary = path.join(
+      __dirname,
+      '../dist/mac/Now.app/Contents/MacOS/Now'
+    )
     break
 
   case 'win32':
@@ -18,7 +21,9 @@ switch (process.platform) {
     break
 
   default:
-    throw new Error('Path to the built binary needs to be defined for this platform in test/index.js')
+    throw new Error(
+      'Path to the built binary needs to be defined for this platform in test/index.js'
+    )
 }
 
 test.before(async () => {

@@ -1,15 +1,15 @@
 module.exports = {
   webpack(cfg) {
-    cfg.target = 'electron-renderer';
+    cfg.target = 'electron-renderer'
 
     cfg.plugins = cfg.plugins.filter(plugin => {
       if (plugin.constructor.name === 'UglifyJsPlugin') {
-        return false;
+        return false
       }
 
-      return true;
-    });
+      return true
+    })
 
-    return cfg;
+    return cfg
   }
-};
+}

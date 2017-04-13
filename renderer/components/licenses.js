@@ -1,24 +1,25 @@
 // Packages
-import React from 'react';
-import getLicenses from 'load-licenses';
+import React from 'react'
+import getLicenses from 'load-licenses'
 
 // Helpers
-import remote from '../utils/electron';
+import remote from '../utils/electron'
 
-const loadLicenses = () => getLicenses(remote.process.mainModule);
+const loadLicenses = () => getLicenses(remote.process.mainModule)
 
 const Licenses = () => (
   <section>
     {loadLicenses().map((item, index) => {
-      return item.name !== 'now-desktop' &&
+      return (
+        item.name !== 'now-desktop' &&
         <details key={index}>
           <summary>{item.name}</summary>
           <p>{item.license}</p>
-        </details>;
+        </details>
+      )
     })}
     <style jsx>
-      {
-        `
+      {`
       details {
         margin-bottom: 10px;
       }
@@ -47,10 +48,9 @@ const Licenses = () => (
       details[open] summary {
         color: #000;
       }
-    `
-      }
+    `}
     </style>
   </section>
-);
+)
 
-export default Licenses;
+export default Licenses

@@ -1,15 +1,15 @@
 // Native
-import { execSync } from 'child_process';
+import { execSync } from 'child_process'
 
 // Packages
-import React from 'react';
-import semVer from 'semver';
-import pathType from 'path-type';
-import exists from 'path-exists';
+import React from 'react'
+import semVer from 'semver'
+import pathType from 'path-type'
+import exists from 'path-exists'
 
 // Utilities
-import installBinary from '../utils/load-binary';
-import remote from '../utils/electron';
+import installBinary from '../utils/load-binary'
+import remote from '../utils/electron'
 
 const Binary = React.createClass({
   getInitialState() {
@@ -18,65 +18,65 @@ const Binary = React.createClass({
       installing: false,
       done: false,
       downloading: false
-    };
+    }
   },
   async isOlderThanLatest(utils, binaryPath) {
-    let current;
+    let current
 
     try {
-      current = await utils.getURL();
+      current = await utils.getURL()
     } catch (err) {
-      return;
+      return
     }
 
     if (!current) {
-      return;
+      return
     }
 
-    const remoteVersion = current.version;
-    let localVersion;
+    const remoteVersion = current.version
+    let localVersion
 
     try {
-      localVersion = execSync(binaryPath + ' -v').toString();
+      localVersion = execSync(binaryPath + ' -v').toString()
     } catch (err) {
-      return;
+      return
     }
 
-    const comparision = semVer.compare(remoteVersion, localVersion);
+    const comparision = semVer.compare(remoteVersion, localVersion)
 
     if (comparision === 1) {
-      return true;
+      return true
     }
 
-    return false;
+    return false
   },
   async binaryInstalled() {
-    const binaryUtils = remote.require('./utils/binary');
-    const binaryPath = binaryUtils.getFile();
+    const binaryUtils = remote.require('./utils/binary')
+    const binaryPath = binaryUtils.getFile()
 
     if (!await exists(binaryPath)) {
-      return false;
+      return false
     }
 
     if (await pathType.symlink(binaryPath)) {
-      return false;
+      return false
     }
 
     if (await this.isOlderThanLatest(binaryUtils, binaryPath)) {
-      return false;
+      return false
     }
 
-    return true;
+    return true
   },
   async componentDidMount() {
-    const currentWindow = remote.getCurrentWindow();
+    const currentWindow = remote.getCurrentWindow()
 
     if (await this.binaryInstalled()) {
-      currentWindow.focus();
+      currentWindow.focus()
 
       this.setState({
         binaryInstalled: true
-      });
+      })
     }
 
     // We need to refresh the state of the binary section
@@ -84,39 +84,39 @@ const Binary = React.createClass({
     // because the user might deleted the binary
     currentWindow.on('show', async () => {
       if (this.state.installing) {
-        return;
+        return
       }
 
-      const initialState = this.getInitialState();
-      initialState.binaryInstalled = await this.binaryInstalled();
+      const initialState = this.getInitialState()
+      initialState.binaryInstalled = await this.binaryInstalled()
 
-      this.setState(initialState);
-    });
+      this.setState(initialState)
+    })
   },
   render() {
-    const element = this;
+    const element = this
 
-    let classes = 'button install';
-    let installText = 'Install now';
+    let classes = 'button install'
+    let installText = 'Install now'
 
     if (this.state.binaryInstalled) {
-      classes += ' off';
-      installText = 'Already installed';
+      classes += ' off'
+      installText = 'Already installed'
     }
 
     const binaryButton = {
       className: classes,
       async onClick() {
         if (element.state.binaryInstalled) {
-          return;
+          return
         }
 
-        await installBinary(element);
+        await installBinary(element)
       }
-    };
+    }
 
     if (this.state.installing) {
-      const loadingText = this.state.downloading ? 'Downloading' : 'Installing';
+      const loadingText = this.state.downloading ? 'Downloading' : 'Installing'
 
       return (
         <article>
@@ -132,8 +132,7 @@ const Binary = React.createClass({
           </p>
 
           <style jsx>
-            {
-              `
+            {`
             article {
               width: 415px;
               font-size: 14px;
@@ -172,11 +171,10 @@ const Binary = React.createClass({
                 opacity: .2;
               }
             }
-          `
-            }
+          `}
           </style>
         </article>
-      );
+      )
     }
 
     if (this.state.done) {
@@ -187,8 +185,7 @@ const Binary = React.createClass({
           <p>You can now use <code>now</code> from the command line.</p>
 
           <style jsx>
-            {
-              `
+            {`
             article {
               width: 415px;
               font-size: 14px;
@@ -202,11 +199,10 @@ const Binary = React.createClass({
               padding: 1px 7px;
               border-radius: 3px;
             }
-          `
-            }
+          `}
           </style>
         </article>
-      );
+      )
     }
 
     return (
@@ -225,8 +221,7 @@ const Binary = React.createClass({
         <a {...binaryButton}>{installText}</a>
 
         <style jsx>
-          {
-            `
+          {`
           article {
             width: 415px;
             font-size: 14px;
@@ -275,12 +270,11 @@ const Binary = React.createClass({
             color: #636363;
             border-color: currentColor;
           }
-        `
-          }
+        `}
         </style>
       </article>
-    );
+    )
   }
-});
+})
 
-export default Binary;
+export default Binary

@@ -1,5 +1,5 @@
 // Packages
-import React from 'react';
+import React from 'react'
 
 const CloseWindow = () => (
   <svg height="10px" width="10px" viewBox="0 0 10 10" version="1.1">
@@ -15,6 +15,6 @@ const CloseWindow = () => (
       <polygon points="0 0 10 0 10 10 0 10" />
     </g>
   </svg>
-);
+)
 
-export default CloseWindow;
+export default CloseWindow
