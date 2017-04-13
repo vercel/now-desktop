@@ -52,7 +52,7 @@
   "lint-staged": {
     "*.js": [
       "npm run lint",
-      "prettier --single-quote --write",
+      "prettier --single-quote --no-semi --write",
       "git add"
     ]
   },
