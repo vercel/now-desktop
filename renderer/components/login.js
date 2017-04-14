@@ -1,6 +1,6 @@
 // Packages
 import { stringify as stringifyQuery } from 'querystring'
-import React from 'react'
+import React, { Component } from 'react'
 import AutoSizeInput from 'react-input-autosize'
 
 // Ours
@@ -77,16 +77,20 @@ const sleep = ms =>
     setTimeout(resolve, ms)
   })
 
-const Login = React.createClass({
-  getInitialState() {
-    return {
-      value: '',
-      focus: false,
-      classes: [],
-      suggestion: '',
-      waiting: false
-    }
-  },
+const initialState = {
+  value: '',
+  focus: false,
+  classes: [],
+  suggestion: '',
+  waiting: false
+}
+
+class Login extends Component {
+  constructor(props) {
+    super(props)
+    this.state = initialState
+  }
+
   handleChange(event) {
     const value = event.target.value
 
@@ -95,7 +99,8 @@ const Login = React.createClass({
     })
 
     this.prepareSuggestion(value)
-  },
+  }
+
   async tryLogin(email) {
     const onlineStatus = remote.process.env.CONNECTION
 
@@ -175,14 +180,16 @@ const Login = React.createClass({
       loginShown: false,
       loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
     })
-  },
+  }
+
   componentWillUnmount() {
     if (!this.apiRequest) {
       return
     }
 
     this.apiRequest.abort()
-  },
+  }
+
   prepareSuggestion(value) {
     if (value === '') {
       return
@@ -223,7 +230,8 @@ const Login = React.createClass({
     this.setState({
       suggestion: ''
     })
-  },
+  }
+
   async handleKey(event) {
     this.setState({
       classes: []
@@ -232,7 +240,7 @@ const Login = React.createClass({
     const keyCode = event.keyCode
 
     const isEnter = keyCode === 13
-    const initialValue = this.getInitialState().value
+    const initialValue = initialState.value
 
     if (initialValue === this.state.value && !isEnter) {
       this.setState({
@@ -283,7 +291,8 @@ const Login = React.createClass({
     } catch (err) {
       error('Not able to retrieve verification token', err)
     }
-  },
+  }
+
   toggleFocus() {
     this.setState({
       focus: !this.state.focus
@@ -292,10 +301,11 @@ const Login = React.createClass({
     // If input is empty, bring placeholder back
     if (this.state.focus && this.state.value === '') {
       this.setState({
-        value: this.getInitialState().value
+        value: initialState.value
       })
     }
-  },
+  }
+
   render() {
     const classes = this.state.classes
 
@@ -303,10 +313,10 @@ const Login = React.createClass({
       type: 'email',
       value: this.state.value,
       placeholder: 'you@youremail.com',
-      onChange: this.handleChange,
-      onKeyDown: this.handleKey,
-      onFocus: this.toggleFocus,
-      onBlur: this.toggleFocus,
+      onChange: this.handleChange.bind(this),
+      onKeyDown: this.handleKey.bind(this),
+      onFocus: this.toggleFocus.bind(this),
+      onBlur: this.toggleFocus.bind(this),
       ref: item => {
         window.loginInputElement = item
         this.loginInput = item
@@ -506,6 +516,6 @@ const Login = React.createClass({
       </aside>
     )
   }
-})
+}
 
 export default Login

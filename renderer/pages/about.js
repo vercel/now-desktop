@@ -2,7 +2,7 @@
 import { platform } from 'os'
 
 // Packages
-import React from 'react'
+import React, { Component } from 'react'
 import timeAgo from 'time-ago'
 import { rendererPreload } from 'electron-routes'
 import { resolve } from 'app-root-path'
@@ -28,15 +28,11 @@ const openLink = event => {
   event.preventDefault()
 }
 
-const About = React.createClass({
-  getInitialState() {
-    return {
-      lastReleaseDate: ''
-    }
-  },
+class About extends Component {
   async componentDidMount() {
     await this.lastReleaseDate()
-  },
+  }
+
   async lastReleaseDate() {
     let data
 
@@ -85,7 +81,8 @@ const About = React.createClass({
 
     // Make sure the date stays updated
     setInterval(setReleaseDate, 1000)
-  },
+  }
+
   handleTutorial() {
     const tutorial = remote.getGlobal('tutorial')
 
@@ -95,11 +92,13 @@ const About = React.createClass({
     }
 
     tutorial.show()
-  },
+  }
+
   handleCloseClick() {
     const currentWindow = remote.getCurrentWindow()
     currentWindow.hide()
-  },
+  }
+
   updateStatus() {
     const isDev = remote.require('electron-is-dev')
 
@@ -142,7 +141,8 @@ const About = React.createClass({
         </style>
       </div>
     )
-  },
+  }
+
   render() {
     const pkg = require(resolve('package.json'))
 
@@ -166,7 +166,7 @@ const About = React.createClass({
               {' '}
               <b>{pkg.version}</b>
               {' '}
-              {this.state.lastReleaseDate}
+              {this.state && this.state.lastReleaseDate}
             </h2>
 
             {this.updateStatus()}
@@ -382,6 +382,6 @@ const About = React.createClass({
       </Container>
     )
   }
-})
+}
 
 export default About

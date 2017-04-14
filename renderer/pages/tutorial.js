@@ -2,7 +2,7 @@
 import { platform } from 'os'
 
 // Packages
-import React from 'react'
+import React, { Component } from 'react'
 import Slider from 'react-slick'
 import { rendererPreload } from 'electron-routes'
 
@@ -24,23 +24,27 @@ import Container from '../components/container'
 
 if (process.type === 'renderer') rendererPreload()
 
-const SliderArrows = React.createClass({
-  render() {
-    const props = Object.assign({}, this.props)
+const SliderArrows = props => {
+  const properties = Object.assign({}, props)
 
-    const uselessProps = ['currentSlide', 'slideCount']
+  const uselessProps = ['currentSlide', 'slideCount']
 
-    for (const prop of uselessProps) {
-      delete props[prop]
-    }
-
-    return (
-      <div {...props}>
-        <ArrowSVG />
-      </div>
-    )
+  for (const prop of uselessProps) {
+    delete properties[prop]
   }
-})
+
+  return (
+    <div {...properties}>
+      <ArrowSVG />
+    </div>
+  )
+}
+
+const initialState = {
+  loginShown: true,
+  loginText: 'To start using the app, simply enter\nyour email address below.',
+  tested: false
+}
 
 const sliderSettings = {
   speed: 500,
@@ -68,7 +72,7 @@ const sliderSettings = {
         inputElement.focus()
       } else if (!input.state.classes.includes('verifying')) {
         // Reset value of login form if not verifying
-        input.setState(input.getInitialState())
+        input.setState(initialState)
       }
     }
 
@@ -83,29 +87,30 @@ const sliderSettings = {
   }
 }
 
-const Sections = React.createClass({
-  getInitialState() {
-    return {
-      loginShown: true,
-      loginText: 'To start using the app, simply enter\nyour email address below.',
-      tested: false
-    }
-  },
+class Sections extends Component {
+  constructor(props) {
+    super(props)
+    this.state = initialState
+  }
+
   handleReady() {
     const currentWindow = remote.getCurrentWindow()
     const aboutWindow = remote.getGlobal('about')
 
     // Close the tutorial
     currentWindow.emit('open-tray', aboutWindow)
-  },
+  }
+
   handleMinimizeClick() {
     const currentWindow = remote.getCurrentWindow()
     currentWindow.minimize()
-  },
+  }
+
   handleCloseClick() {
     const currentWindow = remote.getCurrentWindow()
     currentWindow.hide()
-  },
+  }
+
   async alreadyLoggedIn() {
     const { get: getConfig } = remote.require('./utils/config')
 
@@ -124,7 +129,8 @@ const Sections = React.createClass({
       loginShown: false,
       loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
     })
-  },
+  }
+
   arrowKeys(event) {
     const keyCode = event.keyCode
     const slider = this.slider
@@ -156,7 +162,8 @@ const Sections = React.createClass({
     }
 
     event.preventDefault()
-  },
+  }
+
   async componentDidMount() {
     await this.alreadyLoggedIn()
     document.addEventListener('keydown', this.arrowKeys, false)
@@ -168,7 +175,8 @@ const Sections = React.createClass({
         this.slider.slickGoTo(0)
       }
     })
-  },
+  }
+
   render() {
     const isWin = platform() === 'win32'
     const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
@@ -230,7 +238,7 @@ const Sections = React.createClass({
               ref={loginTextRef}
               dangerouslySetInnerHTML={{ __html: this.state.loginText }}
             />
-            {this.state.loginShown
+            {this.state && this.state.loginShown
               ? <Login />
               : <a className="button" onClick={this.handleReady}>
                   Get Started
@@ -320,7 +328,7 @@ const Sections = React.createClass({
       </div>
     )
   }
-})
+}
 
 const Tutorial = () => (
   <Container>

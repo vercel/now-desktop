@@ -2,7 +2,7 @@
 import { execSync } from 'child_process'
 
 // Packages
-import React from 'react'
+import React, { Component } from 'react'
 import semVer from 'semver'
 import pathType from 'path-type'
 import exists from 'path-exists'
@@ -11,15 +11,19 @@ import exists from 'path-exists'
 import installBinary from '../utils/load-binary'
 import remote from '../utils/electron'
 
-const Binary = React.createClass({
-  getInitialState() {
-    return {
-      binaryInstalled: false,
-      installing: false,
-      done: false,
-      downloading: false
-    }
-  },
+const initialState = {
+  binaryInstalled: false,
+  installing: false,
+  done: false,
+  downloading: false
+}
+
+class Binary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = initialState
+  }
+
   async isOlderThanLatest(utils, binaryPath) {
     let current
 
@@ -49,7 +53,8 @@ const Binary = React.createClass({
     }
 
     return false
-  },
+  }
+
   async binaryInstalled() {
     const binaryUtils = remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
@@ -67,7 +72,8 @@ const Binary = React.createClass({
     }
 
     return true
-  },
+  }
+
   async componentDidMount() {
     const currentWindow = remote.getCurrentWindow()
 
@@ -87,12 +93,13 @@ const Binary = React.createClass({
         return
       }
 
-      const initialState = this.getInitialState()
-      initialState.binaryInstalled = await this.binaryInstalled()
+      const originalState = Object.assign({}, initialState)
+      originalState.binaryInstalled = await this.binaryInstalled()
 
-      this.setState(initialState)
+      this.setState(originalState)
     })
-  },
+  }
+
   render() {
     const element = this
 
@@ -275,6 +282,6 @@ const Binary = React.createClass({
       </article>
     )
   }
-})
+}
 
 export default Binary
