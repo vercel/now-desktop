@@ -73,6 +73,10 @@ class About extends Component {
     }
 
     if (!localRelease) {
+      this.setState({
+        lastReleaseDate: '(not yet released)'
+      })
+
       return
     }
 
