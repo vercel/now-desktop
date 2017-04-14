@@ -1,11 +1,11 @@
 // Native
 import { platform } from 'os'
-import path from 'path'
 
 // Packages
 import React, { Component } from 'react'
 import timeAgo from 'time-ago'
 import { rendererPreload } from 'electron-routes'
+import isDev from 'electron-is-dev'
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window'
@@ -21,8 +21,13 @@ import remote from '../utils/electron'
 
 if (process.type === 'renderer') rendererPreload()
 
-const packagePath = path.join(remote.process.cwd(), 'package.json')
-const pkg = remote.require(packagePath)
+const getAppVersion = () => {
+  if (isDev) {
+    return remote.process.env.npm_package_version
+  }
+
+  return remote.app.getVersion()
+}
 
 const openLink = event => {
   const link = event.target
@@ -62,7 +67,7 @@ class About extends Component {
     let localRelease
 
     for (const release of data) {
-      if (release.tag_name === pkg.version) {
+      if (release.tag_name === getAppVersion()) {
         localRelease = release
       }
     }
@@ -164,7 +169,7 @@ class About extends Component {
             <h2>
               Version
               {' '}
-              <b>{pkg.version}</b>
+              <b>{getAppVersion()}</b>
               {' '}
               {this.state && this.state.lastReleaseDate}
             </h2>
