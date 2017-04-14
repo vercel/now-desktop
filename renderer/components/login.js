@@ -2,28 +2,12 @@
 import { stringify as stringifyQuery } from 'querystring'
 import React, { Component } from 'react'
 import AutoSizeInput from 'react-input-autosize'
+import emailProviders from 'email-providers/common'
 
 // Ours
 import error from '../utils/error'
 import startRefreshment from '../utils/refresh'
 import remote from '../utils/electron'
-
-const domains = [
-  'aol.com',
-  'gmail.com',
-  'google.com',
-  'yahoo.com',
-  'ymail.com',
-  'hotmail.com',
-  'live.com',
-  'outlook.com',
-  'inbox.com',
-  'mail.com',
-  'gmx.com',
-  'icloud.com',
-  'me.com',
-  'zeit.co'
-]
 
 const getVerificationData = async (url, email) => {
   const os = remote.require('os')
@@ -201,7 +185,10 @@ class Login extends Component {
       const match = domain[1]
       let sug
 
-      domains.some(dm => {
+      // Auto-complete @zeit.co email addresses
+      emailProviders.push('zeit.co')
+
+      emailProviders.some(dm => {
         // Don't suggest if complete match
         if (
           match.toLowerCase() === dm.substr(0, match.length) && match !== dm
