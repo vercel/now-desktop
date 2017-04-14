@@ -1,11 +1,11 @@
 // Native
 import { platform } from 'os'
+import path from 'path'
 
 // Packages
 import React, { Component } from 'react'
 import timeAgo from 'time-ago'
 import { rendererPreload } from 'electron-routes'
-import { resolve } from 'app-root-path'
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window'
@@ -20,6 +20,9 @@ import showError from '../utils/error'
 import remote from '../utils/electron'
 
 if (process.type === 'renderer') rendererPreload()
+
+const packagePath = path.join(remote.process.cwd(), 'package.json')
+const pkg = remote.require(packagePath)
 
 const openLink = event => {
   const link = event.target
@@ -57,7 +60,6 @@ class About extends Component {
     }
 
     let localRelease
-    const pkg = require(resolve('package.json'))
 
     for (const release of data) {
       if (release.tag_name === pkg.version) {
@@ -144,8 +146,6 @@ class About extends Component {
   }
 
   render() {
-    const pkg = require(resolve('package.json'))
-
     return (
       <Container>
         <div>
