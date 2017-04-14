@@ -37,7 +37,10 @@ let tray = null
 app.setName('Now')
 
 // Hide dock icon before the app starts
-if (process.platform === 'darwin') {
+// This is only required for development because
+// we're setting a property on the bundled app
+// in production, which prevents the icon from flickering
+if (isDev && process.platform === 'darwin') {
   app.dock.hide()
 }
 

@@ -32,7 +32,10 @@
     },
     "mac": {
       "category": "public.app-category.developer-tools",
-      "icon": "main/static/icons/mac.icns"
+      "icon": "main/static/icons/mac.icns",
+      "extendInfo": {
+        "LSUIElement": 1
+      }
     },
     "files": [
       "main",
