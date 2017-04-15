@@ -166,7 +166,7 @@ class Sections extends Component {
 
   async componentDidMount() {
     await this.alreadyLoggedIn()
-    document.addEventListener('keydown', this.arrowKeys, false)
+    document.addEventListener('keydown', this.arrowKeys.bind(this), false)
 
     const currentWindow = remote.getCurrentWindow()
 
@@ -216,7 +216,7 @@ class Sections extends Component {
               <CloseSVG />
             </span>
           </div>}
-        <Slider {...sliderSettings} ref={setRef}>
+        <Slider {...sliderSettings} ref={setRef.bind(this)}>
           <section id="intro">
             <LogoSVG />
 
