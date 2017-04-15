@@ -8,8 +8,6 @@ const pathExists = require('path-exists')
 const glob = require('glob-promise')
 const { isTextSync: isText } = require('istextorbinary')
 const chalk = require('chalk')
-const du = require('du')
-const fileSize = require('filesize')
 const slash = require('slash')
 
 // Ours
@@ -36,61 +34,6 @@ const getProjectType = (nodeReady, dockerReady) => {
   }
 
   return projectType
-}
-
-const tooBig = async directory =>
-  new Promise(resolve => {
-    const notAllowed = new Set([
-      '.DS_Store',
-      'node_modules',
-      'bower_components',
-      '.git',
-      '.hg'
-    ])
-
-    const duOptions = {
-      filter(item) {
-        const relativePath = path.relative(directory, item)
-        const parts = relativePath.split('/')
-
-        for (const part of parts) {
-          if (notAllowed.has(part)) {
-            return false
-          }
-        }
-
-        return true
-      }
-    }
-
-    du(directory, duOptions, (err, size) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-
-      const maxSize = 1000000 * 5
-
-      if (size > maxSize) {
-        resolve({
-          maxSize,
-          size
-        })
-      } else {
-        resolve(false)
-      }
-    })
-  })
-
-const sizeWarning = folderTooBig => {
-  const difference = folderTooBig.size - folderTooBig.maxSize
-  const readable = fileSize(difference)
-
-  const warning = `Your project is ${readable} bigger than the currently allowed maximum size of 5 MB.`
-  const hope =
-    "But don't worry! We'll update the app very soon to make it capable of handling these situations."
-
-  showError(warning + '\n\n' + hope)
 }
 
 const genTitle = (deployment, sharing) => {
@@ -134,16 +77,9 @@ const removeTempDir = async (dir, logStatus) => {
 
 module.exports = async (folder, sharing) => {
   const details = {}
-  const folderTooBig = await tooBig(folder)
-
-  if (folderTooBig) {
-    sizeWarning(folderTooBig)
-    return
-  }
+  const dir = path.resolve(folder)
 
   process.env.BUSYNESS = 'deploying'
-
-  const dir = path.resolve(folder)
 
   const pkgFile = path.join(dir, 'package.json')
   const dockerFile = path.join(dir, 'Dockerfile')
