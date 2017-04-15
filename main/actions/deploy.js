@@ -5,7 +5,7 @@ const path = require('path')
 const { clipboard, shell, dialog } = require('electron')
 const fs = require('fs-promise')
 const pathExists = require('path-exists')
-const glob = require('glob-promise')
+const deglob = require('deglob')
 const { isTextSync: isText } = require('istextorbinary')
 const chalk = require('chalk')
 const slash = require('slash')
@@ -48,13 +48,21 @@ const getContents = async dir => {
   let items
 
   try {
-    items = await glob(path.join(dir, '**'), {
-      dot: true,
-      strict: true,
-      recursive: true,
-      mark: true,
-      ignore: ['**/node_modules/**', '**/.git/**', '**/.hg/**'],
-      nodir: true
+    items = await new Promise((resolve, reject) => {
+      deglob(
+        ['**'],
+        {
+          cwd: dir
+        },
+        (err, files) => {
+          if (err) {
+            reject(err)
+            return
+          }
+
+          resolve(files)
+        }
+      )
     })
   } catch (err) {
     showError('Could not read directory to deploy', err)

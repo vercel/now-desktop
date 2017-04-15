@@ -2,7 +2,7 @@
 const path = require('path')
 
 // Packages
-const glob = require('glob-promise')
+const deglob = require('deglob')
 const fs = require('fs-promise')
 
 // Ours
@@ -14,11 +14,15 @@ module.exports = async (content, tmp, defaults) => {
   const copiers = new Set()
 
   try {
-    items = await glob(path.join(content, '**'), {
-      dot: true,
-      strict: true,
-      mark: true,
-      ignore: ['**/node_modules/**', '**/.git/**']
+    items = await new Promise((resolve, reject) => {
+      deglob(['**'], (err, files) => {
+        if (err) {
+          reject(err)
+          return
+        }
+
+        resolve(files)
+      })
     })
   } catch (err) {
     showError('Not able to walk directory for copying it', err)
