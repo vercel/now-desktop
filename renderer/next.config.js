@@ -1,14 +1,17 @@
 const BabiliPlugin = require('babili-webpack-plugin')
 
 module.exports = {
-  webpack(cfg) {
-    cfg.target = 'electron-renderer'
+  webpack(config, { dev }) {
+    config.target = 'electron-renderer'
 
-    cfg.plugins = cfg.plugins.filter(plugin => {
+    config.plugins = config.plugins.filter(plugin => {
       return plugin.constructor.name !== 'UglifyJsPlugin'
     })
 
-    cfg.plugins.push(new BabiliPlugin())
-    return cfg
+    if (!dev) {
+      config.plugins.push(new BabiliPlugin())
+    }
+
+    return config
   }
 }
