@@ -1,8 +1,6 @@
 # build output
-.next
-
-# packed binaries
 dist
+renderer/.next
 
 # dependencies
 node_modules
