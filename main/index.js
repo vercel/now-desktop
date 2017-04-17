@@ -123,7 +123,7 @@ const onboarding = () => {
     }
 
     win.on('hide', emitClick)
-    win.hide()
+    win.close()
   }
 
   win.on('open-tray', emitTrayClick)
