@@ -11,7 +11,7 @@
     "file_glob": true,
     "file": [
       "dist/github/latest-mac.json",
-      "dist/*.dmg"
+      "dist/*.dmg",
       "dist/*.zip"
     ],
     "on": {
