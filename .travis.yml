@@ -2,7 +2,7 @@
   "os": "osx",
   "language": "node_js",
   "node_js": "node",
-  "script": "travis_wait npm test",
+  "script": "travis_wait 50 npm test",
   "before_deploy": "travis_wait npm run dist",
   "deploy": {
     "provider": "releases",
