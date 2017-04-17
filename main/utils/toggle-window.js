@@ -8,8 +8,11 @@ module.exports = (event, window) => {
   }
 
   // Show or hide onboarding window
+  // Calling `.close()` will actually make it
+  // hide, but it's a special scenario which we're
+  // listening for in a different place
   if (visible) {
-    window.hide()
+    window.close()
   } else {
     window.show()
   }

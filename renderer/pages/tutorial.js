@@ -170,7 +170,7 @@ class Sections extends Component {
 
     const currentWindow = remote.getCurrentWindow()
 
-    currentWindow.on('hide', () => {
+    currentWindow.on('close', () => {
       if (this.slider) {
         this.slider.slickGoTo(0)
       }
