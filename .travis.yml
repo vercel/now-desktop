@@ -2,7 +2,7 @@
   "os": "osx",
   "language": "node_js",
   "node_js": "node",
-  "after_script": "travis_wait 60 npm run dist",
+  "after_script": "travis_wait 30 npm run dist",
   "cache": {
     "directories": [
       "node_modules"
