@@ -12,9 +12,8 @@
   "scripts": {
     "start": "electron main",
     "build": "next build renderer",
-    "lint": "xo",
     "precommit": "lint-staged",
-    "test": "npm run lint && npm run pack && ava",
+    "test": "xo",
     "pack": "npm run build && build --dir",
     "dist": "npm run build && build --publish 'never'"
   },
@@ -116,7 +115,6 @@
     "winreg": "1.2.3"
   },
   "devDependencies": {
-    "ava": "0.19.1",
     "babili-webpack-plugin": "0.0.11",
     "electron": "1.6.2",
     "electron-builder": "16.8.3",
@@ -126,7 +124,6 @@
     "husky": "0.13.3",
     "lint-staged": "3.4.0",
     "prettier": "1.0.2",
-    "spectron": "3.6.1",
     "xo": "0.18.1"
   }
 }
