@@ -156,10 +156,6 @@ class Login extends Component {
     // Load fresh data and auto-update it
     await startRefreshment(currentWindow)
 
-    if (currentWindow) {
-      currentWindow.focus()
-    }
-
     window.sliderElement.setState({
       loginShown: false,
       loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
