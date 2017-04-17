@@ -84,7 +84,9 @@ global.startRefresh = async tutorialWindow => {
   }, timeSpan)
 }
 
-const windowURL = page => `next://app/${page}`
+const windowURL = page => {
+  return (isDev ? `http://localhost:8000` : `next://app`) + `/${page}`
+}
 
 const onboarding = () => {
   const win = new BrowserWindow({
