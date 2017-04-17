@@ -31,10 +31,7 @@
     "npm --version",
     "npm run test"
   ],
-  "on_success": [
-    "npm run dist",
-    {
-      "ps": "ls .\\dist\\win\\*.exe | % { Push-AppveyorArtifact $_.FullName }"
-    }
+  "after_test": [
+    "npm run dist"
   ]
 }

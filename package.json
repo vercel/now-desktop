@@ -15,7 +15,7 @@
     "precommit": "lint-staged",
     "test": "xo",
     "pack": "npm run build && build --dir",
-    "dist": "npm run build && build --publish never"
+    "dist": "npm run build && build"
   },
   "build": {
     "appId": "co.zeit.now",
