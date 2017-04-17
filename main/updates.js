@@ -22,7 +22,8 @@ const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
-  const cmd = await exec('now -v', { cwd: homedir() })
+  const fullPath = binaryUtils.getFile()
+  const cmd = await exec(`${fullPath} -v`, { cwd: homedir() })
 
   if (!cmd.stdout) {
     throw new Error('Not version tag received from `now -v`')
