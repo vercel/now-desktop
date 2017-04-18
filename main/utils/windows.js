@@ -78,3 +78,23 @@ exports.aboutWindow = tray => {
 
   return win
 }
+
+exports.mainWindow = tray => {
+  const win = new BrowserWindow({
+    width: 400,
+    height: 400,
+    title: 'Now',
+    resizable: false,
+    show: false,
+    fullscreenable: false,
+    maximizable: false,
+    minimizable: false,
+    frame: false,
+    backgroundColor: '#FFF'
+  })
+
+  win.loadURL(windowURL('feed'))
+  attachTrayState(win, tray)
+
+  return win
+}

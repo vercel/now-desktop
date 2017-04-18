@@ -27,7 +27,7 @@ const { prepareCache, refreshCache } = require('./api')
 const toggleWindow = require('./utils/toggle-window')
 const server = require('./server')
 const { get: getConfig } = require('./utils/config')
-const {aboutWindow, tutorialWindow} = require('./utils/windows')
+const { aboutWindow, tutorialWindow, mainWindow } = require('./utils/windows')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -290,16 +290,18 @@ app.on('ready', async () => {
   }
 
   const windows = {
+    main: mainWindow(tray),
     tutorial: tutorialWindow(tray),
     about: aboutWindow(tray)
   }
+
+  toggleWindow(null, windows.main)
 
   const toggleActivity = async event => {
     const loggedIn = await isLoggedIn()
 
     if (loggedIn && !windows.tutorial.isVisible()) {
-      tray.setHighlightMode('selection')
-      toggleContextMenu(windows)
+      toggleWindow(event || null, windows.main)
     } else {
       toggleWindow(event || null, windows.tutorial)
     }

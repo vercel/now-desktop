@@ -1,9 +1,9 @@
 // Packages
 import React from 'react'
 
-const WindowTitle = () => (
-  <aside>
-    <h1>Welcome to Now</h1>
+const WindowTitle = ({ children, light }) => (
+  <aside className={light && 'light'}>
+    <h1>{children}</h1>
 
     <style jsx>
       {`
@@ -26,6 +26,16 @@ const WindowTitle = () => (
         font-size: 12px;
         letter-spacing: 0.02em;
         font-weight: 400
+      }
+
+      .light {
+        border-bottom: 1px solid #D6D6D6;
+        background: #fff;
+      }
+
+      .light h1 {
+        color: #000;
+        font-size: 14px;
       }
     `}
     </style>

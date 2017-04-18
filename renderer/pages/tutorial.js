@@ -333,7 +333,7 @@ class Sections extends Component {
 const Tutorial = () => (
   <Container>
     <main>
-      <Title />
+      <Title>Welcome to Now</Title>
       <Sections />
 
       <style jsx>
