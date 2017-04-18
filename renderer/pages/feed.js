@@ -13,25 +13,53 @@ const Feed = () => (
         <h1>November 2016</h1>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
           <figcaption>
-            <p><b>You</b> deployed <a href="zeit-website-wpytjphavg.now.sh">zeit-website-wpytjphavg.now.sh</a></p>
+            <p>
+              <b>You</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="zeit-website-wpytjphavg.now.sh">
+                zeit-website-wpytjphavg.now.sh
+              </a>
+            </p>
             <span>2m ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80" />
           <figcaption>
-            <p><b>rauchg</b> aliased <a href="https://zeit-now-rfzwcvdfya.now.sh">zeit-now-rfzwcvdfya.now.sh</a> to <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a></p>
+            <p>
+              <b>rauchg</b>
+              {' '}
+              aliased
+              {' '}
+              <a href="https://zeit-now-rfzwcvdfya.now.sh">
+                zeit-now-rfzwcvdfya.now.sh
+              </a>
+              {' '}
+              to
+              {' '}
+              <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a>
+            </p>
             <span>5m ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=rase-&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=rase-&s=80" />
           <figcaption>
-            <p><b>rase-</b> deployed <a href="https://sk-flow-iuyosykbyi.now.sh">sk-flow-iuyosykbyi.now.sh</a></p>
+            <p>
+              <b>rase-</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="https://sk-flow-iuyosykbyi.now.sh">
+                sk-flow-iuyosykbyi.now.sh
+              </a>
+            </p>
             <span>1h ago</span>
           </figcaption>
         </figure>
@@ -41,33 +69,73 @@ const Feed = () => (
         <h1>October 2016</h1>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=nkzawa&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=nkzawa&s=80" />
           <figcaption>
-            <p><b>nkzawa</b> deployed <a href="https://sk-flow-iuyosykbyi.now.sh">sk-flow-iuyosykbyi.now.sh</a></p>
+            <p>
+              <b>nkzawa</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="https://sk-flow-iuyosykbyi.now.sh">
+                sk-flow-iuyosykbyi.now.sh
+              </a>
+            </p>
             <span>2h ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=hbp&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=hbp&s=80" />
           <figcaption>
-            <p><b>hbp</b> aliased <a href="https://zeit-now-rfzwcvdfya.now.sh">zeit-now-rfzwcvdfya.now.sh</a> to <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a></p>
+            <p>
+              <b>hbp</b>
+              {' '}
+              aliased
+              {' '}
+              <a href="https://zeit-now-rfzwcvdfya.now.sh">
+                zeit-now-rfzwcvdfya.now.sh
+              </a>
+              {' '}
+              to
+              {' '}
+              <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a>
+            </p>
             <span>1d ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
           <figcaption>
-            <p><b>You</b> deployed <a href="zeit-website-wpytjphavg.now.sh">zeit-website-wpytjphavg.now.sh</a></p>
+            <p>
+              <b>You</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="zeit-website-wpytjphavg.now.sh">
+                zeit-website-wpytjphavg.now.sh
+              </a>
+            </p>
             <span>2d ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80" />
           <figcaption>
-            <p><b>rauchg</b> aliased <a href="https://zeit-now-rfzwcvdfya.now.sh">zeit-now-rfzwcvdfya.now.sh</a> to <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a></p>
+            <p>
+              <b>rauchg</b>
+              {' '}
+              aliased
+              {' '}
+              <a href="https://zeit-now-rfzwcvdfya.now.sh">
+                zeit-now-rfzwcvdfya.now.sh
+              </a>
+              {' '}
+              to
+              {' '}
+              <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a>
+            </p>
             <span>3d ago</span>
           </figcaption>
         </figure>
@@ -77,25 +145,53 @@ const Feed = () => (
         <h1>September 2016</h1>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
           <figcaption>
-            <p><b>You</b> deployed <a href="zeit-website-wpytjphavg.now.sh">zeit-website-wpytjphavg.now.sh</a></p>
+            <p>
+              <b>You</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="zeit-website-wpytjphavg.now.sh">
+                zeit-website-wpytjphavg.now.sh
+              </a>
+            </p>
             <span>5d ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80" />
           <figcaption>
-            <p><b>rauchg</b> aliased <a href="https://zeit-now-rfzwcvdfya.now.sh">zeit-now-rfzwcvdfya.now.sh</a> to <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a></p>
+            <p>
+              <b>rauchg</b>
+              {' '}
+              aliased
+              {' '}
+              <a href="https://zeit-now-rfzwcvdfya.now.sh">
+                zeit-now-rfzwcvdfya.now.sh
+              </a>
+              {' '}
+              to
+              {' '}
+              <a href="https://nowbeta.zeit.co">nowbeta.zeit.co</a>
+            </p>
             <span>10d ago</span>
           </figcaption>
         </figure>
 
         <figure>
-          <img src="https://zeit.co/api/www/avatar/?u=rase-&s=80"/>
+          <img src="https://zeit.co/api/www/avatar/?u=rase-&s=80" />
           <figcaption>
-            <p><b>rase-</b> deployed <a href="https://sk-flow-iuyosykbyi.now.sh">sk-flow-iuyosykbyi.now.sh</a></p>
+            <p>
+              <b>rase-</b>
+              {' '}
+              deployed
+              {' '}
+              <a href="https://sk-flow-iuyosykbyi.now.sh">
+                sk-flow-iuyosykbyi.now.sh
+              </a>
+            </p>
             <span>11d ago</span>
           </figcaption>
         </figure>
@@ -103,20 +199,19 @@ const Feed = () => (
     </main>
 
     <aside>
-      <nav>
-      </nav>
+      <nav />
 
       <a className="toggle-menu">
         <span>
-          <i></i>
-          <i></i>
-          <i></i>
+          <i />
+          <i />
+          <i />
         </span>
       </a>
     </aside>
 
     <style jsx>
-    {`
+      {`
       main {
         overflow: scroll;
         height: calc(100vh - 90px);
@@ -213,6 +308,7 @@ const Feed = () => (
       figure figcaption p {
         font-size: 14px;
         margin: 0;
+        line-height: 18px;
       }
 
       figure figcaption a {
@@ -224,7 +320,7 @@ const Feed = () => (
     </style>
 
     <style jsx global>
-    {`
+      {`
       body {
         font-family: BlinkMacSystemFont;
         background: #fff;
