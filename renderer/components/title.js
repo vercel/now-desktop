@@ -31,6 +31,7 @@ const WindowTitle = ({ children, light }) => (
       .light {
         border-bottom: 1px solid #D6D6D6;
         background: #fff;
+        -webkit-app-region: drag;
       }
 
       .light h1 {

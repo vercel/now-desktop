@@ -171,7 +171,6 @@ const Feed = () => (
     {`
       body {
         font-family: BlinkMacSystemFont;
-        -webkit-app-region: drag;
         background: #fff;
         -webkit-font-smoothing: antialiased;
         margin: 0;
