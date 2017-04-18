@@ -109,21 +109,8 @@ const Feed = () => (
       </section>
     </StickyContainer>
 
-    <aside>
-      test
-    </aside>
-
     <style jsx>
     {`
-      aside {
-        height: 50px;
-        background: rgba(255, 255, 255, 0.90);
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
-
       h1 {
         background: #F5F5F5;
         font-size: 14px;
