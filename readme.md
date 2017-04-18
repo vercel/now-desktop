@@ -10,6 +10,12 @@ For more details, head to [this page](https://zeit.co/now).
 
 You can download the latest release [here](https://zeit.co/download).
 
+If you're using [Homebrew Cask](https://caskroom.github.io), you can simply install it by running this command:
+
+```bash
+brew cask install now
+```
+
 ## Caught a bug?
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
