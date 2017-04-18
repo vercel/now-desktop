@@ -24,10 +24,10 @@ const deploy = require('./actions/deploy')
 const share = require('./actions/share')
 const autoUpdater = require('./updates')
 const { prepareCache, refreshCache } = require('./api')
-const attachTrayState = require('./utils/highlight')
 const toggleWindow = require('./utils/toggle-window')
 const server = require('./server')
 const { get: getConfig } = require('./utils/config')
+const {aboutWindow, tutorialWindow} = require('./utils/windows')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -82,80 +82,6 @@ global.startRefresh = async tutorialWindow => {
 
     await refreshCache(null, app, tutorialWindow, interval)
   }, timeSpan)
-}
-
-const windowURL = page => {
-  return (isDev ? `http://localhost:8000` : `next://app`) + `/${page}`
-}
-
-const onboarding = () => {
-  const win = new BrowserWindow({
-    width: 650,
-    height: 430,
-    title: 'Welcome to Now',
-    resizable: false,
-    center: true,
-    frame: false,
-    show: false,
-    fullscreenable: false,
-    maximizable: false,
-    titleBarStyle: 'hidden-inset',
-    backgroundColor: '#000'
-  })
-
-  win.loadURL(windowURL('tutorial'))
-  attachTrayState(win, tray)
-
-  // We need to access it = the "About" window
-  // To be able to open it = there
-  global.tutorial = win
-
-  const emitTrayClick = aboutWindow => {
-    const emitClick = () => {
-      if (aboutWindow && aboutWindow.isVisible()) {
-        return
-      }
-
-      // Automatically open the context menu
-      if (tray) {
-        tray.emit('click')
-      }
-
-      win.removeListener('hide', emitClick)
-    }
-
-    win.on('hide', emitClick)
-    win.close()
-  }
-
-  win.on('open-tray', emitTrayClick)
-
-  // Just hand it back
-  return win
-}
-
-const aboutWindow = () => {
-  const win = new BrowserWindow({
-    width: 360,
-    height: 408,
-    title: 'About Now',
-    resizable: false,
-    center: true,
-    show: false,
-    fullscreenable: false,
-    maximizable: false,
-    minimizable: false,
-    titleBarStyle: 'hidden-inset',
-    frame: false,
-    backgroundColor: '#ECECEC'
-  })
-
-  win.loadURL(windowURL('about'))
-  attachTrayState(win, tray)
-
-  global.about = win
-
-  return win
 }
 
 app.on('window-all-closed', () => {
@@ -364,8 +290,8 @@ app.on('ready', async () => {
   }
 
   const windows = {
-    tutorial: onboarding(),
-    about: aboutWindow()
+    tutorial: tutorialWindow(tray),
+    about: aboutWindow(tray)
   }
 
   const toggleActivity = async event => {
