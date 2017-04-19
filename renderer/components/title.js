@@ -1,9 +1,17 @@
 // Packages
 import React from 'react'
 
+// Components
+import Deploy from '../vectors/deploy'
+
 const Title = ({ children, light }) => (
   <aside className={light && 'light'}>
     <h1>{children}</h1>
+
+    {light &&
+      <span className="deploy">
+        <Deploy />
+      </span>}
 
     <style jsx>
       {`
@@ -32,7 +40,6 @@ const Title = ({ children, light }) => (
         border-bottom: 1px solid #D6D6D6;
         background: #fff;
         position: relative;
-        height: 40px;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
       }
@@ -40,6 +47,23 @@ const Title = ({ children, light }) => (
       .light h1 {
         color: #000;
         font-size: 14px;
+      }
+
+      .light .deploy {
+        position: absolute;
+        height: 37px;
+        width: 42px;
+        right: 0;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        opacity: .6;
+      }
+
+      .light .deploy:hover {
+        opacity: 1;
       }
     `}
     </style>

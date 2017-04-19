@@ -252,11 +252,16 @@ const Feed = () => (
         cursor: pointer;
       }
 
-      aside span i {
+      aside .toggle-menu i {
         width: 20px;
         height: 1px;
-        background: #929292;
+        background: #5d5d5d;
         display: block;
+        opacity: .6;
+      }
+
+      aside .toggle-menu:hover i {
+        opacity: 1;
       }
 
       aside span i:nth-child(2) {
