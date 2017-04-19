@@ -11,7 +11,19 @@ const openMenu = event => {
 
 const Switcher = () => (
   <aside>
-    <nav />
+    <ul>
+      <li>
+        <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80" />
+      </li>
+
+      <li style={{ backgroundColor: '#023E7B' }}>
+        <span>ZC</span>
+      </li>
+
+      <li style={{ backgroundColor: '#7F003F' }}>
+        <span>ER</span>
+      </li>
+    </ul>
 
     <a className="toggle-menu" onClick={openMenu}>
       <span>
@@ -23,6 +35,36 @@ const Switcher = () => (
 
     <style jsx>
       {`
+      ul {
+        margin: 0 0 0 10px;
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        height: 30px;
+      }
+
+      li {
+        width: 30px;
+        height: inherit;
+        overflow: hidden;
+        border-radius: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+      }
+
+      li img {
+        width: 100%;
+        height: 100%;
+      }
+
+      li span {
+        font-size: 12px;
+        color: #7F7F7F;
+      }
+
       aside {
         height: 50px;
         bottom: 0;
@@ -36,6 +78,7 @@ const Switcher = () => (
         background: #fff;
         user-select: none;
         cursor: default;
+        align-items: center;
       }
 
       aside .toggle-menu {
