@@ -221,6 +221,8 @@ const Feed = () => (
         overflow: scroll;
         height: calc(100vh - 90px);
         background: #fff;
+        user-select: none;
+        cursor: default;
       }
 
       .caret {
@@ -240,6 +242,8 @@ const Feed = () => (
         display: flex;
         justify-content: space-between;
         background: #fff;
+        user-select: none;
+        cursor: default;
       }
 
       aside .toggle-menu {

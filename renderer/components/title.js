@@ -26,6 +26,8 @@ const Title = ({ children, light }) => (
         right: 0;
         background: #000;
         z-index: 5;
+        user-select: none;
+        cursor: default;
       }
 
       h1 {
