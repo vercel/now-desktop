@@ -125,7 +125,6 @@
     "lint-staged": "3.4.0",
     "prettier": "1.0.2",
     "prop-types": "15.5.8",
-    "react-sticky": "5.0.5",
     "xo": "0.18.1"
   }
 }
