@@ -2,11 +2,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// Components
-import Deploy from '../vectors/deploy'
-
 // Utilities
 import remote from '../utils/electron'
+
+// Components
+import Deploy from '../vectors/deploy'
+import Search from './search'
 
 class Title extends React.Component {
   componentDidMount() {
@@ -20,6 +21,8 @@ class Title extends React.Component {
   render() {
     return (
       <aside className={this.props.light && 'light'}>
+        {this.props.light && <Search />}
+
         <h1>{this.props.children}</h1>
 
         {this.props.light &&
@@ -56,6 +59,7 @@ class Title extends React.Component {
             border-bottom: 1px solid #D6D6D6;
             background: #fff;
             position: relative;
+            overflow: hidden;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
           }
