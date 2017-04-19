@@ -97,6 +97,7 @@ const Switcher = () => (
         background: #5d5d5d;
         display: block;
         opacity: .6;
+        transition: opacity .2s ease;
       }
 
       aside .toggle-menu:hover i {

@@ -18,15 +18,28 @@ class Title extends React.Component {
     this.dialogs.deploy()
   }
 
+  toggleDeployIcon() {
+    this.deployIcon.classList.toggle('hidden')
+  }
+
   render() {
+    const deployIconRef = icon => {
+      this.deployIcon = icon
+    }
+
     return (
       <aside className={this.props.light && 'light'}>
-        {this.props.light && <Search />}
+        {this.props.light &&
+          <Search toggleDeployIcon={this.toggleDeployIcon.bind(this)} />}
 
         <h1>{this.props.children}</h1>
 
         {this.props.light &&
-          <span className="deploy" onClick={this.selectToDeploy.bind(this)}>
+          <span
+            className="deploy"
+            onClick={this.selectToDeploy.bind(this)}
+            ref={deployIconRef}
+          >
             <Deploy />
           </span>}
 
@@ -80,10 +93,15 @@ class Title extends React.Component {
             align-items: center;
             cursor: pointer;
             opacity: .6;
+            transition: opacity .2s ease;
           }
 
           .light .deploy:hover {
             opacity: 1;
+          }
+
+          .light .deploy.hidden {
+            opacity: 0;
           }
         `}
         </style>

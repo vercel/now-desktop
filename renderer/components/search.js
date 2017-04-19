@@ -1,5 +1,6 @@
 // Packages
 import React from 'react'
+import { func } from 'prop-types'
 
 // Vectors
 import MagnifyingGlass from '../vectors/search'
@@ -15,6 +16,8 @@ class Search extends React.Component {
   }
 
   show() {
+    this.props.toggleDeployIcon()
+
     setTimeout(() => {
       this.input.focus()
     }, 200)
@@ -33,6 +36,8 @@ class Search extends React.Component {
 
     setTimeout(() => {
       this.form.style.visibility = 'hidden'
+      this.props.toggleDeployIcon()
+
       this.input.value = ''
       this.input.blur()
     }, 200)
@@ -87,6 +92,7 @@ class Search extends React.Component {
             opacity: .6;
             cursor: pointer;
             flex-shrink: 0;
+            transition: opacity .2s ease;
           }
 
           span:hover {
@@ -145,6 +151,10 @@ class Search extends React.Component {
       </aside>
     )
   }
+}
+
+Search.propTypes = {
+  toggleDeployIcon: func.isRequired
 }
 
 export default Search
