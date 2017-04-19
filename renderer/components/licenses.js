@@ -11,7 +11,7 @@ const Licenses = () => (
   <section>
     {loadLicenses().map((item, index) => {
       return (
-        item.name !== 'now-desktop' &&
+        item.name.includes('now-desktop') ||
         <details key={index}>
           <summary>{item.name}</summary>
           <p>{item.license}</p>
