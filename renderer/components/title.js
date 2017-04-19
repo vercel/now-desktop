@@ -85,7 +85,7 @@ class Title extends React.Component {
           .light .deploy {
             position: absolute;
             height: 37px;
-            width: 42px;
+            width: 37px;
             right: 0;
             top: 0;
             display: flex;
