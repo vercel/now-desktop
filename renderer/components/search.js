@@ -14,14 +14,28 @@ class Search extends React.Component {
     }
   }
 
-  showSearch() {
+  show() {
     setTimeout(() => {
       this.input.focus()
     }, 200)
 
+    this.form.style.visibility = 'visible'
+
     this.setState({
       shown: true
     })
+  }
+
+  hide() {
+    this.setState({
+      shown: false
+    })
+
+    setTimeout(() => {
+      this.form.style.visibility = 'hidden'
+      this.input.value = ''
+      this.input.blur()
+    }, 200)
   }
 
   render() {
@@ -29,20 +43,24 @@ class Search extends React.Component {
       this.input = input
     }
 
+    const formRef = form => {
+      this.form = form
+    }
+
     return (
       <aside className={this.state.shown && 'visible'}>
-        <span onClick={this.showSearch.bind(this)}>
+        <span onClick={this.show.bind(this)}>
           <MagnifyingGlass />
         </span>
 
-        <form>
+        <form ref={formRef}>
           <input
             type="text"
             ref={inputRef}
             placeholder="Search the Timeline..."
           />
 
-          <b>
+          <b onClick={this.hide.bind(this)}>
             <Clear />
           </b>
         </form>
@@ -115,7 +133,6 @@ class Search extends React.Component {
           }
 
           .visible form {
-            visibility: visible;
             opacity: 1;
           }
 
