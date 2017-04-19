@@ -5,73 +5,88 @@ import PropTypes from 'prop-types'
 // Components
 import Deploy from '../vectors/deploy'
 
-const Title = ({ children, light }) => (
-  <aside className={light && 'light'}>
-    <h1>{children}</h1>
+// Utilities
+import remote from '../utils/electron'
 
-    {light &&
-      <span className="deploy">
-        <Deploy />
-      </span>}
+class Title extends React.Component {
+  componentDidMount() {
+    this.dialogs = remote.require('./dialogs')
+  }
 
-    <style jsx>
-      {`
-      aside {
-        height: 37px;
-        display: flex;
-        position: fixed;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #000;
-        z-index: 5;
-        user-select: none;
-        cursor: default;
-      }
+  selectToDeploy() {
+    this.dialogs.deploy()
+  }
 
-      h1 {
-        margin: 0;
-        color: #9B9B9B;
-        font-size: 12px;
-        letter-spacing: 0.02em;
-        font-weight: 400
-      }
+  render() {
+    return (
+      <aside className={this.props.light && 'light'}>
+        <h1>{this.props.children}</h1>
 
-      .light {
-        border-bottom: 1px solid #D6D6D6;
-        background: #fff;
-        position: relative;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-      }
+        {this.props.light &&
+          <span className="deploy" onClick={this.selectToDeploy.bind(this)}>
+            <Deploy />
+          </span>}
 
-      .light h1 {
-        color: #000;
-        font-size: 14px;
-      }
+        <style jsx>
+          {`
+          aside {
+            height: 37px;
+            display: flex;
+            position: fixed;
+            justify-content: center;
+            align-items: center;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            z-index: 5;
+            user-select: none;
+            cursor: default;
+          }
 
-      .light .deploy {
-        position: absolute;
-        height: 37px;
-        width: 42px;
-        right: 0;
-        top: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        opacity: .6;
-      }
+          h1 {
+            margin: 0;
+            color: #9B9B9B;
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            font-weight: 400
+          }
 
-      .light .deploy:hover {
-        opacity: 1;
-      }
-    `}
-    </style>
-  </aside>
-)
+          .light {
+            border-bottom: 1px solid #D6D6D6;
+            background: #fff;
+            position: relative;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+          }
+
+          .light h1 {
+            color: #000;
+            font-size: 14px;
+          }
+
+          .light .deploy {
+            position: absolute;
+            height: 37px;
+            width: 42px;
+            right: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: .6;
+          }
+
+          .light .deploy:hover {
+            opacity: 1;
+          }
+        `}
+        </style>
+      </aside>
+    )
+  }
+}
 
 Title.propTypes = {
   children: PropTypes.oneOfType([

@@ -11,43 +11,14 @@ const showDialog = details => {
   return false
 }
 
-exports.share = async function(
-  tray,
-  properties = ['openDirectory', 'openFile']
-) {
+exports.deploy = async () => {
   const info = {
-    title: 'Select something to share',
-    properties,
-    buttonLabel: 'Share'
-  }
-
-  tray.setHighlightMode('always')
-  const path = showDialog(info)
-  tray.setHighlightMode('never')
-
-  if (!path) {
-    return
-  }
-
-  const sharing = require('./actions/share')
-
-  try {
-    await sharing(path)
-  } catch (err) {
-    exports.error('Not able to share', err)
-  }
-}
-
-exports.deploy = async function(tray) {
-  const info = {
-    title: 'Select a folder to deploy',
-    properties: ['openDirectory'],
+    title: 'Select a file or directory to deploy',
+    properties: ['openDirectory', 'openFile'],
     buttonLabel: 'Deploy'
   }
 
-  tray.setHighlightMode('always')
   const path = showDialog(info)
-  tray.setHighlightMode('never')
 
   if (path) {
     const deployment = require('./actions/deploy')
