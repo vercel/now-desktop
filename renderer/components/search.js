@@ -35,8 +35,11 @@ class Search extends React.Component {
     })
 
     setTimeout(() => {
-      this.form.style.visibility = 'hidden'
       this.props.toggleDeployIcon()
+    }, 100)
+
+    setTimeout(() => {
+      this.form.style.visibility = 'hidden'
 
       this.input.value = ''
       this.input.blur()
