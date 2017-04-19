@@ -10,9 +10,10 @@ For more details, head to [this page](https://zeit.co/now).
 
 You can download the latest release [here](https://zeit.co/download).
 
-If you're using [Homebrew Cask](https://caskroom.github.io), you can simply install it by running this command:
+If you're using [Homebrew Cask](https://caskroom.github.io), you can simply install it by running these commands:
 
 ```bash
+brew update
 brew cask install now
 ```
 
