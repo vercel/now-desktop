@@ -36,7 +36,11 @@ class Search extends React.Component {
         </span>
 
         <form>
-          <input type="text" ref={inputRef} />
+          <input
+            type="text"
+            ref={inputRef}
+            placeholder="Search the Timeline..."
+          />
 
           <b>
             <Clear />
