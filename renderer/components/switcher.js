@@ -94,9 +94,9 @@ const Switcher = () => (
       aside .toggle-menu i {
         width: 20px;
         height: 1px;
-        background: #5d5d5d;
+        background: #4e4e4e;
         display: block;
-        opacity: .6;
+        opacity: .5;
         transition: opacity .2s ease;
       }
 

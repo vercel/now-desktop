@@ -9,8 +9,8 @@ const Clear = () => (
       fill="none"
       fillRule="evenodd"
     >
-      <circle stroke="#979797" opacity=".2" cx="8" cy="8" r="8" />
-      <g stroke="#000" strokeLinecap="square">
+      <circle stroke="#4e4e4e" cx="8" cy="8" r="8" />
+      <g stroke="#4e4e4e" strokeLinecap="square">
         <path d="M6 6l4.5254834 4.5254834M10.525484 6l-4.5254834 4.5254834" />
       </g>
     </g>

@@ -89,7 +89,7 @@ class Search extends React.Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: .6;
+            opacity: .5;
             cursor: pointer;
             flex-shrink: 0;
             transition: opacity .2s ease;
@@ -132,6 +132,12 @@ class Search extends React.Component {
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
+            opacity: .5;
+            transition: opacity .2s ease;
+          }
+
+          b:hover {
+            opacity: 1;
           }
 
           .visible {

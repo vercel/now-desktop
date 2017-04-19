@@ -92,7 +92,7 @@ class Title extends React.Component {
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            opacity: .6;
+            opacity: .5;
             transition: opacity .2s ease;
           }
 
