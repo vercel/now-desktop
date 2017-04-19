@@ -1,5 +1,10 @@
-module.exports = (event, window) => {
+module.exports = (event, window, tray) => {
   const visible = window.isVisible()
+
+  if (event) {
+    // Don't open the menu
+    event.preventDefault()
+  }
 
   // If window open and not focused, bring it to focus
   if (visible && !window.isFocused()) {
@@ -14,11 +19,17 @@ module.exports = (event, window) => {
   if (visible) {
     window.close()
   } else {
-    window.show()
-  }
+    if (window.handle && window.handle === 'main') {
+      const trayBounds = tray.getBounds()
+      const windowWidth = window.getSize()[0]
+      const trayCenter = trayBounds.x + trayBounds.width / 2
 
-  if (event) {
-    // Don't open the menu
-    event.preventDefault()
+      const horizontalPosition = trayCenter - windowWidth / 2
+      const verticalPosition = trayBounds.height + 6
+
+      window.setPosition(horizontalPosition, verticalPosition)
+    }
+
+    window.show()
   }
 }

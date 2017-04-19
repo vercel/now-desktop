@@ -31,9 +31,10 @@ const Title = ({ children, light }) => (
       .light {
         border-bottom: 1px solid #D6D6D6;
         background: #fff;
-        -webkit-app-region: drag;
         position: relative;
         height: 40px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
 
       .light h1 {

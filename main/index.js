@@ -299,13 +299,11 @@ app.on('ready', async () => {
     about: aboutWindow(tray)
   }
 
-  toggleWindow(null, windows.main)
-
   const toggleActivity = async event => {
     const loggedIn = await isLoggedIn()
 
     if (loggedIn && !windows.tutorial.isVisible()) {
-      toggleWindow(event || null, windows.main)
+      toggleWindow(event || null, windows.main, tray)
     } else {
       toggleWindow(event || null, windows.tutorial)
     }

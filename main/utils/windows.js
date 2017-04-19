@@ -1,5 +1,5 @@
 // Packages
-const {BrowserWindow} = require('electron')
+const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
 
 // Utilities
@@ -89,9 +89,12 @@ exports.mainWindow = tray => {
     fullscreenable: false,
     maximizable: false,
     minimizable: false,
+    transparent: true,
     frame: false,
-    backgroundColor: '#FFF'
+    movable: false
   })
+
+  win.handle = 'main'
 
   win.loadURL(windowURL('feed'))
   attachTrayState(win, tray)

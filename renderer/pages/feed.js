@@ -3,9 +3,14 @@ import React from 'react'
 
 // Components
 import Title from '../components/title'
+import Caret from '../vectors/caret'
 
 const Feed = () => (
   <div>
+    <span className="caret">
+      <Caret />
+    </span>
+
     <Title light>Now</Title>
 
     <main>
@@ -215,6 +220,13 @@ const Feed = () => (
       main {
         overflow: scroll;
         height: calc(100vh - 90px);
+        background: #fff;
+      }
+
+      .caret {
+        display: flex;
+        justify-content: center;
+        margin-bottom: -1px;
       }
 
       aside {
@@ -227,6 +239,7 @@ const Feed = () => (
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
+        background: #fff;
       }
 
       aside .toggle-menu {
@@ -323,7 +336,6 @@ const Feed = () => (
       {`
       body {
         font-family: BlinkMacSystemFont;
-        background: #fff;
         -webkit-font-smoothing: antialiased;
         margin: 0;
         overflow: hidden;
