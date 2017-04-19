@@ -18,7 +18,7 @@ const firstRun = require('first-run')
 const { moveToApplications } = require('electron-lets-move')
 
 // Utilities
-const { innerMenu, outerMenu, deploymentOptions } = require('./menu')
+const { outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const share = require('./actions/share')
@@ -90,6 +90,7 @@ app.on('window-all-closed', () => {
   }
 })
 
+/* S
 const assignAliases = (aliases, deployment) => {
   if (aliases) {
     const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId)
@@ -101,10 +102,12 @@ const assignAliases = (aliases, deployment) => {
 
   return deploymentOptions(deployment)
 }
+*/
 
 // Convert date string = API to valid date object
-const toDate = int => new Date(parseInt(int, 10))
+// const toDate = int => new Date(parseInt(int, 10))
 
+/*
 const toggleContextMenu = async windows => {
   const deployments = cache.get('deployments')
   const aliases = cache.get('aliases')
@@ -177,6 +180,7 @@ const toggleContextMenu = async windows => {
   const menu = Menu.buildFromTemplate(generatedMenu)
   tray.popUpContextMenu(menu, tray.getBounds())
 }
+*/
 
 const isLoggedIn = async () => {
   try {

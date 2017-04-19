@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const WindowTitle = ({ children, light }) => (
+const Title = ({ children, light }) => (
   <aside className={light && 'light'}>
     <h1>{children}</h1>
 
@@ -45,4 +45,9 @@ const WindowTitle = ({ children, light }) => (
   </aside>
 )
 
-export default WindowTitle
+Title.propTypes = {
+  children: React.PropTypes.element.isRequired,
+  light: React.PropTypes.bool
+}
+
+export default Title
