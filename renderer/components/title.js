@@ -1,5 +1,6 @@
 // Packages
 import React from 'react'
+import PropTypes from 'prop-types'
 
 // Components
 import Deploy from '../vectors/deploy'
@@ -73,7 +74,10 @@ const Title = ({ children, light }) => (
 )
 
 Title.propTypes = {
-  children: React.PropTypes.element.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element.isRequired
+  ]),
   light: React.PropTypes.bool
 }
 
