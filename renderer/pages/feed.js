@@ -4,6 +4,7 @@ import React from 'react'
 // Components
 import Title from '../components/title'
 import Caret from '../vectors/caret'
+import Switcher from '../components/switcher'
 
 const Feed = () => (
   <div>
@@ -203,17 +204,7 @@ const Feed = () => (
       </section>
     </main>
 
-    <aside>
-      <nav />
-
-      <a className="toggle-menu">
-        <span>
-          <i />
-          <i />
-          <i />
-        </span>
-      </a>
-    </aside>
+    <Switcher />
 
     <style jsx>
       {`
@@ -229,47 +220,6 @@ const Feed = () => (
         display: flex;
         justify-content: center;
         margin-bottom: -1px;
-      }
-
-      aside {
-        height: 50px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        position: fixed;
-        border-top: 1px solid #D6D6D6;
-        box-sizing: border-box;
-        display: flex;
-        justify-content: space-between;
-        background: #fff;
-        user-select: none;
-        cursor: default;
-      }
-
-      aside .toggle-menu {
-        display: block;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      aside .toggle-menu i {
-        width: 20px;
-        height: 1px;
-        background: #5d5d5d;
-        display: block;
-        opacity: .6;
-      }
-
-      aside .toggle-menu:hover i {
-        opacity: 1;
-      }
-
-      aside span i:nth-child(2) {
-        margin: 3px 0;
       }
 
       h1 {

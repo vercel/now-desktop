@@ -7,7 +7,7 @@ if (require('electron-squirrel-startup')) {
 const path = require('path')
 
 // Packages
-const { app, Tray, Menu, BrowserWindow, ipcMain } = require('electron')
+const { Menu, app, Tray, BrowserWindow, ipcMain } = require('electron')
 const ms = require('ms')
 const isDev = require('electron-is-dev')
 const { dir: isDirectory } = require('path-type')
@@ -18,7 +18,7 @@ const firstRun = require('first-run')
 const { moveToApplications } = require('electron-lets-move')
 
 // Utilities
-const { outerMenu } = require('./menu')
+const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const share = require('./actions/share')
@@ -90,7 +90,6 @@ app.on('window-all-closed', () => {
   }
 })
 
-/* S
 const assignAliases = (aliases, deployment) => {
   if (aliases) {
     const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId)
@@ -102,13 +101,11 @@ const assignAliases = (aliases, deployment) => {
 
   return deploymentOptions(deployment)
 }
-*/
 
 // Convert date string = API to valid date object
-// const toDate = int => new Date(parseInt(int, 10))
+const toDate = int => new Date(parseInt(int, 10))
 
-/*
-const toggleContextMenu = async windows => {
+const contextMenu = async windows => {
   const deployments = cache.get('deployments')
   const aliases = cache.get('aliases')
 
@@ -177,10 +174,8 @@ const toggleContextMenu = async windows => {
     generatedMenu.push(last)
   }
 
-  const menu = Menu.buildFromTemplate(generatedMenu)
-  tray.popUpContextMenu(menu, tray.getBounds())
+  return Menu.buildFromTemplate(generatedMenu)
 }
-*/
 
 const isLoggedIn = async () => {
   try {
@@ -299,6 +294,16 @@ app.on('ready', async () => {
     about: aboutWindow(tray)
   }
 
+  ipcMain.on('open-menu', async (event, coordinates) => {
+    if (coordinates && coordinates.x && coordinates.y) {
+      coordinates.x = parseInt(coordinates.x.toFixed(), 10)
+      coordinates.y = parseInt(coordinates.y.toFixed(), 10)
+
+      const menu = await contextMenu(windows)
+      menu.popup(coordinates.x + 4, coordinates.y)
+    }
+  })
+
   const toggleActivity = async event => {
     const loggedIn = await isLoggedIn()
 
@@ -352,7 +357,7 @@ app.on('ready', async () => {
       return
     }
 
-    const menu = Menu.buildFromTemplate(outerMenu(app, windows))
+    const menu = outerMenu(app, windows)
 
     if (!windows.tutorial.isVisible()) {
       isHighlighted = !isHighlighted

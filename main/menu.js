@@ -1,9 +1,8 @@
 // Packages
-const { shell, clipboard } = require('electron')
+const { Menu, shell, clipboard } = require('electron')
 const moment = require('moment')
 
 // Ours
-const { deploy, share } = require('./dialogs')
 const logout = require('./actions/logout')
 const removeDeployment = require('./actions/remove')
 const notify = require('./notify')
@@ -98,36 +97,6 @@ exports.innerMenu = async function(app, tray, data, windows) {
   }
 
   const config = await getConfig()
-  let shareMenu
-
-  if (process.platform === 'darwin') {
-    shareMenu = {
-      label: 'Share...',
-      accelerator: 'CmdOrCtrl+S',
-      async click() {
-        await share(tray)
-      }
-    }
-  } else {
-    shareMenu = {
-      label: 'Share...',
-      accelerator: 'CmdOrCtrl+S',
-      submenu: [
-        {
-          label: 'Directory...',
-          async click() {
-            await share(tray, ['openDirectory'])
-          }
-        },
-        {
-          label: 'File...',
-          async click() {
-            await share(tray, ['openFile'])
-          }
-        }
-      ]
-    }
-  }
 
   return [
     {
@@ -136,17 +105,6 @@ exports.innerMenu = async function(app, tray, data, windows) {
         toggleWindow(null, windows.about)
       }
     },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Deploy...',
-      accelerator: 'CmdOrCtrl+D',
-      async click() {
-        await deploy(tray)
-      }
-    },
-    shareMenu,
     {
       type: 'separator'
     },
@@ -190,8 +148,8 @@ exports.innerMenu = async function(app, tray, data, windows) {
   ]
 }
 
-exports.outerMenu = function(app, windows) {
-  return [
+exports.outerMenu = (app, windows) =>
+  Menu.buildFromTemplate([
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
@@ -205,5 +163,4 @@ exports.outerMenu = function(app, windows) {
       label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
       role: 'quit'
     }
-  ]
-}
+  ])
