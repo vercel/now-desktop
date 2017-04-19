@@ -288,6 +288,10 @@ const Feed = () => (
         text-decoration: none;
         font-weight: 600;
       }
+
+      figure figcaption a:hover {
+        color: #067DF7;
+      }
     `}
     </style>
 
