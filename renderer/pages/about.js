@@ -223,7 +223,6 @@ class About extends Component {
             div {
               background: #ECECEC;
               height: 100vh;
-              cursor: default;
             }
 
             .window-controls {
@@ -263,10 +262,6 @@ class About extends Component {
 
             img {
               width: 100px;
-            }
-
-            a {
-              cursor: default;
             }
 
             h1,
@@ -370,6 +365,7 @@ class About extends Component {
               text-decoration: none;
               padding: 0 10px;
               position: relative;
+              cursor: pointer;
             }
 
             nav a:after {
