@@ -101,11 +101,6 @@ module.exports = async (folder, sharing) => {
     return
   }
 
-  notify({
-    title: 'Uploading Files...',
-    body: 'Your files are being uploaded to now.'
-  })
-
   // Log separator
   if (!sharing) {
     console.log(chalk.grey('---'))
@@ -123,7 +118,10 @@ module.exports = async (folder, sharing) => {
     try {
       packageJSON = await fs.readJSON(pkgFile)
     } catch (err) {
-      showError('Not able to load package file', err)
+      showError(
+        'Could not parse `package.json` file. Please check it for syntax errors!',
+        err
+      )
       return
     }
 
@@ -131,6 +129,11 @@ module.exports = async (folder, sharing) => {
       ? JSON.stringify(packageJSON)
       : packageJSON
   }
+
+  notify({
+    title: 'Uploading Files...',
+    body: 'Your files are being uploaded to now.'
+  })
 
   if (projectType === 'node') {
     projectName = details[propertyName].name
