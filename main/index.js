@@ -347,6 +347,11 @@ app.on('ready', async () => {
   let submenuShown = false
 
   tray.on('right-click', async event => {
+    if (await isLoggedIn()) {
+      toggleWindow(event, windows.main, tray)
+      return
+    }
+
     const menu = Menu.buildFromTemplate(outerMenu(app, windows))
 
     if (!windows.tutorial.isVisible()) {
