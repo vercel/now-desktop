@@ -287,6 +287,11 @@ const Feed = () => (
         color: #000;
         text-decoration: none;
         font-weight: 600;
+        cursor: default;
+      }
+
+      figure figcaption a:hover {
+        color: #067DF7;
       }
     `}
     </style>

@@ -74,7 +74,6 @@ class Title extends React.Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
             opacity: .6;
           }
 
