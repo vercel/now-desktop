@@ -46,6 +46,12 @@ class Search extends React.Component {
     }, 200)
   }
 
+  shouldHide(event) {
+    if (event.keyCode && event.keyCode === 27) {
+      this.hide()
+    }
+  }
+
   render() {
     const inputRef = input => {
       this.input = input
@@ -66,6 +72,7 @@ class Search extends React.Component {
             type="text"
             ref={inputRef}
             placeholder="Search the Timeline..."
+            onKeyDown={this.shouldHide.bind(this)}
           />
 
           <b onClick={this.hide.bind(this)}>
