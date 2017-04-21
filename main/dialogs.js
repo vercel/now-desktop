@@ -21,10 +21,10 @@ exports.deploy = async () => {
   const path = showDialog(info)
 
   if (path) {
-    const deployment = require('./actions/deploy')
+    const checkType = require('./utils/deployment/check-type')
 
     try {
-      await deployment(path)
+      await checkType(path)
     } catch (err) {
       exports.error('Not able to deploy', err)
     }
