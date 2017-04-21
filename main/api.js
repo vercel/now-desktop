@@ -71,7 +71,7 @@ const stopInterval = interval => {
   clearInterval(interval)
 }
 
-exports.refreshCache = async (kind, app, tutorial, interval) => {
+exports.refreshCache = async (kind, app, windows, interval) => {
   const session = await exports.connector()
 
   if (!session) {
@@ -111,7 +111,7 @@ exports.refreshCache = async (kind, app, tutorial, interval) => {
       // If token has been revoked, the server will not respond with data
       // In turn, we need to log out
       const logout = require('./actions/logout')
-      await logout(app, tutorial)
+      await logout(app, windows)
     }
 
     // Stop executing the function

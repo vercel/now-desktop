@@ -60,7 +60,7 @@ const revokeToken = async (token, tokenId) => {
   }
 }
 
-module.exports = async (app, tutorial) => {
+module.exports = async (app, windows) => {
   const offline = process.env.CONNECTION === 'offline'
 
   // The app shouldn't log out if an error occurs while offline
@@ -69,13 +69,18 @@ module.exports = async (app, tutorial) => {
     return
   }
 
+  // Hide the main window
+  if (windows && windows.main) {
+    windows.main.hide()
+  }
+
   // Cache user information
   const userDetails = await getConfig()
 
   try {
     await removeConfig()
   } catch (err) {
-    showError(`Couldn't remove config while logging out`, err)
+    showError("Couldn't remove config while logging out", err)
   }
 
   const cache = prepareCache()
@@ -89,12 +94,14 @@ module.exports = async (app, tutorial) => {
     cache.set('no-move-wanted', true)
   }
 
-  if (tutorial) {
+  if (windows && windows.tutorial) {
+    const tutorialWindow = windows.tutorial
+
     // Prepare the tutorial by reloading its contents
-    tutorial.reload()
+    tutorialWindow.reload()
 
     // Once the content has loaded again, show it
-    tutorial.once('ready-to-show', () => tutorial.show())
+    tutorialWindow.once('ready-to-show', () => tutorialWindow.show())
   }
 
   let tokenId

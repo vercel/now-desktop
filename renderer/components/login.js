@@ -151,10 +151,8 @@ class Login extends Component {
       return
     }
 
-    const currentWindow = remote.getCurrentWindow()
-
     // Load fresh data and auto-update it
-    await startRefreshment(currentWindow)
+    await startRefreshment()
 
     window.sliderElement.setState({
       loginShown: false,

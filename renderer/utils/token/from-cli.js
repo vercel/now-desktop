@@ -31,5 +31,5 @@ export default async root => {
     loginText: `You've already signed in once in the now CLI.\nBecause of this, you've now been logged in automatically.`
   })
 
-  await startRefreshment(remote.getCurrentWindow())
+  await startRefreshment()
 }
