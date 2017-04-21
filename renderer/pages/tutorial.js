@@ -168,8 +168,8 @@ class Sections extends Component {
     event.preventDefault()
   }
 
-  async componentDidMount() {
-    await this.alreadyLoggedIn()
+  componentDidMount() {
+    this.alreadyLoggedIn()
     document.addEventListener('keydown', this.arrowKeys.bind(this), false)
 
     const currentWindow = remote.getCurrentWindow()
