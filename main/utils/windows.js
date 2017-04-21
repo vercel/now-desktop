@@ -92,15 +92,15 @@ exports.mainWindow = tray => {
   attachTrayState(win, tray)
 
   // Hide window if it's not focused anymore
-  // We need to attach this event listener only
-  // in production, because we would otherwise not
-  // be able to open the DevTools AND see the
-  // window at the same time
-  if (!isDev) {
-    win.on('blur', () => {
-      win.hide()
-    })
-  }
+  // This can only happen if the dev tools are not open
+  // Otherwise, we won't be able to debug the renderer
+  win.on('blur', () => {
+    if (isDev && win.webContents.isDevToolsOpened()) {
+      return
+    }
+
+    win.hide()
+  })
 
   return win
 }
