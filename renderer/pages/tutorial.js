@@ -95,10 +95,14 @@ class Sections extends Component {
 
   handleReady() {
     const currentWindow = remote.getCurrentWindow()
-    const aboutWindow = remote.getGlobal('about')
+    const windows = remote.getGlobal('windows')
+
+    if (!windows || !windows.about) {
+      return
+    }
 
     // Close the tutorial
-    currentWindow.emit('open-tray', aboutWindow)
+    currentWindow.emit('open-tray', windows.about)
   }
 
   handleMinimizeClick() {

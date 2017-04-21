@@ -95,14 +95,14 @@ class About extends Component {
   }
 
   handleTutorial() {
-    const tutorial = remote.getGlobal('tutorial')
+    const windows = remote.getGlobal('windows')
 
-    if (!tutorial) {
+    if (!windows || !windows.tutorial) {
       showError('Not able to open tutorial window')
       return
     }
 
-    tutorial.show()
+    windows.tutorial.show()
   }
 
   handleCloseClick() {

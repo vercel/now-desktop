@@ -27,10 +27,6 @@ exports.tutorialWindow = tray => {
   win.loadURL(windowURL('tutorial'))
   attachTrayState(win, tray)
 
-  // We need to access it = the "About" window
-  // To be able to open it = there
-  global.tutorial = win
-
   const emitTrayClick = aboutWindow => {
     const emitClick = () => {
       if (aboutWindow && aboutWindow.isVisible()) {
@@ -74,8 +70,6 @@ exports.aboutWindow = tray => {
   win.loadURL(windowURL('about'))
   attachTrayState(win, tray)
 
-  global.about = win
-
   return win
 }
 
@@ -93,8 +87,6 @@ exports.mainWindow = tray => {
     frame: false,
     movable: false
   })
-
-  win.handle = 'main'
 
   win.loadURL(windowURL('feed'))
   attachTrayState(win, tray)

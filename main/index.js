@@ -294,6 +294,9 @@ app.on('ready', async () => {
     about: aboutWindow(tray)
   }
 
+  // Make the window instances accessible from everywhere
+  global.windows = windows
+
   ipcMain.on('open-menu', async (event, coordinates) => {
     if (coordinates && coordinates.x && coordinates.y) {
       coordinates.x = parseInt(coordinates.x.toFixed(), 10)

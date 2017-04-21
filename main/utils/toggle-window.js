@@ -19,7 +19,7 @@ module.exports = (event, window, tray) => {
   if (visible) {
     window.close()
   } else {
-    if (window.handle && window.handle === 'main') {
+    if (global.windows && window === global.windows.main) {
       const trayBounds = tray.getBounds()
       const windowWidth = window.getSize()[0]
       const trayCenter = trayBounds.x + trayBounds.width / 2

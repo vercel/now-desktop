@@ -7,11 +7,19 @@ const states = {
 }
 
 const windowLeft = win => {
-  if (global.tutorial && global.about === win && global.tutorial.isVisible()) {
+  const windows = global.windows
+
+  if (!windows) {
+    return false
+  }
+
+  if (
+    windows.tutorial && windows.about === win && windows.tutorial.isVisible()
+  ) {
     return true
   }
 
-  if (global.about && global.tutorial === win && global.about.isVisible()) {
+  if (windows.about && windows.tutorial === win && windows.about.isVisible()) {
     return true
   }
 
