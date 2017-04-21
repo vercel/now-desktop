@@ -5,6 +5,7 @@ import React from 'react'
 import Title from '../components/title'
 import Caret from '../vectors/caret'
 import Switcher from '../components/switcher'
+import DropZone from '../components/dropzone'
 
 class Feed extends React.Component {
   constructor(props) {
@@ -23,17 +24,26 @@ class Feed extends React.Component {
     event.preventDefault()
   }
 
-  droppedFile(event) {
-    console.log(event.dataTransfer.files[0].path)
-
+  hideDropZone() {
     this.setState({
       dropZone: false
     })
+  }
 
-    event.preventDefault()
+  droppedFile(event) {
+    if (!this.dropZone) {
+      return
+    }
+
+    const zone = this.dropZone
+    zone.droppedFile.bind(zone)(event)
   }
 
   render() {
+    const dropZoneRef = zone => {
+      this.dropZone = zone
+    }
+
     return (
       <div
         onDragOver={this.showDropZone.bind(this)}
@@ -46,11 +56,8 @@ class Feed extends React.Component {
         <Title light>Now</Title>
 
         <main>
-          <aside className="dropzone">
-            <span>
-              <b>Drop to Deploy!</b>
-            </span>
-          </aside>
+          {this.state.dropZone &&
+            <DropZone ref={dropZoneRef} hide={this.hideDropZone.bind(this)} />}
 
           <section>
             <h1>November 2016</h1>
@@ -254,35 +261,6 @@ class Feed extends React.Component {
             cursor: default;
             flex-shrink: 1;
             position: relative;
-          }
-
-          .dropzone {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 300px;
-            background: #fff;
-            z-index: 20000;
-            transform: translate(-50%, -50%);
-            overflow: hidden;
-            padding: 10px;
-            box-sizing: border-box;
-          }
-
-          .dropzone span {
-            display: block;
-            border: 2px dashed #d0d0d0;
-            height: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .dropzone span b {
-            display: block;
           }
 
           .caret {
