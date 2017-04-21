@@ -6,6 +6,9 @@ import { func } from 'prop-types'
 import MagnifyingGlass from '../vectors/search'
 import Clear from '../vectors/clear'
 
+// Utilities
+import remote from '../utils/electron'
+
 class Search extends React.Component {
   constructor(props) {
     super(props)
@@ -50,6 +53,13 @@ class Search extends React.Component {
     if (event.keyCode && event.keyCode === 27) {
       this.hide()
     }
+  }
+
+  componentDidMount() {
+    const currentWindow = remote.getCurrentWindow()
+
+    // Clear search when window gets hidden
+    currentWindow.on('hide', () => this.hide())
   }
 
   render() {
