@@ -15,7 +15,7 @@ const { moveToApplications } = require('electron-lets-move')
 // Utilities
 const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
-const deploy = require('./utils/deployment/check-type')
+const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
 const { prepareCache, refreshCache } = require('./api')
 const toggleWindow = require('./utils/toggle-window')

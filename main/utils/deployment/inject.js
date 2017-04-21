@@ -5,8 +5,8 @@ const path = require('path')
 const fs = require('fs-promise')
 
 // Utilities
-const deploy = require('../../actions/deploy')
 const { error: showError } = require('../../dialogs')
+const upload = require('./upload')
 
 module.exports = async (tmpDir, defaults) => {
   const pkgPath = path.join(tmpDir, 'package.json')
@@ -18,5 +18,5 @@ module.exports = async (tmpDir, defaults) => {
     return
   }
 
-  await deploy(tmpDir, 'static')
+  await upload(tmpDir, 'static')
 }

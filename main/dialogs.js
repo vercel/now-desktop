@@ -1,6 +1,9 @@
 // Packages
 const { dialog } = require('electron')
 
+// Utilities
+const deploy = require('./actions/deploy')
+
 const showDialog = details => {
   const filePath = dialog.showOpenDialog(details)
 
@@ -21,10 +24,8 @@ exports.deploy = async () => {
   const path = showDialog(info)
 
   if (path) {
-    const checkType = require('./utils/deployment/check-type')
-
     try {
-      await checkType(path)
+      await deploy(path)
     } catch (err) {
       exports.error('Not able to deploy', err)
     }
