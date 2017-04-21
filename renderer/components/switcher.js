@@ -70,7 +70,7 @@ const Switcher = () => (
         bottom: 0;
         left: 0;
         right: 0;
-        position: fixed;
+        flex-shrink: 0;
         border-top: 1px solid #D6D6D6;
         box-sizing: border-box;
         display: flex;

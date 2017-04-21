@@ -46,7 +46,7 @@ class Title extends React.Component {
         <style jsx>
           {`
           aside {
-            height: 37px;
+            height: 36px;
             display: flex;
             position: fixed;
             justify-content: center;
@@ -75,6 +75,7 @@ class Title extends React.Component {
             overflow: hidden;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
+            flex-shrink: 0;
           }
 
           .light h1 {
@@ -84,8 +85,8 @@ class Title extends React.Component {
 
           .light .deploy {
             position: absolute;
-            height: 37px;
-            width: 37px;
+            height: 36px;
+            width: 36px;
             right: 0;
             top: 0;
             display: flex;

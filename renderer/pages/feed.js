@@ -208,23 +208,30 @@ const Feed = () => (
 
     <style jsx>
       {`
+      div {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
       main {
         overflow: scroll;
-        height: calc(100vh - 90px);
         background: #fff;
         user-select: none;
         cursor: default;
+        flex-shrink: 1;
       }
 
       .caret {
         display: flex;
         justify-content: center;
         margin-bottom: -1px;
+        flex-shrink: 0;
       }
 
       h1 {
         background: #F5F5F5;
-        font-size: 14px;
+        font-size: 13px;
         height: 30px;
         line-height: 30px;
         padding: 0 10px;
@@ -239,7 +246,6 @@ const Feed = () => (
       }
 
       section {
-        padding: 2px 0;
         display: flex;
         flex-direction: column;
       }
@@ -263,9 +269,13 @@ const Feed = () => (
 
       figure figcaption {
         border-bottom: 1px solid #D6D6D6;
-        padding: 15px 15px 15px 0;
+        padding: 14px 14px 14px 0;
         width: 345px;
         box-sizing: border-box;
+      }
+
+      figure:last-child figcaption {
+        padding-bottom: 16px;
       }
 
       figure:last-child figcaption {
@@ -278,7 +288,7 @@ const Feed = () => (
       }
 
       figure figcaption p {
-        font-size: 14px;
+        font-size: 13px;
         margin: 0;
         line-height: 18px;
       }

@@ -62,7 +62,7 @@ class Search extends React.Component {
     }
 
     return (
-      <aside className={this.state.shown && 'visible'}>
+      <aside className={this.state.shown ? 'visible' : ''}>
         <span onClick={this.show.bind(this)}>
           <MagnifyingGlass />
         </span>
@@ -94,7 +94,7 @@ class Search extends React.Component {
 
           span {
             display: block;
-            width: 37px;
+            width: 36px;
             height: 100%;
             display: flex;
             justify-content: center;
@@ -137,7 +137,7 @@ class Search extends React.Component {
           b {
             cursor: pointer;
             height: inherit;
-            width: 37px;
+            width: 36px;
             display: flex;
             justify-content: center;
             align-items: center;
