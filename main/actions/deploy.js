@@ -2,7 +2,7 @@
 const path = require('path')
 
 // Packages
-const { clipboard, shell, dialog } = require('electron')
+const { clipboard, shell } = require('electron')
 const fs = require('fs-promise')
 const pathExists = require('path-exists')
 const deglob = require('deglob')
@@ -15,33 +15,12 @@ const { connector } = require('../api')
 const { error: showError } = require('../dialogs')
 const notify = require('../notify')
 
-const getProjectType = (nodeReady, dockerReady) => {
-  let projectType = 'docker'
-
-  if (nodeReady && dockerReady) {
-    const dialogAnswer = dialog.showMessageBox({
-      type: 'question',
-      message: 'Which File Should Be Preferred?',
-      detail: 'Depending or your choice, the deployment will either be run in Docker or Node.',
-      buttons: ['package.json', 'Dockerfile']
-    })
-
-    if (!dialogAnswer) {
-      projectType = 'node'
-    }
-  } else if (nodeReady) {
-    projectType = 'node'
-  }
-
-  return projectType
-}
-
-const genTitle = (deployment, sharing) => {
+const genTitle = deployment => {
   if (deployment.state === 'READY') {
     return 'Already deployed!'
   }
 
-  return (sharing ? 'Sharing' : 'Deploying') + '...'
+  return 'Deploying...'
 }
 
 const getContents = async dir => {
@@ -83,36 +62,25 @@ const removeTempDir = async (dir, logStatus) => {
   logStatus('Removed temporary directory')
 }
 
-module.exports = async (folder, sharing) => {
+module.exports = async (folder, deploymentType) => {
   const details = {}
   const dir = path.resolve(folder)
 
   process.env.BUSYNESS = 'deploying'
 
-  const pkgFile = path.join(dir, 'package.json')
-  const dockerFile = path.join(dir, 'Dockerfile')
-
-  const dockerReady = await pathExists(dockerFile)
-  const nodeReady = await pathExists(pkgFile)
-
-  // Ignore the project if there's no package file
-  if (!nodeReady && !dockerReady) {
-    showError('Not a valid project!')
-    return
-  }
-
   // Log separator
-  if (!sharing) {
+  if (deploymentType !== 'static') {
     console.log(chalk.grey('---'))
   }
 
   let projectName = 'docker project'
 
-  const projectType = getProjectType(nodeReady, dockerReady)
-  const propertyName = projectType === 'node' ? 'package' : 'package.json'
+  const isNode = deploymentType === 'node' || deploymentType === 'static'
+  const propertyName = isNode ? 'package' : 'package.json'
 
-  if (nodeReady) {
+  if (isNode) {
     // Load the package file
+    const pkgFile = path.join(dir, 'package.json')
     let packageJSON
 
     try {
@@ -125,7 +93,7 @@ module.exports = async (folder, sharing) => {
       return
     }
 
-    details[propertyName] = projectType === 'docker'
+    details[propertyName] = deploymentType === 'docker'
       ? JSON.stringify(packageJSON)
       : packageJSON
   }
@@ -135,7 +103,7 @@ module.exports = async (folder, sharing) => {
     body: 'Your files are being uploaded to now.'
   })
 
-  if (projectType === 'node') {
+  if (isNode) {
     projectName = details[propertyName].name
   }
 
@@ -247,7 +215,7 @@ module.exports = async (folder, sharing) => {
         process.env.BUSYNESS = 'ready'
 
         notify({
-          title: 'Done ' + (sharing ? 'Sharing' : 'Deploying') + '!',
+          title: 'Done Deploying!',
           body: 'Opening the URL in your browser...',
           url
         })
@@ -270,13 +238,13 @@ module.exports = async (folder, sharing) => {
 
   // Let the user now
   notify({
-    title: genTitle(deployment, sharing),
+    title: genTitle(deployment),
     body: 'Your clipboard already contains the URL.',
     url
   })
 
   // Delete the local deployed directory if required
-  if (sharing) {
+  if (deploymentType === 'static') {
     await removeTempDir(folder, logStatus)
   }
 }

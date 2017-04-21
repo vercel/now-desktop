@@ -5,8 +5,8 @@ const path = require('path')
 const deglob = require('deglob')
 const fs = require('fs-promise')
 
-// Ours
-const { error: showError } = require('../dialogs')
+// Utilities
+const { error: showError } = require('../../dialogs')
 const injectPackage = require('./inject')
 
 module.exports = async (content, tmp, defaults) => {

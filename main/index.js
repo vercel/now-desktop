@@ -3,15 +3,10 @@ if (require('electron-squirrel-startup')) {
   process.exit()
 }
 
-// Native
-const path = require('path')
-
 // Packages
 const { Menu, app, Tray, BrowserWindow, ipcMain } = require('electron')
 const ms = require('ms')
 const isDev = require('electron-is-dev')
-const { dir: isDirectory } = require('path-type')
-const fs = require('fs-promise')
 const fixPath = require('fix-path')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
@@ -20,8 +15,7 @@ const { moveToApplications } = require('electron-lets-move')
 // Utilities
 const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
-const deploy = require('./actions/deploy')
-const share = require('./actions/share')
+const deploy = require('./utils/deployment/check-type')
 const autoUpdater = require('./updates')
 const { prepareCache, refreshCache } = require('./api')
 const toggleWindow = require('./utils/toggle-window')
@@ -187,25 +181,6 @@ const isLoggedIn = async () => {
   return true
 }
 
-const isDeployable = async directory => {
-  const indicators = new Set(['package.json', 'Dockerfile'])
-
-  for (const indicator of indicators) {
-    const pathTo = path.join(directory, indicator)
-    let stats
-
-    try {
-      stats = fs.lstatSync(pathTo)
-    } catch (err) {}
-
-    if (stats) {
-      return true
-    }
-  }
-
-  return false
-}
-
 const fileDropped = async (event, files) => {
   event.preventDefault()
 
@@ -225,14 +200,7 @@ const fileDropped = async (event, files) => {
     return
   }
 
-  const item = files[0]
-
-  if (!await isDirectory(item) || !await isDeployable(item)) {
-    await share(item)
-    return
-  }
-
-  await deploy(item)
+  await deploy(files[0])
 }
 
 app.on('ready', async () => {

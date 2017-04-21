@@ -7,19 +7,13 @@ const fs = require('fs-promise')
 const tmp = require('tmp-promise')
 const retry = require('async-retry')
 const chalk = require('chalk')
-const pathExists = require('path-exists')
 
-// Ours
-const injectPackage = require('../utils/inject')
-const copyContents = require('../utils/copy')
-const { error: showError } = require('../dialogs')
+// Utilities
+const { error: showError } = require('../../dialogs')
+const injectPackage = require('./inject')
+const copyContents = require('./copy')
 
 module.exports = async item => {
-  if (!await pathExists(item)) {
-    showError(`Path doesn't exist!`)
-    return
-  }
-
   process.env.BUSYNESS = 'sharing'
   const itemName = path.parse(item).name
 
