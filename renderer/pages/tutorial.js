@@ -115,24 +115,16 @@ class Sections extends Component {
     currentWindow.hide()
   }
 
-  async alreadyLoggedIn() {
+  async loggedIn() {
     const { get: getConfig } = remote.require('./utils/config')
 
     try {
       await getConfig()
     } catch (err) {
-      this.setState({
-        tested: true
-      })
-
-      return
+      return false
     }
 
-    this.setState({
-      tested: true,
-      loginShown: false,
-      loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
-    })
+    return true
   }
 
   arrowKeys(event) {
@@ -168,13 +160,36 @@ class Sections extends Component {
     event.preventDefault()
   }
 
-  componentDidMount() {
-    this.alreadyLoggedIn()
+  async componentDidMount() {
+    // Make arrow keys work for navigating slider
     document.addEventListener('keydown', this.arrowKeys.bind(this), false)
+
+    // Check if already logged in
+    const loggedIn = await this.loggedIn()
+
+    if (loggedIn) {
+      this.setState({
+        tested: true,
+        loginShown: false,
+        loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
+      })
+    } else {
+      this.setState({
+        tested: true
+      })
+    }
 
     const currentWindow = remote.getCurrentWindow()
 
-    currentWindow.on('close', () => {
+    currentWindow.on('close', async () => {
+      // Don't reset slider if logged out
+      // If the user enters some details and hides
+      // the window for some time, we don't want the
+      // slider to flick away
+      if (!await this.loggedIn()) {
+        return
+      }
+
       if (this.slider) {
         this.slider.slickGoTo(0)
       }
