@@ -32,8 +32,8 @@ class DropZone extends React.Component {
     return (
       <aside>
         <section>
-          <h1>Drop to Deploy!</h1>
-          <p>Your files will be deployed to now.</p>
+          <h1>DROP TO DEPLOY</h1>
+          <p>Your files will be uploaded to <b>now</b>.</p>
         </section>
 
         <style jsx>
@@ -66,6 +66,18 @@ class DropZone extends React.Component {
 
           h1, p {
             margin: 0;
+          }
+
+          h1 {
+            color: #4A4A4A;
+            text-transform: uppercase;
+            font-weight: normal;
+          }
+
+          p {
+            color: #999999;
+            margin-top: 10px;
+            font-size: 13px;
           }
         `}
         </style>
