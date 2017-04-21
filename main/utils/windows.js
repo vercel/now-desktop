@@ -91,5 +91,16 @@ exports.mainWindow = tray => {
   win.loadURL(windowURL('feed'))
   attachTrayState(win, tray)
 
+  // Hide window if it's not focused anymore
+  // We need to attach this event listener only
+  // in production, because we would otherwise not
+  // be able to open the DevTools AND see the
+  // window at the same time
+  if (!isDev) {
+    win.on('blur', () => {
+      win.hide()
+    })
+  }
+
   return win
 }
