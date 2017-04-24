@@ -14,34 +14,46 @@ class TopArrow extends React.Component {
     this.state = {
       left: 0
     }
+
+    setInterval(() => {
+      this.tryPosition()
+    }, 500)
+  }
+
+  tryPosition() {
+    if (!remote.process || !remote.getCurrentWindow) {
+      return
+    }
+
+    const currentWindow = remote.getCurrentWindow()
+
+    if (currentWindow.isVisible()) {
+      return
+    }
+
+    this.position()
   }
 
   position() {
+    const currentWindow = remote.getCurrentWindow()
     const tray = remote.getGlobal('tray')
 
-    if (!this.currentWindow || !tray) {
+    if (!currentWindow || !tray) {
       return
     }
 
     const trayBounds = tray.getBounds()
-    const windowBounds = this.currentWindow.getBounds()
+    const windowBounds = currentWindow.getBounds()
 
     const trayCenter = trayBounds.x + trayBounds.width / 2
     const windowLeft = windowBounds.x
 
     const caretLeft = trayCenter - windowLeft - 28 / 2
 
+    remote.process.stdout.write('dasdsa')
+
     this.setState({
       left: caretLeft
-    })
-  }
-
-  componentDidMount() {
-    this.position()
-    this.currentWindow = remote.getCurrentWindow()
-
-    this.currentWindow.on('show', () => {
-      this.position()
     })
   }
 

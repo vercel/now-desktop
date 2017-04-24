@@ -4,6 +4,7 @@ const isDev = require('electron-is-dev')
 
 // Utilities
 const attachTrayState = require('../highlight')
+const positionWindow = require('./position')
 
 const windowURL = page => {
   return (isDev ? `http://localhost:8000` : `next://app`) + `/${page}`
@@ -87,6 +88,8 @@ exports.mainWindow = tray => {
     frame: false,
     movable: false
   })
+
+  positionWindow(tray, win)
 
   win.loadURL(windowURL('feed'))
   attachTrayState(win, tray)
