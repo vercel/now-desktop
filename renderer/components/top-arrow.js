@@ -43,6 +43,21 @@ class TopArrow extends React.Component {
     }
 
     const trayBounds = tray.getBounds()
+
+    // Ensure that the position of the caret
+    // only gets updated if the position of the tray
+    // icon as changed (and once in the beginning)
+    if (this.savedTrayBounds) {
+      // We need to avoid the prototype comparision
+      if (JSON.stringify(this.savedTrayBounds) === JSON.stringify(trayBounds)) {
+        return
+      }
+    }
+
+    // This is also part of the action mentioned above
+    this.savedTrayBounds = trayBounds
+
+    // Get size and position of current window
     const windowBounds = currentWindow.getBounds()
 
     const trayCenter = trayBounds.x + trayBounds.width / 2
