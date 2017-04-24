@@ -15,16 +15,16 @@ class TopArrow extends React.Component {
       left: 0
     }
   }
-  componentDidMount() {
-    const currentWindow = remote.getCurrentWindow()
+
+  position() {
     const tray = remote.getGlobal('tray')
 
-    if (!currentWindow || !tray) {
+    if (!this.currentWindow || !tray) {
       return
     }
 
     const trayBounds = tray.getBounds()
-    const windowBounds = currentWindow.getBounds()
+    const windowBounds = this.currentWindow.getBounds()
 
     const trayCenter = trayBounds.x + trayBounds.width / 2
     const windowLeft = windowBounds.x
@@ -33,6 +33,15 @@ class TopArrow extends React.Component {
 
     this.setState({
       left: caretLeft
+    })
+  }
+
+  componentDidMount() {
+    this.position()
+    this.currentWindow = remote.getCurrentWindow()
+
+    this.currentWindow.on('show', () => {
+      this.position()
     })
   }
 
