@@ -3,9 +3,9 @@ import React from 'react'
 
 // Components
 import Title from '../components/title'
-import Caret from '../vectors/caret'
 import Switcher from '../components/switcher'
 import DropZone from '../components/dropzone'
+import TopArrow from '../components/top-arrow'
 
 class Feed extends React.Component {
   constructor(props) {
@@ -49,10 +49,7 @@ class Feed extends React.Component {
         onDragOver={this.showDropZone.bind(this)}
         onDrop={this.droppedFile.bind(this)}
       >
-        <span className="caret">
-          <Caret />
-        </span>
-
+        <TopArrow />
         <Title light>Now</Title>
 
         <main>
@@ -261,13 +258,6 @@ class Feed extends React.Component {
             cursor: default;
             flex-shrink: 1;
             position: relative;
-          }
-
-          .caret {
-            display: flex;
-            justify-content: center;
-            margin-bottom: -1px;
-            flex-shrink: 0;
           }
 
           h1 {
