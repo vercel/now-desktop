@@ -18,10 +18,14 @@ const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
 const { prepareCache, refreshCache } = require('./api')
-const toggleWindow = require('./utils/toggle-window')
+const toggleWindow = require('./utils/frames/toggle')
 const server = require('./server')
 const { get: getConfig } = require('./utils/config')
-const { aboutWindow, tutorialWindow, mainWindow } = require('./utils/windows')
+const {
+  aboutWindow,
+  tutorialWindow,
+  mainWindow
+} = require('./utils/frames/list')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time

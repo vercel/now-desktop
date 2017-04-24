@@ -6,7 +6,7 @@ const moment = require('moment')
 const logout = require('./actions/logout')
 const removeDeployment = require('./actions/remove')
 const notify = require('./notify')
-const toggleWindow = require('./utils/toggle-window')
+const toggleWindow = require('./utils/frames/toggle')
 const { get: getConfig } = require('./utils/config')
 
 exports.deploymentOptions = info => {

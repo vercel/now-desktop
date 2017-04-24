@@ -3,7 +3,7 @@ const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
 
 // Utilities
-const attachTrayState = require('./highlight')
+const attachTrayState = require('../highlight')
 
 const windowURL = page => {
   return (isDev ? `http://localhost:8000` : `next://app`) + `/${page}`
