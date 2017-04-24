@@ -19,7 +19,7 @@ class Search extends React.Component {
   }
 
   show() {
-    this.props.toggleDeployIcon()
+    this.props.showDeployIcon()
 
     setTimeout(() => {
       this.input.focus()
@@ -32,14 +32,16 @@ class Search extends React.Component {
     })
   }
 
-  hide() {
+  hide(deployIcon) {
     this.setState({
       shown: false
     })
 
-    setTimeout(() => {
-      this.props.toggleDeployIcon()
-    }, 100)
+    if (!deployIcon) {
+      setTimeout(() => {
+        this.props.hideDeployIcon()
+      }, 100)
+    }
 
     setTimeout(() => {
       this.form.style.visibility = 'hidden'
@@ -59,7 +61,7 @@ class Search extends React.Component {
     const currentWindow = remote.getCurrentWindow()
 
     // Clear search when window gets hidden
-    currentWindow.on('hide', () => this.hide())
+    currentWindow.on('hide', () => this.hide(true))
   }
 
   render() {
@@ -180,7 +182,8 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
-  toggleDeployIcon: func.isRequired
+  showDeployIcon: func.isRequired,
+  hideDeployIcon: func.isRequired
 }
 
 export default Search

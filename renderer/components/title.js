@@ -18,8 +18,12 @@ class Title extends React.Component {
     this.dialogs.deploy()
   }
 
-  toggleDeployIcon() {
-    this.deployIcon.classList.toggle('hidden')
+  hideDeployIcon() {
+    this.deployIcon.classList.add('hidden')
+  }
+
+  showDeployIcon() {
+    this.deployIcon.classList.remove('hidden')
   }
 
   render() {
@@ -30,7 +34,10 @@ class Title extends React.Component {
     return (
       <aside className={this.props.light && 'light'}>
         {this.props.light &&
-          <Search toggleDeployIcon={this.toggleDeployIcon.bind(this)} />}
+          <Search
+            hideDeployIcon={this.hideDeployIcon.bind(this)}
+            showDeployIcon={this.showDeployIcon.bind(this)}
+          />}
 
         <h1>{this.props.children}</h1>
 
