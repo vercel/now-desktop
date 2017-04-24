@@ -238,7 +238,7 @@ class Feed extends React.Component {
                 <span>11d ago</span>
               </figcaption>
             </figure>
-          </section>}
+          </section>
         </main>
 
         <Switcher />
