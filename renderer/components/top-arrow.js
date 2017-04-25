@@ -20,6 +20,10 @@ class TopArrow extends React.Component {
     }, 500)
   }
 
+  preventDefault(event) {
+    event.preventDefault()
+  }
+
   tryPosition() {
     if (!remote.process || !remote.getCurrentWindow) {
       return
@@ -65,7 +69,11 @@ class TopArrow extends React.Component {
 
   render() {
     return (
-      <span style={{ marginLeft: this.state.left }}>
+      <span
+        style={{ paddingLeft: this.state.left }}
+        onDragOver={this.preventDefault}
+        onDrop={this.preventDefault}
+      >
         <Caret />
 
         <style jsx>
