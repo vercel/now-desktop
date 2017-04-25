@@ -1,11 +1,10 @@
 // Packages
 const { dialog } = require('electron')
-const Cache = require('electron-config')
 
 // Ours
 const notify = require('../notify')
 const { error: showError } = require('../dialogs')
-const { connector } = require('../api')
+const { connector, prepareCache } = require('../api')
 
 module.exports = async info => {
   // Ask the user if it was an accident
@@ -49,7 +48,7 @@ module.exports = async info => {
     body: 'The deployment has successfully been deleted.'
   })
 
-  const cache = new Cache()
+  const cache = prepareCache()
   const cacheIdentifier = 'deployments'
 
   if (!cache.has(cacheIdentifier)) {
