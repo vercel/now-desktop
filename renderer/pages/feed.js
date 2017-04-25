@@ -16,12 +16,10 @@ class Feed extends React.Component {
     }
   }
 
-  showDropZone(event) {
+  showDropZone() {
     this.setState({
       dropZone: true
     })
-
-    event.preventDefault()
   }
 
   hideDropZone() {
@@ -30,25 +28,13 @@ class Feed extends React.Component {
     })
   }
 
-  droppedFile(event) {
-    if (!this.dropZone) {
-      return
-    }
-
-    const zone = this.dropZone
-    zone.droppedFile.bind(zone)(event)
-  }
-
   render() {
     const dropZoneRef = zone => {
       this.dropZone = zone
     }
 
     return (
-      <div
-        onDragOver={this.showDropZone.bind(this)}
-        onDrop={this.droppedFile.bind(this)}
-      >
+      <div onDragEnter={this.showDropZone.bind(this)}>
         <TopArrow />
         <Title light>Now</Title>
 

@@ -10,10 +10,18 @@ class DropZone extends React.Component {
     this.deploy = remote.require('./actions/deploy')
   }
 
-  droppedFile(event) {
+  hideDropZone() {
     if (this.props.hide) {
       this.props.hide()
     }
+  }
+
+  preventDefault(event) {
+    event.preventDefault()
+  }
+
+  droppedFile(event) {
+    this.hideDropZone()
 
     if (!event.dataTransfer || !event.dataTransfer.files) {
       return
@@ -30,29 +38,43 @@ class DropZone extends React.Component {
 
   render() {
     return (
-      <aside>
+      <aside
+        onDragLeave={this.hideDropZone.bind(this)}
+        onDragOver={this.preventDefault}
+        onDrop={this.droppedFile.bind(this)}
+      >
         <section>
-          <h1>DROP TO DEPLOY</h1>
-          <p>Your files will be uploaded to <b>now</b>.</p>
+          <span>
+            <h1>DROP TO DEPLOY</h1>
+            <p>Your files will be uploaded to <b>now</b>.</p>
+          </span>
         </section>
 
         <style jsx>
           {`
           aside {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 300px;
-            background: #fff;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: transparent;
             z-index: 20000;
-            transform: translate(-50%, -50%);
             overflow: hidden;
-            padding: 10px;
-            box-sizing: border-box;
           }
 
           section {
+            display: block;
+            height: 300px;
+            background: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+            width: 100%;
+            margin-top: 50px;
+            pointer-events: none;
+          }
+
+          span {
             display: block;
             border: 2px dashed #d0d0d0;
             height: 100%;
