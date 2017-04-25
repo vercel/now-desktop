@@ -72,8 +72,8 @@ class TopArrow extends React.Component {
           {`
           span {
             height: 13px;
-            margin-bottom: -1px;
             flex-shrink: 0;
+            display: block;
           }
         `}
         </style>

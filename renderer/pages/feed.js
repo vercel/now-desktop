@@ -34,11 +34,12 @@ class Feed extends React.Component {
     }
 
     return (
-      <div onDragEnter={this.showDropZone.bind(this)}>
+      <main>
         <TopArrow />
-        <Title light>Now</Title>
 
-        <main>
+        <div onDragEnter={this.showDropZone.bind(this)}>
+          <Title light>Now</Title>
+
           {this.state.dropZone &&
             <DropZone ref={dropZoneRef} hide={this.hideDropZone.bind(this)} />}
 
@@ -225,19 +226,26 @@ class Feed extends React.Component {
               </figcaption>
             </figure>
           </section>
-        </main>
 
-        <Switcher />
+          <Switcher />
+        </div>
 
         <style jsx>
           {`
-          div {
+          main, div {
             display: flex;
             flex-direction: column;
-            height: 100vh;
           }
 
           main {
+            height: 100vh;
+          }
+
+          div {
+            flex-shrink: 1;
+          }
+
+          section {
             overflow: scroll;
             background: #fff;
             user-select: none;
@@ -256,11 +264,6 @@ class Feed extends React.Component {
             margin: 0;
             position: sticky;
             top: 0;
-          }
-
-          section {
-            display: flex;
-            flex-direction: column;
           }
 
           figure {
@@ -328,7 +331,7 @@ class Feed extends React.Component {
           }
         `}
         </style>
-      </div>
+      </main>
     )
   }
 }
