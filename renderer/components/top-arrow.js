@@ -26,46 +26,37 @@ class TopArrow extends React.Component {
     }
 
     const currentWindow = remote.getCurrentWindow()
-
-    if (currentWindow.isVisible()) {
-      return
-    }
-
-    this.position()
-  }
-
-  position() {
-    const currentWindow = remote.getCurrentWindow()
     const tray = remote.getGlobal('tray')
 
     if (!currentWindow || !tray) {
       return
     }
 
-    const trayBounds = tray.getBounds()
+    const windowBounds = currentWindow.getBounds()
 
-    // Ensure that the position of the caret
-    // only gets updated if the position of the tray
-    // icon as changed (and once in the beginning)
-    if (this.savedTrayBounds) {
-      // We need to avoid the prototype comparision
-      if (JSON.stringify(this.savedTrayBounds) === JSON.stringify(trayBounds)) {
+    // Only update caret position if the window has moved
+    if (this.savedWindowBounds) {
+      if (
+        JSON.stringify(windowBounds) === JSON.stringify(this.savedWindowBounds)
+      ) {
         return
       }
     }
 
-    // This is also part of the action mentioned above
-    this.savedTrayBounds = trayBounds
+    // Make sure to save the position of the window
+    this.savedWindowBounds = windowBounds
 
-    // Get size and position of current window
-    const windowBounds = currentWindow.getBounds()
+    // Center the caret unter the tray icon
+    this.position(tray, windowBounds)
+  }
+
+  position(tray, windowBounds) {
+    const trayBounds = tray.getBounds()
 
     const trayCenter = trayBounds.x + trayBounds.width / 2
     const windowLeft = windowBounds.x
 
     const caretLeft = trayCenter - windowLeft - 28 / 2
-
-    remote.process.stdout.write('dasdsa')
 
     this.setState({
       left: caretLeft
