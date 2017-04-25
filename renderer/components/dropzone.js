@@ -17,6 +17,10 @@ class DropZone extends React.Component {
   }
 
   preventDefault(event) {
+    // Make the cursor look good
+    event.dataTransfer.effectAllowed = 'copyMove'
+    event.dataTransfer.dropEffect = 'copy'
+
     event.preventDefault()
   }
 
