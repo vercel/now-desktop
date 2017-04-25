@@ -12,7 +12,7 @@ class Feed extends React.Component {
     super(props)
 
     this.state = {
-      dropZone: false
+      dropZone: true
     }
   }
 
@@ -243,6 +243,7 @@ class Feed extends React.Component {
 
           div {
             flex-shrink: 1;
+            position: relative;
           }
 
           section {

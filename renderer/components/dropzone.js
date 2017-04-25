@@ -53,7 +53,7 @@ class DropZone extends React.Component {
         <style jsx>
           {`
           aside {
-            position: fixed;
+            position: absolute;
             top: 0;
             right: 0;
             bottom: 0;
@@ -70,7 +70,7 @@ class DropZone extends React.Component {
             padding: 10px;
             box-sizing: border-box;
             width: 100%;
-            margin-top: 50px;
+            margin-top: 38px;
             pointer-events: none;
           }
 
