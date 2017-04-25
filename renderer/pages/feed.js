@@ -12,7 +12,7 @@ class Feed extends React.Component {
     super(props)
 
     this.state = {
-      dropZone: true
+      dropZone: false
     }
   }
 
