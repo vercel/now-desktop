@@ -3,12 +3,13 @@ const Now = require('now-client')
 const Cache = require('electron-config')
 const chalk = require('chalk')
 const isDev = require('electron-is-dev')
+const fetch = require('node-fetch')
 
 // Utilities
 const { error: showError } = require('./dialogs')
 const { get: getConfig } = require('./utils/config')
 
-exports.connector = async () => {
+const getToken = async () => {
   let config
 
   try {
@@ -17,7 +18,12 @@ exports.connector = async () => {
     return false
   }
 
-  return new Now(config.token)
+  return config.token
+}
+
+exports.connector = async () => {
+  const token = await getToken()
+  return new Now(token)
 }
 
 exports.prepareCache = () => {
@@ -25,30 +31,89 @@ exports.prepareCache = () => {
   return new Cache({ name })
 }
 
-const refreshKind = async (name, session) => {
-  let method
+const NETWORK_ERR_CODE = 'network_error'
+const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry'
 
-  switch (name) {
-    case 'deployments':
-      method = 'getDeployments'
-      break
-    case 'aliases':
-      method = 'getAliases'
-      break
-    default:
-      method = false
+const endpoints = {
+  events: '/api/www/user/events',
+  teams: '/api/teams'
+}
+
+const fetchData = async path => {
+  const headers = {}
+  const url = `https://zeit.co/${path}`
+  const token = await getToken()
+
+  if (token) {
+    headers.Authorization = `bearer ${token}`
   }
 
-  if (!method) {
-    console.error(`Not able to refresh ${name} cache`)
-    return
+  let res
+  let data
+  let error
+
+  try {
+    res = await fetch(url, { headers })
+    if (res.status < 200 || res.status >= 300) {
+      if (res.headers.get('Content-Type') === 'application/json') {
+        data = await res.json()
+
+        // Remove this hack https://github.com/zeit/front/issues/553
+        error = new Error(data.message ? data.message : data.error.message)
+        error.res = res
+        error.status = res.status
+
+        // Remove this hack https://github.com/zeit/front/issues/553
+        error.code = data.error ? data.error.code : res.status
+      } else {
+        // Handle it below as network error
+        throw new Error()
+      }
+    } else {
+      data = await res.json()
+    }
+  } catch (err) {
+    error = new Error(NETWORK_ERR_MESSAGE + ` (${url})`)
+    error.code = NETWORK_ERR_CODE
+    error.res = null
+    error.status = null
+  }
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+const refreshKind = async (name, session) => {
+  const endpoint = endpoints[name]
+  let method
+
+  if (!endpoint) {
+    switch (name) {
+      case 'deployments':
+        method = 'getDeployments'
+        break
+      case 'aliases':
+        method = 'getAliases'
+        break
+      default:
+        method = false
+    }
+
+    if (!method) {
+      console.error(`Not able to refresh ${name} cache`)
+      return
+    }
   }
 
   return new Promise(async (resolve, reject) => {
+    const action = endpoint ? fetchData(endpoint) : session[method]()
     let freshData
 
     try {
-      freshData = await session[method]()
+      freshData = await action
     } catch (err) {
       reject(err)
       return
@@ -56,7 +121,7 @@ const refreshKind = async (name, session) => {
 
     // Save fresh data to cache
     const cache = exports.prepareCache()
-    cache.set(name, freshData)
+    cache.set(name, endpoint ? freshData[name] : freshData)
 
     resolve()
   })
@@ -91,7 +156,8 @@ exports.refreshCache = async (kind, app, windows, interval) => {
   }
 
   const sweepers = new Set()
-  const kinds = new Set(['deployments', 'aliases'])
+
+  const kinds = new Set(['deployments', 'aliases', 'teams'])
 
   for (const kind of kinds) {
     const refresher = refreshKind(kind, session)
