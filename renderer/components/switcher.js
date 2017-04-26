@@ -99,14 +99,16 @@ class Switcher extends React.Component {
 
           <style jsx>
             {`
+            /*
+              Do not user hidden overflow here, otherwise
+              the images will be cut off at the bottom
+              that's a renderer-bug in chromium
+            */
+
             li {
               width: 30px;
-              height: inherit;
-              overflow: hidden;
-              border-radius: 30px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
+              height: 30px;
+              border-radius: 100%;
               margin-right: 10px;
               cursor: pointer;
               opacity: .3;
@@ -119,8 +121,9 @@ class Switcher extends React.Component {
             }
 
             li img {
-              width: 30px;
-              height: 30px;
+              width: inherit;
+              height: inherit;
+              border-radius: inherit;
             }
           `}
           </style>
