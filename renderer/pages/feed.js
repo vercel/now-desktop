@@ -49,7 +49,7 @@ class Feed extends React.Component {
 
   renderEvents() {
     if (!this.state.events) {
-      return <span>No events!</span>
+      return <span>{'No events!'}</span>
     }
 
     const events = this.state.events
@@ -66,10 +66,12 @@ class Feed extends React.Component {
       months[month].push(message)
     }
 
-    const eventList = month =>
-      months[month].map(item => {
-        return <EventMessage content={item} key={item.id} />
+    const eventList = month => {
+      return months[month].map((item, index) => {
+        const first = index === 0
+        return <EventMessage content={item} key={item.id} isFirst={first} />
       })
+    }
 
     return Object.keys(months).map(month => (
       <div key={month}>

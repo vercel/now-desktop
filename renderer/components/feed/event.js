@@ -1,87 +1,114 @@
 // Packages
 import React from 'react'
-import { object } from 'prop-types'
+import { object, bool } from 'prop-types'
 
-const EventMessage = ({ content }) => {
-  console.log(content)
-  return (
-    <figure>
-      <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
-      <figcaption>
-        <p>
-          <b>You</b>
-          {' '}
-          deployed
-          {' '}
-          <a href="zeit-website-wpytjphavg.now.sh">
-            zeit-website-wpytjphavg.now.sh
-          </a>
-        </p>
-        <span>2m ago</span>
-      </figcaption>
+// Utilities
+import remote from '../../utils/electron'
 
-      <style jsx>
-        {`
-        figure {
-          margin: 0;
-          display: flex;
-          justify-content: space-between;
-        }
+class EventMessage extends React.Component {
+  openURL(event) {
+    event.preventDefault()
 
-        figure img {
-          height: 30px;
-          width: 30px;
-          border-radius: 30px;
-          margin: 15px 0 0 15px;
-        }
+    const url = event.target.innerHTML
+    remote.shell.openExternal(`https://${url}`)
+  }
 
-        figure figcaption {
-          border-top: 1px solid #D6D6D6;
-          padding: 14px 14px 14px 0;
-          width: 345px;
-          box-sizing: border-box;
-        }
+  getDescription() {
+    const details = this.props.content
+    const type = details.type
 
-        h1 + figure figcaption {
-          border-top: 0;
-        }
+    const list = [<b>You</b>, ' ']
 
-        figure:last-child figcaption {
-          padding-bottom: 16px;
-        }
+    if (type === 'deployment') {
+      list.push([
+        'deployed ',
+        <a className="link" onClick={this.openURL}>{details.payload.url}</a>
+      ])
+    }
 
-        figure:last-child figcaption {
-          border-bottom: 0;
-        }
+    return list
+  }
 
-        figure figcaption span {
-          font-size: 12px;
-          color: #9B9B9B;
-        }
+  render() {
+    return (
+      <figure className={this.props.isFirst ? 'first' : ''}>
+        <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
+        <figcaption>
+          <p>
+            {this.getDescription()}
+          </p>
+          <span>2m ago</span>
+        </figcaption>
 
-        figure figcaption p {
-          font-size: 13px;
-          margin: 0;
-          line-height: 18px;
-        }
+        <style jsx>
+          {`
+          figure {
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+          }
 
-        figure figcaption a {
-          color: #000;
-          text-decoration: none;
-          font-weight: 600;
-        }
+          figure img {
+            height: 30px;
+            width: 30px;
+            border-radius: 30px;
+            margin: 15px 0 0 15px;
+          }
 
-        figure figcaption a:hover {
-          color: #067DF7;
-        }
-      `}
-      </style>
-    </figure>
-  )
+          figure figcaption {
+            border-top: 1px solid #D6D6D6;
+            padding: 14px 14px 14px 0;
+            width: 345px;
+            box-sizing: border-box;
+          }
+
+          figure.first figcaption {
+            border-top: 0;
+          }
+
+          figure:last-child figcaption {
+            padding-bottom: 16px;
+          }
+
+          figure:last-child figcaption {
+            border-bottom: 0;
+          }
+
+          figure figcaption span {
+            font-size: 12px;
+            color: #9B9B9B;
+          }
+
+          figure figcaption p {
+            font-size: 13px;
+            margin: 0;
+            line-height: 18px;
+          }
+        `}
+        </style>
+
+        <style jsx global>
+          {`
+          .link {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+          }
+
+          .link:hover {
+            color: #067DF7;
+          }
+        `}
+        </style>
+      </figure>
+    )
+  }
 }
 
 EventMessage.propTypes = {
-  content: object
+  content: object,
+  isFirst: bool
 }
 
 export default EventMessage
