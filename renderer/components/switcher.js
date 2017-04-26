@@ -142,7 +142,7 @@ class Switcher extends React.Component {
         <ul>
           {this.renderTeams()}
 
-          <li onClick={this.createTeam}>
+          <li onClick={this.createTeam} title="Create a Team">
             <i />
             <i />
           </li>
