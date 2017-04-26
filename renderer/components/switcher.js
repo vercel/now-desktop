@@ -3,7 +3,7 @@ import electron from 'electron'
 import React from 'react'
 
 // Utilities
-import getData from '../utils/cache'
+import { getCache, getConfig } from '../utils/data'
 
 const openMenu = event => {
   const { bottom, left } = event.target.getBoundingClientRect()
@@ -17,40 +17,53 @@ class Switcher extends React.Component {
     super(props)
 
     this.state = {
-      teams: []
+      teams: [],
+      user: false
     }
   }
 
   componentDidMount() {
     this.loadUser()
+    this.loadTeams()
   }
 
-  loadUser() {
-    const teams = getData('teams')
+  async loadUser() {
+    const config = await getConfig()
+
+    if (!config.user) {
+      return
+    }
+
+    this.setState({ user: config.user })
+  }
+
+  loadTeams() {
+    const teams = getCache('teams')
 
     if (!teams) {
       return
     }
 
-    this.setState({
-      teams
-    })
+    this.setState({ teams })
   }
 
   render() {
+    const getAvatar = (key, value) => {
+      return `https://zeit.co/api/www/avatar/?${key}=${value}&s=80`
+    }
+
     return (
       <aside>
         <ul>
-          <li>
-            <img src="https://zeit.co/api/www/avatar/?u=rauchg&s=80" />
-          </li>
+          {this.state &&
+            <li>
+              <img src={getAvatar('u', this.state.user.username)} />
+            </li>}
 
           {this.state &&
             this.state.teams.map(team => (
               <li>
-                <img
-                  src={`https://zeit.co/api/www/avatar/?teamId=${team.slug}&s=80`}
-                />
+                <img src={getAvatar('teamId', team.slug)} />
               </li>
             ))}
         </ul>
@@ -88,11 +101,6 @@ class Switcher extends React.Component {
           li img {
             width: 100%;
             height: 100%;
-          }
-
-          li span {
-            font-size: 12px;
-            color: #7F7F7F;
           }
 
           aside {

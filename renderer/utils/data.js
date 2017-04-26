@@ -1,7 +1,7 @@
 // Utilities
 import remote from '../utils/electron'
 
-export default type => {
+export const getCache = type => {
   if (!type) {
     return false
   }
@@ -14,4 +14,17 @@ export default type => {
   }
 
   return cache.get(type)
+}
+
+export const getConfig = async () => {
+  const { get } = remote.require('./utils/config')
+  let details
+
+  try {
+    details = await get()
+  } catch (err) {
+    return false
+  }
+
+  return details
 }
