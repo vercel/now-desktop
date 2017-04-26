@@ -100,12 +100,9 @@
     "now-client": "0.7.0",
     "path-exists": "3.0.0",
     "path-type": "2.0.0",
-    "react": "15.5.4",
-    "react-dom": "15.5.4",
     "react-input-autosize": "1.1.0",
-    "react-slick": "0.14.8",
+    "react-slick": "0.14.11",
     "slash": "1.0.0",
-    "slick-carousel": "1.6.0",
     "sudo-prompt": "7.0.0",
     "time-ago": "0.1.0",
     "tmp-promise": "1.0.3",
@@ -125,6 +122,8 @@
     "lint-staged": "3.4.0",
     "prettier": "1.0.2",
     "prop-types": "15.5.8",
+    "react": "15.5.4",
+    "react-dom": "15.5.4",
     "xo": "0.18.1"
   }
 }
