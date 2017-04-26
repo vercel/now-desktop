@@ -31,9 +31,11 @@ class EventMessage extends React.Component {
   }
 
   render() {
+    const avatar = `//zeit.co/api/www/avatar/${this.props.content.user_id}`
+
     return (
       <figure className={this.props.isFirst ? 'first' : ''}>
-        <img src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=80" />
+        <img src={avatar} />
         <figcaption>
           <p>
             {this.getDescription()}
