@@ -132,11 +132,20 @@ class Switcher extends React.Component {
     })
   }
 
+  createTeam() {
+    electron.shell.openExternal('https://zeit.co/teams/create')
+  }
+
   render() {
     return (
       <aside>
         <ul>
           {this.renderTeams()}
+
+          <li onClick={this.createTeam}>
+            <i />
+            <i />
+          </li>
         </ul>
 
         <a className="toggle-menu" onClick={openMenu}>
@@ -156,6 +165,50 @@ class Switcher extends React.Component {
             flex-direction: row;
             padding: 0;
             height: 30px;
+          }
+
+          li {
+            height: inherit;
+            width: 30px;
+            cursor: pointer;
+            border-radius: 100%;
+            box-sizing: border-box;
+            border: 1px solid #b1b1b1;
+            position: relative;
+            transition: all .2s ease;
+          }
+
+          li:hover {
+            border-color: #4e4e4e;
+          }
+
+          li i {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          li i:before {
+            content: '';
+            display: block;
+            background: #b1b1b1;
+            height: 12px;
+            width: 1px;
+            transition: all .2s ease;
+          }
+
+          li:hover i:before {
+            height: 16px;
+            background: #4e4e4e;
+          }
+
+          li i:last-child {
+            transform: rotate(90deg);
           }
 
           aside {
