@@ -1,6 +1,7 @@
 // Packages
 import React from 'react'
 import { object, bool } from 'prop-types'
+import moment from 'moment'
 
 // Utilities
 import remote from '../../utils/electron'
@@ -37,7 +38,7 @@ class EventMessage extends React.Component {
           <p>
             {this.getDescription()}
           </p>
-          <span>2m ago</span>
+          <span>{moment(this.props.content.created).fromNow()}</span>
         </figcaption>
 
         <style jsx>
