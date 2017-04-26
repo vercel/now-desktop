@@ -65,7 +65,7 @@ module.exports = async info => {
 
     const index = deployments.indexOf(deployment)
 
-    // Remove deleted deployment = require( deployment list
+    // Remove deleted deployment from deployment list
     deployments.splice(index, 1)
   }
 
