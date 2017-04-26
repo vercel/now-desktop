@@ -53,7 +53,7 @@ class Feed extends React.Component {
         <div>
           <h1>Nothing to See Here!</h1>
           <p>
-            Drag a file into this window (or select it using the button on the top right) to create your first deployment.
+            Drag a project into this window (or select it using the button on the top right) to trigger your first deployment.
           </p>
 
           <style jsx>
