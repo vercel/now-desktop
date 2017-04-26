@@ -7,22 +7,30 @@ import Switcher from '../components/switcher'
 import DropZone from '../components/dropzone'
 import TopArrow from '../components/top-arrow'
 
+// Utilities
+import { getConfig } from '../utils/data'
+
 class Feed extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
       dropZone: false,
-      scope: false
+      scope: null
     }
   }
 
-  setScope(scope) {
-    this.setState({
-      scope
-    })
+  async componentWillMount() {
+    const config = await getConfig()
 
-    console.log('test')
+    // Set the initial state
+    this.setState({
+      scope: config.user.username
+    })
+  }
+
+  setScope(scope) {
+    this.setState({ scope })
   }
 
   showDropZone() {
@@ -236,7 +244,7 @@ class Feed extends React.Component {
             </figure>
           </section>
 
-          <Switcher setScope={this.setScope.bind(this)} />
+          <Switcher setFeedScope={this.setScope.bind(this)} />
         </div>
 
         <style jsx>

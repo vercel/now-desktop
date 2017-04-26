@@ -18,21 +18,27 @@ class Switcher extends React.Component {
     super(props)
 
     this.state = {
-      teams: []
+      teams: [],
+      scope: null
     }
   }
 
   componentDidMount() {
+    this.setInitialScope()
     this.loadTeams()
+  }
+
+  async setInitialScope() {
+    const user = await this.loadUser()
+
+    this.setState({
+      scope: user.username
+    })
   }
 
   async loadUser() {
     const config = await getConfig()
-    const user = config.user
-
-    return {
-      slug: user.username
-    }
+    return config.user
   }
 
   async loadTeams() {
@@ -43,18 +49,25 @@ class Switcher extends React.Component {
     }
 
     const user = await this.loadUser()
-    teams.unshift(user)
+
+    teams.unshift({
+      slug: user.username
+    })
 
     this.setState({ teams })
   }
 
-  changeScope(next) {
-    if (!this.props.setScope) {
+  changeScope(scope) {
+    if (!this.props.setFeedScope) {
       return
     }
 
     // Load different messages into the feed
-    this.props.setScope(next)
+    this.props.setFeedScope(scope)
+
+    // Make the team/user icon look active by
+    // syncing the scope with the feed
+    this.setState({ scope })
   }
 
   renderTeams() {
@@ -67,16 +80,15 @@ class Switcher extends React.Component {
     return teams.map((team, index) => {
       // The first one in the array is always the current user
       const imageProp = index === 0 ? 'u' : 'teamId'
-
-      // Prepeare the avatar URL
       const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.slug}&s=80`
+      const isActive = this.state.scope === team.slug ? 'active' : ''
+
+      const clicked = event => {
+        this.changeScope(team.slug, event.target)
+      }
 
       return (
-        <li
-          onClick={() => {
-            this.changeScope(team.slug)
-          }}
-        >
+        <li onClick={clicked} className={isActive}>
           <img src={image} title={team.name || team.slug} />
 
           <style jsx>
@@ -91,11 +103,17 @@ class Switcher extends React.Component {
               align-items: center;
               margin-right: 10px;
               cursor: pointer;
+              opacity: .3;
+              transition: opacity .3s ease;
+            }
+
+            li.active {
+              opacity: 1;
             }
 
             li img {
-              width: 100%;
-              height: 100%;
+              width: 30px;
+              height: 30px;
             }
           `}
           </style>
@@ -180,7 +198,7 @@ class Switcher extends React.Component {
 }
 
 Switcher.propTypes = {
-  setScope: func
+  setFeedScope: func
 }
 
 export default Switcher
