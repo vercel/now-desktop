@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import React from 'react'
+import { func } from 'prop-types'
 
 // Utilities
 import { getCache, getConfig } from '../utils/data'
@@ -47,6 +48,15 @@ class Switcher extends React.Component {
     this.setState({ teams })
   }
 
+  changeScope(next) {
+    if (!this.props.setScope) {
+      return
+    }
+
+    // Load different messages into the feed
+    this.props.setScope(next)
+  }
+
   renderTeams() {
     if (!this.state) {
       return
@@ -55,11 +65,19 @@ class Switcher extends React.Component {
     const teams = this.state.teams
 
     return teams.map((team, index) => {
+      // The first one in the array is always the current user
       const imageProp = index === 0 ? 'u' : 'teamId'
+
+      // Prepeare the avatar URL
       const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.slug}&s=80`
 
       return (
-        <li>
+        <li
+          onClick={() => {
+            this.changeScope(team.slug)
+          }}
+          data-slug={team.slug}
+        >
           <img src={image} title={team.slug} />
 
           <style jsx>
@@ -160,6 +178,10 @@ class Switcher extends React.Component {
       </aside>
     )
   }
+}
+
+Switcher.propTypes = {
+  setScope: func
 }
 
 export default Switcher

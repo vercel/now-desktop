@@ -12,8 +12,17 @@ class Feed extends React.Component {
     super(props)
 
     this.state = {
-      dropZone: false
+      dropZone: false,
+      scope: false
     }
+  }
+
+  setScope(scope) {
+    this.setState({
+      scope
+    })
+
+    console.log('test')
   }
 
   showDropZone() {
@@ -227,7 +236,7 @@ class Feed extends React.Component {
             </figure>
           </section>
 
-          <Switcher />
+          <Switcher setScope={this.setScope.bind(this)} />
         </div>
 
         <style jsx>
