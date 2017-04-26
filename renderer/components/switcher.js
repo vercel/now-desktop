@@ -6,13 +6,6 @@ import { func } from 'prop-types'
 // Utilities
 import { getCache, getConfig } from '../utils/data'
 
-const openMenu = event => {
-  const { bottom, left } = event.target.getBoundingClientRect()
-  const sender = electron.ipcRenderer || electron.ipcMain
-
-  sender.send('open-menu', { x: left, y: bottom })
-}
-
 class Switcher extends React.Component {
   constructor(props) {
     super(props)
@@ -76,6 +69,18 @@ class Switcher extends React.Component {
     this.setState({ scope })
   }
 
+  openMenu() {
+    // The menu toggler element has children
+    // we have the ability to prevent the event from
+    // bubbling up from those, but we need to
+    // use `this.menu` to make sure the menu always gets
+    // bounds to the parent
+    const { bottom, left } = this.menu.getBoundingClientRect()
+    const sender = electron.ipcRenderer || electron.ipcMain
+
+    sender.send('open-menu', { x: left, y: bottom })
+  }
+
   renderTeams() {
     if (!this.state) {
       return
@@ -137,6 +142,10 @@ class Switcher extends React.Component {
   }
 
   render() {
+    const menuRef = element => {
+      this.menu = element
+    }
+
     return (
       <aside>
         <ul>
@@ -148,12 +157,14 @@ class Switcher extends React.Component {
           </li>
         </ul>
 
-        <a className="toggle-menu" onClick={openMenu}>
-          <span>
-            <i />
-            <i />
-            <i />
-          </span>
+        <a
+          className="toggle-menu"
+          onClick={this.openMenu.bind(this)}
+          ref={menuRef}
+        >
+          <i />
+          <i />
+          <i />
         </a>
 
         <style jsx>
@@ -235,6 +246,7 @@ class Switcher extends React.Component {
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            flex-direction: column;
           }
 
           aside .toggle-menu i {
@@ -246,12 +258,12 @@ class Switcher extends React.Component {
             transition: opacity .2s ease;
           }
 
-          aside .toggle-menu:hover i {
-            opacity: 1;
+          aside .toggle-menu i:nth-child(2) {
+            margin: 3px 0;
           }
 
-          aside span i:nth-child(2) {
-            margin: 3px 0;
+          aside .toggle-menu:hover i {
+            opacity: 1;
           }
         `}
         </style>
