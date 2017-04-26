@@ -49,7 +49,36 @@ class Feed extends React.Component {
 
   renderEvents() {
     if (!this.state.events) {
-      return <span>{'No events!'}</span>
+      return (
+        <div>
+          <h1>Nothing to See Here!</h1>
+          <p>
+            Drag a file into this window (or select it using the button on the top right) to create your first deployment.
+          </p>
+
+          <style jsx>
+            {`
+            div {
+              display: flex;
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              background: #F5F5F5;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+            }
+
+            p {
+              text-align: center;
+              font-size: 14px;
+              width: 290px;
+              line-height: 22px;
+            }
+          `}
+          </style>
+        </div>
+      )
     }
 
     const events = this.state.events
@@ -142,6 +171,16 @@ class Feed extends React.Component {
             cursor: default;
             flex-shrink: 1;
             position: relative;
+          }
+
+          /*
+            This is required because the element always needs
+            to be at least as high as the remaining space, flex
+            will shrink it down then
+          */
+
+          section {
+            height: 100vh;
           }
         `}
         </style>
