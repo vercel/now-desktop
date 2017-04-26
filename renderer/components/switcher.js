@@ -57,13 +57,16 @@ class Switcher extends React.Component {
         <ul>
           {this.state &&
             <li>
-              <img src={getAvatar('u', this.state.user.username)} />
+              <img
+                src={getAvatar('u', this.state.user.username)}
+                title={this.state.user.username}
+              />
             </li>}
 
           {this.state &&
             this.state.teams.map(team => (
               <li>
-                <img src={getAvatar('teamId', team.slug)} />
+                <img src={getAvatar('teamId', team.slug)} title={team.slug} />
               </li>
             ))}
         </ul>
