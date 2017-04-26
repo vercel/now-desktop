@@ -1,3 +1,6 @@
+// Native
+const queryString = require('querystring')
+
 // Packages
 const Now = require('now-client')
 const Cache = require('electron-config')
@@ -109,7 +112,18 @@ const refreshKind = async (name, session) => {
   }
 
   return new Promise(async (resolve, reject) => {
-    const action = endpoint ? fetchData(endpoint) : session[method]()
+    let action
+
+    if (endpoint) {
+      const q = queryString.stringify({
+        limit: 15
+      })
+
+      action = fetchData(endpoint + (q ? '?' + q : ''))
+    } else {
+      action = session[method]()
+    }
+
     let freshData
 
     try {
@@ -133,8 +147,25 @@ const refreshKind = async (name, session) => {
       return
     }
 
+    let toSave = endpoint ? freshData[name] : freshData
+
+    if (name === 'events') {
+      let config
+
+      try {
+        config = await getConfig()
+      } catch (err) {}
+
+      if (config && config.user) {
+        const data = toSave
+
+        toSave = {}
+        toSave[config.user.username] = data
+      }
+    }
+
     // Save fresh data to cache
-    cache.set(name, endpoint ? freshData[name] : freshData)
+    cache.set(name, toSave)
     resolve()
   })
 }
@@ -168,8 +199,7 @@ exports.refreshCache = async (kind, app, windows, interval) => {
   }
 
   const sweepers = new Set()
-
-  const kinds = new Set(['deployments', 'aliases', 'teams'])
+  const kinds = new Set(['deployments', 'aliases', 'teams', 'events'])
 
   for (const kind of kinds) {
     const refresher = refreshKind(kind, session)
