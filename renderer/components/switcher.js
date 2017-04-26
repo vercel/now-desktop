@@ -17,58 +17,81 @@ class Switcher extends React.Component {
     super(props)
 
     this.state = {
-      teams: [],
-      user: false
+      teams: []
     }
   }
 
   componentDidMount() {
-    this.loadUser()
     this.loadTeams()
   }
 
   async loadUser() {
     const config = await getConfig()
+    const user = config.user
 
-    if (!config.user) {
-      return
+    return {
+      slug: user.username
     }
-
-    this.setState({ user: config.user })
   }
 
-  loadTeams() {
+  async loadTeams() {
     const teams = getCache('teams')
 
     if (!teams) {
       return
     }
 
+    const user = await this.loadUser()
+    teams.unshift(user)
+
     this.setState({ teams })
   }
 
-  render() {
-    const getAvatar = (key, value) => {
-      return `https://zeit.co/api/www/avatar/?${key}=${value}&s=80`
+  renderTeams() {
+    if (!this.state) {
+      return
     }
 
+    const teams = this.state.teams
+
+    return teams.map((team, index) => {
+      const imageProp = index === 0 ? 'u' : 'teamId'
+      const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.slug}&s=80`
+
+      return (
+        <li>
+          <img src={image} title={team.slug} />
+
+          <style jsx>
+            {`
+            li {
+              width: 30px;
+              height: inherit;
+              overflow: hidden;
+              border-radius: 30px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              margin-right: 10px;
+              cursor: pointer;
+            }
+
+            li img {
+              width: 100%;
+              height: 100%;
+            }
+          `}
+          </style>
+        </li>
+      )
+    })
+  }
+
+  render() {
     return (
       <aside>
         <ul>
-          {this.state &&
-            <li>
-              <img
-                src={getAvatar('u', this.state.user.username)}
-                title={this.state.user.username}
-              />
-            </li>}
-
-          {this.state &&
-            this.state.teams.map(team => (
-              <li>
-                <img src={getAvatar('teamId', team.slug)} title={team.slug} />
-              </li>
-            ))}
+          {this.renderTeams()}
         </ul>
 
         <a className="toggle-menu" onClick={openMenu}>
@@ -88,22 +111,6 @@ class Switcher extends React.Component {
             flex-direction: row;
             padding: 0;
             height: 30px;
-          }
-
-          li {
-            width: 30px;
-            height: inherit;
-            overflow: hidden;
-            border-radius: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-          }
-
-          li img {
-            width: 100%;
-            height: 100%;
           }
 
           aside {
