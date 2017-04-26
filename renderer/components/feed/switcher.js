@@ -21,6 +21,10 @@ class Switcher extends React.Component {
     this.loadTeams()
   }
 
+  async updateTeams() {
+    setTimeout(this.loadTeams.bind(this), 3000)
+  }
+
   async setInitialScope() {
     const user = await this.loadUser()
 
@@ -48,6 +52,7 @@ class Switcher extends React.Component {
     })
 
     this.setState({ teams })
+    this.updateTeams()
   }
 
   changeScope(scope) {
