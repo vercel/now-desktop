@@ -3,7 +3,7 @@ import React from 'react'
 import { func } from 'prop-types'
 
 // Utilities
-import remote from '../utils/electron'
+import remote from '../../utils/electron'
 
 class DropZone extends React.Component {
   componentDidMount() {

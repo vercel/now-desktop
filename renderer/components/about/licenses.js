@@ -3,7 +3,7 @@ import React from 'react'
 import getLicenses from 'load-licenses'
 
 // Helpers
-import remote from '../utils/electron'
+import remote from '../../utils/electron'
 
 const loadLicenses = () => getLicenses(remote.process.mainModule)
 

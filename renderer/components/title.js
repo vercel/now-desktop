@@ -7,7 +7,7 @@ import remote from '../utils/electron'
 
 // Components
 import Deploy from '../vectors/deploy'
-import Search from './search'
+import Search from './feed/search'
 
 class Title extends React.Component {
   componentDidMount() {

@@ -8,8 +8,8 @@ import pathType from 'path-type'
 import exists from 'path-exists'
 
 // Utilities
-import installBinary from '../utils/load-binary'
-import remote from '../utils/electron'
+import installBinary from '../../utils/load-binary'
+import remote from '../../utils/electron'
 
 const initialState = {
   binaryInstalled: false,

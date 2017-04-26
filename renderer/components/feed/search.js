@@ -3,11 +3,11 @@ import React from 'react'
 import { func } from 'prop-types'
 
 // Vectors
-import MagnifyingGlass from '../vectors/search'
-import Clear from '../vectors/clear'
+import MagnifyingGlass from '../../vectors/search'
+import Clear from '../../vectors/clear'
 
 // Utilities
-import remote from '../utils/electron'
+import remote from '../../utils/electron'
 
 class Search extends React.Component {
   constructor(props) {

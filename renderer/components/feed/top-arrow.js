@@ -2,10 +2,10 @@
 import React from 'react'
 
 // Components
-import Caret from '../vectors/caret'
+import Caret from '../../vectors/caret'
 
 // Utilities
-import remote from '../utils/electron'
+import remote from '../../utils/electron'
 
 class TopArrow extends React.Component {
   constructor(props) {

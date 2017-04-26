@@ -5,9 +5,9 @@ import AutoSizeInput from 'react-input-autosize'
 import emailProviders from 'email-providers/common'
 
 // Ours
-import error from '../utils/error'
-import startRefreshment from '../utils/refresh'
-import remote from '../utils/electron'
+import error from '../../utils/error'
+import startRefreshment from '../../utils/refresh'
+import remote from '../../utils/electron'
 
 const getVerificationData = async (url, email) => {
   const os = remote.require('os')

@@ -18,8 +18,8 @@ import LogoSVG from '../vectors/logo'
 
 // Components
 import Title from '../components/title'
-import Login from '../components/login'
-import Binary from '../components/binary'
+import Login from '../components/tutorial/login'
+import Binary from '../components/tutorial/binary'
 import Container from '../components/container'
 
 if (process.type === 'renderer') rendererPreload()

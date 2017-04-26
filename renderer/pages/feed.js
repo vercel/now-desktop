@@ -3,9 +3,9 @@ import React from 'react'
 
 // Components
 import Title from '../components/title'
-import Switcher from '../components/switcher'
-import DropZone from '../components/dropzone'
-import TopArrow from '../components/top-arrow'
+import Switcher from '../components/feed/switcher'
+import DropZone from '../components/feed/dropzone'
+import TopArrow from '../components/feed/top-arrow'
 
 // Utilities
 import { getConfig } from '../utils/data'

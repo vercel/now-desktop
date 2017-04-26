@@ -4,7 +4,7 @@ import React from 'react'
 import { func } from 'prop-types'
 
 // Utilities
-import { getCache, getConfig } from '../utils/data'
+import { getCache, getConfig } from '../../utils/data'
 
 class Switcher extends React.Component {
   constructor(props) {

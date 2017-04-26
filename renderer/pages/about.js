@@ -13,7 +13,7 @@ import UpdatedSVG from '../vectors/updated'
 
 // Components
 import Container from '../components/container'
-import Licenses from '../components/licenses'
+import Licenses from '../components/about/licenses'
 
 // Helpers
 import showError from '../utils/error'
