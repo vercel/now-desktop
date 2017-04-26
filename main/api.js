@@ -119,10 +119,22 @@ const refreshKind = async (name, session) => {
       return
     }
 
-    // Save fresh data to cache
+    const data = endpoint ? freshData[name] : freshData
     const cache = exports.prepareCache()
-    cache.set(name, endpoint ? freshData[name] : freshData)
 
+    // If the response doesn't contain any data, remove the
+    // entry from the cache
+    if (Array.isArray(data) && data.length === 0) {
+      if (cache.has(name)) {
+        cache.delete(name)
+      }
+
+      resolve()
+      return
+    }
+
+    // Save fresh data to cache
+    cache.set(name, endpoint ? freshData[name] : freshData)
     resolve()
   })
 }
