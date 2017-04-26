@@ -58,6 +58,12 @@ class Switcher extends React.Component {
   }
 
   changeScope(scope) {
+    // If the clicked item in the team switcher is
+    // already the active one, don't do anything
+    if (this.state.scope === scope) {
+      return
+    }
+
     if (!this.props.setFeedScope) {
       return
     }
@@ -109,6 +115,7 @@ class Switcher extends React.Component {
 
             li.active {
               opacity: 1;
+              cursor: default;
             }
 
             li img {
