@@ -76,9 +76,8 @@ class Switcher extends React.Component {
           onClick={() => {
             this.changeScope(team.slug)
           }}
-          data-slug={team.slug}
         >
-          <img src={image} title={team.slug} />
+          <img src={image} title={team.name || team.slug} />
 
           <style jsx>
             {`
