@@ -20,7 +20,7 @@ class Feed extends React.Component {
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const config = await getConfig()
 
     // Set the initial state

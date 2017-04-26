@@ -94,7 +94,7 @@ class Switcher extends React.Component {
       }
 
       return (
-        <li onClick={clicked} className={isActive}>
+        <li onClick={clicked} className={isActive} key={team.slug}>
           <img src={image} title={team.name || team.slug} />
 
           <style jsx>
