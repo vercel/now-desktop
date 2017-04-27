@@ -45,11 +45,7 @@ class EventMessage extends React.Component {
     if (os) message += ` (${os})`
 
     if (geolocation) {
-      if (geolocation.city === geolocation.regionName) {
-        message += ` in ${geolocation.city}`
-      } else {
-        message += ` in ${geolocation.city}, ${geolocation.regionName}`
-      }
+      message += ` in ${geolocation.city.names.en}, ${geolocation.country.names.en}`
     }
 
     return message
