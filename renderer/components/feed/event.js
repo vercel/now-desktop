@@ -1,11 +1,13 @@
 // Packages
 import React from 'react'
-import { object, bool } from 'prop-types'
+import { object } from 'prop-types'
 import moment from 'moment'
 
 // Utilities
 import remote from '../../utils/electron'
-import parseUA from '../../utils/user-agent'
+
+// Components
+import messageComponents from './messages'
 
 class EventMessage extends React.Component {
   openURL(event) {
@@ -15,81 +17,22 @@ class EventMessage extends React.Component {
     remote.shell.openExternal(`https://${url}`)
   }
 
-  loginMessage(payload) {
-    let { userAgent, geolocation } = payload
-    userAgent = parseUA(userAgent)
-
-    const osNames = {
-      darwin: 'Mac OS',
-      win32: 'Windows',
-      linux: 'Linux',
-      freebsd: 'FreeBSD',
-      sunos: 'SunOS'
-    }
-
-    let from
-    let os
-
-    if (userAgent) {
-      from = userAgent.browser
-        ? userAgent.browser.name
-        : userAgent.program ? 'CLI' : null
-      os = osNames[userAgent.os.name] || userAgent.os.name
-    } else {
-      from = payload.env
-      os = payload.os
-    }
-
-    let message = 'logged in'
-    if (from) message += ` from ${from}`
-    if (os) message += ` (${os})`
-
-    if (geolocation) {
-      message += ` in ${geolocation.city.names.en}, ${geolocation.country.names.en}`
-    }
-
-    return message
-  }
-
-  getDescription() {
-    const details = this.props.content
-    const type = details.type
-
-    const list = [
-      <b>{this.props.isUser ? 'You' : details.user.username}</b>,
-      ' '
-    ]
-
-    if (type === 'deployment') {
-      list.push([
-        'deployed ',
-        <a className="link" onClick={this.openURL}>{details.payload.url}</a>
-      ])
-    }
-
-    if (type === 'deployment-delete') {
-      list.push(['deleted ', <b>{details.payload.url}</b>])
-    }
-
-    if (type === 'login') {
-      list.push(this.loginMessage(details.payload))
-    }
-
-    return list
-  }
-
   render() {
     const info = this.props.content
-    const userID = this.props.isUser ? info.user_id : info.user.uid
+    const userID = info.user ? info.user.uid : info.user_id
     const avatar = `//zeit.co/api/www/avatar/${userID}`
 
+    const Message = messageComponents.get(info.type)
+
     return (
-      <figure className={this.props.isFirst ? 'first' : ''}>
+      <figure className="event">
         <img src={avatar} />
         <figcaption>
-          <p>
-            {this.getDescription()}
-          </p>
+          <Message
+            event={info}
+            user={this.props.currentUser}
+            team={this.props.team}
+          />
           <span>{moment(info.created).fromNow()}</span>
         </figcaption>
 
@@ -115,10 +58,6 @@ class EventMessage extends React.Component {
             box-sizing: border-box;
           }
 
-          figure.first figcaption {
-            border-top: 0;
-          }
-
           figure:last-child figcaption {
             padding-bottom: 16px;
           }
@@ -130,12 +69,6 @@ class EventMessage extends React.Component {
           figure figcaption span {
             font-size: 12px;
             color: #9B9B9B;
-          }
-
-          figure figcaption p {
-            font-size: 13px;
-            margin: 0;
-            line-height: 18px;
           }
         `}
         </style>
@@ -152,6 +85,17 @@ class EventMessage extends React.Component {
           .link:hover {
             color: #067DF7;
           }
+
+          h1 + .event figcaption {
+            border-top: 0 !important;
+          }
+
+          .event span:first-child {
+            font-size: 13px;
+            margin: 0;
+            line-height: 18px;
+            display: block;
+          }
         `}
         </style>
       </figure>
@@ -161,8 +105,8 @@ class EventMessage extends React.Component {
 
 EventMessage.propTypes = {
   content: object,
-  isFirst: bool,
-  isUser: bool
+  currentUser: object,
+  team: object
 }
 
 export default EventMessage

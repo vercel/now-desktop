@@ -34,7 +34,7 @@ class Feed extends React.Component {
       return false
     }
 
-    if (this.state.scope === this.state.currentUser) {
+    if (this.state.scope === this.state.currentUser.username) {
       return true
     }
 
@@ -69,11 +69,10 @@ class Feed extends React.Component {
   async componentDidMount() {
     const { get: getConfig } = remote.require('./utils/config')
     const config = await getConfig()
-    const user = config.user.username
 
     this.setState({
-      scope: user,
-      currentUser: user
+      scope: config.user.username,
+      currentUser: config.user
     })
   }
 
@@ -154,14 +153,12 @@ class Feed extends React.Component {
     }
 
     const eventList = month => {
-      return months[month].map((item, index) => {
-        const first = index === 0
+      return months[month].map(item => {
         return (
           <EventMessage
             content={item}
             key={item.id}
-            isFirst={first}
-            isUser={this.isUser.apply(this)}
+            currentUser={this.state.currentUser}
           />
         )
       })
@@ -212,7 +209,9 @@ class Feed extends React.Component {
 
           <Switcher
             setFeedScope={this.setScope.bind(this)}
-            initialScope={this.state.currentUser}
+            initialScope={
+              this.state.currentUser && this.state.currentUser.username
+            }
           />
         </div>
 

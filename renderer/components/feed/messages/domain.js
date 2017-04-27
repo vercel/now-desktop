@@ -1,0 +1,19 @@
+// Packages
+import React from 'react'
+
+// Components
+import Message from '../message'
+
+export default class Domain extends Message {
+  render() {
+    const { event } = this.props
+    return (
+      <span>
+        {this.getDisplayName()}
+        added domain
+        {' '}
+        <b>{event.payload.name}</b>
+      </span>
+    )
+  }
+}
