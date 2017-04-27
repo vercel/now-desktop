@@ -55,7 +55,10 @@ class EventMessage extends React.Component {
     const details = this.props.content
     const type = details.type
 
-    const list = [<b>You</b>, ' ']
+    const list = [
+      <b>{this.props.isUser ? 'You' : details.user.username}</b>,
+      ' '
+    ]
 
     if (type === 'deployment') {
       list.push([
@@ -76,7 +79,9 @@ class EventMessage extends React.Component {
   }
 
   render() {
-    const avatar = `//zeit.co/api/www/avatar/${this.props.content.user_id}`
+    const info = this.props.content
+    const userID = this.props.isUser ? info.user_id : info.user.uid
+    const avatar = `//zeit.co/api/www/avatar/${userID}`
 
     return (
       <figure className={this.props.isFirst ? 'first' : ''}>
@@ -85,7 +90,7 @@ class EventMessage extends React.Component {
           <p>
             {this.getDescription()}
           </p>
-          <span>{moment(this.props.content.created).fromNow()}</span>
+          <span>{moment(info.created).fromNow()}</span>
         </figcaption>
 
         <style jsx>
@@ -156,7 +161,8 @@ class EventMessage extends React.Component {
 
 EventMessage.propTypes = {
   content: object,
-  isFirst: bool
+  isFirst: bool,
+  isUser: bool
 }
 
 export default EventMessage

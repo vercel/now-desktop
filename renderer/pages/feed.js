@@ -24,31 +24,34 @@ class Feed extends React.Component {
     this.state = {
       dropZone: false,
       events: {},
-      scope: null
+      scope: null,
+      currentUser: null
     }
   }
 
-  async loadUser() {
-    const { get: getConfig } = remote.require('./utils/config')
-    const config = await getConfig()
+  isUser() {
+    if (!this.state.scope || !this.state.currentUser) {
+      return false
+    }
 
-    return config.user.username
+    if (this.state.scope === this.state.currentUser) {
+      return true
+    }
+
+    return false
   }
 
   async loadEvents(scope) {
-    const username = await this.loadUser()
-    const scopeIsUser = username === scope
-
     const query = {
       limit: 15
     }
 
-    if (!scopeIsUser) {
+    if (!this.isUser()) {
       query.teamId = scope
     }
 
     const params = queryString.stringify(query)
-    const endpoint = scopeIsUser ? API_USER_EVENTS : API_TEAM_EVENTS
+    const endpoint = this.isUser() ? API_USER_EVENTS : API_TEAM_EVENTS
     const data = await loadData(`${endpoint}?${params}`)
 
     if (!data || !data.events) {
@@ -66,8 +69,12 @@ class Feed extends React.Component {
   async componentDidMount() {
     const { get: getConfig } = remote.require('./utils/config')
     const config = await getConfig()
+    const user = config.user.username
 
-    this.setScope(config.user.username)
+    this.setState({
+      scope: user,
+      currentUser: user
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -149,7 +156,14 @@ class Feed extends React.Component {
     const eventList = month => {
       return months[month].map((item, index) => {
         const first = index === 0
-        return <EventMessage content={item} key={item.id} isFirst={first} />
+        return (
+          <EventMessage
+            content={item}
+            key={item.id}
+            isFirst={first}
+            isUser={this.isUser.apply(this)}
+          />
+        )
       })
     }
 
