@@ -1,3 +1,6 @@
+// Native
+import queryString from 'querystring'
+
 // Packages
 import React from 'react'
 import moment from 'moment'
@@ -40,9 +43,13 @@ class Feed extends React.Component {
     }
 
     const username = await this.loadUser()
-
     const endpoint = username === scope ? API_USER_EVENTS : API_TEAM_EVENTS
-    const data = await loadData(endpoint)
+
+    const query = queryString.stringify({
+      limit: 15
+    })
+
+    const data = await loadData(`${endpoint}?${query}`)
 
     if (!data || !data.events) {
       return
