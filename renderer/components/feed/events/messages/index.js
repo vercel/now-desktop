@@ -29,6 +29,7 @@ import TeamMemberRollUpdate from './team-member-roll-update'
 import TeamNameUpdate from './team-name-update'
 import TeamSlugUpdate from './team-slug-update'
 import Username from './username'
+import Scale from './scale'
 
 export default new Map([
   ['alias', Alias],
@@ -61,5 +62,6 @@ export default new Map([
   ['team-member-roll-update', TeamMemberRollUpdate],
   ['team-name-update', TeamNameUpdate],
   ['team-slug-update', TeamSlugUpdate],
-  ['username', Username]
+  ['username', Username],
+  ['scale', Scale]
 ])
