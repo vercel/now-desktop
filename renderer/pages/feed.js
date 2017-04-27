@@ -176,9 +176,21 @@ class Feed extends React.Component {
     ))
   }
 
+  setScope(scope) {
+    if (this.scrollingSection) {
+      this.scrollingSection.scrollTop = 0
+    }
+
+    this.setState({ scope })
+  }
+
   render() {
     const dropZoneRef = zone => {
       this.dropZone = zone
+    }
+
+    const scrollRef = element => {
+      this.scrollingSection = element
     }
 
     return (
@@ -191,12 +203,12 @@ class Feed extends React.Component {
           {this.state.dropZone &&
             <DropZone ref={dropZoneRef} hide={this.hideDropZone.bind(this)} />}
 
-          <section>
+          <section ref={scrollRef}>
             {this.renderEvents()}
           </section>
 
           <Switcher
-            setFeedScope={scope => this.setState({ scope })}
+            setFeedScope={this.setScope.bind(this)}
             setTeams={teams => this.setState({ teams })}
             initialScope={
               this.state.currentUser && this.state.currentUser.username
