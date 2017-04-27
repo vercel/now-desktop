@@ -47,7 +47,7 @@ class Feed extends React.Component {
       query.teamId = scope
     }
 
-    const params = queryString.stringify()
+    const params = queryString.stringify(query)
     const endpoint = scopeIsUser ? API_USER_EVENTS : API_TEAM_EVENTS
     const data = await loadData(`${endpoint}?${params}`)
 
