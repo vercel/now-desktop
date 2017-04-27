@@ -5,7 +5,6 @@ const chalk = require('chalk')
 const isDev = require('electron-is-dev')
 
 // Utilities
-const { error: showError } = require('./dialogs')
 const { get: getConfig } = require('./utils/config')
 
 const getToken = async () => {
@@ -78,31 +77,15 @@ const refreshKind = async (name, session) => {
   })
 }
 
-const stopInterval = interval => {
-  if (!interval) {
-    return
-  }
-
-  console.log('Stopping the refreshing process...')
-  clearInterval(interval)
-}
-
-exports.refreshCache = async (kind, app, windows, interval) => {
+exports.refreshCache = async (kind, app, windows) => {
   const session = await exports.connector()
 
   if (!session) {
-    stopInterval(interval)
     return
   }
 
   if (kind) {
-    try {
-      await refreshKind(kind, session)
-    } catch (err) {
-      showError('Not able to refresh ' + kind, err)
-      stopInterval(interval)
-    }
-
+    await refreshKind(kind, session)
     return
   }
 
@@ -116,9 +99,6 @@ exports.refreshCache = async (kind, app, windows, interval) => {
       const statusCode = parseInt(errorParts[1], 10)
 
       if (statusCode && statusCode === 403) {
-        // Stop trying to load data
-        stopInterval(interval)
-
         // If token has been revoked, the server will not respond with data
         // In turn, we need to log out
         const logout = require('./actions/logout')

@@ -65,21 +65,37 @@ process.on('uncaughtException', err => {
 
 const cache = prepareCache()
 
+const isLoggedIn = async () => {
+  try {
+    await getConfig()
+  } catch (err) {
+    return false
+  }
+
+  return true
+}
+
 // For starting the refreshment right after login
 global.startRefresh = async windows => {
-  const timeSpan = ms('10s')
+  const timer = time => {
+    return setTimeout(async () => {
+      if (!await isLoggedIn() || process.env.CONNECTION === 'offline') {
+        timer(ms('10s'))
+        return
+      }
+
+      try {
+        await refreshCache(null, app, windows)
+      } catch (err) {
+        console.log(err)
+      }
+
+      timer(ms('10s'))
+    }, time)
+  }
 
   // Refresh cache once in the beginning
-  await refreshCache(null, app, windows)
-
-  // After that, oeriodically refresh it every 10 seconds
-  const interval = setInterval(async () => {
-    if (process.env.CONNECTION === 'offline') {
-      return
-    }
-
-    await refreshCache(null, app, windows, interval)
-  }, timeSpan)
+  timer(100)
 }
 
 app.on('window-all-closed', () => {
@@ -173,16 +189,6 @@ const contextMenu = async windows => {
   }
 
   return Menu.buildFromTemplate(generatedMenu)
-}
-
-const isLoggedIn = async () => {
-  try {
-    await getConfig()
-  } catch (err) {
-    return false
-  }
-
-  return true
 }
 
 const fileDropped = async (event, files) => {
