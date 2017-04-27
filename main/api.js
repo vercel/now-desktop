@@ -89,7 +89,7 @@ const fetchData = async path => {
   return data
 }
 
-const refreshKind = async (name, session) => {
+const refreshKind = async (name, session, team) => {
   const endpoint = endpoints[name]
   let method
 
@@ -115,11 +115,16 @@ const refreshKind = async (name, session) => {
     let action
 
     if (endpoint) {
-      const q = queryString.stringify({
+      const query = {
         limit: 15
-      })
+      }
 
-      action = fetchData(endpoint + (q ? '?' + q : ''))
+      if (team) {
+        query.teamId = team.id
+      }
+
+      const params = queryString.stringify(query)
+      action = fetchData(endpoint + ('?' + params))
     } else {
       action = session[method]()
     }
@@ -150,22 +155,41 @@ const refreshKind = async (name, session) => {
     let toSave = endpoint ? freshData[name] : freshData
 
     if (name === 'events') {
-      let config
-
-      try {
-        config = await getConfig()
-      } catch (err) {}
-
-      if (config && config.user) {
+      if (team) {
         const data = toSave
 
         toSave = {}
-        toSave[config.user.username] = data
+        toSave[team.slug] = data
+      } else {
+        let config
+
+        try {
+          config = await getConfig()
+        } catch (err) {}
+
+        if (config && config.user) {
+          const data = toSave
+
+          toSave = {}
+          toSave[config.user.username] = data
+        }
+      }
+
+      if (cache.has('events')) {
+        const cachedEvents = cache.get('events')
+        toSave = Object.assign({}, cachedEvents, toSave)
       }
     }
 
     // Save fresh data to cache
     cache.set(name, toSave)
+
+    if (name === 'teams') {
+      for (const teamItem of toSave) {
+        await refreshKind('events', null, teamItem)
+      }
+    }
+
     resolve()
   })
 }
@@ -198,32 +222,28 @@ exports.refreshCache = async (kind, app, windows, interval) => {
     return
   }
 
-  const sweepers = new Set()
   const kinds = new Set(['deployments', 'aliases', 'teams', 'events'])
 
   for (const kind of kinds) {
-    const refresher = refreshKind(kind, session)
-    sweepers.add(refresher)
-  }
+    try {
+      await refreshKind(kind, session)
+    } catch (err) {
+      const errorParts = err.split(' ')
+      const statusCode = parseInt(errorParts[1], 10)
 
-  try {
-    await Promise.all(sweepers)
-  } catch (err) {
-    const errorParts = err.split(' ')
-    const statusCode = parseInt(errorParts[1], 10)
+      if (statusCode && statusCode === 403) {
+        // Stop trying to load data
+        stopInterval(interval)
 
-    if (statusCode && statusCode === 403) {
-      // Stop trying to load data
-      stopInterval(interval)
+        // If token has been revoked, the server will not respond with data
+        // In turn, we need to log out
+        const logout = require('./actions/logout')
+        await logout(app, windows)
+      }
 
-      // If token has been revoked, the server will not respond with data
-      // In turn, we need to log out
-      const logout = require('./actions/logout')
-      await logout(app, windows)
+      // Stop executing the function
+      return
     }
-
-    // Stop executing the function
-    return
   }
 
   const currentTime = new Date().toLocaleTimeString()
