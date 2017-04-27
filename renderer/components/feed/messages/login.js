@@ -35,7 +35,7 @@ export default class Login extends Message {
       os = payload.os
     }
 
-    let message = 'Logged in'
+    let message = 'logged in'
     if (from) message += ` from ${from}`
     if (os) message += ` (${os})`
 
@@ -53,6 +53,6 @@ export default class Login extends Message {
       }
     }
 
-    return <span>{message}</span>
+    return <span><b>You</b> {message}</span>
   }
 }
