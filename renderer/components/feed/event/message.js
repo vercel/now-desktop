@@ -6,7 +6,17 @@ class Message extends React.PureComponent {
   getDisplayName() {
     const { event, user } = this.props
 
-    if (event.user_id || event.user.uid === user.uid) {
+    let isCurrentUser = false
+
+    if (event.user_id && event.user_id === user.uid) {
+      isCurrentUser = true
+    }
+
+    if (event.user && event.user.uid && event.user.uid === user.uid) {
+      isCurrentUser = true
+    }
+
+    if (isCurrentUser) {
       return [<b key="you">You</b>, ' ']
     }
 
