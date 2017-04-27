@@ -154,12 +154,19 @@ class Login extends Component {
       return
     }
 
-    // Load fresh data and auto-update it
-    await startRefreshment()
+    const windows = remote.getGlobal('windows')
+    const mainWindow = windows.main
 
-    window.sliderElement.setState({
-      loginShown: false,
-      loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
+    mainWindow.reload()
+
+    mainWindow.once('ready-to-show', async () => {
+      // Load fresh data and auto-update it
+      await startRefreshment()
+
+      window.sliderElement.setState({
+        loginShown: false,
+        loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
+      })
     })
   }
 
