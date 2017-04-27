@@ -57,6 +57,12 @@ class Switcher extends React.Component {
     })
 
     this.setState({ teams })
+
+    if (!this.props.setTeams) {
+      return
+    }
+
+    this.props.setTeams(teams)
   }
 
   changeScope(scope) {
@@ -283,7 +289,8 @@ class Switcher extends React.Component {
 
 Switcher.propTypes = {
   setFeedScope: func,
-  initialScope: string
+  initialScope: string,
+  setTeams: func
 }
 
 export default Switcher

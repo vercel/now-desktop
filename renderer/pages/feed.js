@@ -25,7 +25,8 @@ class Feed extends React.Component {
       dropZone: false,
       events: {},
       scope: null,
-      currentUser: null
+      currentUser: null,
+      teams: []
     }
   }
 
@@ -152,6 +153,14 @@ class Feed extends React.Component {
       months[month].push(message)
     }
 
+    let scopedTeam = {}
+
+    if (this.state.teams && scope !== this.state.currentUser.username) {
+      scopedTeam = this.state.teams.find(team => {
+        return team.id === scope
+      })
+    }
+
     const eventList = month => {
       return months[month].map(item => {
         return (
@@ -159,6 +168,7 @@ class Feed extends React.Component {
             content={item}
             key={item.id}
             currentUser={this.state.currentUser}
+            team={scopedTeam}
           />
         )
       })
@@ -212,6 +222,7 @@ class Feed extends React.Component {
             initialScope={
               this.state.currentUser && this.state.currentUser.username
             }
+            setTeams={teams => this.setState({ teams })}
           />
         </div>
 
