@@ -76,16 +76,22 @@ const isLoggedIn = async () => {
 }
 
 // For starting the refreshment right after login
-global.startRefresh = async windows => {
+global.startRefresh = async () => {
   const timer = time => {
     return setTimeout(async () => {
-      if (!await isLoggedIn() || process.env.CONNECTION === 'offline') {
+      if (process.env.CONNECTION === 'offline') {
         timer(ms('10s'))
         return
       }
 
+      // The user logged out. The next cycle for getting
+      // the data will be started after login by the renderer
+      if (!await isLoggedIn()) {
+        return
+      }
+
       try {
-        await refreshCache(null, app, windows)
+        await refreshCache(null, app, global.windows)
       } catch (err) {
         console.log(err)
       }
