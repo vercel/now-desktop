@@ -10,7 +10,9 @@ import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/event'
 
 // Utilities
-import { getConfig, getCache } from '../utils/data'
+import remote from '../utils/electron'
+import loadData from '../utils/data/load'
+import { API_USER_EVENTS, API_TEAM_EVENTS } from '../utils/data/endpoints'
 
 class Feed extends React.Component {
   constructor(props) {
@@ -18,21 +20,52 @@ class Feed extends React.Component {
 
     this.state = {
       dropZone: false,
-      events: false
+      events: {},
+      scope: null
     }
   }
 
-  async componentDidMount() {
+  async loadUser() {
+    const { get: getConfig } = remote.require('./utils/config')
     const config = await getConfig()
+
+    return config.user.username
+  }
+
+  async loadEvents() {
+    const scope = this.state.scope
+
+    if (!scope) {
+      return
+    }
+
+    const username = await this.loadUser()
+
+    const endpoint = username === scope ? API_USER_EVENTS : API_TEAM_EVENTS
+    const data = await loadData(endpoint)
+
+    if (!data || !data.events) {
+      return
+    }
+
+    // Make sure to respect cached events
+    const events = this.state.events
+
+    // Cache events
+    events[scope] = data.events
+    this.setState({ events })
+  }
+
+  async componentDidMount() {
+    const { get: getConfig } = remote.require('./utils/config')
+    const config = await getConfig()
+
     this.setScope(config.user.username)
   }
 
   async setScope(scope) {
-    const events = await getCache('events.' + scope)
-
-    this.setState({
-      events: events || false
-    })
+    this.setState({ scope })
+    this.loadEvents()
   }
 
   showDropZone() {
@@ -48,7 +81,10 @@ class Feed extends React.Component {
   }
 
   renderEvents() {
-    if (!this.state.events) {
+    const events = this.state.events
+    const noEvents = Object.keys(events).length === 0
+
+    if (noEvents) {
       return (
         <div>
           <h1>Nothing to See Here!</h1>
@@ -81,10 +117,10 @@ class Feed extends React.Component {
       )
     }
 
-    const events = this.state.events
+    const scope = this.state.scope
     const months = {}
 
-    for (const message of events) {
+    for (const message of events[scope]) {
       const created = moment(message.created)
       const month = created.format('MMMM YYYY')
 

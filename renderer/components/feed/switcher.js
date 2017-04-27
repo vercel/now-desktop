@@ -4,7 +4,9 @@ import React from 'react'
 import { func } from 'prop-types'
 
 // Utilities
-import { getCache, getConfig } from '../../utils/data'
+import remote from '../../utils/electron'
+import loadData from '../../utils/data/load'
+import { API_TEAMS } from '../../utils/data/endpoints'
 
 class Switcher extends React.Component {
   constructor(props) {
@@ -34,17 +36,19 @@ class Switcher extends React.Component {
   }
 
   async loadUser() {
+    const { get: getConfig } = remote.require('./utils/config')
     const config = await getConfig()
     return config.user
   }
 
   async loadTeams() {
-    const teams = getCache('teams')
+    const data = await loadData(API_TEAMS)
 
-    if (!teams) {
+    if (!data || !data.teams) {
       return
     }
 
+    const teams = data.teams
     const user = await this.loadUser()
 
     teams.unshift({
