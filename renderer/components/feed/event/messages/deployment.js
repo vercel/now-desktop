@@ -14,6 +14,7 @@ export default class Deployment extends Message {
     const [, app, id] = host.match(/^(.+)-([^-]+)\.now\.sh$/) || []
     const handle = team ? team.slug : user.username
     const userId = user.uid
+
     return (
       <span>
         {this.getDisplayName()}

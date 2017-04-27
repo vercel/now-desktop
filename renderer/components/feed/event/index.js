@@ -4,7 +4,7 @@ import { object } from 'prop-types'
 import moment from 'moment'
 
 // Utilities
-import remote from '../../utils/electron'
+import remote from '../../../utils/electron'
 
 // Components
 import messageComponents from './messages'

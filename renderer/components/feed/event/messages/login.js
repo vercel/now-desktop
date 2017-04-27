@@ -5,7 +5,7 @@ import React from 'react'
 import Message from '../message'
 
 // Utilities
-import parseUA from '../../../utils/user-agent'
+import parseUA from '../../../../utils/user-agent'
 
 const osNames = {
   darwin: 'Mac OS',
