@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { func } from 'prop-types'
+import { func, string } from 'prop-types'
 
 // Utilities
 import remote from '../../utils/electron'
@@ -18,21 +18,22 @@ class Switcher extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.setInitialScope()
-    this.loadTeams()
-  }
+  componentWillReceiveProps({ initialScope }) {
+    if (!initialScope) {
+      return
+    }
 
-  async updateTeams() {
-    setTimeout(this.loadTeams.bind(this), 3000)
-  }
-
-  async setInitialScope() {
-    const user = await this.loadUser()
+    if (this.state.scope !== null) {
+      return
+    }
 
     this.setState({
-      scope: user.username
+      scope: initialScope
     })
+  }
+
+  componentDidMount() {
+    this.loadTeams()
   }
 
   async loadUser() {
@@ -56,7 +57,6 @@ class Switcher extends React.Component {
     })
 
     this.setState({ teams })
-    this.updateTeams()
   }
 
   changeScope(scope) {
@@ -282,7 +282,8 @@ class Switcher extends React.Component {
 }
 
 Switcher.propTypes = {
-  setFeedScope: func
+  setFeedScope: func,
+  initialScope: string
 }
 
 export default Switcher

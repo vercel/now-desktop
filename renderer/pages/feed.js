@@ -210,7 +210,10 @@ class Feed extends React.Component {
             {this.renderEvents()}
           </section>
 
-          <Switcher setFeedScope={this.setScope.bind(this)} />
+          <Switcher
+            setFeedScope={this.setScope.bind(this)}
+            initialScope={this.state.currentUser}
+          />
         </div>
 
         <style jsx>
