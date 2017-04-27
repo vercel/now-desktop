@@ -24,6 +24,10 @@ class EventMessage extends React.Component {
 
     const Message = messageComponents.get(info.type)
 
+    if (!Message) {
+      return null
+    }
+
     return (
       <figure className="event">
         <img src={avatar} />
