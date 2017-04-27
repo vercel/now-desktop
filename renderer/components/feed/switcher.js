@@ -52,7 +52,7 @@ class Switcher extends React.Component {
     const user = await this.loadUser()
 
     teams.unshift({
-      slug: user.username
+      id: user.username
     })
 
     this.setState({ teams })
@@ -100,16 +100,16 @@ class Switcher extends React.Component {
     return teams.map((team, index) => {
       // The first one in the array is always the current user
       const imageProp = index === 0 ? 'u' : 'teamId'
-      const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.slug}&s=80`
-      const isActive = this.state.scope === team.slug ? 'active' : ''
+      const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.id}&s=80`
+      const isActive = this.state.scope === team.id ? 'active' : ''
 
       const clicked = event => {
-        this.changeScope(team.slug, event.target)
+        this.changeScope(team.id, event.target)
       }
 
       return (
         <li onClick={clicked} className={isActive} key={team.slug}>
-          <img src={image} title={team.name || team.slug} />
+          <img src={image} title={team.name || team.id} />
 
           <style jsx>
             {`

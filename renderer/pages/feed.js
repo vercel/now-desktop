@@ -35,21 +35,21 @@ class Feed extends React.Component {
     return config.user.username
   }
 
-  async loadEvents() {
-    const scope = this.state.scope
+  async loadEvents(scope) {
+    const username = await this.loadUser()
+    const scopeIsUser = username === scope
 
-    if (!scope) {
-      return
+    const query = {
+      limit: 15
     }
 
-    const username = await this.loadUser()
-    const endpoint = username === scope ? API_USER_EVENTS : API_TEAM_EVENTS
+    if (!scopeIsUser) {
+      query.teamId = scope
+    }
 
-    const query = queryString.stringify({
-      limit: 15
-    })
-
-    const data = await loadData(`${endpoint}?${query}`)
+    const params = queryString.stringify()
+    const endpoint = scopeIsUser ? API_USER_EVENTS : API_TEAM_EVENTS
+    const data = await loadData(`${endpoint}?${params}`)
 
     if (!data || !data.events) {
       return
@@ -70,9 +70,18 @@ class Feed extends React.Component {
     this.setScope(config.user.username)
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const newScope = this.state.scope
+
+    if (newScope === prevState.scope) {
+      return
+    }
+
+    this.loadEvents(newScope)
+  }
+
   async setScope(scope) {
     this.setState({ scope })
-    this.loadEvents()
   }
 
   showDropZone() {
@@ -88,10 +97,10 @@ class Feed extends React.Component {
   }
 
   renderEvents() {
-    const events = this.state.events
-    const noEvents = Object.keys(events).length === 0
+    const scope = this.state.scope
+    const scopedEvents = this.state.events[scope]
 
-    if (noEvents) {
+    if (!scopedEvents) {
       return (
         <div>
           <h1>Nothing to See Here!</h1>
@@ -124,10 +133,9 @@ class Feed extends React.Component {
       )
     }
 
-    const scope = this.state.scope
     const months = {}
 
-    for (const message of events[scope]) {
+    for (const message of scopedEvents) {
       const created = moment(message.created)
       const month = created.format('MMMM YYYY')
 
