@@ -123,7 +123,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
       label: 'Account',
       submenu: [
         {
-          label: config.email || 'No user defined',
+          label: config.user.email || 'No user defined',
           enabled: false
         },
         {

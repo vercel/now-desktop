@@ -8,6 +8,8 @@ import emailProviders from 'email-providers/common'
 import error from '../../utils/error'
 import startRefreshment from '../../utils/refresh'
 import remote from '../../utils/electron'
+import { API_USER } from '../../utils/data/endpoints'
+import loadData from '../../utils/data/load'
 
 const getVerificationData = async (url, email) => {
   const os = remote.require('os')
@@ -127,25 +129,26 @@ class Login extends Component {
         `<b class="security-token">${securityCode}</b>`
     })
 
-    let final
+    let finalToken
 
     /* eslint-disable no-await-in-loop */
     do {
       await sleep(2500)
 
       try {
-        final = await verify(apiURL, email, token)
+        finalToken = await verify(apiURL, email, token)
       } catch (err) {}
 
       console.log('Waiting for token...')
-    } while (!final)
+    } while (!finalToken)
     /* eslint-enable no-await-in-loop */
 
     // Also save it to now.json
     const { save: saveConfig } = remote.require('./utils/config')
+    const userData = await loadData(API_USER, finalToken)
 
     try {
-      await saveConfig(email, final)
+      await saveConfig(userData.user, finalToken)
     } catch (err) {
       error('Could not save config', err)
       return

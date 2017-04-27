@@ -1,4 +1,5 @@
 // User
+export const API_USER = '/api/www/user'
 export const API_USER_EVENTS = '/api/www/user/events'
 
 // Teams
