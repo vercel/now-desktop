@@ -87,10 +87,6 @@ class Feed extends React.Component {
     this.loadEvents(newScope)
   }
 
-  async setScope(scope) {
-    this.setState({ scope })
-  }
-
   showDropZone() {
     this.setState({
       dropZone: true
@@ -218,11 +214,11 @@ class Feed extends React.Component {
           </section>
 
           <Switcher
-            setFeedScope={this.setScope.bind(this)}
+            setFeedScope={scope => this.setState({ scope })}
+            setTeams={teams => this.setState({ teams })}
             initialScope={
               this.state.currentUser && this.state.currentUser.username
             }
-            setTeams={teams => this.setState({ teams })}
           />
         </div>
 
