@@ -60,12 +60,13 @@ const revokeToken = async (token, tokenId) => {
   }
 }
 
-module.exports = async (app, windows) => {
+module.exports = async () => {
   const offline = process.env.CONNECTION === 'offline'
+  const windows = global.windows
 
   // The app shouldn't log out if an error occurs while offline
   // Only do that while online
-  if (offline) {
+  if (offline || !windows) {
     return
   }
 

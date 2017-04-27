@@ -3,6 +3,7 @@ const Now = require('now-client')
 const Cache = require('electron-config')
 const chalk = require('chalk')
 const isDev = require('electron-is-dev')
+const ms = require('ms')
 
 // Utilities
 const { get: getConfig } = require('./utils/config')
@@ -77,7 +78,7 @@ const refreshKind = async (name, session) => {
   })
 }
 
-exports.refreshCache = async (kind, app, windows) => {
+exports.refreshCache = async kind => {
   const session = await exports.connector()
 
   if (!session) {
@@ -102,7 +103,7 @@ exports.refreshCache = async (kind, app, windows) => {
         // If token has been revoked, the server will not respond with data
         // In turn, we need to log out
         const logout = require('./actions/logout')
-        await logout(app, windows)
+        await logout()
       }
 
       // Stop executing the function
@@ -112,4 +113,40 @@ exports.refreshCache = async (kind, app, windows) => {
 
   const currentTime = new Date().toLocaleTimeString()
   console.log(chalk.green(`[${currentTime}]`) + ' Refreshed entire cache')
+}
+
+exports.isLoggedIn = async () => {
+  if (await getToken()) {
+    return true
+  }
+
+  return false
+}
+
+exports.startRefreshing = async () => {
+  const timer = time => {
+    return setTimeout(async () => {
+      if (process.env.CONNECTION === 'offline') {
+        timer(ms('10s'))
+        return
+      }
+
+      // The user logged out. The next cycle for getting
+      // the data will be started after login by the renderer
+      if (!await exports.isLoggedIn()) {
+        return
+      }
+
+      try {
+        await exports.refreshCache()
+      } catch (err) {
+        console.log(err)
+      }
+
+      timer(ms('10s'))
+    }, time)
+  }
+
+  // Refresh cache once in the beginning
+  timer(100)
 }

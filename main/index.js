@@ -5,7 +5,6 @@ if (require('electron-squirrel-startup')) {
 
 // Packages
 const { Menu, app, Tray, BrowserWindow, ipcMain } = require('electron')
-const ms = require('ms')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const { resolve: resolvePath } = require('app-root-path')
@@ -17,10 +16,9 @@ const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
-const { prepareCache, refreshCache } = require('./api')
+const { prepareCache, startRefreshing, isLoggedIn } = require('./api')
 const toggleWindow = require('./utils/frames/toggle')
 const server = require('./server')
-const { get: getConfig } = require('./utils/config')
 const {
   aboutWindow,
   tutorialWindow,
@@ -64,45 +62,6 @@ process.on('uncaughtException', err => {
 })
 
 const cache = prepareCache()
-
-const isLoggedIn = async () => {
-  try {
-    await getConfig()
-  } catch (err) {
-    return false
-  }
-
-  return true
-}
-
-// For starting the refreshment right after login
-global.startRefresh = async () => {
-  const timer = time => {
-    return setTimeout(async () => {
-      if (process.env.CONNECTION === 'offline') {
-        timer(ms('10s'))
-        return
-      }
-
-      // The user logged out. The next cycle for getting
-      // the data will be started after login by the renderer
-      if (!await isLoggedIn()) {
-        return
-      }
-
-      try {
-        await refreshCache(null, app, global.windows)
-      } catch (err) {
-        console.log(err)
-      }
-
-      timer(ms('10s'))
-    }, time)
-  }
-
-  // Refresh cache once in the beginning
-  timer(100)
-}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -317,7 +276,7 @@ app.on('ready', async () => {
   // Otherwise, ask the user to log in using the tutorial
   if ((await isLoggedIn()) && !firstRun()) {
     // Periodically rebuild local cache every 10 seconds
-    await global.startRefresh(windows)
+    await startRefreshing()
   } else {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash

@@ -131,9 +131,7 @@ exports.innerMenu = async function(app, tray, data, windows) {
         },
         {
           label: 'Logout',
-          async click() {
-            await logout(app, windows)
-          }
+          click: logout
         }
       ]
     },
