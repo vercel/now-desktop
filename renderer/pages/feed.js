@@ -11,6 +11,7 @@ import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
 import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/event'
+import NoEvents from '../components/feed/event/none'
 
 // Utilities
 import remote from '../utils/electron'
@@ -104,36 +105,7 @@ class Feed extends React.Component {
     const scopedEvents = this.state.events[scope]
 
     if (!scopedEvents) {
-      return (
-        <div>
-          <h1>Nothing to See Here!</h1>
-          <p>
-            Drag a project into this window (or select it using the button on the top right) to trigger your first deployment.
-          </p>
-
-          <style jsx>
-            {`
-            div {
-              display: flex;
-              width: 100%;
-              height: 100%;
-              position: absolute;
-              background: #F5F5F5;
-              align-items: center;
-              justify-content: center;
-              flex-direction: column;
-            }
-
-            p {
-              text-align: center;
-              font-size: 14px;
-              width: 290px;
-              line-height: 22px;
-            }
-          `}
-          </style>
-        </div>
-      )
+      return <NoEvents />
     }
 
     const months = {}
@@ -170,7 +142,13 @@ class Feed extends React.Component {
       })
     }
 
-    return Object.keys(months).map(month => (
+    const monthKeys = Object.keys(months)
+
+    if (monthKeys.length === 0) {
+      return <NoEvents />
+    }
+
+    return monthKeys.map(month => (
       <div key={month}>
         <h1>{month}</h1>
         {eventList(month)}
