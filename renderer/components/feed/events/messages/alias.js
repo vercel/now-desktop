@@ -27,7 +27,11 @@ export default class Alias extends Message {
           {' '}
           for
           {' '}
-          <a href={`https://${event.payload.alias}`}>
+          <a
+            className="link"
+            onClick={this.openExternal}
+            href={`https://${event.payload.alias}`}
+          >
             https://{event.payload.alias}
           </a>
         </span>
