@@ -106,6 +106,16 @@ class EventMessage extends React.Component {
             line-height: 18px;
             display: block;
           }
+
+          .event span code {
+            font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            display: block;
+            margin: 2px 0;
+            font-size: 12px;
+          }
         `}
         </style>
       </figure>

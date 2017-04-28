@@ -10,8 +10,7 @@ export default class DeploymentDelete extends Message {
     return (
       <span>
         {this.getDisplayName()}
-        deleted https://
-        {event.payload.url}
+        deleted <b>{event.payload.url}</b>
       </span>
     )
   }
