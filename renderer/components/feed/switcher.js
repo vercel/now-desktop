@@ -36,6 +36,36 @@ class Switcher extends React.Component {
     this.loadTeams()
   }
 
+  async checkCurrentTeam() {
+    const { get, save } = remote.require('./utils/config')
+    const config = await get()
+
+    if (!config || !config.currentTeam) {
+      return
+    }
+
+    if (this.state.teams.length === 0) {
+      return
+    }
+
+    const currentTeam = config.currentTeam
+
+    const isCached = this.state.teams.find(team => {
+      return team.id === currentTeam.id
+    })
+
+    if (!isCached) {
+      // If the current team isn't cached, remove it from config
+      await save({
+        currentTeam: {}
+      })
+
+      return
+    }
+
+    this.changeScope(isCached)
+  }
+
   async loadTeams() {
     const data = await loadData(API_TEAMS)
 
@@ -55,7 +85,12 @@ class Switcher extends React.Component {
       return
     }
 
+    // Save teams
     this.props.setTeams(teams)
+
+    // See if config has `currentTeam` saved and
+    // update the scope if so
+    this.checkCurrentTeam()
   }
 
   async updateConfig(team) {
