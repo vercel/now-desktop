@@ -146,10 +146,15 @@ class Login extends Component {
     // Also save it to now.json
     const { save: saveConfig } = remote.require('./utils/config')
     const userData = await loadData(API_USER, finalToken)
+    const user = userData.user
 
     try {
       await saveConfig({
-        user: userData.user,
+        user: {
+          uid: user.uid,
+          username: user.username,
+          email: user.email
+        },
         token: finalToken
       })
     } catch (err) {
