@@ -22,6 +22,10 @@ class EventMessage extends React.Component {
     const userID = info.user ? info.user.uid : info.user_id
     const avatar = `https://zeit.co/api/www/avatar/${userID}`
 
+    // Preload avatar, prevent flickering
+    const image = new Image()
+    image.src = avatar
+
     const Message = messageComponents.get(info.type)
 
     if (!Message) {
@@ -31,12 +35,14 @@ class EventMessage extends React.Component {
     return (
       <figure className="event">
         <img src={avatar} />
+
         <figcaption>
           <Message
             event={info}
             user={this.props.currentUser}
             team={this.props.team}
           />
+
           <span>{moment(info.created).fromNow()}</span>
         </figcaption>
 
