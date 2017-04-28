@@ -73,8 +73,14 @@ module.exports = async () => {
     return
   }
 
-  // Hide the main window
+  // Hide the main window and close the dev tools
   if (windows && windows.main) {
+    const contents = windows.main.webContents
+
+    if (contents.isDevToolsOpened()) {
+      contents.closeDevTools()
+    }
+
     windows.main.hide()
   }
 
