@@ -20,7 +20,7 @@ class EventMessage extends React.Component {
   render() {
     const info = this.props.content
     const userID = info.user ? info.user.uid : info.user_id
-    const avatar = `//zeit.co/api/www/avatar/${userID}`
+    const avatar = `https://zeit.co/api/www/avatar/${userID}`
 
     const Message = messageComponents.get(info.type)
 
