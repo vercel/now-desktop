@@ -22,6 +22,11 @@ const getToken = async () => {
 
 exports.connector = async () => {
   const token = await getToken()
+
+  if (!token) {
+    return false
+  }
+
   return new Now(token)
 }
 
@@ -82,6 +87,7 @@ exports.refreshCache = async kind => {
   const session = await exports.connector()
 
   if (!session) {
+    require('./actions/logout')()
     return
   }
 
@@ -102,8 +108,7 @@ exports.refreshCache = async kind => {
       if (statusCode && statusCode === 403) {
         // If token has been revoked, the server will not respond with data
         // In turn, we need to log out
-        const logout = require('./actions/logout')
-        await logout()
+        require('./actions/logout')()
       }
 
       // Stop executing the function
@@ -128,12 +133,6 @@ exports.startRefreshing = async () => {
     return setTimeout(async () => {
       if (process.env.CONNECTION === 'offline') {
         timer(ms('10s'))
-        return
-      }
-
-      // The user logged out. The next cycle for getting
-      // the data will be started after login by the renderer
-      if (!await exports.isLoggedIn()) {
         return
       }
 

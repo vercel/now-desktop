@@ -64,6 +64,9 @@ module.exports = async () => {
   const offline = process.env.CONNECTION === 'offline'
   const windows = global.windows
 
+  // Indicate that we're logging out
+  console.log('Logging out...')
+
   // The app shouldn't log out if an error occurs while offline
   // Only do that while online
   if (offline || !windows) {
@@ -76,7 +79,11 @@ module.exports = async () => {
   }
 
   // Cache user information
-  const userDetails = await getConfig()
+  let userDetails
+
+  try {
+    userDetails = await getConfig()
+  } catch (err) {}
 
   try {
     await removeConfig()
@@ -103,6 +110,10 @@ module.exports = async () => {
 
     // Once the content has loaded again, show it
     tutorialWindow.once('ready-to-show', () => tutorialWindow.show())
+  }
+
+  if (!userDetails) {
+    return
   }
 
   let tokenId
