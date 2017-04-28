@@ -41,6 +41,20 @@ exports.save = async data => {
   // Merge new data with the existing
   currentContent = Object.assign(currentContent, data)
 
+  for (const newProp in data) {
+    if (!{}.hasOwnProperty.call(data, newProp)) {
+      continue
+    }
+
+    const propContent = currentContent[newProp]
+    const isObject = typeof propContent === 'object'
+
+    // Ensure that there are no empty objects inside the config
+    if (isObject && Object.keys(propContent).length === 0) {
+      delete currentContent[newProp]
+    }
+  }
+
   // Update config file
   await fs.writeJSON(file, currentContent)
 }
