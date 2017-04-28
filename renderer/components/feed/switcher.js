@@ -34,13 +34,38 @@ class Switcher extends React.Component {
 
   componentDidMount() {
     this.loadTeams()
+
+    const startTimer = () =>
+      setTimeout(async () => {
+        await this.loadTeams()
+        startTimer()
+      }, 4000)
+
+    startTimer()
+  }
+
+  resetScope() {
+    const currentUser = this.props.currentUser
+
+    if (!currentUser) {
+      return
+    }
+
+    this.changeScope({
+      id: currentUser.username
+    })
   }
 
   async checkCurrentTeam() {
     const { get, save } = remote.require('./utils/config')
     const config = await get()
 
-    if (!config || !config.currentTeam) {
+    if (!config) {
+      return
+    }
+
+    if (!config.currentTeam) {
+      this.resetScope()
       return
     }
 
@@ -60,10 +85,11 @@ class Switcher extends React.Component {
         currentTeam: {}
       })
 
+      this.resetScope()
       return
     }
 
-    this.changeScope(isCached)
+    this.changeScope(isCached, true)
   }
 
   async loadTeams() {
@@ -79,18 +105,21 @@ class Switcher extends React.Component {
       id: this.props.currentUser.username
     })
 
-    this.setState({ teams })
+    // Only update state if the list of teams has changed
+    if (this.state.teams !== teams) {
+      this.setState({ teams })
 
-    if (!this.props.setTeams) {
-      return
+      if (!this.props.setTeams) {
+        return
+      }
+
+      // Save teams
+      this.props.setTeams(teams)
     }
-
-    // Save teams
-    this.props.setTeams(teams)
 
     // See if config has `currentTeam` saved and
     // update the scope if so
-    this.checkCurrentTeam()
+    await this.checkCurrentTeam()
   }
 
   async updateConfig(team) {
@@ -119,7 +148,7 @@ class Switcher extends React.Component {
     await saveConfig(info)
   }
 
-  changeScope(team) {
+  changeScope(team, saveToConfig) {
     // If the clicked item in the team switcher is
     // already the active one, don't do anything
     if (this.state.scope === team.id) {
@@ -138,7 +167,9 @@ class Switcher extends React.Component {
     this.setState({ scope: team.id })
 
     // Save the new `currentTeam` to the config
-    this.updateConfig(team)
+    if (saveToConfig) {
+      this.updateConfig(team)
+    }
   }
 
   openMenu() {
@@ -166,8 +197,8 @@ class Switcher extends React.Component {
       const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.id}&s=80`
       const isActive = this.state.scope === team.id ? 'active' : ''
 
-      const clicked = event => {
-        this.changeScope(team, event.target)
+      const clicked = () => {
+        this.changeScope(team, true)
       }
 
       return (
