@@ -148,7 +148,10 @@ class Login extends Component {
     const userData = await loadData(API_USER, finalToken)
 
     try {
-      await saveConfig(userData.user, finalToken)
+      await saveConfig({
+        user: userData.user,
+        token: finalToken
+      })
     } catch (err) {
       error('Could not save config', err)
       return

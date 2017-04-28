@@ -1,10 +1,9 @@
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { func, string } from 'prop-types'
+import { func, object } from 'prop-types'
 
 // Utilities
-import remote from '../../utils/electron'
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
@@ -18,8 +17,8 @@ class Switcher extends React.Component {
     }
   }
 
-  componentWillReceiveProps({ initialScope }) {
-    if (!initialScope) {
+  componentWillReceiveProps({ currentUser }) {
+    if (!currentUser) {
       return
     }
 
@@ -28,7 +27,7 @@ class Switcher extends React.Component {
     }
 
     this.setState({
-      scope: initialScope
+      scope: currentUser.username
     })
   }
 
@@ -36,24 +35,17 @@ class Switcher extends React.Component {
     this.loadTeams()
   }
 
-  async loadUser() {
-    const { get: getConfig } = remote.require('./utils/config')
-    const config = await getConfig()
-    return config.user
-  }
-
   async loadTeams() {
     const data = await loadData(API_TEAMS)
 
-    if (!data || !data.teams) {
+    if (!data || !data.teams || !this.props.currentUser) {
       return
     }
 
     const teams = data.teams
-    const user = await this.loadUser()
 
     teams.unshift({
-      id: user.username
+      id: this.props.currentUser.username
     })
 
     this.setState({ teams })
@@ -289,7 +281,7 @@ class Switcher extends React.Component {
 
 Switcher.propTypes = {
   setFeedScope: func,
-  initialScope: string,
+  currentUser: object,
   setTeams: func
 }
 

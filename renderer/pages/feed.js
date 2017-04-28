@@ -210,9 +210,7 @@ class Feed extends React.Component {
           <Switcher
             setFeedScope={this.setScope.bind(this)}
             setTeams={teams => this.setState({ teams })}
-            initialScope={
-              this.state.currentUser && this.state.currentUser.username
-            }
+            currentUser={this.state.currentUser}
           />
         </div>
 

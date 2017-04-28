@@ -31,15 +31,16 @@ exports.remove = async () => {
   await fs.remove(file)
 }
 
-exports.save = async ({ uid, email, username }, token) => {
+exports.save = async data => {
   let currentContent = {}
 
   try {
     currentContent = await fs.readJSON(file)
   } catch (err) {}
 
-  currentContent.user = { uid, email, username }
-  currentContent.token = token
+  // Merge new data with the existing
+  currentContent = Object.assign(currentContent, data)
 
+  // Update config file
   await fs.writeJSON(file, currentContent)
 }
