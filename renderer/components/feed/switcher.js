@@ -4,6 +4,7 @@ import React from 'react'
 import { func, object } from 'prop-types'
 
 // Utilities
+import remote from '../../utils/electron'
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
@@ -57,10 +58,36 @@ class Switcher extends React.Component {
     this.props.setTeams(teams)
   }
 
-  changeScope(scope) {
+  async updateConfig(team) {
+    const { save: saveConfig } = remote.require('./utils/config')
+    const currentUser = this.props.currentUser
+
+    if (!currentUser) {
+      return
+    }
+
+    const info = {
+      currentTeam: {}
+    }
+
+    // Only add fresh data to config if new scope is team, not user
+    // Otherwise just clear it
+    if (currentUser.username !== team.id) {
+      // Only save the data we need, not the entire object
+      info.currentTeam = {
+        id: team.id,
+        slug: team.slug,
+        name: team.name
+      }
+    }
+
+    await saveConfig(info)
+  }
+
+  changeScope(team) {
     // If the clicked item in the team switcher is
     // already the active one, don't do anything
-    if (this.state.scope === scope) {
+    if (this.state.scope === team.id) {
       return
     }
 
@@ -69,11 +96,14 @@ class Switcher extends React.Component {
     }
 
     // Load different messages into the feed
-    this.props.setFeedScope(scope)
+    this.props.setFeedScope(team.id)
 
     // Make the team/user icon look active by
     // syncing the scope with the feed
-    this.setState({ scope })
+    this.setState({ scope: team.id })
+
+    // Save the new `currentTeam` to the config
+    this.updateConfig(team)
   }
 
   openMenu() {
@@ -102,7 +132,7 @@ class Switcher extends React.Component {
       const isActive = this.state.scope === team.id ? 'active' : ''
 
       const clicked = event => {
-        this.changeScope(team.id, event.target)
+        this.changeScope(team, event.target)
       }
 
       return (
