@@ -14,6 +14,7 @@ const slash = require('slash')
 const { connector } = require('../../api')
 const { error: showError } = require('../../dialogs')
 const notify = require('../../notify')
+const { get: getConfig } = require('../config')
 
 const genTitle = deployment => {
   if (deployment.state === 'READY') {
@@ -60,6 +61,22 @@ const removeTempDir = async (dir, logStatus) => {
   }
 
   logStatus('Removed temporary directory')
+}
+
+const teamInScope = async () => {
+  let config
+
+  try {
+    config = await getConfig()
+  } catch (err) {
+    return false
+  }
+
+  if (config.currentTeam) {
+    return config.currentTeam.id
+  }
+
+  return false
 }
 
 module.exports = async (folder, deploymentType) => {
@@ -175,7 +192,13 @@ module.exports = async (folder, deploymentType) => {
   }
 
   let deployment
+
   const apiSession = await connector()
+  const team = await teamInScope()
+
+  if (team) {
+    details.teamId = team
+  }
 
   try {
     deployment = await apiSession.createDeployment(details)
