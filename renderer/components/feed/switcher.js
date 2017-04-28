@@ -114,7 +114,7 @@ class Switcher extends React.Component {
       }
 
       // Save teams
-      this.props.setTeams(teams)
+      await this.props.setTeams(teams)
     }
 
     // See if config has `currentTeam` saved and

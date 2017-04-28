@@ -31,29 +31,35 @@ class Feed extends React.Component {
     }
   }
 
-  isUser() {
-    if (!this.state.scope || !this.state.currentUser) {
-      return false
+  async updateEvents(exclude) {
+    const teams = this.state.teams
+
+    if (!teams || Object.keys(teams).length === 0) {
+      return
     }
 
-    if (this.state.scope === this.state.currentUser.username) {
-      return true
-    }
+    // Update the feed of events for each team
+    for (const team of teams) {
+      if (exclude && team.id === exclude) {
+        continue
+      }
 
-    return false
+      const isUser = teams.indexOf(team) === 0
+      await this.loadEvents(team.id, false, isUser)
+    }
   }
 
-  async loadEvents(scope) {
+  async loadEvents(scope, loadAll, isUser) {
     const query = {
       limit: 15
     }
 
-    if (!this.isUser()) {
+    if (!isUser) {
       query.teamId = scope
     }
 
     const params = queryString.stringify(query)
-    const endpoint = this.isUser() ? API_USER_EVENTS : API_TEAM_EVENTS
+    const endpoint = isUser ? API_USER_EVENTS : API_TEAM_EVENTS
     const data = await loadData(`${endpoint}?${params}`)
 
     if (!data || !data.events) {
@@ -66,6 +72,10 @@ class Feed extends React.Component {
     // Cache events
     events[scope] = data.events
     this.setState({ events })
+
+    if (loadAll) {
+      await this.updateEvents(scope)
+    }
   }
 
   async componentDidMount() {
@@ -76,16 +86,6 @@ class Feed extends React.Component {
       scope: config.user.username,
       currentUser: config.user
     })
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const newScope = this.state.scope
-
-    if (newScope === prevState.scope) {
-      return
-    }
-
-    this.loadEvents(newScope)
   }
 
   showDropZone() {
@@ -184,6 +184,11 @@ class Feed extends React.Component {
     this.setState({ scope })
   }
 
+  async setTeams(teams) {
+    this.setState({ teams })
+    await this.updateEvents()
+  }
+
   render() {
     const dropZoneRef = zone => {
       this.dropZone = zone
@@ -209,7 +214,7 @@ class Feed extends React.Component {
 
           <Switcher
             setFeedScope={this.setScope.bind(this)}
-            setTeams={teams => this.setState({ teams })}
+            setTeams={this.setTeams.bind(this)}
             currentUser={this.state.currentUser}
           />
         </div>
