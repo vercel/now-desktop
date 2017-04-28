@@ -32,8 +32,8 @@ class Switcher extends React.Component {
     })
   }
 
-  componentDidMount() {
-    this.loadTeams()
+  async componentDidMount() {
+    await this.loadTeams()
 
     const startTimer = () =>
       setTimeout(async () => {
