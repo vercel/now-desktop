@@ -203,7 +203,7 @@ class Switcher extends React.Component {
 
       return (
         <li onClick={clicked} className={isActive} key={team.id}>
-          <img src={image} title={team.name || team.id} />
+          <img src={image} title={team.name || team.id} draggable="false" />
 
           <style jsx>
             {`

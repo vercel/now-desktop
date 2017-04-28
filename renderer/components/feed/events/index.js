@@ -34,7 +34,7 @@ class EventMessage extends React.Component {
 
     return (
       <figure className="event">
-        <img src={avatar} />
+        <img src={avatar} draggable="false" />
 
         <figcaption>
           <Message
