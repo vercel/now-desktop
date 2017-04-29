@@ -112,7 +112,6 @@ class Search extends React.Component {
             justify-content: center;
             align-items: center;
             opacity: .5;
-            cursor: pointer;
             flex-shrink: 0;
             transition: opacity .2s ease;
           }
@@ -147,7 +146,6 @@ class Search extends React.Component {
           }
 
           b {
-            cursor: pointer;
             height: inherit;
             width: 36px;
             display: flex;

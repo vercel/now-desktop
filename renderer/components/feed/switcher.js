@@ -218,7 +218,6 @@ class Switcher extends React.Component {
               height: 30px;
               border-radius: 100%;
               margin-right: 10px;
-              cursor: pointer;
               opacity: .3;
               transition: opacity .3s ease;
             }
@@ -284,7 +283,6 @@ class Switcher extends React.Component {
           li {
             height: inherit;
             width: 30px;
-            cursor: pointer;
             border-radius: 100%;
             box-sizing: border-box;
             border: 1px solid #b1b1b1;
@@ -337,7 +335,6 @@ class Switcher extends React.Component {
             justify-content: space-between;
             background: #fff;
             user-select: none;
-            cursor: default;
             align-items: center;
           }
 
@@ -348,7 +345,6 @@ class Switcher extends React.Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
             flex-direction: column;
           }
 
