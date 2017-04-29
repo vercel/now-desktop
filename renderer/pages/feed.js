@@ -83,7 +83,7 @@ class Feed extends React.Component {
     const config = await getConfig()
 
     this.setState({
-      scope: config.user.username,
+      scope: config.user.uid,
       currentUser: config.user
     })
   }
@@ -123,7 +123,7 @@ class Feed extends React.Component {
 
     let scopedTeam = {}
 
-    if (this.state.teams && scope !== this.state.currentUser.username) {
+    if (this.state.teams && scope !== this.state.currentUser.uid) {
       scopedTeam = this.state.teams.find(team => {
         return team.id === scope
       })
