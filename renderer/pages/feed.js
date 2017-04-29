@@ -236,7 +236,8 @@ class Feed extends React.Component {
           }
 
           section {
-            overflow: scroll;
+            overflow-y: auto;
+            overflow-x: hidden;
             background: #fff;
             user-select: none;
             cursor: default;
