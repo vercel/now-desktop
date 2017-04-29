@@ -263,6 +263,8 @@ class Switcher extends React.Component {
             <i />
             <i />
           </li>
+
+          <span className="shadow" />
         </ul>
 
         <a
@@ -279,7 +281,6 @@ class Switcher extends React.Component {
           {`
           ul {
             margin: 0;
-            box-sizing: border-box;
             list-style: none;
             display: flex;
             flex-direction: row;
@@ -290,10 +291,29 @@ class Switcher extends React.Component {
             align-items: center;
             overflow-x: auto;
             overflow-y: hidden;
+            position: relative;
+          }
+
+          ul:after {
+            content: '';
+            width: 30px;
+            display: block;
+            height: inherit;
+            flex-shrink: 0;
           }
 
           ul::-webkit-scrollbar {
             display: none;
+          }
+
+          ul .shadow {
+            display: block;
+            height: 49px;
+            width: 40px;
+            background: linear-gradient(to right, transparent, #fff);
+            position: fixed;
+            left: calc(350px - 40px);
+            bottom: 0;
           }
 
           li {
