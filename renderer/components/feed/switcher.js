@@ -179,7 +179,11 @@ class Switcher extends React.Component {
     // use `this.menu` to make sure the menu always gets
     // bounds to the parent
     const { bottom, left } = this.menu.getBoundingClientRect()
-    const sender = electron.ipcRenderer || electron.ipcMain
+    const sender = electron.ipcRenderer || false
+
+    if (!sender) {
+      return
+    }
 
     sender.send('open-menu', { x: left, y: bottom })
   }
