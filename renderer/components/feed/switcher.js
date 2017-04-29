@@ -278,22 +278,33 @@ class Switcher extends React.Component {
         <style jsx>
           {`
           ul {
-            margin: 0 0 0 10px;
+            margin: 0;
+            box-sizing: border-box;
             list-style: none;
             display: flex;
             flex-direction: row;
-            padding: 0;
-            height: 30px;
+            flex-shrink: 1;
+            flex-grow: 1;
+            padding: 0 0 0 10px;
+            height: inherit;
+            align-items: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+          }
+
+          ul::-webkit-scrollbar {
+            display: none;
           }
 
           li {
-            height: inherit;
+            height: 30px;
             width: 30px;
             border-radius: 100%;
             box-sizing: border-box;
             border: 1px solid #b1b1b1;
             position: relative;
             transition: all .2s ease;
+            flex-shrink: 0;
           }
 
           li:hover {
@@ -335,13 +346,12 @@ class Switcher extends React.Component {
             left: 0;
             right: 0;
             flex-shrink: 0;
+            flex-grow: 0;
             border-top: 1px solid #D6D6D6;
             box-sizing: border-box;
             display: flex;
-            justify-content: space-between;
             background: #fff;
             user-select: none;
-            align-items: center;
           }
 
           aside .toggle-menu {
@@ -352,6 +362,7 @@ class Switcher extends React.Component {
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            flex-shrink: 0;
           }
 
           aside .toggle-menu i {
