@@ -16,7 +16,7 @@ import NoEvents from '../components/feed/events/none'
 // Utilities
 import remote from '../utils/electron'
 import loadData from '../utils/data/load'
-import { API_USER_EVENTS, API_TEAM_EVENTS } from '../utils/data/endpoints'
+import { API_EVENTS } from '../utils/data/endpoints'
 
 class Feed extends React.Component {
   constructor(props) {
@@ -59,8 +59,7 @@ class Feed extends React.Component {
     }
 
     const params = queryString.stringify(query)
-    const endpoint = isUser ? API_USER_EVENTS : API_TEAM_EVENTS
-    const data = await loadData(`${endpoint}?${params}`)
+    const data = await loadData(`${API_EVENTS}?${params}`)
 
     if (!data || !data.events) {
       return

@@ -19,7 +19,7 @@ class EventMessage extends React.Component {
 
   render() {
     const info = this.props.content
-    const userID = info.user ? info.user.uid : info.user_id
+    const userID = info.user ? info.user.uid : info.userId
     const avatar = `https://zeit.co/api/www/avatar/${userID}`
 
     // Preload avatar, prevent flickering
