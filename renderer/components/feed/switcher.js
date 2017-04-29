@@ -193,8 +193,10 @@ class Switcher extends React.Component {
 
     return teams.map((team, index) => {
       // The first one in the array is always the current user
-      const imageProp = index === 0 ? 'u' : 'teamId'
-      const image = `https://zeit.co/api/www/avatar/?${imageProp}=${team.id}&s=80`
+      const imageID = index === 0 ? team.id : `?teamId=${team.id}`
+      const separator = index === 0 ? '?' : '&'
+      const image = `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
+
       const isActive = this.state.scope === team.id ? 'active' : ''
 
       const clicked = () => {
