@@ -87,8 +87,10 @@ exports.refreshCache = async kind => {
   const session = await exports.connector()
 
   if (!session) {
-    require('./actions/logout')()
-    return
+    const error = new Error('No session defined')
+    error.name = 'logout_needed'
+
+    throw error
   }
 
   if (kind) {
@@ -108,7 +110,10 @@ exports.refreshCache = async kind => {
       if (statusCode && statusCode === 403) {
         // If token has been revoked, the server will not respond with data
         // In turn, we need to log out
-        require('./actions/logout')()
+        const error = new Error('Not authorized to load fresh cache')
+        error.name = 'logout_needed'
+
+        throw error
       }
 
       // Stop executing the function
@@ -139,6 +144,11 @@ exports.startRefreshing = async () => {
       try {
         await exports.refreshCache()
       } catch (err) {
+        if (err.name === 'logout_needed') {
+          require('./actions/logout')()
+          return
+        }
+
         console.log(err)
       }
 
