@@ -9,6 +9,7 @@ export default class DnsUpdate extends Message {
     const { event } = this.props
     const { value } = event.payload
     const v = value.slice(0, 50)
+
     return (
       <span>
         {this.getDisplayName()}

@@ -7,6 +7,7 @@ import Message from '../message'
 export default class TeamSlugUpdate extends Message {
   render() {
     const { event } = this.props
+
     return (
       <span>
         {this.getDisplayName()}

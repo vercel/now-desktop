@@ -48,34 +48,31 @@ export default class Alias extends Message {
 
     const handle = team ? team.slug : user.username
     const userId = user.uid
+
     return (
       <span>
         {this.getDisplayName()}
         aliased
         {' '}
         {hostParts
-          ? [
-              <a
-                key="deployment"
-                href={`/deployment?${qs.stringify({ handle, userId, host })}`}
-                as={`/${encodeURIComponent(handle || userId)}/${encodeURIComponent(app)}/${encodeURIComponent(id)}`}
-              >
-                {host}
-              </a>,
-              <a
-                className="external"
-                key="external"
-                href={`http://${host}`}
-                target="_blank"
-              >
-                test
-              </a>
-            ]
-          : host}
+          ? <a
+              key="deployment"
+              className="link"
+              onClick={this.openExternal}
+              href={`/deployment?${qs.stringify({ handle, userId, host })}`}
+              as={`/${encodeURIComponent(handle || userId)}/${encodeURIComponent(app)}/${encodeURIComponent(id)}`}
+            >
+              {host}
+            </a>
+          : <b>host</b>}
         {' '}
         to
         {' '}
-        <a href={`https://${event.payload.alias}`}>
+        <a
+          className="link"
+          onClick={this.openExternal}
+          href={`https://${event.payload.alias}`}
+        >
           https://{event.payload.alias}
         </a>
       </span>
