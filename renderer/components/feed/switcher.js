@@ -33,15 +33,29 @@ class Switcher extends React.Component {
   }
 
   async componentDidMount() {
-    await this.loadTeams()
-
-    const startTimer = () =>
+    const listTimer = () => {
       setTimeout(async () => {
-        await this.loadTeams()
-        startTimer()
+        await this.loadTeams(false)
+        listTimer()
       }, 4000)
+    }
 
-    startTimer()
+    // Only start updating teams once they're loaded!
+    // This needs to be async so that we can already
+    // start the state timer below for the data that's already cached
+    this.loadTeams(true).then(listTimer)
+
+    // Try to adapt to `currentTeam` in config
+    // We need to because the first one only starts
+    // again once all teams are pulled, that's too long
+    const stateTimer = () => {
+      setTimeout(async () => {
+        await this.checkCurrentTeam()
+        stateTimer()
+      }, 3000)
+    }
+
+    stateTimer()
   }
 
   resetScope() {
@@ -92,7 +106,7 @@ class Switcher extends React.Component {
     this.changeScope(isCached, true)
   }
 
-  async loadTeams() {
+  async loadTeams(firstLoad) {
     const data = await loadData(API_TEAMS)
 
     if (!data || !data.teams || !this.props.currentUser) {
@@ -119,7 +133,9 @@ class Switcher extends React.Component {
 
     // See if config has `currentTeam` saved and
     // update the scope if so
-    await this.checkCurrentTeam()
+    if (firstLoad) {
+      await this.checkCurrentTeam()
+    }
   }
 
   async updateConfig(team) {
