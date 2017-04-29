@@ -91,45 +91,47 @@ const contextMenu = async windows => {
   const apps = new Map()
   const deploymentList = []
 
-  // Order deployments by date
-  deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
-
-  for (const deployment of deployments) {
-    const name = deployment.name
-
-    if (apps.has(name)) {
-      const existingDeployments = apps.get(name)
-      apps.set(name, [...existingDeployments, deployment])
-
-      continue
-    }
-
-    apps.set(name, [deployment])
-  }
-
-  apps.forEach((deployments, label) => {
-    if (deployments.length === 1) {
-      deploymentList.push(assignAliases(aliases, deployments[0]))
-      return
-    }
-
-    deploymentList.push({
-      type: 'separator'
-    })
-
-    deploymentList.push({
-      label,
-      enabled: false
-    })
+  if (deployments) {
+    // Order deployments by date
+    deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
 
     for (const deployment of deployments) {
-      deploymentList.push(assignAliases(aliases, deployment))
+      const name = deployment.name
+
+      if (apps.has(name)) {
+        const existingDeployments = apps.get(name)
+        apps.set(name, [...existingDeployments, deployment])
+
+        continue
+      }
+
+      apps.set(name, [deployment])
     }
 
-    deploymentList.push({
-      type: 'separator'
+    apps.forEach((deployments, label) => {
+      if (deployments.length === 1) {
+        deploymentList.push(assignAliases(aliases, deployments[0]))
+        return
+      }
+
+      deploymentList.push({
+        type: 'separator'
+      })
+
+      deploymentList.push({
+        label,
+        enabled: false
+      })
+
+      for (const deployment of deployments) {
+        deploymentList.push(assignAliases(aliases, deployment))
+      }
+
+      deploymentList.push({
+        type: 'separator'
+      })
     })
-  })
+  }
 
   const data = {
     deployments: deploymentList
