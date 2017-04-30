@@ -7,14 +7,16 @@ import Message from '../message'
 export default class TeamMemberAdd extends Message {
   render() {
     const { event } = this.props
+    const invitedUser = event.payload.invitedUser
+    const username = invitedUser.username || invitedUser.email
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
-        invited user
+        invited user{invitedUser.username ? '' : ' with email address'}
         {' '}
-        <b>{event.payload.invitedUser.username}</b>
-      </span>
+        <b>{username}</b>
+      </p>
     )
   }
 }

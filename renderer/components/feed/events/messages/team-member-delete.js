@@ -7,14 +7,16 @@ import Message from '../message'
 export default class TeamMemberDelete extends Message {
   render() {
     const { event } = this.props
+    const deletedUser = event.payload.deletedUser
+    const username = deletedUser.username || deletedUser.email
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
-        removed user
+        removed user{deletedUser.username ? '' : ' with email address'}
         {' '}
-        <b>{event.payload.deletedUser.username}</b>
-      </span>
+        <b>{username}</b>
+      </p>
     )
   }
 }
