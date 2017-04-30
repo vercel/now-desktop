@@ -61,8 +61,10 @@ class Feed extends React.Component {
       }
 
       // Don't load the focused team, because we updated
-      // that one already above
-      if (focusedIndex && index === focusedIndex) {
+      // that one already above. We need to test for `undefined` here
+      // because checking if falsy is not ok since the value might
+      // be `0` (beginning of `teams` array)
+      if (focusedIndex !== undefined && index === focusedIndex) {
         continue
       }
 
