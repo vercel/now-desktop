@@ -47,7 +47,7 @@ export default class Alias extends Message {
     const [, app, id] = hostParts || []
 
     const handle = team ? team.slug : user.username
-    const userId = user.uid
+    const userId = user.userId
 
     return (
       <span>

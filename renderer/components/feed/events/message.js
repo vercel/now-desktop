@@ -11,11 +11,11 @@ class Message extends React.PureComponent {
 
     let isCurrentUser = false
 
-    if (event.userId && event.userId === user.uid) {
+    if (event.userId && event.userId === user.userId) {
       isCurrentUser = true
     }
 
-    if (event.user && event.user.uid && event.user.uid === user.uid) {
+    if (event.user && event.user.uid && event.user.uid === user.userId) {
       isCurrentUser = true
     }
 
