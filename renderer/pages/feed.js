@@ -49,7 +49,7 @@ class Feed extends React.Component {
       focusedIndex = teams.indexOf(focusedTeam)
       const isUser = focusedIndex === 0
 
-      await this.loadEvents(focusedTeam.id, false, isUser)
+      this.loadEvents(focusedTeam.id, false, isUser)
     }
 
     // Update the feed of events for each team
@@ -69,7 +69,7 @@ class Feed extends React.Component {
       }
 
       const isUser = index === 0
-      await this.loadEvents(team.id, false, isUser)
+      this.loadEvents(team.id, false, isUser)
     }
   }
 
