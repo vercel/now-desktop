@@ -9,7 +9,7 @@ export default class SecretRename extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         renamed secret
         {' '}
@@ -18,7 +18,7 @@ export default class SecretRename extends Message {
         to
         {' '}
         <b>{event.payload.newName}</b>
-      </span>
+      </p>
     )
   }
 }

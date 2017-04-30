@@ -9,7 +9,7 @@ export default class CertClone extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         cloned a certificate
         {' '}
@@ -20,7 +20,7 @@ export default class CertClone extends Message {
         <b>
           {event.payload.dst}
         </b>
-      </span>
+      </p>
     )
   }
 }

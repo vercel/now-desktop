@@ -9,12 +9,12 @@ export default class DomainDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         removed domain
         {' '}
         <b>{event.payload.name}</b>
-      </span>
+      </p>
     )
   }
 }

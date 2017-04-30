@@ -9,7 +9,7 @@ export default class DnsDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         removed a DNS record
         {' '}
@@ -18,7 +18,7 @@ export default class DnsDelete extends Message {
         of
         {' '}
         <b>{event.payload.domain}</b>
-      </span>
+      </p>
     )
   }
 }

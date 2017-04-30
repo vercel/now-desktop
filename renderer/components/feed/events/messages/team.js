@@ -13,7 +13,7 @@ export default class Team extends Message {
       return (
         <p>
           {this.getDisplayName()}
-          created this team
+          created <b>this team</b>
         </p>
       )
     }

@@ -9,12 +9,12 @@ export default class Username extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         set username to
         {' '}
         <b>{event.payload.username}</b>
-      </span>
+      </p>
     )
   }
 }

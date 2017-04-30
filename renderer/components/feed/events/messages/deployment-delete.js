@@ -9,10 +9,10 @@ export default class DeploymentDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         deleted <b>{event.payload.url}</b>
-      </span>
+      </p>
     )
   }
 }

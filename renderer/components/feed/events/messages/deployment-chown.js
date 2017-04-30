@@ -9,13 +9,13 @@ export default class DeploymentChown extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         changed the ownership of deployment{' '}
         <b>{event.payload.url}</b>
         {event.payload.oldTeam ? ` from {event.payload.oldTeam.name}` : ''}
         {' '}to {event.payload.newTeam.name}
-      </span>
+      </p>
     )
   }
 }

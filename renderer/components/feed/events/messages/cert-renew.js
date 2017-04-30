@@ -9,12 +9,12 @@ export default class CertRenew extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         renewed a certificate for
         {' '}
         <b>{event.payload.cn}</b>
-      </span>
+      </p>
     )
   }
 }

@@ -100,7 +100,6 @@ class EventMessage extends React.Component {
             border-top: 0 !important;
           }
 
-          .event span:first-child,
           .event p {
             font-size: 13px;
             margin: 0;

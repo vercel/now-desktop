@@ -53,6 +53,6 @@ export default class Login extends Message {
       }
     }
 
-    return <span><b>You</b> {message}</span>
+    return <p><b>You</b> {message}</p>
   }
 }

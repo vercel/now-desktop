@@ -9,13 +9,13 @@ export default class DomainChown extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         changed the ownership of domain{' '}
         <b>{event.payload.name}</b>
         {event.payload.oldTeam ? ` from {event.payload.oldTeam.name}` : ''}
         {' '}to {event.payload.newTeam.name}
-      </span>
+      </p>
     )
   }
 }

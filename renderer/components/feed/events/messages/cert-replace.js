@@ -9,12 +9,12 @@ export default class CertReplace extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         replaced a certificate for
         {' '}
         <b>{event.payload.cn}</b>
-      </span>
+      </p>
     )
   }
 }

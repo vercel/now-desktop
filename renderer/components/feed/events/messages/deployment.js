@@ -10,7 +10,7 @@ export default class Deployment extends Message {
     const host = event.payload.url
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         deployed{' '}
         <b>{event.payload.name}</b>
@@ -23,7 +23,7 @@ export default class Deployment extends Message {
         >
           {host}
         </a>
-      </span>
+      </p>
     )
   }
 }

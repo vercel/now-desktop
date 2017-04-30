@@ -9,12 +9,12 @@ export default class Domain extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         added domain
         {' '}
         <b>{event.payload.name}</b>
-      </span>
+      </p>
     )
   }
 }

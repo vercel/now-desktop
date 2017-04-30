@@ -9,11 +9,11 @@ export default class Plan extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         changed plan to{' '}
         <b>{event.payload.plan}</b>
-      </span>
+      </p>
     )
   }
 }

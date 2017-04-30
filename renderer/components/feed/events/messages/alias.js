@@ -14,7 +14,7 @@ export default class Alias extends Message {
     // NOTE: no `ruleCount` on old logs
     if (event.payload.ruleCount !== null || !event.payload.deploymentUrl) {
       return (
-        <span>
+        <p>
           {this.getDisplayName()}
           configured
           {' '}
@@ -34,7 +34,7 @@ export default class Alias extends Message {
           >
             {event.payload.alias}
           </a>
-        </span>
+        </p>
       )
     }
 
@@ -50,7 +50,7 @@ export default class Alias extends Message {
     const userId = user.userId
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         aliased
         {' '}
@@ -75,7 +75,7 @@ export default class Alias extends Message {
         >
           https://{event.payload.alias}
         </a>
-      </span>
+      </p>
     )
   }
 }

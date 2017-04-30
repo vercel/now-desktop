@@ -9,12 +9,12 @@ export default class SecretDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         removed secret
         {' '}
         <b>{event.payload.name ? event.payload.name : event.payload.uid}</b>
-      </span>
+      </p>
     )
   }
 }

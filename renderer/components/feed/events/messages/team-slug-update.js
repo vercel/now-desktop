@@ -9,12 +9,12 @@ export default class TeamSlugUpdate extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         updated team url to
         {' '}
         <b>{event.payload.slug}</b>
-      </span>
+      </p>
     )
   }
 }

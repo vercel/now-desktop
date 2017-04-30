@@ -9,12 +9,12 @@ export default class TeamNameUpdate extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         updated team name to
         {' '}
         <b>{event.payload.name}</b>
-      </span>
+      </p>
     )
   }
 }

@@ -9,10 +9,10 @@ export default class AliasDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         removed alias <b>{event.payload.alias}</b>
-      </span>
+      </p>
     )
   }
 }

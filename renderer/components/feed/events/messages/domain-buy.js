@@ -9,14 +9,14 @@ export default class DomainBuy extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         bought domain
         {' '}
         <b>{event.payload.name}</b>
         {' '}
         (${event.payload.price})
-      </span>
+      </p>
     )
   }
 }

@@ -11,7 +11,7 @@ export default class DnsAdd extends Message {
     const v = value.slice(0, 50)
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         added a DNS record
         {' '}
@@ -29,7 +29,7 @@ export default class DnsAdd extends Message {
         for
         {' '}
         <b>{event.payload.domain}</b>
-      </span>
+      </p>
     )
   }
 }

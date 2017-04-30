@@ -9,12 +9,12 @@ export default class CertDelete extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         deleted a certificate for
         {' '}
         <b>{event.payload.cn}</b>
-      </span>
+      </p>
     )
   }
 }
