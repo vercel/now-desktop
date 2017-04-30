@@ -9,12 +9,12 @@ export default class SecretAdd extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         added secret
         {' '}
         <b>{event.payload.name ? event.payload.name : event.payload.uid}</b>
-      </span>
+      </p>
     )
   }
 }

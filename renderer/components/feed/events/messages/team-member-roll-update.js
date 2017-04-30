@@ -9,7 +9,7 @@ export default class TeamMemberRollUpdate extends Message {
     const { event } = this.props
 
     return (
-      <span>
+      <p>
         {this.getDisplayName()}
         updated{' '}
         <b>{event.payload.updatedUser.username}</b>'s
@@ -17,7 +17,7 @@ export default class TeamMemberRollUpdate extends Message {
         <b>{event.payload.previousRoll}</b>
         to{' '}
         <b>{event.payload.roll}</b>
-      </span>
+      </p>
     )
   }
 }
