@@ -31,20 +31,42 @@ class Feed extends React.Component {
     }
   }
 
-  async updateEvents(exclude) {
+  async updateEvents(excludeID) {
     const teams = this.state.teams
 
     if (!teams || Object.keys(teams).length === 0) {
       return
     }
 
+    let focusedIndex
+
+    // Load the focused team first
+    if (this.state.scope) {
+      const focusedTeam = teams.find(team => {
+        return team.id === this.state.scope
+      })
+
+      focusedIndex = teams.indexOf(focusedTeam)
+      const isUser = focusedIndex === 0
+
+      await this.loadEvents(focusedTeam.id, false, isUser)
+    }
+
     // Update the feed of events for each team
     for (const team of teams) {
-      if (exclude && team.id === exclude) {
+      const index = teams.indexOf(team)
+
+      if (excludeID && team.id === excludeID) {
         continue
       }
 
-      const isUser = teams.indexOf(team) === 0
+      // Don't load the focused team, because we updated
+      // that one already above
+      if (focusedIndex && index === focusedIndex) {
+        continue
+      }
+
+      const isUser = index === 0
       await this.loadEvents(team.id, false, isUser)
     }
   }
