@@ -4,6 +4,10 @@ import queryString from 'querystring'
 // Packages
 import React from 'react'
 import moment from 'moment'
+import dotProp from 'dot-prop'
+/*
+Import leven from 'leven'
+*/
 
 // Components
 import Title from '../components/title'
@@ -156,6 +160,55 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
+  filterEvents(list) {
+    // If there's no filter enabled, just hand
+    // the list of events back unchanged
+    if (!this.state.eventFilter) {
+      return list
+    }
+
+    // Properties to search in
+    const searchable = [
+      'payload.deploymentId',
+      'user.email',
+      'user.username',
+      'payload.name',
+      'payload.url',
+      'payload.alias',
+      'payload.oldTeam',
+      'payload.newTeam',
+      'payload.slug',
+      'payload.username',
+      'payload.plan',
+      'payload.domain',
+      'payload.cn'
+    ]
+
+    const phrase = this.state.eventFilter
+
+    const matches = list.filter(item => {
+      for (const prop of searchable) {
+        const toSearch = dotProp.get(item, prop)
+
+        if (!toSearch) {
+          continue
+        }
+
+        if (typeof toSearch !== 'string') {
+          continue
+        }
+
+        if (toSearch.includes(phrase)) {
+          return true
+        }
+      }
+
+      return false
+    })
+
+    return matches
+  }
+
   renderEvents() {
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
@@ -164,9 +217,15 @@ class Feed extends React.Component {
       return <NoEvents />
     }
 
+    const filteredEvents = this.filterEvents(scopedEvents)
+
+    if (filteredEvents.length === 0) {
+      return <NoEvents />
+    }
+
     const months = {}
 
-    for (const message of scopedEvents) {
+    for (const message of filteredEvents) {
       const created = moment(message.created)
       const month = created.format('MMMM YYYY')
 
