@@ -212,7 +212,7 @@ class Feed extends React.Component {
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
 
-    if (!scopedEvents) {
+    if (!scopedEvents || scopedEvents.length === 0) {
       return <NoEvents />
     }
 
