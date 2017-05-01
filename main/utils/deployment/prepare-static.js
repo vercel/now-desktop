@@ -23,7 +23,7 @@ module.exports = async item => {
       start: 'serve ./content'
     },
     dependencies: {
-      serve: '5.1.2'
+      serve: '5.1.4'
     }
   }
 
