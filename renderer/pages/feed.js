@@ -222,7 +222,7 @@ class Feed extends React.Component {
     const filteredEvents = this.filterEvents(scopedEvents)
 
     if (filteredEvents.length === 0) {
-      return <NoEvents />
+      return <NoEvents filtered />
     }
 
     const months = {}

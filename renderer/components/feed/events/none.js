@@ -1,12 +1,17 @@
 // Packages
 import React from 'react'
+import { bool } from 'prop-types'
 
-const NoEvents = () => (
+const NoEvents = ({ filtered }) => (
   <div>
-    <h1>Nothing to See Here!</h1>
-    <p>
-      Drag a project into this window (or select it using the button on the top right) to trigger your first deployment.
-    </p>
+    {filtered
+      ? <h1>No Events Found!</h1>
+      : [
+          <h1 key="heading">Nothing to See Here!</h1>,
+          <p key="description">
+            Drag a project into this window (or select it using the button on the top right) to trigger your first deployment.
+          </p>
+        ]}
 
     <style jsx>
       {`
@@ -31,5 +36,9 @@ const NoEvents = () => (
     </style>
   </div>
 )
+
+NoEvents.propTypes = {
+  filtered: bool
+}
 
 export default NoEvents
