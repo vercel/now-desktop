@@ -184,7 +184,9 @@ class Feed extends React.Component {
       'payload.cn'
     ]
 
-    const phrase = this.state.eventFilter
+    // Split search phrase into keywords but make
+    // sure to avoid empty ones (in turn, `.includes` is not ok)
+    const keywords = this.state.eventFilter.match(/[^ ]+/g)
 
     const matches = list.filter(item => {
       for (const prop of searchable) {
@@ -198,7 +200,7 @@ class Feed extends React.Component {
           continue
         }
 
-        if (toSearch.includes(phrase)) {
+        if (new RegExp(keywords.join('|')).test(toSearch)) {
           return true
         }
       }
