@@ -177,10 +177,6 @@ class Feed extends React.Component {
 
         <style jsx>
           {`
-          div {
-            position: relative;
-          }
-
           h1 {
             background: #F5F5F5;
             font-size: 13px;
