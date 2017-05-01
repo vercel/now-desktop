@@ -69,7 +69,10 @@ class Feed extends React.Component {
       }
 
       const isUser = index === 0
-      this.loadEvents(team.id, false, isUser)
+
+      // Wait for the requests to finish (`await`), otherwise
+      // the server will get confused and throw an error
+      await this.loadEvents(team.id, false, isUser)
     }
   }
 
