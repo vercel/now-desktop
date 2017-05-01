@@ -114,9 +114,11 @@ class Switcher extends React.Component {
     }
 
     const teams = data.teams
+    const user = this.props.currentUser
 
     teams.unshift({
-      id: this.props.currentUser.userId
+      id: user.userId,
+      name: user.username
     })
 
     // Only update state if the list of teams has changed
