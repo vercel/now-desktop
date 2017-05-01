@@ -312,9 +312,6 @@ class Feed extends React.Component {
     const scope = this.state.scope
     const searchShown = this.getEvents(scope) && true
 
-    // Set a fallback for when we'll try to hide the search
-    this.searchField = false
-
     return (
       <main>
         <TopArrow />

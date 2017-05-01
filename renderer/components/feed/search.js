@@ -33,6 +33,10 @@ class Search extends React.Component {
   }
 
   hide(deployIcon) {
+    if (!this.form || !this.input) {
+      return
+    }
+
     this.setState({
       shown: false
     })
@@ -49,6 +53,12 @@ class Search extends React.Component {
     }
 
     setTimeout(() => {
+      // We need to check here again because
+      // the element changes over time
+      if (!this.form || !this.input) {
+        return
+      }
+
       this.form.style.visibility = 'hidden'
 
       this.input.value = ''
