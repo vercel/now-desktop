@@ -93,7 +93,6 @@
     "fix-path": "2.1.0",
     "fs-promise": "2.0.2",
     "istextorbinary": "2.1.0",
-    "leven": "2.1.0",
     "load-licenses": "0.2.1",
     "mkdirp": "0.5.1",
     "moment": "2.18.1",

@@ -5,9 +5,6 @@ import queryString from 'querystring'
 import React from 'react'
 import moment from 'moment'
 import dotProp from 'dot-prop'
-/*
-Import leven from 'leven'
-*/
 
 // Components
 import Title from '../components/title'
