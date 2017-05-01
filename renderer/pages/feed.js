@@ -109,6 +109,18 @@ class Feed extends React.Component {
       scope: config.user.userId,
       currentUser: config.user
     })
+
+    const currentWindow = remote.getCurrentWindow()
+
+    if (!currentWindow) {
+      return
+    }
+
+    currentWindow.on('hide', () => {
+      if (this.scrollingSection) {
+        this.scrollingSection.scrollTop = 0
+      }
+    })
   }
 
   showDropZone() {
