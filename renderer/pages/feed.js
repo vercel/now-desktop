@@ -171,10 +171,9 @@ class Feed extends React.Component {
       return <NoEvents />
     }
 
-    return monthKeys.map(month => (
-      <div key={month}>
-        <h1>{month}</h1>
-        {eventList(month)}
+    return monthKeys.map(month => [
+      <h1>
+        {month}
 
         <style jsx>
           {`
@@ -195,8 +194,9 @@ class Feed extends React.Component {
           }
         `}
         </style>
-      </div>
-    ))
+      </h1>,
+      eventList(month)
+    ])
   }
 
   setScope(scope) {
