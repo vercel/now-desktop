@@ -171,8 +171,11 @@ class Feed extends React.Component {
       return <NoEvents />
     }
 
+    // We need to force-re-render each heading
+    // because the sticky styling would otherwise glitch
+    // around when switching the scope (Math.random)
     return monthKeys.map(month => [
-      <h1>
+      <h1 key={Math.random()}>
         {month}
 
         <style jsx>
