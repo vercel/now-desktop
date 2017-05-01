@@ -74,6 +74,12 @@ class Search extends React.Component {
 
     // Clear search when window gets hidden
     currentWindow.on('hide', () => this.hide(true))
+
+    // Allow feed to close the search when switching
+    // the team scope
+    if (this.props.setSearchRef) {
+      this.props.setSearchRef(this)
+    }
   }
 
   render() {
@@ -194,7 +200,8 @@ class Search extends React.Component {
 Search.propTypes = {
   showDeployIcon: func.isRequired,
   hideDeployIcon: func.isRequired,
-  setFeedFilter: func
+  setFeedFilter: func,
+  setSearchRef: func
 }
 
 export default Search

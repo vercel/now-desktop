@@ -146,6 +146,11 @@ class Feed extends React.Component {
     }
 
     this.setState({ scope })
+
+    // Hide search field when switching team scope
+    if (this.searchField) {
+      this.searchField.hide(true)
+    }
   }
 
   async setTeams(teams) {
@@ -290,12 +295,8 @@ class Feed extends React.Component {
   }
 
   render() {
-    const dropZoneRef = zone => {
-      this.dropZone = zone
-    }
-
-    const scrollRef = element => {
-      this.scrollingSection = element
+    const setRef = (name, element) => {
+      this[name] = element
     }
 
     return (
@@ -303,12 +304,21 @@ class Feed extends React.Component {
         <TopArrow />
 
         <div onDragEnter={this.showDropZone.bind(this)}>
-          <Title light setFilter={this.setFilter.bind(this)}>Now</Title>
+          <Title
+            light
+            setFilter={this.setFilter.bind(this)}
+            setSearchRef={setRef.bind(this, 'searchField')}
+          >
+            Now
+          </Title>
 
           {this.state.dropZone &&
-            <DropZone ref={dropZoneRef} hide={this.hideDropZone.bind(this)} />}
+            <DropZone
+              ref={setRef.bind(this, 'dropZone')}
+              hide={this.hideDropZone.bind(this)}
+            />}
 
-          <section ref={scrollRef}>
+          <section ref={setRef.bind(this, 'scrollingSection')}>
             {this.renderEvents()}
           </section>
 
