@@ -213,11 +213,21 @@ class Feed extends React.Component {
     return matches
   }
 
-  renderEvents() {
-    const scope = this.state.scope
+  getEvents(scope) {
     const scopedEvents = this.state.events[scope]
 
     if (!scopedEvents || scopedEvents.length === 0) {
+      return false
+    }
+
+    return scopedEvents
+  }
+
+  renderEvents() {
+    const scope = this.state.scope
+    const scopedEvents = this.getEvents(scope)
+
+    if (!scopedEvents) {
       return <NoEvents />
     }
 
@@ -299,6 +309,12 @@ class Feed extends React.Component {
       this[name] = element
     }
 
+    const scope = this.state.scope
+    const searchShown = this.getEvents(scope) && true
+
+    // Set a fallback for when we'll try to hide the search
+    this.searchField = false
+
     return (
       <main>
         <TopArrow />
@@ -308,6 +324,7 @@ class Feed extends React.Component {
             light
             setFilter={this.setFilter.bind(this)}
             setSearchRef={setRef.bind(this, 'searchField')}
+            searchShown={searchShown}
           >
             Now
           </Title>
@@ -319,7 +336,7 @@ class Feed extends React.Component {
             />}
 
           <section ref={setRef.bind(this, 'scrollingSection')}>
-            {this.renderEvents()}
+            {this.renderEvents(scope)}
           </section>
 
           <Switcher

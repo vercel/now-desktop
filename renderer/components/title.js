@@ -34,6 +34,7 @@ class Title extends React.Component {
     return (
       <aside className={this.props.light && 'light'}>
         {this.props.light &&
+          this.props.searchShown &&
           <Search
             hideDeployIcon={this.hideDeployIcon.bind(this)}
             showDeployIcon={this.showDeployIcon.bind(this)}
@@ -126,7 +127,8 @@ Title.propTypes = {
   ]),
   light: PropTypes.bool,
   setFilter: PropTypes.func,
-  setSearchRef: PropTypes.func
+  setSearchRef: PropTypes.func,
+  searchShown: PropTypes.bool
 }
 
 export default Title
