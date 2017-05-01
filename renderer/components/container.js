@@ -1,6 +1,7 @@
 // Packages
 import React from 'react'
 import Head from 'next/head'
+import PropTypes from 'prop-types'
 
 const Container = ({ children }) => (
   <section>
@@ -209,7 +210,7 @@ const Container = ({ children }) => (
 )
 
 Container.propTypes = {
-  children: React.PropTypes.element.isRequired
+  children: PropTypes.element.isRequired
 }
 
 export default Container
