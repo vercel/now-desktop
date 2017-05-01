@@ -37,6 +37,11 @@ class Search extends React.Component {
       shown: false
     })
 
+    // Reset feed filter to show all events again
+    if (this.props.setFeedFilter) {
+      this.props.setFeedFilter(null)
+    }
+
     if (!deployIcon) {
       setTimeout(() => {
         this.props.hideDeployIcon()
