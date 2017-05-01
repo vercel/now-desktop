@@ -51,9 +51,16 @@ class Search extends React.Component {
     }, 200)
   }
 
-  shouldHide(event) {
+  typed(event) {
     if (event.keyCode && event.keyCode === 27) {
       this.hide()
+      return
+    }
+
+    const value = event.target.value || null
+
+    if (this.props.setFeedFilter) {
+      this.props.setFeedFilter(value)
     }
   }
 
@@ -84,7 +91,7 @@ class Search extends React.Component {
             type="text"
             ref={inputRef}
             placeholder="Search the Timeline..."
-            onKeyDown={this.shouldHide.bind(this)}
+            onKeyUp={this.typed.bind(this)}
           />
 
           <b onClick={this.hide.bind(this)}>
@@ -181,7 +188,8 @@ class Search extends React.Component {
 
 Search.propTypes = {
   showDeployIcon: func.isRequired,
-  hideDeployIcon: func.isRequired
+  hideDeployIcon: func.isRequired,
+  setFeedFilter: func
 }
 
 export default Search

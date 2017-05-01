@@ -27,7 +27,8 @@ class Feed extends React.Component {
       events: {},
       scope: null,
       currentUser: null,
-      teams: []
+      teams: [],
+      eventFilter: null
     }
   }
 
@@ -138,6 +139,23 @@ class Feed extends React.Component {
     })
   }
 
+  setScope(scope) {
+    if (this.scrollingSection) {
+      this.scrollingSection.scrollTop = 0
+    }
+
+    this.setState({ scope })
+  }
+
+  async setTeams(teams) {
+    this.setState({ teams })
+    await this.updateEvents()
+  }
+
+  setFilter(eventFilter) {
+    this.setState({ eventFilter })
+  }
+
   renderEvents() {
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
@@ -213,19 +231,6 @@ class Feed extends React.Component {
     ])
   }
 
-  setScope(scope) {
-    if (this.scrollingSection) {
-      this.scrollingSection.scrollTop = 0
-    }
-
-    this.setState({ scope })
-  }
-
-  async setTeams(teams) {
-    this.setState({ teams })
-    await this.updateEvents()
-  }
-
   render() {
     const dropZoneRef = zone => {
       this.dropZone = zone
@@ -240,7 +245,7 @@ class Feed extends React.Component {
         <TopArrow />
 
         <div onDragEnter={this.showDropZone.bind(this)}>
-          <Title light>Now</Title>
+          <Title light setFilter={this.setFilter.bind(this)}>Now</Title>
 
           {this.state.dropZone &&
             <DropZone ref={dropZoneRef} hide={this.hideDropZone.bind(this)} />}

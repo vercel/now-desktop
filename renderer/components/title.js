@@ -37,6 +37,7 @@ class Title extends React.Component {
           <Search
             hideDeployIcon={this.hideDeployIcon.bind(this)}
             showDeployIcon={this.showDeployIcon.bind(this)}
+            setFeedFilter={this.props.setFilter || false}
           />}
 
         <h1>{this.props.children}</h1>
@@ -122,7 +123,8 @@ Title.propTypes = {
     PropTypes.string,
     PropTypes.element.isRequired
   ]),
-  light: React.PropTypes.bool
+  light: PropTypes.bool,
+  setFilter: PropTypes.func
 }
 
 export default Title
