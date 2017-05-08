@@ -1,9 +1,23 @@
+let trayBoundsCache = null
+
 module.exports = (tray, window) => {
+  const trayBounds = tray.getBounds()
+
+  if (trayBoundsCache) {
+    // Compare only the object props
+    if (JSON.stringify(trayBoundsCache) === JSON.stringify(trayBounds)) {
+      console.log('test')
+      return
+    }
+  }
+
+  // Cache the tray position
+  trayBoundsCache = trayBounds
+
   // This module needs to be loaded after the app is ready
   // I don't know why, but that's required by electron
   const { screen } = require('electron')
 
-  const trayBounds = tray.getBounds()
   const windowWidth = window.getSize()[0]
   const trayCenter = trayBounds.x + trayBounds.width / 2
 
