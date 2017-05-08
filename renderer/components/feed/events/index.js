@@ -2,6 +2,7 @@
 import React from 'react'
 import { object } from 'prop-types'
 import moment from 'moment'
+import dotProp from 'dot-prop'
 
 // Utilities
 import remote from '../../../utils/electron'
@@ -30,12 +31,24 @@ class EventMessage extends React.Component {
 
   componentWillMount() {
     const info = this.props.content
+    let url
 
-    if (info.payload && info.payload.deploymentUrl) {
-      this.setState({
-        url: info.payload.deploymentUrl
-      })
+    const urlProps = ['payload.alias', 'payload.url', 'payload.deploymentUrl']
+
+    for (const prop of urlProps) {
+      const location = dotProp.get(info, prop)
+
+      if (location) {
+        url = location
+        break
+      }
     }
+
+    if (!url) {
+      return
+    }
+
+    this.setState({ url })
   }
 
   render() {
@@ -73,6 +86,10 @@ class EventMessage extends React.Component {
             margin: 0;
             display: flex;
             justify-content: space-between;
+          }
+
+          figure:hover {
+            background: #F5F5F5;
           }
 
           figure img {
