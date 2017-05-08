@@ -10,11 +10,39 @@ import remote from '../../../utils/electron'
 import messageComponents from './messages'
 
 class EventMessage extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      url: null
+    }
+  }
+
   openURL(event) {
     event.preventDefault()
 
     const url = event.target.innerHTML
     remote.shell.openExternal(`https://${url}`)
+  }
+
+  open(event) {
+    event.preventDefault()
+
+    if (!this.state.url) {
+      return
+    }
+
+    remote.shell.openExternal(`https://${this.state.url}`)
+  }
+
+  componentWillMount() {
+    const info = this.props.content
+
+    if (info.payload && info.payload.deploymentUrl) {
+      this.setState({
+        url: info.payload.deploymentUrl
+      })
+    }
   }
 
   render() {
@@ -33,7 +61,7 @@ class EventMessage extends React.Component {
     }
 
     return (
-      <figure className="event">
+      <figure className="event" onClick={this.open.bind(this)}>
         <img src={avatar} draggable="false" />
 
         <figcaption>
