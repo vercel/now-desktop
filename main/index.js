@@ -29,6 +29,13 @@ const {
 // Otherwise the tray icon would randomly hide after some time
 let tray = null
 
+// Prevent having to check for login status when opening the window
+let loggedIn = null
+
+setInterval(async () => {
+  loggedIn = await isLoggedIn()
+}, 2000)
+
 // Set the application's name
 app.setName('Now')
 
@@ -253,8 +260,6 @@ app.on('ready', async () => {
   })
 
   const toggleActivity = async event => {
-    const loggedIn = await isLoggedIn()
-
     if (loggedIn && !windows.tutorial.isVisible()) {
       toggleWindow(event || null, windows.main, tray)
     } else {

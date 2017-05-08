@@ -6,7 +6,6 @@ module.exports = (tray, window) => {
   if (trayBoundsCache) {
     // Compare only the object props
     if (JSON.stringify(trayBoundsCache) === JSON.stringify(trayBounds)) {
-      console.log('test')
       return
     }
   }
