@@ -13,13 +13,9 @@ export default class Scale extends Message {
         <p>
           {this.getDisplayName()}
           scaled deployment{' '}
-          <a
-            className="link"
-            onClick={this.openExternal}
-            href={'https://' + event.payload.url}
-          >
+          <b>
             {event.payload.url}
-          </a>
+          </b>
           {' '}
           to <b>{event.payload.instances} instances</b>
         </p>

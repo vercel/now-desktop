@@ -2,9 +2,6 @@
 import React from 'react'
 import { object } from 'prop-types'
 
-// Utilities
-import remote from '../../../utils/electron'
-
 class Message extends React.PureComponent {
   getDisplayName() {
     const { event, user } = this.props
@@ -24,13 +21,6 @@ class Message extends React.PureComponent {
     }
 
     return [<b key="username">{event.user.username}</b>, ' ']
-  }
-
-  openExternal(event) {
-    event.preventDefault()
-    const href = event.target.href
-
-    remote.shell.openExternal(href)
   }
 }
 

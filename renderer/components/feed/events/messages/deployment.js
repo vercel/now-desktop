@@ -7,7 +7,6 @@ import Message from '../message'
 export default class Deployment extends Message {
   render() {
     const { event } = this.props
-    const host = event.payload.url
 
     return (
       <p>
@@ -15,14 +14,9 @@ export default class Deployment extends Message {
         deployed{' '}
         <b>{event.payload.name}</b>
         {' '}to{' '}
-        <a
-          className="link"
-          onClick={this.openExternal}
-          href={`http://${host}`}
-          target="_blank"
-        >
-          {host}
-        </a>
+        <b>
+          {event.payload.url}
+        </b>
       </p>
     )
   }

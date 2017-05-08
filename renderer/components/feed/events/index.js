@@ -18,13 +18,6 @@ class EventMessage extends React.Component {
     }
   }
 
-  openURL(event) {
-    event.preventDefault()
-
-    const url = event.target.innerHTML
-    remote.shell.openExternal(`https://${url}`)
-  }
-
   open(event) {
     event.preventDefault()
 
@@ -113,17 +106,6 @@ class EventMessage extends React.Component {
 
         <style jsx global>
           {`
-          .link {
-            color: #000;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-          }
-
-          .link:hover {
-            color: #067DF7;
-          }
-
           h1 + .event figcaption {
             border-top: 0 !important;
           }
