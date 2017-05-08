@@ -31,24 +31,16 @@ class EventMessage extends React.Component {
 
   componentWillMount() {
     const info = this.props.content
-    let url
-
     const urlProps = ['payload.alias', 'payload.url', 'payload.deploymentUrl']
 
     for (const prop of urlProps) {
-      const location = dotProp.get(info, prop)
+      const url = dotProp.get(info, prop)
 
-      if (location) {
-        url = location
+      if (url) {
+        this.setState({ url })
         break
       }
     }
-
-    if (!url) {
-      return
-    }
-
-    this.setState({ url })
   }
 
   render() {
