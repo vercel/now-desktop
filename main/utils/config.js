@@ -16,6 +16,16 @@ exports.get = async () => {
 
   const content = await fs.readJSON(file)
 
+  if (content.user) {
+    for (const userProp in content.user) {
+      if (!{}.hasOwnProperty.call(content.user, userProp)) {
+        continue
+      }
+
+      content[userProp] = content.user[userProp]
+    }
+  }
+
   if (!content.token) {
     throw new Error('No token contained inside config file')
   }
