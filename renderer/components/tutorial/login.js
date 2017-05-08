@@ -151,7 +151,7 @@ class Login extends Component {
     try {
       await saveConfig({
         user: {
-          userId: user.uid,
+          uid: user.uid,
           username: user.username,
           email: user.email
         },

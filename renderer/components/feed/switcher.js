@@ -28,7 +28,7 @@ class Switcher extends React.Component {
     }
 
     this.setState({
-      scope: currentUser.userId
+      scope: currentUser.uid
     })
   }
 
@@ -66,7 +66,7 @@ class Switcher extends React.Component {
     }
 
     this.changeScope({
-      id: currentUser.userId
+      id: currentUser.uid
     })
   }
 
@@ -117,7 +117,7 @@ class Switcher extends React.Component {
     const user = this.props.currentUser
 
     teams.unshift({
-      id: user.userId,
+      id: user.uid,
       name: user.username
     })
 
@@ -154,7 +154,7 @@ class Switcher extends React.Component {
 
     // Only add fresh data to config if new scope is team, not user
     // Otherwise just clear it
-    if (currentUser.userId !== team.id) {
+    if (currentUser.uid !== team.id) {
       // Only save the data we need, not the entire object
       info.currentTeam = {
         id: team.id,
