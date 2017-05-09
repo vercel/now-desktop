@@ -203,7 +203,8 @@ class Login extends Component {
       emailProviders.some(dm => {
         // Don't suggest if complete match
         if (
-          match.toLowerCase() === dm.substr(0, match.length) && match !== dm
+          match.toLowerCase() === dm.substr(0, match.length) &&
+          match !== dm
         ) {
           sug = dm
           return true
@@ -257,7 +258,7 @@ class Login extends Component {
     ) {
       // Strip HTML tags and set value
       this.setState({
-        value: suggestion.replace(/(<([^>]+)>)/ig, ''),
+        value: suggestion.replace(/(<([^>]+)>)/gi, ''),
         suggestion: ''
       })
 
@@ -311,7 +312,7 @@ class Login extends Component {
     const inputProps = {
       type: 'email',
       value: this.state.value,
-      placeholder: 'you@youremail.com',
+      placeholder: 'leia@alderaan.org',
       onChange: this.handleChange.bind(this),
       onKeyDown: this.handleKey.bind(this),
       onFocus: this.toggleFocus.bind(this),
