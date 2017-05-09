@@ -363,8 +363,8 @@ class Login extends Component {
           #login input {
             border: 0;
             outline: 0;
+            padding: 0;
             background: transparent;
-            font-size: 12px;
             color: #666;
             height: 32px;
             line-height: 32px;
@@ -373,6 +373,8 @@ class Login extends Component {
             max-width: 380px;
             z-index: 300;
             position: relative;
+            font-family: inherit;
+            font-size: inherit;
           }
 
           #login .security-token {
@@ -385,11 +387,6 @@ class Login extends Component {
             font-weight: 700;
             font-size: 13px;
             letter-spacing: 0.15em;
-          }
-
-          #login input,
-          #login .auto-complete span {
-            font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
           }
 
           #login input:focus {
@@ -418,6 +415,8 @@ class Login extends Component {
             transition: all 0.4s ease;
             cursor: text;
             -webkit-app-region: no-drag;
+            font-size: 12px;
+            font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
           }
 
           #login .auto-complete.focus {
@@ -452,9 +451,11 @@ class Login extends Component {
             z-index: 100;
             color: #999;
             line-height: 35px;
-            font-size: 12px;
             text-align: left;
             text-indent: 1px;
+            font-family: inherit;
+            font-size: inherit;
+            margin-top: -1px;
           }
 
           #login .auto-complete span.hidden {
