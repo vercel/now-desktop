@@ -237,7 +237,7 @@ exports.getURL = async () => {
   }
 }
 
-exports.download = (url, binaryName) =>
+exports.download = (url, binaryName, onUpdate) =>
   new Promise(async (resolve, reject) => {
     let tempDir
 
@@ -257,12 +257,51 @@ exports.download = (url, binaryName) =>
       }
     })
 
+    let binaryDownload
+
     try {
-      await load(url, tempDir.path)
+      binaryDownload = load(url)
     } catch (err) {
       reject(err)
       return
     }
+
+    if (onUpdate) {
+      let bytes = 0
+      let bytesLoaded = 0
+      let percentage
+
+      binaryDownload.on('response', res => {
+        if (res && res.headers) {
+          bytes = res.headers['content-length']
+          return
+        }
+
+        reject(new Error('Not able to get binary size'))
+      })
+
+      binaryDownload.on('data', chunk => {
+        if (!bytes) {
+          return
+        }
+
+        bytesLoaded += chunk.length
+        const newPercentage = parseInt(bytesLoaded / bytes * 100, 10)
+
+        if (newPercentage === percentage) {
+          return
+        }
+
+        // Cache the progess percentage
+        percentage = newPercentage
+
+        // Update the progress bar
+        onUpdate(percentage)
+      })
+    }
+
+    const destination = path.join(tempDir.path, binaryName)
+    binaryDownload.pipe(fs.createWriteStream(destination))
 
     resolve({
       path: path.join(tempDir.path, binaryName),
