@@ -92,7 +92,7 @@ class EventMessage extends React.Component {
           }
 
           figure figcaption {
-            border-top: 1px solid #D6D6D6;
+            border-top: 1px solid #F5F5F5;
             padding: 14px 14px 14px 0;
             width: 345px;
             box-sizing: border-box;
@@ -134,6 +134,10 @@ class EventMessage extends React.Component {
             display: block;
             margin: 2px 0;
             font-size: 12px;
+          }
+
+          .event:hover + .event figcaption {
+            border-top-color: transparent;
           }
         `}
         </style>
