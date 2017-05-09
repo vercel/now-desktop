@@ -126,8 +126,8 @@ class Binary extends Component {
     if (this.state.installing) {
       return (
         <article>
-          <p className="install-status">
-            <strong>Installing the binary...</strong>
+          <p>
+            <strong>Installing the command line interface...</strong>
           </p>
 
           <p>
