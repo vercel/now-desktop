@@ -12,7 +12,7 @@ export default class TeamMemberRollUpdate extends Message {
       <p>
         {this.getDisplayName()}
         updated{' '}
-        <b>{event.payload.updatedUser.username}</b>'s
+        <b>{event.payload.updatedUser.username}</b>{`'`}s
         roll from{' '}
         <b>{event.payload.previousRoll}</b>
         to{' '}
