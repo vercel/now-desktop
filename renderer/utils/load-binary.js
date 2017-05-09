@@ -11,6 +11,7 @@ export default async section => {
   }
 
   const utils = remote.require('./utils/binary')
+  const notify = remote.require('./notify')
 
   if (section) {
     section.setState({
@@ -78,13 +79,18 @@ export default async section => {
     return
   }
 
-  // Let the user know where finished
+  // Let the user know we're finished
   if (section) {
     section.setState({
       installing: false,
       done: true
     })
   }
+
+  notify({
+    title: 'Finished Installing now CLI',
+    body: 'You can now use `now` from the command line.'
+  })
 
   // Remove temporary directory
   location.cleanup()

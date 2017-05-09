@@ -131,9 +131,9 @@ class Binary extends Component {
           </p>
 
           <p>
-            Please be so kind and leave the app open! We
+            This should not take too long. You can minimize this window, if you want. We
             {`'`}
-            ll let you know once we are done. This should not take too long.
+            ll let you know once we are done.
           </p>
 
           <aside className="progress">
