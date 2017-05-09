@@ -139,7 +139,7 @@ class EventMessage extends React.Component {
             padding: 2px 5px;
             border-radius: 3px;
             font-size: 12px;
-            margin: 8px 0;
+            margin: 5px 0;
             display: block;
           }
 
