@@ -13,11 +13,9 @@ export default class DnsUpdate extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated a DNS record
-        {' '}
+        updated a DNS record for <b>{event.payload.domain}</b>:
         <code>
-          {event.payload.id || ''}
-          :
+          {event.payload.id ? event.payload.id + ':' : ''}
           {' '}
           {event.payload.name}
           {' '}
@@ -25,10 +23,6 @@ export default class DnsUpdate extends Message {
           {' '}
           {v + (v.length < value.length ? '…' : '')}
         </code>
-        {' '}
-        for
-        {' '}
-        <b>{event.payload.domain}</b>
       </p>
     )
   }

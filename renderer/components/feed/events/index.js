@@ -31,6 +31,7 @@ class EventMessage extends React.Component {
 
   componentWillMount() {
     const info = this.props.content
+
     const urlProps = [
       'payload.cn',
       'payload.alias',
@@ -132,14 +133,18 @@ class EventMessage extends React.Component {
             display: block;
           }
 
-          .event span code {
+          .event p code {
             font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
             background: #f5f5f5;
             padding: 2px 5px;
             border-radius: 3px;
-            display: block;
-            margin: 2px 0;
             font-size: 12px;
+            margin: 8px 0;
+            display: block;
+          }
+
+          .event:hover p code {
+            background: #e8e8e8;
           }
 
           .event:hover + .event figcaption {
