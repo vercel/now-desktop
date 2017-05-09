@@ -141,6 +141,10 @@ exports.startRefreshing = async () => {
         return
       }
 
+      if (!await exports.isLoggedIn()) {
+        return
+      }
+
       try {
         await exports.refreshCache()
       } catch (err) {
