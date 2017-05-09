@@ -31,7 +31,13 @@ class EventMessage extends React.Component {
 
   componentWillMount() {
     const info = this.props.content
-    const urlProps = ['payload.alias', 'payload.url', 'payload.deploymentUrl']
+    const urlProps = [
+      'payload.cn',
+      'payload.alias',
+      'payload.url',
+      'payload.domain',
+      'payload.deploymentUrl'
+    ]
 
     for (const prop of urlProps) {
       const url = dotProp.get(info, prop)
