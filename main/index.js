@@ -24,6 +24,7 @@ const {
   tutorialWindow,
   mainWindow
 } = require('./utils/frames/list')
+const migrate = require('./utils/migrate')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -188,6 +189,9 @@ const fileDropped = async (event, files) => {
 }
 
 app.on('ready', async () => {
+  // Move over to the new config structure
+  await migrate()
+
   if (!cache.has('no-move-wanted') && !isDev) {
     try {
       const moved = await moveToApplications()

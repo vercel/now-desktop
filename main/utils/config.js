@@ -9,7 +9,7 @@ const pathExists = require('path-exists')
 // Path to config file
 const file = path.join(homedir(), '.now.json')
 
-exports.get = async () => {
+exports.get = async onlyCheckToken => {
   if (!await pathExists(file)) {
     throw new Error(`Could retrieve config file, it doesn't exist`)
   }
@@ -20,7 +20,7 @@ exports.get = async () => {
     throw new Error('No token contained inside config file')
   }
 
-  if (!content.user) {
+  if (!onlyCheckToken && !content.user) {
     throw new Error('No user contained inside config file')
   }
 
