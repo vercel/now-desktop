@@ -257,14 +257,7 @@ exports.download = (url, binaryName, onUpdate) =>
       }
     })
 
-    let binaryDownload
-
-    try {
-      binaryDownload = load(url)
-    } catch (err) {
-      reject(err)
-      return
-    }
+    const binaryDownload = load(url)
 
     if (onUpdate) {
       let bytes = 0
@@ -274,6 +267,7 @@ exports.download = (url, binaryName, onUpdate) =>
       binaryDownload.on('response', res => {
         if (res && res.headers) {
           bytes = res.headers['content-length']
+          console.log('test')
           return
         }
 
@@ -301,10 +295,14 @@ exports.download = (url, binaryName, onUpdate) =>
     }
 
     const destination = path.join(tempDir.path, binaryName)
-    binaryDownload.pipe(fs.createWriteStream(destination))
+    const stream = binaryDownload.pipe(fs.createWriteStream(destination))
 
-    resolve({
-      path: path.join(tempDir.path, binaryName),
-      cleanup: tempDir.cleanup
+    stream.on('finish', () => {
+      resolve({
+        path: path.join(tempDir.path, binaryName),
+        cleanup: tempDir.cleanup
+      })
     })
+
+    stream.on('error', reject)
   })

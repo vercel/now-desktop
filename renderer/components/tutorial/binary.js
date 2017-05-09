@@ -15,7 +15,8 @@ const initialState = {
   binaryInstalled: false,
   installing: false,
   done: false,
-  downloading: false
+  downloading: false,
+  progress: 0
 }
 
 class Binary extends Component {
@@ -113,12 +114,12 @@ class Binary extends Component {
 
     const binaryButton = {
       className: classes,
-      async onClick() {
+      onClick() {
         if (element.state.binaryInstalled) {
           return
         }
 
-        await installBinary(element)
+        installBinary(element)
       }
     }
 
@@ -129,13 +130,16 @@ class Binary extends Component {
         <article>
           <p className="install-status">
             <strong>{loadingText} the binary</strong>
+            {this.state.progress}
 
             <i>.</i>
             <i>.</i>
             <i>.</i>
           </p>
           <p>
-            Please be so kind and leave the app open! We'll let you know once we are done. This should not take too long.
+            Please be so kind and leave the app open! We
+            {`'`}
+            ll let you know once we are done. This should not take too long.
           </p>
 
           <style jsx>
@@ -219,10 +223,12 @@ class Binary extends Component {
           {' '}
           <code>now</code>
           {' '}
-          from the command line, if you'd like to.
+          from the command line, if you{`'`}d like to.
         </p>
         <p>
-          Press the button below to install it! When a new version gets released, we'll automatically update it for you.
+          Press the button below to install it! When a new version gets released, we
+          {`'`}
+          ll automatically update it for you.
         </p>
 
         <a {...binaryButton}>{installText}</a>

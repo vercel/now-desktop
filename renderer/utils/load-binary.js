@@ -33,10 +33,18 @@ export default async section => {
     return
   }
 
+  const onUpdate = progress => {
+    section.setState({ progress })
+  }
+
   let location
 
   try {
-    location = await utils.download(downloadURL.url, downloadURL.binaryName)
+    location = await utils.download(
+      downloadURL.url,
+      downloadURL.binaryName,
+      onUpdate
+    )
   } catch (err) {
     section.setState({
       installing: false,
