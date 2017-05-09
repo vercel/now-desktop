@@ -267,7 +267,6 @@ exports.download = (url, binaryName, onUpdate) =>
       binaryDownload.on('response', res => {
         if (res && res.headers) {
           bytes = res.headers['content-length']
-          console.log('test')
           return
         }
 
