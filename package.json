@@ -74,6 +74,11 @@
       "no-await-in-loop": 0
     }
   },
+  "greenkeeper": {
+    "ignore": [
+      "next"
+    ]
+  },
   "license": "MIT",
   "dependencies": {
     "app-root-path": "2.0.1",
