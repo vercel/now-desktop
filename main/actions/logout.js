@@ -97,16 +97,9 @@ module.exports = async () => {
     showError("Couldn't remove config while logging out", err)
   }
 
-  const cache = prepareCache()
-  const noMoveWanted = cache.has('no-move-wanted')
-
   // Clear app cache
+  const cache = prepareCache()
   cache.clear()
-
-  // Keep user selection of moving the app binary
-  if (noMoveWanted) {
-    cache.set('no-move-wanted', true)
-  }
 
   if (windows && windows.tutorial) {
     const tutorialWindow = windows.tutorial
