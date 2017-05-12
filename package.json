@@ -97,6 +97,7 @@
     "first-run": "1.2.0",
     "fix-path": "2.1.0",
     "fs-promise": "2.0.3",
+    "global-packages": "1.0.0",
     "istextorbinary": "2.1.0",
     "load-licenses": "0.2.1",
     "mkdirp": "0.5.1",

@@ -56,9 +56,34 @@ class Binary extends Component {
     return false
   }
 
+  async installedWithNPM() {
+    const globalPackages = remote.require('global-packages')
+    let packages
+
+    try {
+      packages = await globalPackages()
+    } catch (err) {
+      return false
+    }
+
+    const found = packages.find(item => {
+      return item.name === 'now'
+    })
+
+    if (!found || found.linked) {
+      return false
+    }
+
+    return true
+  }
+
   async binaryInstalled() {
     const binaryUtils = remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
+
+    if (await this.installedWithNPM()) {
+      return true
+    }
 
     if (!await exists(binaryPath)) {
       return false
