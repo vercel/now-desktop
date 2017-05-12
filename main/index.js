@@ -25,6 +25,7 @@ const {
   mainWindow
 } = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
+const { get: getConfig, set: setConfig } = require('./utils/config')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -188,21 +189,41 @@ const fileDropped = async (event, files) => {
   await deploy(files[0])
 }
 
+const moveApp = async () => {
+  let config
+
+  try {
+    config = await getConfig()
+  } catch (err) {
+    config = {}
+  }
+
+  if (config.noMoveWanted || isDev) {
+    return
+  }
+
+  let moved
+
+  try {
+    moved = await moveToApplications()
+  } catch (err) {
+    showError(err)
+    return
+  }
+
+  if (!moved) {
+    await setConfig({
+      noMoveWanted: true
+    })
+  }
+}
+
 app.on('ready', async () => {
-  // Move over to the new config structure
+  // Switch over to the new config structure
   await migrate()
 
-  if (!cache.has('no-move-wanted') && !isDev) {
-    try {
-      const moved = await moveToApplications()
-
-      if (!moved) {
-        cache.set('no-move-wanted', true)
-      }
-    } catch (err) {
-      showError(err)
-    }
-  }
+  // Offer to move app to Applications directory
+  await moveApp()
 
   const onlineStatusWindow = new BrowserWindow({
     width: 0,
