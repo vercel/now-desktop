@@ -274,13 +274,13 @@ app.on('ready', async () => {
   // Make the window instances accessible from everywhere
   global.windows = windows
 
-  ipcMain.on('open-menu', async (event, coordinates) => {
-    if (coordinates && coordinates.x && coordinates.y) {
-      coordinates.x = parseInt(coordinates.x.toFixed(), 10)
-      coordinates.y = parseInt(coordinates.y.toFixed(), 10)
+  ipcMain.on('open-menu', async (event, bounds) => {
+    if (bounds && bounds.x && bounds.y) {
+      bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
+      bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
 
       const menu = await contextMenu(windows)
-      menu.popup(coordinates.x + 4, coordinates.y)
+      menu.popup(bounds.x, bounds.y)
     }
   })
 

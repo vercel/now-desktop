@@ -196,14 +196,19 @@ class Switcher extends React.Component {
     // bubbling up from those, but we need to
     // use `this.menu` to make sure the menu always gets
     // bounds to the parent
-    const { bottom, left } = this.menu.getBoundingClientRect()
+    const { bottom, left, height, width } = this.menu.getBoundingClientRect()
     const sender = electron.ipcRenderer || false
 
     if (!sender) {
       return
     }
 
-    sender.send('open-menu', { x: left, y: bottom })
+    sender.send('open-menu', {
+      x: left,
+      y: bottom,
+      height,
+      width
+    })
   }
 
   renderTeams() {
