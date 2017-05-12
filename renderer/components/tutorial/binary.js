@@ -131,7 +131,7 @@ class Binary extends Component {
           </p>
 
           <p>
-            This should not take too long. You can minimize this window, if you want. We
+            This should not take too long. If you want, you can minimize this window. We
             {`'`}
             ll let you know once we are done.
           </p>
