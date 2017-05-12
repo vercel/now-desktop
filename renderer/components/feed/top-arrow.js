@@ -36,21 +36,20 @@ class TopArrow extends React.Component {
       return
     }
 
-    const windowBounds = currentWindow.getBounds()
+    const trayBounds = tray.getBounds()
 
     // Only update caret position if the window has moved
-    if (this.savedWindowBounds) {
-      if (
-        JSON.stringify(windowBounds) === JSON.stringify(this.savedWindowBounds)
-      ) {
+    if (this.savedTrayBounds) {
+      if (JSON.stringify(trayBounds) === JSON.stringify(this.savedTrayBounds)) {
         return
       }
     }
 
     // Make sure to save the position of the window
-    this.savedWindowBounds = windowBounds
+    this.savedTrayBounds = trayBounds
 
     // Center the caret unter the tray icon
+    const windowBounds = currentWindow.getBounds()
     this.position(tray, windowBounds)
   }
 
