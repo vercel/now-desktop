@@ -4,7 +4,14 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Packages
-const { Menu, app, Tray, BrowserWindow, ipcMain } = require('electron')
+const {
+  Menu,
+  app,
+  Tray,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut
+} = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const { resolve: resolvePath } = require('app-root-path')
@@ -13,7 +20,7 @@ const { moveToApplications } = require('electron-lets-move')
 
 // Utilities
 const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
-const { error: showError } = require('./dialogs')
+const { error: showError, deploy: toDeploy } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
 const { prepareCache, startRefreshing, isLoggedIn } = require('./api')
@@ -218,12 +225,20 @@ const moveApp = async () => {
   }
 }
 
+// Remove all global shortcuts once the app quits
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
+})
+
 app.on('ready', async () => {
   // Switch over to the new config structure
   await migrate()
 
   // Offer to move app to Applications directory
   await moveApp()
+
+  // Register a global shortcut for deploying
+  globalShortcut.register('Cmd+D', toDeploy)
 
   const onlineStatusWindow = new BrowserWindow({
     width: 0,
