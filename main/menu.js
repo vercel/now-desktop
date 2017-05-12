@@ -123,14 +123,14 @@ exports.innerMenu = async function(app, tray, data, windows) {
       label: 'Account',
       submenu: [
         {
-          label: config.user.email || 'No user defined',
+          label: config.user.username || config.user.email,
           enabled: false
         },
         {
           type: 'separator'
         },
         {
-          label: 'Username',
+          label: config.user.username ? 'Change Username' : 'Set Username',
           click() {
             shell.openExternal('https://zeit.co/account')
           }
