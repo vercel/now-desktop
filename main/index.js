@@ -32,7 +32,7 @@ const {
   mainWindow
 } = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
-const { get: getConfig, set: setConfig } = require('./utils/config')
+const { get: getConfig, save: saveConfig } = require('./utils/config')
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
@@ -219,7 +219,7 @@ const moveApp = async () => {
   }
 
   if (!moved) {
-    await setConfig({
+    await saveConfig({
       noMoveWanted: true
     })
   }
