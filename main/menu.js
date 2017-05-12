@@ -130,6 +130,33 @@ exports.innerMenu = async function(app, tray, data, windows) {
           type: 'separator'
         },
         {
+          label: 'Username',
+          click() {
+            shell.openExternal('https://zeit.co/account')
+          }
+        },
+        {
+          label: 'Billing',
+          click() {
+            shell.openExternal('https://zeit.co/account/billing')
+          }
+        },
+        {
+          label: 'Plan',
+          click() {
+            shell.openExternal('https://zeit.co/account/plan')
+          }
+        },
+        {
+          label: 'API Tokens',
+          click() {
+            shell.openExternal('https://zeit.co/account/tokens')
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
           label: 'Logout',
           click: logout
         }
