@@ -66,9 +66,7 @@ class Binary extends Component {
       return false
     }
 
-    const found = packages.find(item => {
-      return item.name === 'now'
-    })
+    const found = packages.find(item => item.name === 'now')
 
     if (!found || found.linked) {
       return false
