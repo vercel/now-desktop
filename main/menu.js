@@ -166,6 +166,23 @@ exports.innerMenu = async function(app, tray, data, windows) {
       type: 'separator'
     },
     {
+      label: 'Support',
+      accelerator: 'Cmd+S',
+      click() {
+        shell.openExternal('https://zeit.chat')
+      }
+    },
+    {
+      label: 'Documentation',
+      accelerator: 'Cmd+D',
+      click() {
+        shell.openExternal('https://zeit.co/docs')
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
       label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
       click: app.quit,
       role: 'quit'
