@@ -54,6 +54,25 @@ class TopArrow extends React.Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.left === prevState.left) {
+      return
+    }
+
+    const currentWindow = remote.getCurrentWindow()
+    const size = currentWindow.getSize()
+
+    setTimeout(() => {
+      size[1]++
+      currentWindow.setSize(...size, true)
+    }, 100)
+
+    setTimeout(() => {
+      size[1]--
+      currentWindow.setSize(...size, true)
+    }, 110)
+  }
+
   render() {
     return (
       <span
