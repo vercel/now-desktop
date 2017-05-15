@@ -21,7 +21,6 @@ const { moveToApplications } = require('electron-lets-move')
 const { innerMenu, outerMenu, deploymentOptions } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
-const share = require('./actions/share')
 const autoUpdater = require('./updates')
 const { prepareCache, refreshCache } = require('./api')
 const attachTrayState = require('./utils/highlight')
@@ -262,7 +261,7 @@ const isLoggedIn = async () => {
   return true
 }
 
-const isDeployable = async directory => {
+const isDynamic = async directory => {
   const indicators = new Set(['package.json', 'Dockerfile'])
 
   for (const indicator of indicators) {
@@ -302,8 +301,8 @@ const fileDropped = async (event, files) => {
 
   const item = files[0]
 
-  if (!await isDirectory(item) || !await isDeployable(item)) {
-    await share(item)
+  if (!await isDirectory(item) || !await isDynamic(item)) {
+    await deploy(item, true)
     return
   }
 
