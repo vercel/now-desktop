@@ -29,10 +29,10 @@ exports.share = async function(
     return
   }
 
-  const sharing = require('./actions/share')
+  const deploy = require('./actions/deploy')
 
   try {
-    await sharing(path)
+    await deploy(path, true)
   } catch (err) {
     exports.error('Not able to share', err)
   }
