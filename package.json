@@ -11,7 +11,7 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron main",
-    "build": "next build renderer",
+    "build": "next build renderer && next export renderer",
     "precommit": "lint-staged",
     "test": "xo",
     "pack": "npm run build && build --dir",
@@ -103,7 +103,7 @@
     "mkdirp": "0.5.1",
     "moment": "2.18.1",
     "ms": "1.0.0",
-    "next": "2.0.1",
+    "next": "3.0.0-beta2",
     "node-fetch": "1.6.3",
     "now-client": "0.7.0",
     "path-exists": "3.0.0",

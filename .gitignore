@@ -1,6 +1,9 @@
 # build output
 dist
+
+# next output
 renderer/.next
+renderer/out
 
 # dependencies
 node_modules
