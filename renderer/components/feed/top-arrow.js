@@ -1,11 +1,9 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 
 // Components
 import Caret from '../../vectors/caret'
-
-// Utilities
-import remote from '../../utils/electron'
 
 class TopArrow extends React.Component {
   constructor(props) {
@@ -18,6 +16,8 @@ class TopArrow extends React.Component {
     setInterval(() => {
       this.tryPosition()
     }, 500)
+
+    this.remote = electron.remote || false
   }
 
   preventDefault(event) {
@@ -25,12 +25,16 @@ class TopArrow extends React.Component {
   }
 
   tryPosition() {
-    if (!remote.process || !remote.getCurrentWindow) {
+    if (!this.remote) {
       return
     }
 
-    const currentWindow = remote.getCurrentWindow()
-    const tray = remote.getGlobal('tray')
+    if (!this.remote.process || !this.remote.getCurrentWindow) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+    const tray = this.remote.getGlobal('tray')
 
     if (!currentWindow || !tray) {
       return
@@ -59,7 +63,11 @@ class TopArrow extends React.Component {
       return
     }
 
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
     const size = currentWindow.getSize()
 
     setTimeout(() => {

@@ -1,12 +1,11 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import { func } from 'prop-types'
 
-// Utilities
-import remote from '../../utils/electron'
-
 class DropZone extends React.Component {
   componentDidMount() {
+    const remote = electron.remote || false
     this.deploy = remote.require('./actions/deploy')
   }
 

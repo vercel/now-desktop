@@ -1,11 +1,17 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import getLicenses from 'load-licenses'
 
-// Helpers
-import remote from '../../utils/electron'
+const loadLicenses = () => {
+  const remote = electron.remote || false
 
-const loadLicenses = () => getLicenses(remote.process.mainModule)
+  if (!remote) {
+    return []
+  }
+
+  return getLicenses(remote.process.mainModule)
+}
 
 const Licenses = () => (
   <section>

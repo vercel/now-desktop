@@ -2,6 +2,7 @@
 import { execSync } from 'child_process'
 
 // Packages
+import electron from 'electron'
 import React, { Component } from 'react'
 import semVer from 'semver'
 import pathType from 'path-type'
@@ -9,7 +10,6 @@ import exists from 'path-exists'
 
 // Utilities
 import installBinary from '../../utils/load-binary'
-import remote from '../../utils/electron'
 
 const initialState = {
   binaryInstalled: false,
@@ -22,7 +22,9 @@ const initialState = {
 class Binary extends Component {
   constructor(props) {
     super(props)
+
     this.state = initialState
+    this.remote = electron.remote || false
   }
 
   async isOlderThanLatest(utils, binaryPath) {
@@ -57,7 +59,11 @@ class Binary extends Component {
   }
 
   async installedWithNPM() {
-    const globalPackages = remote.require('global-packages')
+    if (!this.remote) {
+      return
+    }
+
+    const globalPackages = this.remote.require('global-packages')
     let packages
 
     try {
@@ -76,7 +82,11 @@ class Binary extends Component {
   }
 
   async binaryInstalled() {
-    const binaryUtils = remote.require('./utils/binary')
+    if (!this.remote) {
+      return
+    }
+
+    const binaryUtils = this.remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
 
     if (await this.installedWithNPM()) {
@@ -99,7 +109,11 @@ class Binary extends Component {
   }
 
   async componentDidMount() {
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
 
     if (await this.binaryInstalled()) {
       currentWindow.focus()

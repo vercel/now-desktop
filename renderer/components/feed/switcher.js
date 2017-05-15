@@ -4,7 +4,6 @@ import React from 'react'
 import { func, object } from 'prop-types'
 
 // Utilities
-import remote from '../../utils/electron'
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
@@ -16,6 +15,8 @@ class Switcher extends React.Component {
       teams: [],
       scope: null
     }
+
+    this.remote = electron.remote || false
   }
 
   componentWillReceiveProps({ currentUser }) {
@@ -71,7 +72,11 @@ class Switcher extends React.Component {
   }
 
   async checkCurrentTeam() {
-    const { get, save } = remote.require('./utils/config')
+    if (!this.remote) {
+      return
+    }
+
+    const { get, save } = this.remote.require('./utils/config')
     const config = await get()
 
     if (!config) {
@@ -141,7 +146,11 @@ class Switcher extends React.Component {
   }
 
   async updateConfig(team) {
-    const { save: saveConfig } = remote.require('./utils/config')
+    if (!this.remote) {
+      return
+    }
+
+    const { save: saveConfig } = this.remote.require('./utils/config')
     const currentUser = this.props.currentUser
 
     if (!currentUser) {

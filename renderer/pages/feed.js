@@ -2,6 +2,7 @@
 import queryString from 'querystring'
 
 // Packages
+import electron from 'electron'
 import React from 'react'
 import moment from 'moment'
 import dotProp from 'dot-prop'
@@ -15,7 +16,6 @@ import EventMessage from '../components/feed/events'
 import NoEvents from '../components/feed/events/none'
 
 // Utilities
-import remote from '../utils/electron'
 import loadData from '../utils/data/load'
 import { API_EVENTS } from '../utils/data/endpoints'
 
@@ -31,6 +31,8 @@ class Feed extends React.Component {
       teams: [],
       eventFilter: null
     }
+
+    this.remote = electron.remote || false
   }
 
   async updateEvents(excludeID) {
@@ -107,7 +109,11 @@ class Feed extends React.Component {
   }
 
   async componentDidMount() {
-    const { get: getConfig } = remote.require('./utils/config')
+    if (!this.remote) {
+      return
+    }
+
+    const { get: getConfig } = this.remote.require('./utils/config')
     const config = await getConfig()
 
     this.setState({
@@ -115,7 +121,7 @@ class Feed extends React.Component {
       currentUser: config.user
     })
 
-    const currentWindow = remote.getCurrentWindow()
+    const currentWindow = this.remote.getCurrentWindow()
 
     if (!currentWindow) {
       return

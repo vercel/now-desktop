@@ -1,9 +1,17 @@
+// Packages
+import electron from 'electron'
+
 // Utilities
-import remote from '../electron'
 import startRefreshment from '../refresh'
 import tokenValidated from './validate'
 
 export default async root => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
+
   const { get: getConfig, remove: removeConfig } = remote.require(
     './utils/config'
   )

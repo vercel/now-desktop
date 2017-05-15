@@ -1,11 +1,9 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import { object } from 'prop-types'
 import moment from 'moment'
 import dotProp from 'dot-prop'
-
-// Utilities
-import remote from '../../../utils/electron'
 
 // Components
 import messageComponents from './messages'
@@ -23,6 +21,12 @@ class EventMessage extends React.Component {
     event.preventDefault()
 
     if (!this.state.url) {
+      return
+    }
+
+    const remote = electron.remote || false
+
+    if (!remote) {
       return
     }
 

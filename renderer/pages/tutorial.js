@@ -2,12 +2,11 @@
 import { platform } from 'os'
 
 // Packages
+import electron from 'electron'
 import React, { Component } from 'react'
 import Slider from 'react-slick'
-import { rendererPreload } from 'electron-routes'
 
 // Helpers
-import remote from '../utils/electron'
 import tokenFromCLI from '../utils/token/from-cli'
 
 // Vectors
@@ -21,8 +20,6 @@ import Title from '../components/title'
 import Login from '../components/tutorial/login'
 import Binary from '../components/tutorial/binary'
 import Container from '../components/container'
-
-if (process.type === 'renderer') rendererPreload()
 
 const SliderArrows = props => {
   const properties = Object.assign({}, props)
@@ -90,12 +87,18 @@ const sliderSettings = {
 class Sections extends Component {
   constructor(props) {
     super(props)
+
     this.state = initialState
+    this.remote = electron.remote || false
   }
 
   handleReady() {
-    const currentWindow = remote.getCurrentWindow()
-    const windows = remote.getGlobal('windows')
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+    const windows = this.remote.getGlobal('windows')
 
     if (!windows || !windows.about) {
       return
@@ -106,17 +109,29 @@ class Sections extends Component {
   }
 
   handleMinimizeClick() {
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
     currentWindow.minimize()
   }
 
   handleCloseClick() {
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
     currentWindow.hide()
   }
 
   async loggedIn() {
-    const { get: getConfig } = remote.require('./utils/config')
+    if (!this.remote) {
+      return
+    }
+
+    const { get: getConfig } = this.remote.require('./utils/config')
 
     try {
       await getConfig()
@@ -179,7 +194,11 @@ class Sections extends Component {
       })
     }
 
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
 
     currentWindow.on('close', async () => {
       // Don't reset slider if logged out
@@ -259,7 +278,7 @@ class Sections extends Component {
             />
             {this.state && this.state.loginShown
               ? <Login />
-              : <a className="button" onClick={this.handleReady}>
+              : <a className="button" onClick={this.handleReady.bind(this)}>
                   Get Started
                 </a>}
           </section>

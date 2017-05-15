@@ -1,10 +1,14 @@
 // Packages
+import electron from 'electron'
 import fetch from 'node-fetch'
 
-// Utilities
-import remote from '../electron'
-
 const getToken = async () => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
+
   const { get: getConfig } = remote.require('./utils/config')
   let config
 

@@ -1,9 +1,7 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import PropTypes from 'prop-types'
-
-// Utilities
-import remote from '../utils/electron'
 
 // Components
 import Deploy from '../vectors/deploy'
@@ -11,6 +9,12 @@ import Search from './feed/search'
 
 class Title extends React.Component {
   componentDidMount() {
+    const remote = electron.remote || false
+
+    if (!remote) {
+      return
+    }
+
     this.dialogs = remote.require('./dialogs')
   }
 

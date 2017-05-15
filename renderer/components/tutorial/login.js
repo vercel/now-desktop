@@ -1,4 +1,5 @@
 // Packages
+import electron from 'electron'
 import { stringify as stringifyQuery } from 'querystring'
 import React, { Component } from 'react'
 import AutoSizeInput from 'react-input-autosize'
@@ -7,11 +8,16 @@ import emailProviders from 'email-providers/common'
 // Ours
 import error from '../../utils/error'
 import startRefreshment from '../../utils/refresh'
-import remote from '../../utils/electron'
 import { API_USER } from '../../utils/data/endpoints'
 import loadData from '../../utils/data/load'
 
 const getVerificationData = async (url, email) => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
+
   const os = remote.require('os')
   const hyphens = new RegExp('-', 'g')
   const host = os.hostname().replace(hyphens, ' ').replace('.local', '')
@@ -74,7 +80,9 @@ const initialState = {
 class Login extends Component {
   constructor(props) {
     super(props)
+
     this.state = initialState
+    this.remote = electron.remote || false
   }
 
   handleChange(event) {
@@ -88,7 +96,11 @@ class Login extends Component {
   }
 
   async tryLogin(email) {
-    const onlineStatus = remote.process.env.CONNECTION
+    if (!this.remote) {
+      return
+    }
+
+    const onlineStatus = this.remote.process.env.CONNECTION
 
     if (onlineStatus === 'offline') {
       error("You're offline!")
@@ -143,8 +155,12 @@ class Login extends Component {
     } while (!finalToken)
     /* eslint-enable no-await-in-loop */
 
+    if (!this.remote) {
+      return
+    }
+
     // Also save it to now.json
-    const { save: saveConfig } = remote.require('./utils/config')
+    const { save: saveConfig } = this.remote.require('./utils/config')
     const userData = await loadData(API_USER, finalToken)
     const user = userData.user
 
@@ -159,6 +175,12 @@ class Login extends Component {
       })
     } catch (err) {
       error('Could not save config', err)
+      return
+    }
+
+    const remote = electron.remote || false
+
+    if (!remote) {
       return
     }
 

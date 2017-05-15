@@ -2,9 +2,9 @@
 import { platform } from 'os'
 
 // Packages
+import electron from 'electron'
 import React, { Component } from 'react'
 import timeAgo from 'time-ago'
-import { rendererPreload } from 'electron-routes'
 import isDev from 'electron-is-dev'
 
 // Vectors
@@ -17,11 +17,14 @@ import Licenses from '../components/about/licenses'
 
 // Helpers
 import showError from '../utils/error'
-import remote from '../utils/electron'
-
-if (process.type === 'renderer') rendererPreload()
 
 const getAppVersion = () => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return false
+  }
+
   if (isDev) {
     return remote.process.env.npm_package_version
   }
@@ -31,12 +34,22 @@ const getAppVersion = () => {
 
 const openLink = event => {
   const link = event.target
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
 
   remote.shell.openExternal(link.href)
   event.preventDefault()
 }
 
 class About extends Component {
+  constructor(props) {
+    super(props)
+    this.remote = electron.remote || false
+  }
+
   async componentDidMount() {
     await this.lastReleaseDate()
   }
@@ -95,7 +108,11 @@ class About extends Component {
   }
 
   handleTutorial() {
-    const windows = remote.getGlobal('windows')
+    if (!this.remote) {
+      return
+    }
+
+    const windows = this.remote.getGlobal('windows')
 
     if (!windows || !windows.tutorial) {
       showError('Not able to open tutorial window')
@@ -106,12 +123,16 @@ class About extends Component {
   }
 
   handleCloseClick() {
-    const currentWindow = remote.getCurrentWindow()
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
     currentWindow.hide()
   }
 
   updateStatus() {
-    const isDev = remote.require('electron-is-dev')
+    const isDev = this.remote ? this.remote.require('electron-is-dev') : false
 
     return (
       <div>
@@ -120,7 +141,7 @@ class About extends Component {
               {"You're in development mode. No updates!"}
             </h2>
           : <h2 className="update latest">
-              <UpdatedSVG onClick={this.handleCloseClick} />
+              <UpdatedSVG onClick={this.handleCloseClick.bind(this)} />
               {"You're running the latest version!"}
             </h2>}
 
@@ -155,12 +176,14 @@ class About extends Component {
   }
 
   render() {
+    const appVersion = getAppVersion()
+
     return (
       <Container>
         <div>
           {platform() === 'win32' &&
             <div className="window-controls">
-              <span onClick={this.handleCloseClick}>
+              <span onClick={this.handleCloseClick.bind(this)}>
                 <CloseWindowSVG />
               </span>
             </div>}
@@ -173,12 +196,12 @@ class About extends Component {
             <h2>
               Version
               {' '}
-              <b>{getAppVersion()}</b>
+              {appVersion ? <b>{appVersion}</b> : ''}
               {' '}
               {this.state && this.state.lastReleaseDate}
             </h2>
 
-            {this.updateStatus()}
+            {this.updateStatus.apply(this)}
 
             <article>
               <h1>Authors</h1>
@@ -214,7 +237,7 @@ class About extends Component {
               <a href="https://github.com/zeit/now-desktop" onClick={openLink}>
                 Source
               </a>
-              <a onClick={this.handleTutorial}>Tutorial</a>
+              <a onClick={this.handleTutorial.bind(this)}>Tutorial</a>
             </nav>
           </section>
 

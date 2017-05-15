@@ -1,13 +1,11 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import { func } from 'prop-types'
 
 // Vectors
 import MagnifyingGlass from '../../vectors/search'
 import Clear from '../../vectors/clear'
-
-// Utilities
-import remote from '../../utils/electron'
 
 class Search extends React.Component {
   constructor(props) {
@@ -80,6 +78,12 @@ class Search extends React.Component {
   }
 
   componentDidMount() {
+    const remote = electron.remote || false
+
+    if (!remote) {
+      return
+    }
+
     const currentWindow = remote.getCurrentWindow()
 
     // Clear search when window gets hidden

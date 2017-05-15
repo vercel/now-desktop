@@ -1,8 +1,16 @@
+// Packages
+import electron from 'electron'
+
 // Utilities
 import showError from './error'
-import remote from './electron'
 
 export default async section => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
+
   const onlineStatus = remote.process.env.CONNECTION
 
   if (onlineStatus && onlineStatus === 'offline') {
