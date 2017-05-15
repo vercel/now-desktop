@@ -12,7 +12,6 @@
   "scripts": {
     "start": "electron main",
     "build": "next build renderer",
-    "lint": "eslint",
     "precommit": "lint-staged",
     "test": "xo",
     "pack": "npm run build && build --dir",
