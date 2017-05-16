@@ -203,7 +203,7 @@ exports.handleExisting = async next => {
 exports.getBinarySuffix = () => (process.platform === 'win32' ? '.exe' : '')
 
 exports.getURL = async () => {
-  const url = 'https://now-cli-latest.now.sh'
+  const url = 'https://now-cli-latest.zeit.sh'
   const response = await fetch(url)
 
   if (!response.ok) {

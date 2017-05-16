@@ -17,7 +17,7 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
-const feedURL = 'https://now-auto-updates.now.sh/update/' + platform
+const feedURL = 'https://now-desktop-releases.zeit.sh/update/' + platform
 
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
