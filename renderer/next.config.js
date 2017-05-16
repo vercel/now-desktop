@@ -13,12 +13,5 @@ module.exports = {
     }
 
     return config
-  },
-  exportPathMap() {
-    return {
-      '/feed': { page: '/feed' },
-      '/about': { page: '/about' },
-      '/tutorial': { page: '/tutorial' }
-    }
   }
 }
