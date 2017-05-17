@@ -15,44 +15,14 @@ const npmInstalled = async exec => {
       cwd: homedir()
     })
   } catch (err) {
-    console.log(err)
     return false
   }
 
   return true
 }
 
-const loadfromNPM = async (section, exec) => {
-  try {
-    // Check if we're able to get the version of the local npm instance
-    // If we're not, it's not installed
-    await exec('npm install -g now', {
-      cwd: homedir()
-    })
-  } catch (err) {
-    section.setState({
-      installing: false,
-      done: false
-    })
-
-    showError('Not able to download the latest binary using npm', err)
-  }
-}
-
 const loadBundled = async (section, utils) => {
-  let downloadURL
-
-  try {
-    downloadURL = await utils.getURL()
-  } catch (err) {
-    section.setState({
-      installing: false,
-      done: false
-    })
-
-    showError('Not able to get URL of latest binary', err)
-    return
-  }
+  const downloadURL = await utils.getURL()
 
   const onUpdate = progress => {
     section.setState({ progress })
@@ -67,18 +37,11 @@ const loadBundled = async (section, utils) => {
       onUpdate
     )
   } catch (err) {
-    section.setState({
-      installing: false,
-      done: false
-    })
-
     if (err instanceof Error && err.name && err.name === 'offline') {
-      showError(err.message)
-      return
+      throw new Error(err.message)
     }
 
-    showError('Could not download binary', err)
-    return
+    throw new Error('Could not download binary')
   }
 
   if (section) {
@@ -90,16 +53,19 @@ const loadBundled = async (section, utils) => {
   try {
     await utils.handleExisting(tempLocation.path)
   } catch (err) {
-    section.setState({
-      installing: false,
-      done: false
-    })
-
-    showError('Not able to move binary', err)
-    return
+    throw new Error('Not able to move binary')
   }
 
   return tempLocation
+}
+
+const stopInstallation = (section, reason, trace) => {
+  section.setState({
+    installing: false,
+    done: false
+  })
+
+  showError(reason, trace)
 }
 
 export default async section => {
@@ -132,14 +98,32 @@ export default async section => {
   let tempLocation
 
   if (npmExists) {
-    await loadfromNPM(section, exec)
+    try {
+      await exec('npm install -g now', {
+        cwd: homedir()
+      })
+    } catch (err) {
+      const message =
+        'Not able to install the ' +
+        'CLI using npm. Please ensure that ' +
+        'the permissions are fixed: \n\n' +
+        'https://docs.npmjs.com/getting-started/fixing-npm-permissions'
+
+      stopInstallation(section, message, err)
+      return
+    }
   } else {
     // Prepare progress bar (make it show up)
     section.setState({
       progress: 0
     })
 
-    tempLocation = await loadBundled(section, utils)
+    try {
+      tempLocation = await loadBundled(section, utils)
+    } catch (err) {
+      stopInstallation(section, err)
+      return
+    }
   }
 
   // Let the user know we're finished
