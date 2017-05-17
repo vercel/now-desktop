@@ -134,6 +134,11 @@ export default async section => {
   if (npmExists) {
     await loadfromNPM(section, exec)
   } else {
+    // Prepare progress bar (make it show up)
+    section.setState({
+      progress: 0
+    })
+
     tempLocation = await loadBundled(section, utils)
   }
 
