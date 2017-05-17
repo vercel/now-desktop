@@ -167,14 +167,12 @@ exports.innerMenu = async function(app, tray, data, windows) {
     },
     {
       label: 'Support',
-      accelerator: 'S',
       click() {
         shell.openExternal('https://zeit.chat')
       }
     },
     {
       label: 'Documentation',
-      accelerator: 'D',
       click() {
         shell.openExternal('https://zeit.co/docs')
       }
