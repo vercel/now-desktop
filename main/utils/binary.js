@@ -179,7 +179,7 @@ exports.npmBinaryInstalled = async () => {
 
   const target = packages.filter(item => item.name === 'now')
 
-  if (!target || target.linked) {
+  if (target.length === 0 || target.linked) {
     return false
   }
 
