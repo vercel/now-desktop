@@ -1,33 +1,46 @@
+// Native
+import { homedir } from 'os'
+
 // Packages
 import electron from 'electron'
 
 // Utilities
 import showError from './error'
 
-export default async section => {
-  const remote = electron.remote || false
-
-  if (!remote) {
-    return
-  }
-
-  const onlineStatus = remote.process.env.CONNECTION
-
-  if (onlineStatus && onlineStatus === 'offline') {
-    showError("Could not download binary. You're offline!")
-    return
-  }
-
-  const utils = remote.require('./utils/binary')
-  const notify = remote.require('./notify')
-
-  if (section) {
-    section.setState({
-      installing: true,
-      downloading: true
+const npmInstalled = async childProcess => {
+  try {
+    // Check if we're able to get the version of the local npm instance
+    // If we're not, it's not installed
+    await childProcess.exec('npm -v', {
+      cwd: homedir()
     })
+  } catch (err) {
+    return false
   }
 
+  return true
+}
+
+const loadfromNPM = (section, childProcess) =>
+  new Promise(resolve => {
+    const output = childProcess.spawn('npm', ['install', '-g', 'now'], {
+      cwd: homedir()
+    })
+
+    output.catch(err => {
+      section.setState({
+        installing: false,
+        done: false
+      })
+
+      showError('Not able to download the latest binary using npm', err)
+      resolve()
+    })
+
+    output.then(resolve)
+  })
+
+const loadBundled = async (section, utils) => {
   let downloadURL
 
   try {
@@ -46,10 +59,10 @@ export default async section => {
     section.setState({ progress })
   }
 
-  let location
+  let tempLocation
 
   try {
-    location = await utils.download(
+    tempLocation = await utils.download(
       downloadURL.url,
       downloadURL.binaryName,
       onUpdate
@@ -76,7 +89,7 @@ export default async section => {
   }
 
   try {
-    await utils.handleExisting(location.path)
+    await utils.handleExisting(tempLocation.path)
   } catch (err) {
     section.setState({
       installing: false,
@@ -85,6 +98,44 @@ export default async section => {
 
     showError('Not able to move binary', err)
     return
+  }
+
+  return tempLocation
+}
+
+export default async section => {
+  const remote = electron.remote || false
+
+  if (!remote) {
+    return
+  }
+
+  const onlineStatus = remote.process.env.CONNECTION
+
+  if (onlineStatus && onlineStatus === 'offline') {
+    showError("Could not download binary. You're offline!")
+    return
+  }
+
+  const utils = remote.require('./utils/binary')
+  const notify = remote.require('./notify')
+
+  if (section) {
+    section.setState({
+      installing: true,
+      downloading: true
+    })
+  }
+
+  const childProcess = remote.require('child-process-promise')
+  const npmExists = await npmInstalled(childProcess)
+
+  let tempLocation
+
+  if (npmExists) {
+    await loadfromNPM(section, childProcess)
+  } else {
+    tempLocation = await loadBundled(section, utils)
   }
 
   // Let the user know we're finished
@@ -101,5 +152,7 @@ export default async section => {
   })
 
   // Remove temporary directory
-  location.cleanup()
+  if (tempLocation) {
+    tempLocation.cleanup()
+  }
 }
