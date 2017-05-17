@@ -14,7 +14,7 @@ export default async section => {
   const onlineStatus = remote.process.env.CONNECTION
 
   if (onlineStatus && onlineStatus === 'offline') {
-    showError(`Could not download binary. You're offline!`)
+    showError("Could not download binary. You're offline!")
     return
   }
 
