@@ -7,38 +7,37 @@ import electron from 'electron'
 // Utilities
 import showError from './error'
 
-const npmInstalled = async childProcess => {
+const npmInstalled = async exec => {
   try {
     // Check if we're able to get the version of the local npm instance
     // If we're not, it's not installed
-    await childProcess.exec('npm -v', {
+    await exec('npm -v', {
       cwd: homedir()
     })
   } catch (err) {
+    console.log(err)
     return false
   }
 
   return true
 }
 
-const loadfromNPM = (section, childProcess) =>
-  new Promise(resolve => {
-    const output = childProcess.spawn('npm', ['install', '-g', 'now'], {
+const loadfromNPM = async (section, exec) => {
+  try {
+    // Check if we're able to get the version of the local npm instance
+    // If we're not, it's not installed
+    await exec('npm install -g now', {
       cwd: homedir()
     })
-
-    output.catch(err => {
-      section.setState({
-        installing: false,
-        done: false
-      })
-
-      showError('Not able to download the latest binary using npm', err)
-      resolve()
+  } catch (err) {
+    section.setState({
+      installing: false,
+      done: false
     })
 
-    output.then(resolve)
-  })
+    showError('Not able to download the latest binary using npm', err)
+  }
+}
 
 const loadBundled = async (section, utils) => {
   let downloadURL
@@ -127,13 +126,13 @@ export default async section => {
     })
   }
 
-  const childProcess = remote.require('child-process-promise')
-  const npmExists = await npmInstalled(childProcess)
+  const { exec } = remote.require('child-process-promise')
+  const npmExists = await npmInstalled(exec)
 
   let tempLocation
 
   if (npmExists) {
-    await loadfromNPM(section, childProcess)
+    await loadfromNPM(section, exec)
   } else {
     tempLocation = await loadBundled(section, utils)
   }

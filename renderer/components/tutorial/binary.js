@@ -16,7 +16,7 @@ const initialState = {
   installing: false,
   done: false,
   downloading: false,
-  progress: 0
+  progress: false
 }
 
 class Binary extends Component {
@@ -141,18 +141,19 @@ class Binary extends Component {
       return (
         <article>
           <p>
-            <strong>Installing the command line interface...</strong>
+            <strong>{'Installing the command line interface...'}</strong>
           </p>
 
           <p>
-            This should not take too long. If you want, you can minimize this window. We
-            {`'`}
-            ll let you know once we are done.
+            {
+              "This should not take too long. If you want, you can minimize this window. We'll let you know once we are done."
+            }
           </p>
 
-          <aside className="progress">
-            <span style={{ width: `${this.state.progress}%` }} />
-          </aside>
+          {this.state.progress !== false &&
+            <aside className="progress">
+              <span style={{ width: `${this.state.progress}%` }} />
+            </aside>}
 
           <style jsx>
             {`
