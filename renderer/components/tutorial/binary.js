@@ -58,29 +58,6 @@ class Binary extends Component {
     return false
   }
 
-  async installedWithNPM() {
-    if (!this.remote) {
-      return
-    }
-
-    const globalPackages = this.remote.require('global-packages')
-    let packages
-
-    try {
-      packages = await globalPackages()
-    } catch (err) {
-      return false
-    }
-
-    const found = packages.find(item => item.name === 'now')
-
-    if (!found || found.linked) {
-      return false
-    }
-
-    return true
-  }
-
   async binaryInstalled() {
     if (!this.remote) {
       return
@@ -89,7 +66,7 @@ class Binary extends Component {
     const binaryUtils = this.remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
 
-    if (await this.installedWithNPM()) {
+    if (await binaryUtils.npmBinaryInstalled()) {
       return true
     }
 
