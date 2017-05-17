@@ -10,7 +10,6 @@ const trimWhitespace = require('trim')
 const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
-const globalPackages = require('global-packages')
 
 // Ours
 const { error: showError } = require('./dialogs')
@@ -43,35 +42,13 @@ const localBinaryVersion = async () => {
   return output.split(' ')[2].trim()
 }
 
-const npmBinaryInstalled = async () => {
-  let packages
-
-  try {
-    packages = await globalPackages()
-  } catch (err) {
-    return false
-  }
-
-  if (!Array.isArray(packages)) {
-    return false
-  }
-
-  const target = packages.filter(item => item.name === 'now')
-
-  if (!target || target.linked) {
-    return false
-  }
-
-  return true
-}
-
 const updateBinary = async () => {
   if (process.env.CONNECTION === 'offline') {
     return
   }
 
   const fullPath = binaryUtils.getFile()
-  const fromNPM = await npmBinaryInstalled()
+  const fromNPM = await binaryUtils.npmBinaryInstalled()
 
   // Abort if the binary doesn't exist
   if (!await exists(fullPath)) {
@@ -84,7 +61,6 @@ const updateBinary = async () => {
   }
 
   console.log('Checking for binary updates...')
-
   const remote = await binaryUtils.getURL()
 
   const currentRemote = remote.version
@@ -113,6 +89,7 @@ const updateBinary = async () => {
   } else {
     const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
 
+    // Make sure there's no existing binary in the way
     await binaryUtils.handleExisting(updateFile.path)
 
     // Remove temporary directory that contained the update

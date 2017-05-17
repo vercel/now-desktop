@@ -13,6 +13,7 @@ const sudo = require('sudo-prompt')
 const { resolve: resolvePath } = require('app-root-path')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
+const globalPackages = require('global-packages')
 
 const runAsRoot = command =>
   new Promise((resolve, reject) => {
@@ -161,6 +162,28 @@ exports.getDirectory = () => {
   }
 
   return '/usr/bin'
+}
+
+exports.npmBinaryInstalled = async () => {
+  let packages
+
+  try {
+    packages = await globalPackages()
+  } catch (err) {
+    return false
+  }
+
+  if (!Array.isArray(packages)) {
+    return false
+  }
+
+  const target = packages.filter(item => item.name === 'now')
+
+  if (!target || target.linked) {
+    return false
+  }
+
+  return true
 }
 
 exports.getFile = () => {
