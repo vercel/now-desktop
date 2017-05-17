@@ -10,6 +10,7 @@ const trimWhitespace = require('trim')
 const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
+const globalPackages = require('global-packages')
 
 // Ours
 const { error: showError } = require('./dialogs')
@@ -42,25 +43,56 @@ const localBinaryVersion = async () => {
   return output.split(' ')[2].trim()
 }
 
+const npmBinaryInstalled = async () => {
+  let packages
+
+  try {
+    packages = await globalPackages()
+  } catch (err) {
+    return false
+  }
+
+  if (!Array.isArray(packages)) {
+    return false
+  }
+
+  const target = packages.filter(item => item.name === 'now')
+
+  if (!target || target.linked) {
+    return false
+  }
+
+  return true
+}
+
 const updateBinary = async () => {
   if (process.env.CONNECTION === 'offline') {
     return
   }
 
   const fullPath = binaryUtils.getFile()
+  const fromNPM = await npmBinaryInstalled()
 
-  if (!await exists(fullPath) || (await pathType.symlink(fullPath))) {
+  // Abort if the binary doesn't exist
+  if (!await exists(fullPath)) {
+    return
+  }
+
+  // Don't update if the binary is not from npm but also a symlink
+  if (!fromNPM && (await pathType.symlink(fullPath))) {
     return
   }
 
   console.log('Checking for binary updates...')
 
-  const currentRemote = await binaryUtils.getURL()
+  const remote = await binaryUtils.getURL()
+
+  const currentRemote = remote.version
   const currentLocal = await localBinaryVersion()
 
   // Force an update if "now -v" fails
   if (currentLocal) {
-    const comparision = semVer.compare(currentLocal, currentRemote.version)
+    const comparision = semVer.compare(currentLocal, currentRemote)
 
     if (comparision !== -1) {
       console.log('No updates found for binary')
@@ -70,23 +102,30 @@ const updateBinary = async () => {
     console.log('Found an update for binary! Downloading...')
   }
 
-  const updateFile = await binaryUtils.download(
-    currentRemote.url,
-    currentRemote.binaryName
-  )
+  if (fromNPM) {
+    const updateCommand = await exec(`npm install -g now@${currentRemote}`, {
+      cwd: homedir()
+    })
 
-  await binaryUtils.handleExisting(updateFile.path)
+    if (!updateCommand.stdout) {
+      throw new Error('Not able to update binary from npm')
+    }
+  } else {
+    const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
 
-  // Remove temporary directory that contained the update
-  updateFile.cleanup()
+    await binaryUtils.handleExisting(updateFile.path)
+
+    // Remove temporary directory that contained the update
+    updateFile.cleanup()
+  }
 
   // Check the version of the installed binary
   const newVersion = await localBinaryVersion()
 
   notify({
-    title: `Updated now CLI to Version ${newVersion}`,
+    title: 'Updated now CLI to Version ' + newVersion,
     body: 'Feel free to try it in your terminal or click to see what has changed!',
-    url: `https://github.com/zeit/now-cli/releases/tag/${newVersion}`
+    url: 'https://github.com/zeit/now-cli/releases/tag/' + newVersion
   })
 }
 
