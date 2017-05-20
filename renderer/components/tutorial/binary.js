@@ -66,10 +66,6 @@ class Binary extends Component {
     const binaryUtils = this.remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
 
-    if (await binaryUtils.npmBinaryInstalled()) {
-      return true
-    }
-
     if (!await exists(binaryPath)) {
       return false
     }
