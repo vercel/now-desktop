@@ -1,25 +1,8 @@
-// Native
-import { homedir } from 'os'
-
 // Packages
 import electron from 'electron'
 
 // Utilities
 import showError from './error'
-
-const npmInstalled = async exec => {
-  try {
-    // Check if we're able to get the version of the local npm instance
-    // If we're not, it's not installed
-    await exec('npm -v', {
-      cwd: homedir()
-    })
-  } catch (err) {
-    return false
-  }
-
-  return true
-}
 
 const loadBundled = async (section, utils) => {
   const downloadURL = await utils.getURL()
@@ -59,15 +42,6 @@ const loadBundled = async (section, utils) => {
   return tempLocation
 }
 
-const stopInstallation = (section, reason, trace) => {
-  section.setState({
-    installing: false,
-    done: false
-  })
-
-  showError(reason, trace)
-}
-
 export default async section => {
   const remote = electron.remote || false
 
@@ -92,38 +66,23 @@ export default async section => {
     })
   }
 
-  const { exec } = remote.require('child-process-promise')
-  const npmExists = await npmInstalled(exec)
-
   let tempLocation
 
-  if (npmExists) {
-    try {
-      await exec('npm install -g now', {
-        cwd: homedir()
-      })
-    } catch (err) {
-      const message =
-        'Not able to install the ' +
-        'CLI using npm. Please ensure that ' +
-        'the permissions are fixed: \n\n' +
-        'https://docs.npmjs.com/getting-started/fixing-npm-permissions'
+  // Prepare progress bar (make it show up)
+  section.setState({
+    progress: 0
+  })
 
-      stopInstallation(section, message, err)
-      return
-    }
-  } else {
-    // Prepare progress bar (make it show up)
+  try {
+    tempLocation = await loadBundled(section, utils)
+  } catch (err) {
     section.setState({
-      progress: 0
+      installing: false,
+      done: false
     })
 
-    try {
-      tempLocation = await loadBundled(section, utils)
-    } catch (err) {
-      stopInstallation(section, err)
-      return
-    }
+    showError('Could not install binary', err)
+    return
   }
 
   // Let the user know we're finished
@@ -140,7 +99,5 @@ export default async section => {
   })
 
   // Remove temporary directory
-  if (tempLocation) {
-    tempLocation.cleanup()
-  }
+  tempLocation.cleanup()
 }
