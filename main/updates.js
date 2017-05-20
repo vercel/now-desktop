@@ -48,15 +48,8 @@ const updateBinary = async () => {
   }
 
   const fullPath = binaryUtils.getFile()
-  const fromNPM = await binaryUtils.npmBinaryInstalled()
 
-  // Abort if the binary doesn't exist
-  if (!await exists(fullPath)) {
-    return
-  }
-
-  // Don't update if the binary is not from npm but also a symlink
-  if (!fromNPM && (await pathType.symlink(fullPath))) {
+  if (!await exists(fullPath) || (await pathType.symlink(fullPath))) {
     return
   }
 
@@ -78,23 +71,13 @@ const updateBinary = async () => {
     console.log('Found an update for binary! Downloading...')
   }
 
-  if (fromNPM) {
-    const updateCommand = await exec(`npm install -g now@${currentRemote}`, {
-      cwd: homedir()
-    })
+  const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
 
-    if (!updateCommand.stdout) {
-      throw new Error('Not able to update binary from npm')
-    }
-  } else {
-    const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
+  // Make sure there's no existing binary in the way
+  await binaryUtils.handleExisting(updateFile.path)
 
-    // Make sure there's no existing binary in the way
-    await binaryUtils.handleExisting(updateFile.path)
-
-    // Remove temporary directory that contained the update
-    updateFile.cleanup()
-  }
+  // Remove temporary directory that contained the update
+  updateFile.cleanup()
 
   // Check the version of the installed binary
   const newVersion = await localBinaryVersion()

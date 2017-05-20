@@ -13,7 +13,6 @@ const sudo = require('sudo-prompt')
 const { resolve: resolvePath } = require('app-root-path')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
-const globalPackages = require('global-packages')
 
 const runAsRoot = command =>
   new Promise((resolve, reject) => {
@@ -164,28 +163,6 @@ exports.getDirectory = () => {
   return '/usr/bin'
 }
 
-exports.npmBinaryInstalled = async () => {
-  let packages
-
-  try {
-    packages = await globalPackages()
-  } catch (err) {
-    return false
-  }
-
-  if (!Array.isArray(packages)) {
-    return false
-  }
-
-  const target = packages.filter(item => item.name === 'now')
-
-  if (target.length === 0 || target.linked) {
-    return false
-  }
-
-  return true
-}
-
 exports.getFile = () => {
   const destDirectory = exports.getDirectory()
   const suffix = exports.getBinarySuffix()
@@ -250,7 +227,7 @@ exports.getURL = async () => {
   const downloadURL = forPlatform.url
 
   if (!downloadURL) {
-    throw new Error(`Latest release doesn't contain a binary`)
+    throw new Error("Latest release doesn't contain a binary")
   }
 
   return {
@@ -273,7 +250,7 @@ exports.download = (url, binaryName, onUpdate) =>
 
     ipcMain.once('online-status-changed', (event, status) => {
       if (status === 'offline') {
-        const error = new Error(`You wen't offline! Stopping download...`)
+        const error = new Error("You wen't offline! Stopping download...")
         error.name = 'offline'
 
         reject(error)
