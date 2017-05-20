@@ -225,7 +225,7 @@ class Binary extends Component {
       return (
         <article>
           <p><strong>Hooray! 🎉</strong></p>
-          <p>The binary successfully landed in its directory!</p>
+          <p>The binary successfully landed on your device!</p>
           <p>You can now use <code>now</code> from the command line.</p>
 
           <style jsx>
