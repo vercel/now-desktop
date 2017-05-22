@@ -1,10 +1,6 @@
-// Native
-import { execSync } from 'child_process'
-
 // Packages
 import electron from 'electron'
 import React, { Component } from 'react'
-import semVer from 'semver'
 import exists from 'path-exists'
 
 // Utilities
@@ -26,37 +22,6 @@ class Binary extends Component {
     this.remote = electron.remote || false
   }
 
-  async isOlderThanLatest(utils, binaryPath) {
-    let current
-
-    try {
-      current = await utils.getURL()
-    } catch (err) {
-      return
-    }
-
-    if (!current) {
-      return
-    }
-
-    const remoteVersion = current.version
-    let localVersion
-
-    try {
-      localVersion = execSync(binaryPath + ' -v').toString()
-    } catch (err) {
-      return
-    }
-
-    const comparision = semVer.compare(remoteVersion, localVersion)
-
-    if (comparision === 1) {
-      return true
-    }
-
-    return false
-  }
-
   async binaryInstalled() {
     if (!this.remote) {
       return
@@ -70,10 +35,6 @@ class Binary extends Component {
     }
 
     if (!await exists(binaryPath)) {
-      return false
-    }
-
-    if (await this.isOlderThanLatest(binaryUtils, binaryPath)) {
       return false
     }
 
