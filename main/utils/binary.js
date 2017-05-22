@@ -13,6 +13,7 @@ const sudo = require('sudo-prompt')
 const { resolve: resolvePath } = require('app-root-path')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
+const globalPackages = require('global-packages')
 
 const runAsRoot = command =>
   new Promise((resolve, reject) => {
@@ -142,7 +143,34 @@ const platformName = () => {
   return name
 }
 
-// Retruns the path in which the `now` binary should be saved
+exports.installedWithNPM = async () => {
+  let packages
+
+  try {
+    packages = await globalPackages()
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+
+  if (!Array.isArray(packages)) {
+    return false
+  }
+
+  const related = packages.find(item => item.name === 'noddw')
+
+  if (!related || related.linked === true) {
+    return false
+  }
+
+  if (related.linked === false) {
+    return true
+  }
+
+  return false
+}
+
+// Returns the path in which the `now` binary should be saved
 exports.getDirectory = () => {
   if (process.platform === 'win32') {
     const path = `${process.env.LOCALAPPDATA}\\now-cli`
