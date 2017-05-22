@@ -5,7 +5,6 @@ const { homedir } = require('os')
 const { app, autoUpdater } = require('electron')
 const ms = require('ms')
 const semVer = require('semver')
-const pathType = require('path-type')
 const trimWhitespace = require('trim')
 const exists = require('path-exists')
 const { exec } = require('child-process-promise')
@@ -49,7 +48,7 @@ const updateBinary = async () => {
 
   const fullPath = binaryUtils.getFile()
 
-  if (!await exists(fullPath) || (await pathType.symlink(fullPath))) {
+  if (!await exists(fullPath)) {
     return
   }
 
