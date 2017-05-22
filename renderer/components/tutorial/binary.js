@@ -5,7 +5,6 @@ import { execSync } from 'child_process'
 import electron from 'electron'
 import React, { Component } from 'react'
 import semVer from 'semver'
-import pathType from 'path-type'
 import exists from 'path-exists'
 
 // Utilities
@@ -66,11 +65,11 @@ class Binary extends Component {
     const binaryUtils = this.remote.require('./utils/binary')
     const binaryPath = binaryUtils.getFile()
 
-    if (!await exists(binaryPath)) {
-      return false
+    if (await binaryUtils.installedWithNPM()) {
+      return true
     }
 
-    if (await pathType.symlink(binaryPath)) {
+    if (!await exists(binaryPath)) {
       return false
     }
 
