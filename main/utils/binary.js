@@ -189,11 +189,15 @@ exports.handleExisting = async next => {
       await runAsRoot(removalCommand)
     }
 
-    const movePrefix = process.platform === 'win32' ? 'move' : 'mv'
-    const moveCommand = `${movePrefix} ${next} ${destFile}`
+    try {
+      await fs.rename(next, destFile)
+    } catch (err) {
+      const movePrefix = process.platform === 'win32' ? 'move' : 'mv'
+      const moveCommand = `${movePrefix} ${next} ${destFile}`
 
-    // Then move the new binary into position
-    await runAsRoot(moveCommand)
+      // Then move the new binary into position
+      await runAsRoot(moveCommand)
+    }
   }
 
   await setPermissions()
