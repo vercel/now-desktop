@@ -14,6 +14,7 @@ const {
 } = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
+const { devServer, adjustRenderer } = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
 const { moveToApplications } = require('electron-lets-move')
@@ -25,7 +26,6 @@ const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
 const { prepareCache, startRefreshing, isLoggedIn } = require('./api')
 const toggleWindow = require('./utils/frames/toggle')
-const server = require('./server')
 const {
   aboutWindow,
   tutorialWindow,
@@ -275,26 +275,13 @@ app.on('ready', async () => {
 
   if (isDev) {
     try {
-      await server()
+      await devServer(app)
     } catch (err) {
       console.error(err)
       return
     }
   } else {
-    const paths = ['_next', 'static']
-
-    protocol.interceptFileProtocol('file', (request, callback) => {
-      let filePath = request.url.substr('file'.length + 1)
-
-      for (const replacement of paths) {
-        const wrongPath = '///' + replacement
-        const rightPath = '//' + resolvePath('./renderer') + '/' + replacement
-
-        filePath = filePath.replace(wrongPath, rightPath)
-      }
-
-      callback({ path: filePath })
-    })
+    adjustRenderer(protocol)
   }
 
   const windows = {
