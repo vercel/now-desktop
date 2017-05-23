@@ -13,15 +13,21 @@ class TopArrow extends React.Component {
       left: 0
     }
 
-    setInterval(() => {
-      this.tryPosition()
-    }, 500)
-
     this.remote = electron.remote || false
   }
 
   preventDefault(event) {
     event.preventDefault()
+  }
+
+  componentDidMount() {
+    // Calculate top arrow position once in the beginning
+    this.tryPosition()
+
+    // And then every 500 milliseconds
+    setInterval(() => {
+      this.tryPosition()
+    }, 500)
   }
 
   tryPosition() {
@@ -82,9 +88,15 @@ class TopArrow extends React.Component {
   }
 
   render() {
+    const style = {}
+
+    if (this.state.left) {
+      style.paddingLeft = this.state.left
+    }
+
     return (
       <span
-        style={{ paddingLeft: this.state.left }}
+        style={style}
         onDragOver={this.preventDefault}
         onDrop={this.preventDefault}
       >
@@ -96,6 +108,11 @@ class TopArrow extends React.Component {
             height: 12px;
             flex-shrink: 0;
             display: block;
+          }
+
+          span:not([style]) {
+            display: flex;
+            justify-content: center;
           }
         `}
         </style>
