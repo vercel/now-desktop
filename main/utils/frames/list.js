@@ -12,7 +12,7 @@ const positionWindow = require('./position')
 
 const windowURL = page => {
   if (isDev) {
-    return 'http://localhost:8000'
+    return 'http://localhost:8000/' + page
   }
 
   return path.join('file://', resolve('./renderer'), page, 'index.html')
