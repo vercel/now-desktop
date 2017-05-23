@@ -122,7 +122,7 @@
   },
   "devDependencies": {
     "babili-webpack-plugin": "0.1.0",
-    "electron": "1.6.8",
+    "electron": "1.7.1",
     "electron-builder": "17.10.0",
     "electron-builder-squirrel-windows": "17.9.0",
     "eslint-config-prettier": "2.1.1",
