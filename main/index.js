@@ -34,9 +34,17 @@ let tray = null
 // Prevent having to check for login status when opening the window
 let loggedIn = null
 
-setInterval(async () => {
+const setLoggedInStatus = async () => {
   loggedIn = await isLoggedIn()
-}, 2000)
+}
+
+// Check status once in the beginning when the app starting up
+setLoggedInStatus()
+
+// And then every 2 seconds
+// We could to this on click on the tray icon, but we
+// don't want to block that action
+setInterval(setLoggedInStatus, 2000)
 
 // Set the application's name
 app.setName('Now')
