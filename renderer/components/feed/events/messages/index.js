@@ -21,6 +21,9 @@ import DomainChown from './domain-chown'
 import DomainDelete from './domain-delete'
 import Login from './login'
 import Plan from './plan'
+import Scale from './scale'
+import ScaleAuto from './scale-auto'
+import SetScale from './set-scale'
 import SecretAdd from './secret-add'
 import SecretDelete from './secret-delete'
 import SecretRename from './secret-rename'
@@ -31,7 +34,6 @@ import TeamMemberRollUpdate from './team-member-roll-update'
 import TeamNameUpdate from './team-name-update'
 import TeamSlugUpdate from './team-slug-update'
 import Username from './username'
-import Scale from './scale'
 
 export default new Map([
   ['alias', Alias],
@@ -57,6 +59,9 @@ export default new Map([
   ['domain-delete', DomainDelete],
   ['login', Login],
   ['plan', Plan],
+  ['scale', Scale],
+  ['scale-auto', ScaleAuto],
+  ['set-scale', SetScale],
   ['secret-add', SecretAdd],
   ['secret-delete', SecretDelete],
   ['secret-rename', SecretRename],
@@ -66,6 +71,5 @@ export default new Map([
   ['team-member-roll-update', TeamMemberRollUpdate],
   ['team-name-update', TeamNameUpdate],
   ['team-slug-update', TeamSlugUpdate],
-  ['username', Username],
-  ['scale', Scale]
+  ['username', Username]
 ])
