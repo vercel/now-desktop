@@ -42,12 +42,8 @@
     ],
     "extraResources": [
       {
-        "from": "renderer",
-        "to": "app/renderer",
-        "filter": [
-          ".next",
-          "static"
-        ]
+        "from": "renderer/out",
+        "to": "app/renderer"
       }
     ]
   },

@@ -15,7 +15,7 @@ const windowURL = page => {
     return 'http://localhost:8000'
   }
 
-  return path.join('file://', resolve('./renderer/out'), page, 'index.html')
+  return path.join('file://', resolve('./renderer'), page, 'index.html')
 }
 
 exports.tutorialWindow = tray => {
