@@ -280,7 +280,7 @@ app.on('ready', async () => {
 
     for (const replacement of paths) {
       const wrongPath = '///' + replacement
-      const rightPath = '//' + resolvePath('./renderer/out') + '/' + replacement
+      const rightPath = '//' + resolvePath('./renderer') + '/' + replacement
 
       filePath = filePath.replace(wrongPath, rightPath)
     }
