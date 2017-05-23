@@ -1,13 +1,21 @@
+// Native
+const path = require('path')
+
 // Packages
 const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
+const { resolve } = require('app-root-path')
 
 // Utilities
 const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
 
 const windowURL = page => {
-  return (isDev ? `http://localhost:8000` : `next://app`) + `/${page}`
+  if (isDev) {
+    return 'http://localhost:8000'
+  }
+
+  return path.join('file://', resolve('./renderer/out'), page, 'index.html')
 }
 
 exports.tutorialWindow = tray => {

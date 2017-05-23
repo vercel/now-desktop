@@ -4,7 +4,14 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Packages
-const { Menu, app, Tray, BrowserWindow, ipcMain } = require('electron')
+const {
+  Menu,
+  app,
+  Tray,
+  BrowserWindow,
+  ipcMain,
+  protocol
+} = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const { resolve: resolvePath } = require('app-root-path')
@@ -265,6 +272,21 @@ app.on('ready', async () => {
     showError('Could not spawn tray item', err)
     return
   }
+
+  const paths = ['_next', 'static']
+
+  protocol.interceptFileProtocol('file', (request, callback) => {
+    let filePath = request.url.substr('file'.length + 1)
+
+    for (const replacement of paths) {
+      const wrongPath = '///' + replacement
+      const rightPath = '//' + resolvePath('./renderer/out') + '/' + replacement
+
+      filePath = filePath.replace(wrongPath, rightPath)
+    }
+
+    callback({ path: filePath })
+  })
 
   if (isDev) {
     try {
