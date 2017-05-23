@@ -121,7 +121,7 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
-    "babili-webpack-plugin": "0.1.0",
+    "babili-webpack-plugin": "0.1.1",
     "electron": "1.7.1",
     "electron-builder": "17.10.0",
     "electron-builder-squirrel-windows": "17.9.0",
