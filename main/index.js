@@ -2,7 +2,7 @@
 const electron = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
-const { devServer, adjustRenderer } = require('electron-next')
+const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
 const { moveToApplications } = require('electron-lets-move')
@@ -264,16 +264,11 @@ app.on('ready', async () => {
     return
   }
 
-  if (isDev) {
-    try {
-      await devServer(app)
-    } catch (err) {
-      console.error(err)
-      return
-    }
-  } else {
-    adjustRenderer(electron.protocol)
-  }
+  // Ensure that `next` works with `electron`
+  await prepareNext(electron, {
+    dev: resolvePath('./renderer/out'),
+    prod: resolvePath('./renderer')
+  })
 
   // Extract each window out of the list
   const { mainWindow, tutorialWindow, aboutWindow } = windowList
