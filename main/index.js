@@ -4,14 +4,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Packages
-const {
-  Menu,
-  app,
-  Tray,
-  BrowserWindow,
-  ipcMain,
-  protocol
-} = require('electron')
+const electron = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const { devServer, adjustRenderer } = require('electron-next')
@@ -26,11 +19,7 @@ const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
 const { prepareCache, startRefreshing, isLoggedIn } = require('./api')
 const toggleWindow = require('./utils/frames/toggle')
-const {
-  aboutWindow,
-  tutorialWindow,
-  mainWindow
-} = require('./utils/frames/list')
+const windowList = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
 const { get: getConfig, save: saveConfig } = require('./utils/config')
 
@@ -54,6 +43,7 @@ setLoggedInStatus()
 setInterval(setLoggedInStatus, 2000)
 
 // Set the application's name
+const { app } = electron
 app.setName('Now')
 
 // Hide dock icon before the app starts
@@ -179,7 +169,7 @@ const contextMenu = async windows => {
     generatedMenu.push(last)
   }
 
-  return Menu.buildFromTemplate(generatedMenu)
+  return electron.Menu.buildFromTemplate(generatedMenu)
 }
 
 const fileDropped = async (event, files) => {
@@ -240,7 +230,7 @@ app.on('ready', async () => {
   // Offer to move app to Applications directory
   await moveApp()
 
-  const onlineStatusWindow = new BrowserWindow({
+  const onlineStatusWindow = new electron.BrowserWindow({
     width: 0,
     height: 0,
     show: false
@@ -250,7 +240,7 @@ app.on('ready', async () => {
     'file://' + resolvePath('./main/static/pages/status.html')
   )
 
-  ipcMain.on('online-status-changed', (event, status) => {
+  electron.ipcMain.on('online-status-changed', (event, status) => {
     process.env.CONNECTION = status
   })
 
@@ -264,7 +254,7 @@ app.on('ready', async () => {
   // I have no idea why, but path.resolve doesn't work here
   try {
     const iconName = process.platform === 'win32' ? 'iconWhite' : 'iconTemplate'
-    tray = new Tray(resolvePath(`./main/static/tray/${iconName}.png`))
+    tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`))
 
     // Opening the context menu after login should work
     global.tray = tray
@@ -281,9 +271,13 @@ app.on('ready', async () => {
       return
     }
   } else {
-    adjustRenderer(protocol)
+    adjustRenderer(electron.protocol)
   }
 
+  // Extract each window out of the list
+  const { mainWindow, tutorialWindow, aboutWindow } = windowList
+
+  // And then put it back into a list :D
   const windows = {
     main: mainWindow(tray),
     tutorial: tutorialWindow(tray),
@@ -293,7 +287,7 @@ app.on('ready', async () => {
   // Make the window instances accessible from everywhere
   global.windows = windows
 
-  ipcMain.on('open-menu', async (event, bounds) => {
+  electron.ipcMain.on('open-menu', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
