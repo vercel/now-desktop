@@ -1,8 +1,3 @@
-if (require('electron-squirrel-startup')) {
-  // eslint-disable-next-line unicorn/no-process-exit
-  process.exit()
-}
-
 // Packages
 const electron = require('electron')
 const isDev = require('electron-is-dev')
@@ -11,6 +6,7 @@ const { devServer, adjustRenderer } = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
 const { moveToApplications } = require('electron-lets-move')
+const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
 const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
@@ -22,6 +18,11 @@ const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
 const { get: getConfig, save: saveConfig } = require('./utils/config')
+
+// Immediately quit the app if squirrel is launching it
+if (squirrelStartup) {
+  electron.app.quit()
+}
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
