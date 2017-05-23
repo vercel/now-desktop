@@ -273,21 +273,6 @@ app.on('ready', async () => {
     return
   }
 
-  const paths = ['_next', 'static']
-
-  protocol.interceptFileProtocol('file', (request, callback) => {
-    let filePath = request.url.substr('file'.length + 1)
-
-    for (const replacement of paths) {
-      const wrongPath = '///' + replacement
-      const rightPath = '//' + resolvePath('./renderer') + '/' + replacement
-
-      filePath = filePath.replace(wrongPath, rightPath)
-    }
-
-    callback({ path: filePath })
-  })
-
   if (isDev) {
     try {
       await server()
@@ -295,6 +280,21 @@ app.on('ready', async () => {
       console.error(err)
       return
     }
+  } else {
+    const paths = ['_next', 'static']
+
+    protocol.interceptFileProtocol('file', (request, callback) => {
+      let filePath = request.url.substr('file'.length + 1)
+
+      for (const replacement of paths) {
+        const wrongPath = '///' + replacement
+        const rightPath = '//' + resolvePath('./renderer') + '/' + replacement
+
+        filePath = filePath.replace(wrongPath, rightPath)
+      }
+
+      callback({ path: filePath })
+    })
   }
 
   const windows = {
