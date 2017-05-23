@@ -266,11 +266,13 @@ app.on('ready', async () => {
     return
   }
 
-  try {
-    await server()
-  } catch (err) {
-    showError('Not able to start server', err)
-    return
+  if (isDev) {
+    try {
+      await server()
+    } catch (err) {
+      console.error(err)
+      return
+    }
   }
 
   const windows = {
