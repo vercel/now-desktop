@@ -1,5 +1,7 @@
 // Packages
 const { dialog } = require('electron')
+const sudo = require('sudo-prompt')
+const { resolve: resolvePath } = require('app-root-path')
 
 // Utilities
 const deploy = require('./actions/deploy')
@@ -12,6 +14,35 @@ const showDialog = details => {
   }
 
   return false
+}
+
+exports.runAsRoot = (command, why) => {
+  const answer = dialog.showMessageBox({
+    type: 'question',
+    message: 'Now Needs More Permissions',
+    detail: why,
+    buttons: ['OK', 'Please, no!']
+  })
+
+  if (answer === 1) {
+    throw new Error('No permissions given')
+  }
+
+  return new Promise((resolve, reject) => {
+    const options = {
+      name: 'Now',
+      icns: resolvePath('./main/static/icons/mac.icns')
+    }
+
+    sudo.exec(command, options, async error => {
+      if (error) {
+        reject(error)
+        return
+      }
+
+      resolve()
+    })
+  })
 }
 
 exports.deploy = async () => {

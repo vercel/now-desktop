@@ -9,8 +9,6 @@ const fetch = require('node-fetch')
 const tmp = require('tmp-promise')
 const fs = require('fs-promise')
 const which = require('which-promise')
-const sudo = require('sudo-prompt')
-const { resolve: resolvePath } = require('app-root-path')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
 const globalPackages = require('global-packages')
@@ -18,22 +16,8 @@ const { exec } = require('child-process-promise')
 const semVer = require('semver')
 const trimWhitespace = require('trim')
 
-const runAsRoot = command =>
-  new Promise((resolve, reject) => {
-    const options = {
-      name: 'Now',
-      icns: resolvePath('./main/static/icons/mac.icns')
-    }
-
-    sudo.exec(command, options, async error => {
-      if (error) {
-        reject(error)
-        return
-      }
-
-      resolve()
-    })
-  })
+// Utilities
+const { runAsRoot } = require('../dialogs')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -125,7 +109,10 @@ const setPermissions = async of => {
   }
 
   const sudoCommand = `chmod +x ${nowPath}`
-  return runAsRoot(sudoCommand)
+  return runAsRoot(
+    sudoCommand,
+    'It needs to set the correct permissions on the downloaded CLI.'
+  )
 }
 
 const platformName = () => {
@@ -217,7 +204,10 @@ exports.handleExisting = async next => {
       const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f'
       const removalCommand = `${removalPrefix} ${destFile}`
 
-      await runAsRoot(removalCommand)
+      await runAsRoot(
+        removalCommand,
+        'It needs to remove the existing CLI in order to be able to replace it.'
+      )
     }
 
     try {
@@ -227,7 +217,10 @@ exports.handleExisting = async next => {
       const renamingCommand = `${renamingPrefix} ${next} ${destFile}`
 
       // Then move the new binary into position
-      await runAsRoot(renamingCommand)
+      await runAsRoot(
+        renamingCommand,
+        'It needs to move the downloaded CLI into its place.'
+      )
     }
   }
 
