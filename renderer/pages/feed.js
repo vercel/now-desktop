@@ -108,6 +108,17 @@ class Feed extends React.Component {
     }
   }
 
+  hideWindow(event) {
+    if (!event || !event.keyCode) {
+      return
+    }
+
+    if (event.keyCode === 27) {
+      const currentWindow = this.remote.getCurrentWindow()
+      currentWindow.hide()
+    }
+  }
+
   async componentDidMount() {
     if (!this.remote) {
       return
@@ -127,10 +138,17 @@ class Feed extends React.Component {
       return
     }
 
+    currentWindow.on('show', () => {
+      document.addEventListener('keydown', this.hideWindow.bind(this))
+      console.log('test')
+    })
+
     currentWindow.on('hide', () => {
       if (this.scrollingSection) {
         this.scrollingSection.scrollTop = 0
       }
+
+      document.removeEventListener('keydown', this.hideWindow.bind(this))
     })
   }
 
