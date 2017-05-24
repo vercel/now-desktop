@@ -125,6 +125,7 @@ class EventMessage extends React.Component {
             width: 345px;
             box-sizing: border-box;
             display: flex;
+            justify-content: space-between;
           }
 
           figure:last-child figcaption {
