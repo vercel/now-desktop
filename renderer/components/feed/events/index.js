@@ -90,7 +90,7 @@ class EventMessage extends React.Component {
 
           figure figcaption {
             border-top: 1px solid #F5F5F5;
-            padding: 14px 14px 14px 0;
+            padding: 10px 10px 10px 0;
             width: 345px;
             box-sizing: border-box;
           }
@@ -104,7 +104,7 @@ class EventMessage extends React.Component {
           }
 
           figure figcaption span {
-            font-size: 12px;
+            font-size: 11px;
             color: #9B9B9B;
           }
         `}

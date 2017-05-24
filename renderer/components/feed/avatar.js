@@ -92,7 +92,7 @@ class Avatar extends React.Component {
           }
 
           .in-event {
-            margin: 15px 0 0 15px;
+            margin: 10px 10px 0 10px;
           }
         `}
         </style>
