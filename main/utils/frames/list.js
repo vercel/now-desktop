@@ -30,7 +30,10 @@ exports.tutorialWindow = tray => {
     fullscreenable: false,
     maximizable: false,
     titleBarStyle: 'hidden-inset',
-    backgroundColor: '#000'
+    backgroundColor: '#000',
+    webPreferences: {
+      backgroundThrottling: false
+    }
   })
 
   win.loadURL(windowURL('tutorial'))
@@ -73,7 +76,10 @@ exports.aboutWindow = tray => {
     minimizable: false,
     titleBarStyle: 'hidden-inset',
     frame: false,
-    backgroundColor: '#ECECEC'
+    backgroundColor: '#ECECEC',
+    webPreferences: {
+      backgroundThrottling: false
+    }
   })
 
   win.loadURL(windowURL('about'))
@@ -94,7 +100,10 @@ exports.mainWindow = tray => {
     minimizable: false,
     transparent: true,
     frame: false,
-    movable: false
+    movable: false,
+    webPreferences: {
+      backgroundThrottling: false
+    }
   })
 
   positionWindow(tray, win)
