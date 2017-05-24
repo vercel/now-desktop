@@ -6,17 +6,18 @@ class Avatar extends React.Component {
   constructor(props) {
     super(props)
 
-    // Retrieve the URL of the avatar image
-    const url = this.getURL()
-
-    // Preload avatar, prevent flickering
-    const image = new Image()
-    image.src = url
-
-    this.state = { url }
+    this.state = {
+      url: null,
+      title: null
+    }
   }
 
-  getURL() {
+  componentWillMount() {
+    this.setURL()
+    this.setTitle()
+  }
+
+  async setURL() {
     const { event, team } = this.props
 
     const teamEvents = [
@@ -41,7 +42,21 @@ class Avatar extends React.Component {
     const imageID = isUser ? id : `?teamId=${team.id}`
     const separator = isUser ? '?' : '&'
 
-    return `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
+    this.setState({
+      url: `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
+    })
+  }
+
+  async setTitle() {
+    const { team } = this.props
+
+    if (!team) {
+      return
+    }
+
+    this.setState({
+      title: team.name || team.id
+    })
   }
 
   render() {
@@ -49,7 +64,12 @@ class Avatar extends React.Component {
 
     return (
       <div>
-        <img src={this.state.url} draggable="false" className={classes} />
+        <img
+          src={this.state.url}
+          title={this.state.title}
+          draggable="false"
+          className={classes}
+        />
 
         <style jsx>
           {`
