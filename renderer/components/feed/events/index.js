@@ -124,6 +124,7 @@ class EventMessage extends React.Component {
             padding: 10px 10px 10px 0;
             width: 345px;
             box-sizing: border-box;
+            display: flex;
           }
 
           figure:last-child figcaption {
@@ -135,7 +136,7 @@ class EventMessage extends React.Component {
           }
 
           figure figcaption span {
-            font-size: 11px;
+            font-size: 10px;
             color: #9B9B9B;
           }
         `}
@@ -153,6 +154,7 @@ class EventMessage extends React.Component {
             line-height: 16px;
             display: block;
             color: #666;
+            padding-right: 10px;
           }
 
           .event p b {
