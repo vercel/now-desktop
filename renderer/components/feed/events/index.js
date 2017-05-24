@@ -56,7 +56,6 @@ class EventMessage extends React.Component {
   }
   render() {
     const info = this.props.content
-
     const Message = messageComponents.get(info.type)
 
     if (!Message) {
@@ -87,13 +86,6 @@ class EventMessage extends React.Component {
 
           figure:hover {
             background: #F5F5F5;
-          }
-
-          figure img {
-            height: 30px;
-            width: 30px;
-            border-radius: 30px;
-            margin: 15px 0 0 15px;
           }
 
           figure figcaption {
