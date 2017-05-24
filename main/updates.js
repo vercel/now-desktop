@@ -76,7 +76,9 @@ const updateBinary = async () => {
   try {
     await binaryUtils.testBinary(updateFile.path)
   } catch (err) {
+    console.log('The downloaded binary is broken')
     updateFile.cleanup()
+
     throw err
   }
 
