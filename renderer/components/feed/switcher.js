@@ -7,6 +7,9 @@ import { func, object } from 'prop-types'
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
+// Components
+import Avatar from './avatar'
+
 class Switcher extends React.Component {
   constructor(props) {
     super(props)
@@ -228,11 +231,6 @@ class Switcher extends React.Component {
     const teams = this.state.teams
 
     return teams.map((team, index) => {
-      // The first one in the array is always the current user
-      const imageID = index === 0 ? team.id : `?teamId=${team.id}`
-      const separator = index === 0 ? '?' : '&'
-      const image = `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
-
       const isActive = this.state.scope === team.id ? 'active' : ''
 
       const clicked = () => {
@@ -241,7 +239,7 @@ class Switcher extends React.Component {
 
       return (
         <li onClick={clicked} className={isActive} key={team.id}>
-          <img src={image} title={team.name || team.id} draggable="false" />
+          <Avatar team={team} isUser={index === 0} />
 
           <style jsx>
             {`
@@ -263,12 +261,6 @@ class Switcher extends React.Component {
             li.active {
               opacity: 1;
               cursor: default;
-            }
-
-            li img {
-              width: inherit;
-              height: inherit;
-              border-radius: inherit;
             }
           `}
           </style>

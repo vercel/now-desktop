@@ -6,8 +6,8 @@ import moment from 'moment'
 import dotProp from 'dot-prop'
 
 // Components
+import Avatar from '../avatar'
 import messageComponents from './messages'
-import Avatar from './avatar'
 
 class EventMessage extends React.Component {
   constructor(props) {
