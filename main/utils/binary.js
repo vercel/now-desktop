@@ -1,6 +1,7 @@
 // Native
 const path = require('path')
 const { spawnSync } = require('child_process')
+const { homedir } = require('os')
 
 // Packages
 const { ipcMain } = require('electron')
@@ -14,6 +15,9 @@ const { resolve: resolvePath } = require('app-root-path')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
 const globalPackages = require('global-packages')
+const { exec } = require('child-process-promise')
+const semVer = require('semver')
+const trimWhitespace = require('trim')
 
 const runAsRoot = command =>
   new Promise((resolve, reject) => {
@@ -96,14 +100,14 @@ const ensurePath = async () => {
   )
 }
 
-const setPermissions = async () => {
+const setPermissions = async of => {
   let nodePath
 
   try {
     nodePath = await which('node')
   } catch (err) {}
 
-  const nowPath = exports.getFile()
+  const nowPath = of || exports.getFile()
 
   if (nodePath) {
     // Get permissions = require(node binary
@@ -269,12 +273,35 @@ exports.getURL = async () => {
   }
 }
 
+exports.testBinary = async which => {
+  // Make it executable first
+  await setPermissions(which)
+
+  // And then try to get the version
+  // To see if the binary is even working
+  const cmd = await exec(`${which} -v`, {
+    cwd: homedir()
+  })
+
+  if (cmd.stdout) {
+    const output = trimWhitespace(cmd.stdout.toString())
+
+    if (semVer.valid(output)) {
+      return
+    }
+  }
+
+  throw new Error(`The downloaded binary doesn't work`)
+}
+
 exports.download = (url, binaryName, onUpdate) =>
   new Promise(async (resolve, reject) => {
     let tempDir
 
     try {
-      tempDir = await tmp.dir()
+      tempDir = await tmp.dir({
+        unsafeCleanup: true
+      })
     } catch (err) {
       reject(err)
       return

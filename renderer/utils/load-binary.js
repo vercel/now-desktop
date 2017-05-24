@@ -33,6 +33,14 @@ const loadBundled = async (section, utils) => {
     })
   }
 
+  // Check if the binary is working before moving it into place
+  try {
+    await utils.testBinary(tempLocation.path)
+  } catch (err) {
+    tempLocation.cleanup()
+    throw err
+  }
+
   try {
     await utils.handleExisting(tempLocation.path)
   } catch (err) {
