@@ -7,6 +7,7 @@ import dotProp from 'dot-prop'
 
 // Components
 import messageComponents from './messages'
+import Avatar from './avatar'
 
 class EventMessage extends React.Component {
   constructor(props) {
@@ -53,15 +54,8 @@ class EventMessage extends React.Component {
       }
     }
   }
-
   render() {
     const info = this.props.content
-    const userID = info.user ? info.user.uid : info.userId
-    const avatar = `https://zeit.co/api/www/avatar/${userID}`
-
-    // Preload avatar, prevent flickering
-    const image = new Image()
-    image.src = avatar
 
     const Message = messageComponents.get(info.type)
 
@@ -71,7 +65,7 @@ class EventMessage extends React.Component {
 
     return (
       <figure className="event" onClick={this.open.bind(this)}>
-        <img src={avatar} draggable="false" />
+        <Avatar info={info} />
 
         <figcaption>
           <Message
