@@ -13,28 +13,37 @@ class Avatar extends React.Component {
   }
 
   componentWillMount() {
-    this.setURL()
-    this.setTitle()
+    const isUser = this.isUser()
+
+    this.setURL(isUser)
+    this.setTitle(isUser)
   }
 
-  async setURL() {
+  isUser() {
     const { event, team } = this.props
+    let right = event || this.props.isUser
 
-    const teamEvents = [
-      'deployment-unfreeze',
-      'deployment-freeze',
-      'scale-auto'
-    ]
+    if (event) {
+      const teamEvents = [
+        'deployment-unfreeze',
+        'deployment-freeze',
+        'scale-auto'
+      ]
 
-    let isUser = event || this.props.isUser
+      if (Object.keys(team).length !== 0 && teamEvents.includes(event.type)) {
+        right = false
+      }
+    }
+
+    return right
+  }
+
+  async setURL(isUser) {
+    const { event, team } = this.props
     let id
 
     if (event) {
       id = event.user ? event.user.uid : event.userId
-
-      if (Object.keys(team).length !== 0 && teamEvents.includes(event.type)) {
-        isUser = false
-      }
     } else {
       id = team.id
     }
@@ -47,16 +56,19 @@ class Avatar extends React.Component {
     })
   }
 
-  async setTitle() {
-    const { team } = this.props
+  async setTitle(isUser) {
+    const { event, team } = this.props
+    let title
 
-    if (!team) {
-      return
+    if (event && event.user) {
+      title = event.user.username
     }
 
-    this.setState({
-      title: team.name || team.id
-    })
+    if ((team && !isUser) || (!event && isUser)) {
+      title = team.name || team.id
+    }
+
+    this.setState({ title })
   }
 
   render() {
