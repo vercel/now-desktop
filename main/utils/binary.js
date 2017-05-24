@@ -203,8 +203,7 @@ exports.handleExisting = async next => {
     } catch (err) {
       const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f'
       const removalCommand = `${removalPrefix} ${destFile}`
-      const why =
-        'It needs to remove the existing CLI in order to be able to replace it.'
+      const why = 'It needs to replace the existing instance of the CLI.'
 
       await runAsRoot(removalCommand, why)
     }
