@@ -72,6 +72,14 @@ const updateBinary = async () => {
 
   const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
 
+  // Check if the binary is working before moving it into place
+  try {
+    await binaryUtils.testBinary(updateFile.path)
+  } catch (err) {
+    updateFile.cleanup()
+    throw err
+  }
+
   // Make sure there's no existing binary in the way
   await binaryUtils.handleExisting(updateFile.path)
 
