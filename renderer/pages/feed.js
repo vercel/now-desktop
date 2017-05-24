@@ -114,6 +114,12 @@ class Feed extends React.Component {
     }
 
     if (event.keyCode === 27) {
+      const activeItem = document.activeElement
+
+      if (activeItem && activeItem.tagName === 'INPUT') {
+        return
+      }
+
       const currentWindow = this.remote.getCurrentWindow()
       currentWindow.hide()
     }
@@ -140,7 +146,6 @@ class Feed extends React.Component {
 
     currentWindow.on('show', () => {
       document.addEventListener('keydown', this.hideWindow.bind(this))
-      console.log('test')
     })
 
     currentWindow.on('hide', () => {
