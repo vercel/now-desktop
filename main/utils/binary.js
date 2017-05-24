@@ -15,6 +15,7 @@ const globalPackages = require('global-packages')
 const { exec } = require('child-process-promise')
 const semVer = require('semver')
 const trimWhitespace = require('trim')
+const pipe = require('promisepipe')
 
 // Utilities
 const { runAsRoot } = require('../dialogs')
@@ -282,73 +283,61 @@ exports.testBinary = async which => {
   throw new Error(`The downloaded binary doesn't work`)
 }
 
-exports.download = (url, binaryName, onUpdate) =>
-  new Promise(async (resolve, reject) => {
-    let tempDir
-
-    try {
-      tempDir = await tmp.dir({
-        unsafeCleanup: true
-      })
-    } catch (err) {
-      reject(err)
-      return
-    }
-
-    ipcMain.once('online-status-changed', (event, status) => {
-      if (status === 'offline') {
-        const error = new Error("You wen't offline! Stopping download...")
-        error.name = 'offline'
-
-        reject(error)
-      }
-    })
-
-    const binaryDownload = await fetch(url)
-    const { body } = binaryDownload
-
-    if (onUpdate) {
-      let bytes = 0
-      let bytesLoaded = 0
-      let percentage
-
-      if (binaryDownload && binaryDownload.headers) {
-        bytes = binaryDownload.headers.get('content-length')
-      } else {
-        reject(new Error('Not able to get binary size'))
-      }
-
-      body.on('data', chunk => {
-        if (!bytes) {
-          return
-        }
-
-        bytesLoaded += chunk.length
-        const newPercentage = parseInt(bytesLoaded / bytes * 100, 10)
-
-        if (newPercentage === percentage) {
-          return
-        }
-
-        // Cache the progess percentage
-        percentage = newPercentage
-
-        // Update the progress bar
-        onUpdate(percentage)
-      })
-    }
-
-    const destination = path.join(tempDir.path, binaryName)
-    const writeStream = fs.createWriteStream(destination)
-
-    const stream = body.pipe(writeStream)
-
-    stream.on('finish', () => {
-      resolve({
-        path: path.join(tempDir.path, binaryName),
-        cleanup: tempDir.cleanup
-      })
-    })
-
-    stream.on('error', reject)
+exports.download = async (url, binaryName, onUpdate) => {
+  const tempDir = await tmp.dir({
+    unsafeCleanup: true
   })
+
+  ipcMain.once('online-status-changed', (event, status) => {
+    if (status === 'offline') {
+      const error = new Error("You wen't offline! Stopping download...")
+      error.name = 'offline'
+
+      throw error
+    }
+  })
+
+  const binaryDownload = await fetch(url)
+  const { body } = binaryDownload
+
+  if (onUpdate) {
+    let bytes = 0
+    let bytesLoaded = 0
+    let percentage
+
+    if (binaryDownload && binaryDownload.headers) {
+      bytes = binaryDownload.headers.get('content-length')
+    } else {
+      throw new Error('Not able to get binary size')
+    }
+
+    body.on('data', chunk => {
+      if (!bytes) {
+        return
+      }
+
+      bytesLoaded += chunk.length
+      const newPercentage = parseInt(bytesLoaded / bytes * 100, 10)
+
+      if (newPercentage === percentage) {
+        return
+      }
+
+      // Cache the progess percentage
+      percentage = newPercentage
+
+      // Update the progress bar
+      onUpdate(percentage)
+    })
+  }
+
+  const destination = path.join(tempDir.path, binaryName)
+  const writeStream = fs.createWriteStream(destination)
+
+  await pipe(body, writeStream)
+
+  return {
+    path: path.join(tempDir.path, binaryName),
+    cleanup: tempDir.cleanup
+  }
+}
