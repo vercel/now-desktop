@@ -6,13 +6,29 @@ class Avatar extends React.Component {
   constructor(props) {
     super(props)
 
-    const { event, team } = props
+    // Retrieve the URL of the avatar image
+    const url = this.getURL()
 
-    let isUser = event || props.isUser
+    // Preload avatar, prevent flickering
+    const image = new Image()
+    image.src = url
+
+    this.state = { url }
+  }
+
+  getURL() {
+    const { event, team } = this.props
+
+    const teamEvents = [
+      'deployment-unfreeze',
+      'deployment-freeze',
+      'scale-auto'
+    ]
+
+    let isUser = event || this.props.isUser
     let id
 
     if (event) {
-      const teamEvents = ['deployment-unfreeze', 'deployment-freeze']
       id = event.user ? event.user.uid : event.userId
 
       if (Object.keys(team).length !== 0 && teamEvents.includes(event.type)) {
@@ -24,13 +40,8 @@ class Avatar extends React.Component {
 
     const imageID = isUser ? id : `?teamId=${team.id}`
     const separator = isUser ? '?' : '&'
-    const url = `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
 
-    // Preload avatar, prevent flickering
-    const image = new Image()
-    image.src = url
-
-    this.state = { url }
+    return `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
   }
 
   render() {
