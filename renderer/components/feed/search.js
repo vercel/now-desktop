@@ -66,7 +66,7 @@ class Search extends React.Component {
 
   typed(event) {
     if (event.keyCode && event.keyCode === 27) {
-      this.hide()
+      this.hide(true)
       return
     }
 
