@@ -96,7 +96,7 @@ class EventMessage extends React.Component {
           }
 
           figure:last-child figcaption {
-            padding-bottom: 16px;
+            padding-bottom: 10px;
           }
 
           figure:last-child figcaption {

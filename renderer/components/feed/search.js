@@ -153,7 +153,7 @@ class Search extends React.Component {
           }
 
           input {
-            font-size: 14px;
+            font-size: 13px;
             color: #000;
             border: 0;
             display: flex;

@@ -60,7 +60,7 @@ class Title extends React.Component {
         <style jsx>
           {`
           aside {
-            height: 36px;
+            height: 38px;
             display: flex;
             position: fixed;
             justify-content: center;
@@ -83,6 +83,7 @@ class Title extends React.Component {
           }
 
           .light {
+            height: 35px;
             border-bottom: 1px solid #D6D6D6;
             background: #fff;
             position: relative;
@@ -94,7 +95,8 @@ class Title extends React.Component {
 
           .light h1 {
             color: #000;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
           }
 
           .light .deploy {
