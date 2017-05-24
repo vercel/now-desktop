@@ -7,7 +7,6 @@ const { homedir } = require('os')
 const { ipcMain } = require('electron')
 const fetch = require('node-fetch')
 const tmp = require('tmp-promise')
-const load = require('download')
 const fs = require('fs-promise')
 const which = require('which-promise')
 const sudo = require('sudo-prompt')
@@ -316,23 +315,21 @@ exports.download = (url, binaryName, onUpdate) =>
       }
     })
 
-    const binaryDownload = load(url)
+    const binaryDownload = await fetch(url)
+    const { body } = binaryDownload
 
     if (onUpdate) {
       let bytes = 0
       let bytesLoaded = 0
       let percentage
 
-      binaryDownload.on('response', res => {
-        if (res && res.headers) {
-          bytes = res.headers['content-length']
-          return
-        }
-
+      if (binaryDownload && binaryDownload.headers) {
+        bytes = binaryDownload.headers.get('content-length')
+      } else {
         reject(new Error('Not able to get binary size'))
-      })
+      }
 
-      binaryDownload.on('data', chunk => {
+      body.on('data', chunk => {
         if (!bytes) {
           return
         }
@@ -353,7 +350,9 @@ exports.download = (url, binaryName, onUpdate) =>
     }
 
     const destination = path.join(tempDir.path, binaryName)
-    const stream = binaryDownload.pipe(fs.createWriteStream(destination))
+    const writeStream = fs.createWriteStream(destination)
+
+    const stream = body.pipe(writeStream)
 
     stream.on('finish', () => {
       resolve({

@@ -83,7 +83,6 @@
     "child-process-promise": "2.2.1",
     "deglob": "2.1.0",
     "dot-prop": "4.1.1",
-    "download": "6.1.0",
     "electron-config": "1.0.0",
     "electron-is-dev": "0.1.2",
     "electron-lets-move": "0.0.5",
