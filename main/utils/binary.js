@@ -203,11 +203,10 @@ exports.handleExisting = async next => {
     } catch (err) {
       const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f'
       const removalCommand = `${removalPrefix} ${destFile}`
-
-      await runAsRoot(
-        removalCommand,
+      const why =
         'It needs to remove the existing CLI in order to be able to replace it.'
-      )
+
+      await runAsRoot(removalCommand, why)
     }
 
     try {
@@ -215,12 +214,10 @@ exports.handleExisting = async next => {
     } catch (err) {
       const renamingPrefix = process.platform === 'win32' ? 'move' : 'mv'
       const renamingCommand = `${renamingPrefix} ${next} ${destFile}`
+      const why = 'It needs to move the downloaded CLI into its place.'
 
       // Then move the new binary into position
-      await runAsRoot(
-        renamingCommand,
-        'It needs to move the downloaded CLI into its place.'
-      )
+      await runAsRoot(renamingCommand, why)
     }
   }
 
