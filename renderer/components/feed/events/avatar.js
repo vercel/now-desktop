@@ -6,15 +6,28 @@ class Avatar extends React.Component {
   constructor(props) {
     super(props)
 
-    const { info } = props
-    const userID = info.user ? info.user.uid : info.userId
-    const url = `https://zeit.co/api/www/avatar/${userID}`
+    const { event, team } = props
+    let isUser = true
+
+    const teamEvents = ['deployment-unfreeze', 'deployment-freeze']
+
+    if (teamEvents.includes(event.type)) {
+      isUser = false
+    }
+
+    const id = event.user ? event.user.uid : event.userId
+    const imageID = isUser ? id : `?teamId=${team.id}`
+    const separator = isUser ? '?' : '&'
+    const url = `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
 
     // Preload avatar, prevent flickering
     const image = new Image()
     image.src = url
 
-    this.state = { url }
+    this.state = {
+      url,
+      scopeMatched: false
+    }
   }
 
   render() {
@@ -38,7 +51,8 @@ class Avatar extends React.Component {
 }
 
 Avatar.propTypes = {
-  info: object
+  team: object,
+  event: object
 }
 
 export default Avatar

@@ -64,7 +64,7 @@ class EventMessage extends React.Component {
 
     return (
       <figure className="event" onClick={this.open.bind(this)}>
-        <Avatar info={info} />
+        <Avatar event={info} team={this.props.team} />
 
         <figcaption>
           <Message
