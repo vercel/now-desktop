@@ -10,11 +10,7 @@ export default class DeploymentUnfreeze extends Message {
 
     return (
       <p>
-        {this.getDisplayName()}
-        {' '}
-        unfreezed the deployment
-        {' '}
-        <b>{event.payload.url}</b>
+        The deployment <b>{event.payload.url}</b> was unfrozen
       </p>
     )
   }
