@@ -106,6 +106,7 @@ class EventMessage extends React.Component {
           figure figcaption span {
             font-size: 11px;
             color: #9B9B9B;
+            display: none;
           }
         `}
         </style>
@@ -117,10 +118,16 @@ class EventMessage extends React.Component {
           }
 
           .event p {
-            font-size: 13px;
+            font-size: 12px;
             margin: 0;
-            line-height: 18px;
+            line-height: 16px;
             display: block;
+            color: #666;
+          }
+
+          .event p b {
+            font-weight: normal;
+            color: #000;
           }
 
           .event p code {

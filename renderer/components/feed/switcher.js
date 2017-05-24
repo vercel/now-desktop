@@ -250,8 +250,8 @@ class Switcher extends React.Component {
             */
 
             li {
-              width: 30px;
-              height: 30px;
+              width: 23px;
+              height: 23px;
               border-radius: 100%;
               margin-right: 10px;
               opacity: .3;
@@ -320,7 +320,7 @@ class Switcher extends React.Component {
 
           ul:after {
             content: '';
-            width: 30px;
+            width: 23px;
             display: block;
             height: inherit;
             flex-shrink: 0;
@@ -332,7 +332,7 @@ class Switcher extends React.Component {
 
           ul .shadow {
             display: block;
-            height: 49px;
+            height: 40px;
             width: 40px;
             background: linear-gradient(to right, transparent, #fff);
             position: fixed;
@@ -341,8 +341,8 @@ class Switcher extends React.Component {
           }
 
           li {
-            height: 30px;
-            width: 30px;
+            height: 23px;
+            width: 23px;
             border-radius: 100%;
             box-sizing: border-box;
             border: 1px solid #b1b1b1;
@@ -385,14 +385,13 @@ class Switcher extends React.Component {
           }
 
           aside {
-            height: 50px;
+            height: 40px;
             bottom: 0;
             left: 0;
             right: 0;
             flex-shrink: 0;
             flex-grow: 0;
             border-top: 1px solid #D6D6D6;
-            box-sizing: border-box;
             display: flex;
             background: #fff;
             user-select: none;
@@ -400,8 +399,8 @@ class Switcher extends React.Component {
 
           aside .toggle-menu {
             display: block;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -410,7 +409,7 @@ class Switcher extends React.Component {
           }
 
           aside .toggle-menu i {
-            width: 20px;
+            width: 18px;
             height: 1px;
             background: #4e4e4e;
             display: block;

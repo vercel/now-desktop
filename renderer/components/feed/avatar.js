@@ -86,9 +86,9 @@ class Avatar extends React.Component {
         <style jsx>
           {`
           img {
-            height: 30px;
-            width: 30px;
-            border-radius: 30px;
+            height: 23px;
+            width: 23px;
+            border-radius: 23px;
           }
 
           .in-event {

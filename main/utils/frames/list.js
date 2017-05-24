@@ -84,8 +84,8 @@ exports.aboutWindow = tray => {
 
 exports.mainWindow = tray => {
   const win = new BrowserWindow({
-    width: 350,
-    height: 400,
+    width: 330,
+    height: 380,
     title: 'Now',
     resizable: false,
     show: false,

@@ -317,14 +317,16 @@ class Feed extends React.Component {
           {`
           h1 {
             background: #F5F5F5;
-            font-size: 13px;
-            height: 30px;
-            line-height: 30px;
+            font-size: 10px;
+            height: 23px;
+            line-height: 23px;
             padding: 0 10px;
             color: #000;
             margin: 0;
             position: sticky;
             top: 0;
+            text-transform: uppercase;
+            font-weight: 200;
           }
         `}
         </style>
