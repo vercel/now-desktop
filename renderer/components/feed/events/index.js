@@ -4,6 +4,7 @@ import React from 'react'
 import { object } from 'prop-types'
 import moment from 'moment'
 import dotProp from 'dot-prop'
+import ms from 'ms'
 
 // Components
 import Avatar from '../avatar'
@@ -54,6 +55,36 @@ class EventMessage extends React.Component {
       }
     }
   }
+
+  parseDate(date) {
+    const parsed = moment(new Date())
+    const difference = parsed.diff(date)
+
+    const checks = {
+      '1 minute': 'seconds',
+      '1 hour': 'minutes',
+      '1 day': 'hours',
+      '7 days': 'days',
+      '30 days': 'weeks',
+      '1 year': 'months'
+    }
+
+    for (const check in checks) {
+      if (!{}.hasOwnProperty.call(checks, check)) {
+        continue
+      }
+
+      const unit = checks[check]
+      const shortUnit = unit.charAt(0)
+
+      if (difference < ms(check)) {
+        return parsed.diff(date, unit) + shortUnit
+      }
+    }
+
+    return null
+  }
+
   render() {
     const info = this.props.content
     const Message = messageComponents.get(info.type)
@@ -73,7 +104,7 @@ class EventMessage extends React.Component {
             team={this.props.team}
           />
 
-          <span>{moment(info.created).fromNow()}</span>
+          <span>{this.parseDate(info.created)}</span>
         </figcaption>
 
         <style jsx>
@@ -106,7 +137,6 @@ class EventMessage extends React.Component {
           figure figcaption span {
             font-size: 11px;
             color: #9B9B9B;
-            display: none;
           }
         `}
         </style>
