@@ -11,7 +11,7 @@ class Avatar extends React.Component {
 
     const teamEvents = ['deployment-unfreeze', 'deployment-freeze']
 
-    if (teamEvents.includes(event.type)) {
+    if (Object.keys(team).length !== 0 && teamEvents.includes(event.type)) {
       isUser = false
     }
 
