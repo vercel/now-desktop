@@ -37,17 +37,22 @@ class Switcher extends React.Component {
   }
 
   async componentDidMount() {
-    const listTimer = () => {
+    const listTimer = time => {
       setTimeout(async () => {
-        await this.loadTeams(false)
+        try {
+          await this.loadTeams(false)
+        } catch (err) {
+          listTimer(1000)
+        }
+
         listTimer()
-      }, 4000)
+      }, time || 4000)
     }
 
     // Only start updating teams once they're loaded!
     // This needs to be async so that we can already
     // start the state timer below for the data that's already cached
-    this.loadTeams(true).then(listTimer)
+    this.loadTeams(true).then(listTimer).catch(listTimer)
 
     // Try to adapt to `currentTeam` in config
     // We need to because the first one only starts

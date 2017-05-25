@@ -90,7 +90,11 @@ class Feed extends React.Component {
     }
 
     const params = queryString.stringify(query)
-    const data = await loadData(`${API_EVENTS}?${params}`)
+    let data
+
+    try {
+      data = await loadData(`${API_EVENTS}?${params}`)
+    } catch (err) {}
 
     if (!data || !data.events) {
       return
