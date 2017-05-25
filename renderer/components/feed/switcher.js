@@ -273,14 +273,29 @@ class Switcher extends React.Component {
     electron.shell.openExternal('https://zeit.co/teams/create')
   }
 
+  scrollToEnd(event) {
+    event.preventDefault()
+
+    if (!this.list) {
+      return
+    }
+
+    const list = this.list
+    list.scrollLeft = list.scrollWidth
+  }
+
   render() {
     const menuRef = element => {
       this.menu = element
     }
 
+    const listRef = element => {
+      this.list = element
+    }
+
     return (
       <aside>
-        <ul>
+        <ul ref={listRef}>
           {this.renderTeams()}
 
           <li onClick={this.createTeam} title="Create a Team">
@@ -288,7 +303,7 @@ class Switcher extends React.Component {
             <i />
           </li>
 
-          <span className="shadow" />
+          <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
         </ul>
 
         <a
