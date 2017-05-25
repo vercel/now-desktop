@@ -329,8 +329,6 @@ class Switcher extends React.Component {
       this.list = element
     }
 
-    console.log(this.state.online)
-
     return (
       <aside>
         {this.state.online
@@ -344,7 +342,7 @@ class Switcher extends React.Component {
 
               <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
             </ul>
-          : <p>{`You're offline!`}</p>}
+          : <p className="offline">{`You're offline!`}</p>}
 
         <a
           className="toggle-menu"
@@ -450,6 +448,7 @@ class Switcher extends React.Component {
             display: flex;
             background: #fff;
             user-select: none;
+            justify-content: space-between;
           }
 
           aside .toggle-menu {
@@ -478,6 +477,14 @@ class Switcher extends React.Component {
 
           aside .toggle-menu:hover i {
             opacity: 1;
+          }
+
+          .offline {
+            margin: 0;
+            line-height: 40px;
+            padding-left: 10px;
+            font-size: 12px;
+            color: #4e4e4e;
           }
         `}
         </style>
