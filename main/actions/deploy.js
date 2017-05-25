@@ -7,7 +7,6 @@ const pathType = require('path-type')
 
 // Utilities
 const upload = require('../utils/deployment/upload')
-const prepareStatic = require('../utils/deployment/prepare-static')
 
 const determineType = async item => {
   // If it's a file, it can only be of static nature
@@ -42,11 +41,5 @@ module.exports = async item => {
   }
 
   const deploymentType = await determineType(item)
-
-  if (deploymentType === 'node' || deploymentType === 'docker') {
-    await upload(item, deploymentType)
-    return
-  }
-
-  await prepareStatic(item)
+  await upload(item, deploymentType === 'static')
 }
