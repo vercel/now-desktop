@@ -87,6 +87,16 @@ class Search extends React.Component {
     }
   }
 
+  selectAll(event) {
+    if (!event) {
+      return
+    }
+
+    if (event.keyCode === 65 && event.metaKey) {
+      event.target.select()
+    }
+  }
+
   componentDidMount() {
     const remote = electron.remote || false
 
@@ -135,6 +145,7 @@ class Search extends React.Component {
             ref={inputRef}
             placeholder="Search the Timeline..."
             onKeyUp={this.typed.bind(this)}
+            onKeyDown={this.selectAll}
           />
 
           <b onClick={this.hide.bind(this)}>
