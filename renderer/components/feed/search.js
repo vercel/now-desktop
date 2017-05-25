@@ -77,6 +77,16 @@ class Search extends React.Component {
     }
   }
 
+  handleKeyDown(event) {
+    if (!event) {
+      return
+    }
+
+    if (event.keyCode === 70 && event.metaKey) {
+      this.show()
+    }
+  }
+
   componentDidMount() {
     const remote = electron.remote || false
 
@@ -94,6 +104,10 @@ class Search extends React.Component {
     if (this.props.setSearchRef) {
       this.props.setSearchRef(this)
     }
+
+    currentWindow.on('show', () => {
+      document.addEventListener('keydown', this.handleKeyDown.bind(this))
+    })
   }
 
   render() {
