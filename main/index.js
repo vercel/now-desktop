@@ -9,7 +9,7 @@ const { moveToApplications } = require('electron-lets-move')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
-const { deploymentOptions, innerMenu } = require('./menu')
+const { deploymentOptions, innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
@@ -291,11 +291,12 @@ app.on('ready', async () => {
   })
 
   const toggleActivity = async event => {
-    if (loggedIn && !windows.tutorial.isVisible()) {
+    if (loggedIn) {
       toggleWindow(event || null, windows.main, tray)
-    } else {
-      toggleWindow(event || null, windows.tutorial)
+      return
     }
+
+    toggleWindow(event || null, windows.tutorial)
   }
 
   // Only allow one instance of Now running
@@ -332,13 +333,18 @@ app.on('ready', async () => {
   tray.on('drop-files', fileDropped)
   tray.on('click', toggleActivity)
 
-  let isHighlighted = false
   let submenuShown = false
+  let isHighlighted = false
 
   tray.on('right-click', async event => {
-    const menu = await contextMenu(windows)
+    if (windows.main.isVisible()) {
+      windows.main.hide()
+      return
+    }
 
-    if (!windows.tutorial.isVisible()) {
+    const menu = loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+
+    if (!windows.tutorial.isVisible() && !windows.about.isVisible()) {
       isHighlighted = !isHighlighted
       tray.setHighlightMode(isHighlighted ? 'always' : 'never')
     }
