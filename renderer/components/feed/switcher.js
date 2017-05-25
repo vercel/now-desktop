@@ -336,7 +336,7 @@ class Switcher extends React.Component {
             width: 40px;
             background: linear-gradient(to right, transparent, #fff);
             position: fixed;
-            left: calc(350px - 40px);
+            left: calc(290px - 40px);
             bottom: 0;
           }
 
