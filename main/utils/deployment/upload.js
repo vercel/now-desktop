@@ -1,14 +1,12 @@
 // Native
-const path = require('path')
 const { basename } = require('path')
 const { homedir } = require('os')
 const qs = require('querystring')
 
 // Packages
-const { clipboard, shell, dialog } = require('electron')
+const { clipboard, shell } = require('electron')
 const { EventEmitter } = require('events')
 const { parse: parseUrl } = require('url')
-const pathExists = require('path-exists')
 const splitArray = require('split-array')
 const resumer = require('resumer')
 const retry = require('async-retry')
@@ -35,27 +33,6 @@ const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
-
-const getProjectType = (nodeReady, dockerReady) => {
-  let projectType = 'static'
-
-  if (nodeReady && dockerReady) {
-    const dialogAnswer = dialog.showMessageBox({
-      type: 'question',
-      message: 'Which File Should Be Preferred?',
-      detail: 'Depending or your choice, the deployment will either be run in Docker or Node.',
-      buttons: ['package.json', 'Dockerfile']
-    })
-
-    if (!dialogAnswer) {
-      projectType = 'npm'
-    }
-  } else if (nodeReady) {
-    projectType = 'npm'
-  }
-
-  return projectType
-}
 
 class Now extends EventEmitter {
   constructor({
@@ -413,16 +390,8 @@ class Now extends EventEmitter {
   }
 }
 
-module.exports = async (folder, sharing) => {
-  const dir = path.resolve(folder)
-
+module.exports = async (dir, deploymentType) => {
   process.env.BUSYNESS = 'deploying'
-
-  const pkgFile = path.join(dir, 'package.json')
-  const dockerFile = path.join(dir, 'Dockerfile')
-  const dockerReady = await pathExists(dockerFile)
-  const nodeReady = await pathExists(pkgFile)
-  const type = getProjectType(nodeReady, dockerReady)
 
   let config
   try {
@@ -432,19 +401,18 @@ module.exports = async (folder, sharing) => {
     return
   }
 
-  const now = new Now({ type, token: config.token, debug: true })
+  const now = new Now({
+    type: deploymentType,
+    token: config.token,
+    debug: true
+  })
 
   now.on('error', err => {
     showError(err.message)
   })
 
   try {
-    await now.create(
-      dir,
-      await readMetaData(dir, {
-        deploymentType: type
-      })
-    )
+    await now.create(dir, await readMetaData(dir, { deploymentType }))
   } catch (err) {
     showError(err.message)
     return
@@ -460,7 +428,7 @@ module.exports = async (folder, sharing) => {
 
   // Let the user now
   notify({
-    title: (sharing ? 'Sharing' : 'Deploying') + '...',
+    title: 'Deploying...',
     body: 'Your clipboard contains the URL.',
     url
   })

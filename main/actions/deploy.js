@@ -27,7 +27,7 @@ const determineType = async item => {
   // If it's not a docker deployment and it contains
   // a package.json file, it can only be a node deployment
   if (await pathExists(packagePath)) {
-    return 'node'
+    return 'npm'
   }
 
   // If it's not a file and doesn't contain any sort of
@@ -37,7 +37,7 @@ const determineType = async item => {
 
 module.exports = async item => {
   if (!await pathExists(item)) {
-    throw new Error("Path doesn't exist!")
+    throw new Error(`Path doesn't exist!`)
   }
 
   const deploymentType = await determineType(item)
