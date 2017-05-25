@@ -30,7 +30,7 @@ module.exports = (tray, window) => {
     const displayWidth = display.workAreaSize.width
 
     const left = horizontalPosition + windowWidth
-    const maxLeft = displayWidth - 20
+    const maxLeft = displayWidth - 18
 
     // Check if window would be outside screen
     // If yes, make sure it isn't
