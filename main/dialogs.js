@@ -45,6 +45,20 @@ exports.runAsRoot = (command, why) => {
   })
 }
 
+exports.error = (detail, trace, win) => {
+  // We need to log the error in order to be able to inspect it
+  if (trace) {
+    console.error(trace)
+  }
+
+  dialog.showMessageBox(win || null, {
+    type: 'error',
+    message: 'An Error Occurred',
+    detail,
+    buttons: []
+  })
+}
+
 exports.deploy = async () => {
   const info = {
     title: 'Select a file or directory to deploy',
@@ -61,18 +75,4 @@ exports.deploy = async () => {
       exports.error('Not able to deploy', err)
     }
   }
-}
-
-exports.error = function(detail, trace, win) {
-  // We need to log the error in order to be able to inspect it
-  if (trace) {
-    console.error(trace)
-  }
-
-  dialog.showMessageBox(win || null, {
-    type: 'error',
-    message: 'An Error Occurred',
-    detail,
-    buttons: []
-  })
 }

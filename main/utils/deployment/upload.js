@@ -15,7 +15,7 @@ const { readFile, stat, lstat } = require('fs-promise')
 const bytes = require('bytes')
 
 // Ours
-const { error: showError } = require('../../dialogs')
+const { showError } = require('../../dialogs')
 const notify = require('../../notify')
 const { get: getConfig } = require('../config')
 const Agent = require('./agent')
