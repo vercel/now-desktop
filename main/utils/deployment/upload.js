@@ -33,8 +33,6 @@ const MAX_CONCURRENT = 4
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
 
-// Somehow, the error dialogs need to be loaded later
-// Otherwise the loaded util file will just return nothing
 let showError = () => {}
 
 class Now extends EventEmitter {
@@ -396,6 +394,13 @@ class Now extends EventEmitter {
 module.exports = async (dir, deploymentType) => {
   process.env.BUSYNESS = 'deploying'
 
+  notify({
+    title: 'Deploying...',
+    body: 'Uploading the files and creating the deployment.'
+  })
+
+  // Somehow, the error dialogs need to be loaded later
+  // Otherwise the loaded util file will just return nothing
   const dialogs = require('../../dialogs')
   showError = dialogs.error
 
@@ -413,9 +418,7 @@ module.exports = async (dir, deploymentType) => {
     debug: true
   })
 
-  now.on('error', err => {
-    showError(err.message)
-  })
+  now.on('error', err => showError(err.message))
 
   try {
     await now.create(dir, await readMetaData(dir, { deploymentType }))
@@ -432,10 +435,10 @@ module.exports = async (dir, deploymentType) => {
   // Copy deployment URL to clipboard
   clipboard.writeText(url)
 
-  // Let the user now
+  // Let the user know
   notify({
-    title: 'Deploying...',
-    body: 'Your clipboard contains the URL.',
+    title: 'Copied URL to Clipboard!',
+    body: 'Opening the deployment in your browser...',
     url
   })
 
