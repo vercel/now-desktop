@@ -385,13 +385,13 @@ class Switcher extends React.Component {
             content: '';
             display: block;
             background: #b1b1b1;
-            height: 12px;
+            height: 11px;
             width: 1px;
             transition: all .2s ease;
           }
 
           li:hover i:before {
-            height: 16px;
+            height: 15px;
             background: #4e4e4e;
           }
 
