@@ -15,7 +15,6 @@ const { readFile, stat, lstat } = require('fs-promise')
 const bytes = require('bytes')
 
 // Ours
-const { showError } = require('../../dialogs')
 const notify = require('../../notify')
 const { get: getConfig } = require('../config')
 const Agent = require('./agent')
@@ -33,6 +32,10 @@ const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
+
+// Somehow, the error dialogs need to be loaded later
+// Otherwise the loaded util file will just return nothing
+let showError = () => {}
 
 class Now extends EventEmitter {
   constructor({
@@ -392,6 +395,9 @@ class Now extends EventEmitter {
 
 module.exports = async (dir, deploymentType) => {
   process.env.BUSYNESS = 'deploying'
+
+  const dialogs = require('../../dialogs')
+  showError = dialogs.error
 
   let config
   try {
