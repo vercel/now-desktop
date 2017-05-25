@@ -68,12 +68,12 @@ class DropZone extends React.Component {
 
           section {
             display: block;
-            height: 300px;
+            height: 291px;
             background: #fff;
             padding: 10px;
             box-sizing: border-box;
             width: 100%;
-            margin-top: 38px;
+            margin-top: 36px;
             pointer-events: none;
           }
 
