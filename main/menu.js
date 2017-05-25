@@ -1,5 +1,5 @@
 // Packages
-const { Menu, shell, clipboard } = require('electron')
+const { shell, clipboard } = require('electron')
 const moment = require('moment')
 
 // Ours
@@ -187,20 +187,3 @@ exports.innerMenu = async function(app, tray, data, windows) {
     }
   ]
 }
-
-exports.outerMenu = (app, windows) =>
-  Menu.buildFromTemplate([
-    {
-      label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
-      click() {
-        toggleWindow(null, windows.about)
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
-      role: 'quit'
-    }
-  ])

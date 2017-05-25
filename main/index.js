@@ -9,7 +9,7 @@ const { moveToApplications } = require('electron-lets-move')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
-const { outerMenu, deploymentOptions, innerMenu } = require('./menu')
+const { deploymentOptions, innerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
@@ -336,12 +336,7 @@ app.on('ready', async () => {
   let submenuShown = false
 
   tray.on('right-click', async event => {
-    if (await isLoggedIn()) {
-      toggleWindow(event, windows.main, tray)
-      return
-    }
-
-    const menu = outerMenu(app, windows)
+    const menu = await contextMenu(windows)
 
     if (!windows.tutorial.isVisible()) {
       isHighlighted = !isHighlighted
