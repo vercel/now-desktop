@@ -16,7 +16,8 @@ class Switcher extends React.Component {
 
     this.state = {
       teams: [],
-      scope: null
+      scope: null,
+      online: true
     }
 
     this.remote = electron.remote || false
@@ -36,13 +37,38 @@ class Switcher extends React.Component {
     })
   }
 
+  componentWillMount() {
+    // Support SSR
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const states = ['online', 'offline']
+
+    for (const state of states) {
+      window.addEventListener(state, this.setOnlineState.bind(this))
+    }
+  }
+
+  setOnlineState() {
+    this.setState({
+      online: navigator.onLine
+    })
+  }
+
   async componentDidMount() {
     const listTimer = time => {
       setTimeout(async () => {
+        if (!this.state.online) {
+          listTimer(1000)
+          return
+        }
+
         try {
           await this.loadTeams(false)
         } catch (err) {
           listTimer(1000)
+          return
         }
 
         listTimer()
@@ -52,6 +78,11 @@ class Switcher extends React.Component {
     // Only start updating teams once they're loaded!
     // This needs to be async so that we can already
     // start the state timer below for the data that's already cached
+    if (!this.state.online) {
+      listTimer(1000)
+      return
+    }
+
     this.loadTeams(true).then(listTimer).catch(listTimer)
 
     // Try to adapt to `currentTeam` in config
@@ -298,18 +329,22 @@ class Switcher extends React.Component {
       this.list = element
     }
 
+    console.log(this.state.online)
+
     return (
       <aside>
-        <ul ref={listRef}>
-          {this.renderTeams()}
+        {this.state.online
+          ? <ul ref={listRef}>
+              {this.renderTeams()}
 
-          <li onClick={this.createTeam} title="Create a Team">
-            <i />
-            <i />
-          </li>
+              <li onClick={this.createTeam} title="Create a Team">
+                <i />
+                <i />
+              </li>
 
-          <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
-        </ul>
+              <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
+            </ul>
+          : <p>{`You're offline!`}</p>}
 
         <a
           className="toggle-menu"
