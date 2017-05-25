@@ -108,6 +108,10 @@ class Search extends React.Component {
     currentWindow.on('show', () => {
       document.addEventListener('keydown', this.handleKeyDown.bind(this))
     })
+
+    currentWindow.on('hide', () => {
+      document.removeEventListener('keydown', this.handleKeyDown.bind(this))
+    })
   }
 
   render() {
