@@ -14,6 +14,7 @@ import DropZone from '../components/feed/dropzone'
 import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/events'
 import NoEvents from '../components/feed/events/none'
+import Loading from '../components/feed/events/loading'
 
 // Utilities
 import loadData from '../utils/data/load'
@@ -129,7 +130,7 @@ class Feed extends React.Component {
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     if (!this.remote) {
       return
     }
@@ -258,9 +259,13 @@ class Feed extends React.Component {
 
   renderEvents() {
     const scope = this.state.scope
-    const scopedEvents = this.getEvents(scope)
+    const scopedEvents = this.state.events[scope]
 
     if (!scopedEvents) {
+      return <Loading />
+    }
+
+    if (scopedEvents.length === 0) {
       return <NoEvents />
     }
 
