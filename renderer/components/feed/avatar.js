@@ -95,10 +95,6 @@ class Avatar extends React.Component {
   render() {
     let classes = this.props.event ? 'in-event' : ''
 
-    if (this.props.lineCount === 1) {
-      classes += ' one-line'
-    }
-
     if (this.props.scale) {
       classes += ' scale'
     }
@@ -134,11 +130,7 @@ class Avatar extends React.Component {
           }
 
           .in-event {
-            margin: 10px 10px 0 10px;
-          }
-
-          .one-line {
-            margin-top: 7px;
+            margin: 8px 10px 0 10px;
           }
         `}
         </style>
@@ -151,7 +143,6 @@ Avatar.propTypes = {
   team: object,
   event: object,
   isUser: bool,
-  lineCount: number,
   scale: bool,
   delay: number
 }

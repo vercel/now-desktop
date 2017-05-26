@@ -15,8 +15,7 @@ class EventMessage extends React.Component {
     super(props)
 
     this.state = {
-      url: null,
-      lineCount: 2
+      url: null
     }
   }
 
@@ -55,24 +54,6 @@ class EventMessage extends React.Component {
         break
       }
     }
-  }
-
-  componentDidMount() {
-    if (!this.message) {
-      return
-    }
-
-    // We need a slight delay in order to be able to calculate
-    // the correct height and number of lines
-    setTimeout(() => {
-      const message = this.message
-      const messageHeight = message.getBoundingClientRect().height
-      const paragraph = messageHeight - 20
-
-      this.setState({
-        lineCount: Math.round(paragraph / 16)
-      })
-    }, 50)
   }
 
   parseDate(date) {
@@ -118,11 +99,7 @@ class EventMessage extends React.Component {
 
     return (
       <figure className="event" onClick={this.open.bind(this)}>
-        <Avatar
-          event={info}
-          team={this.props.team}
-          lineCount={this.state.lineCount}
-        />
+        <Avatar event={info} team={this.props.team} />
 
         <figcaption ref={messageRef}>
           <Message
@@ -179,7 +156,7 @@ class EventMessage extends React.Component {
           .event p {
             font-size: 12px;
             margin: 0;
-            line-height: 16px;
+            line-height: 17px;
             display: block;
             color: #666;
             padding-right: 10px;
