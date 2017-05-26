@@ -17,7 +17,8 @@ class Switcher extends React.Component {
     this.state = {
       teams: [],
       scope: null,
-      online: true
+      online: true,
+      createTeam: false
     }
 
     this.remote = electron.remote || false
@@ -320,6 +321,20 @@ class Switcher extends React.Component {
     list.scrollLeft = list.scrollWidth
   }
 
+  prepareCreateTeam(when) {
+    if (when === 0) {
+      return
+    }
+
+    const delay = 100 + 250 * when
+
+    setTimeout(() => {
+      this.setState({
+        createTeam: true
+      })
+    }, delay)
+  }
+
   render() {
     const menuRef = element => {
       this.menu = element
@@ -329,13 +344,26 @@ class Switcher extends React.Component {
       this.list = element
     }
 
+    const teams = this.renderTeams()
+    let createClasses = null
+
+    if (this.state.createTeam) {
+      createClasses = 'shown'
+    } else {
+      this.prepareCreateTeam(teams.length)
+    }
+
     return (
       <aside>
         {this.state.online
           ? <ul ref={listRef}>
-              {this.renderTeams()}
+              {teams}
 
-              <li onClick={this.createTeam} title="Create a Team">
+              <li
+                onClick={this.createTeam}
+                title="Create a Team"
+                className={createClasses}
+              >
                 <i />
                 <i />
               </li>
@@ -400,8 +428,13 @@ class Switcher extends React.Component {
             box-sizing: border-box;
             border: 1px solid #b1b1b1;
             position: relative;
-            transition: all .2s ease;
+            transition: border .2s, transform 0.6s;
             flex-shrink: 0;
+            transform: scale(0);
+          }
+
+          li.shown {
+            transform: scale(1);
           }
 
           li:hover {
