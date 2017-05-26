@@ -95,7 +95,7 @@
     "email-providers": "1.0.0",
     "first-run": "1.2.0",
     "fix-path": "2.1.0",
-    "fs-promise": "2.0.3",
+    "fs-extra": "3.0.1",
     "glob": "7.1.2",
     "global-packages": "1.0.0",
     "ignore": "3.3.3",

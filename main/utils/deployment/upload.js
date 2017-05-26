@@ -11,7 +11,7 @@ const splitArray = require('split-array')
 const resumer = require('resumer')
 const retry = require('async-retry')
 const { parse: parseIni } = require('ini')
-const { readFile, stat, lstat } = require('fs-promise')
+const { readFile, stat, lstat } = require('fs-extra')
 const bytes = require('bytes')
 
 // Ours

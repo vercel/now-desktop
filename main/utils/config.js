@@ -3,7 +3,7 @@ const path = require('path')
 const { homedir } = require('os')
 
 // Packages
-const fs = require('fs-promise')
+const fs = require('fs-extra')
 const pathExists = require('path-exists')
 
 // Path to config file

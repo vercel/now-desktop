@@ -3,9 +3,9 @@ const { basename, resolve: resolvePath } = require('path')
 
 // Packages
 const chalk = require('chalk')
-const { readFile } = require('fs-promise')
+const { readFile } = require('fs-extra')
 const { parse: parseDockerfile } = require('docker-file-parser')
-const { lstat } = require('fs-promise')
+const { lstat } = require('fs-extra')
 
 module.exports = readMetaData
 
