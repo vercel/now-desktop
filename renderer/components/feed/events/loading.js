@@ -29,7 +29,7 @@ const Loading = () => (
       p {
         margin: 15px 0 0 0;
         color: #999;
-        font-weight: 500;
+        font-size: 16px;
       }
 
       span {
