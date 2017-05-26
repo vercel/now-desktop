@@ -275,7 +275,7 @@ class Switcher extends React.Component {
 
       return (
         <li onClick={clicked} className={isActive} key={team.id}>
-          <Avatar team={team} isUser={index === 0} />
+          <Avatar team={team} isUser={index === 0} scale />
 
           <style jsx>
             {`

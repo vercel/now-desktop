@@ -8,7 +8,8 @@ class Avatar extends React.Component {
 
     this.state = {
       url: null,
-      title: null
+      title: null,
+      scaled: false
     }
   }
 
@@ -78,6 +79,20 @@ class Avatar extends React.Component {
       classes += ' one-line'
     }
 
+    if (this.props.scale) {
+      classes += ' scale'
+
+      setTimeout(() => {
+        this.setState({
+          scaled: true
+        })
+      }, 100)
+    }
+
+    if (this.state.scaled) {
+      classes += ' scaled'
+    }
+
     return (
       <div>
         <img
@@ -93,6 +108,15 @@ class Avatar extends React.Component {
             height: 23px;
             width: 23px;
             border-radius: 23px;
+          }
+
+          .scale {
+            transform: scale(0);
+            transition: all 1s;
+          }
+
+          .scaled {
+            transform: scale(1);
           }
 
           .in-event {
@@ -113,7 +137,8 @@ Avatar.propTypes = {
   team: object,
   event: object,
   isUser: bool,
-  lineCount: number
+  lineCount: number,
+  scale: bool
 }
 
 export default Avatar
