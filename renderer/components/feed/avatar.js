@@ -1,6 +1,6 @@
 // Packages
 import React from 'react'
-import { object, bool } from 'prop-types'
+import { object, bool, number } from 'prop-types'
 
 class Avatar extends React.Component {
   constructor(props) {
@@ -72,7 +72,11 @@ class Avatar extends React.Component {
   }
 
   render() {
-    const classes = this.props.event ? 'in-event' : ''
+    let classes = this.props.event ? 'in-event' : ''
+
+    if (this.props.lineCount === 1) {
+      classes += ' one-line'
+    }
 
     return (
       <div>
@@ -94,6 +98,10 @@ class Avatar extends React.Component {
           .in-event {
             margin: 10px 10px 0 10px;
           }
+
+          .one-line {
+            margin-top: 7px;
+          }
         `}
         </style>
       </div>
@@ -104,7 +112,8 @@ class Avatar extends React.Component {
 Avatar.propTypes = {
   team: object,
   event: object,
-  isUser: bool
+  isUser: bool,
+  lineCount: number
 }
 
 export default Avatar

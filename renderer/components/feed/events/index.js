@@ -15,7 +15,8 @@ class EventMessage extends React.Component {
     super(props)
 
     this.state = {
-      url: null
+      url: null,
+      lineCount: 2
     }
   }
 
@@ -56,6 +57,24 @@ class EventMessage extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.message) {
+      return
+    }
+
+    // We need a slight delay in order to be able to calculate
+    // the correct height and number of lines
+    setTimeout(() => {
+      const message = this.message
+      const messageHeight = message.getBoundingClientRect().height
+      const paragraph = messageHeight - 20
+
+      this.setState({
+        lineCount: Math.round(paragraph / 16)
+      })
+    }, 50)
+  }
+
   parseDate(date) {
     const parsed = moment(new Date())
     const difference = parsed.diff(date)
@@ -93,11 +112,19 @@ class EventMessage extends React.Component {
       return null
     }
 
+    const messageRef = element => {
+      this.message = element
+    }
+
     return (
       <figure className="event" onClick={this.open.bind(this)}>
-        <Avatar event={info} team={this.props.team} />
+        <Avatar
+          event={info}
+          team={this.props.team}
+          lineCount={this.state.lineCount}
+        />
 
-        <figcaption>
+        <figcaption ref={messageRef}>
           <Message
             event={info}
             user={this.props.currentUser}
