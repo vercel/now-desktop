@@ -41,5 +41,5 @@ module.exports = async item => {
   }
 
   const deploymentType = await determineType(item)
-  await upload(item, deploymentType === 'static')
+  await upload(item, deploymentType)
 }
