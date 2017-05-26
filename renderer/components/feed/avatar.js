@@ -9,7 +9,6 @@ class Avatar extends React.Component {
     this.state = {
       url: null,
       title: null,
-      shouldScale: false,
       scaled: false
     }
   }
@@ -19,6 +18,16 @@ class Avatar extends React.Component {
 
     this.setURL(isUser)
     this.setTitle(isUser)
+  }
+
+  componentDidMount() {
+    if (!this.props.scale) {
+      return
+    }
+
+    if (!this.state.scaled) {
+      this.prepareScale(this.props.delay)
+    }
   }
 
   isUser() {
@@ -73,6 +82,16 @@ class Avatar extends React.Component {
     this.setState({ title })
   }
 
+  prepareScale(delay) {
+    const when = 100 + 250 * delay
+
+    setTimeout(() => {
+      this.setState({
+        scaled: true
+      })
+    }, when)
+  }
+
   render() {
     let classes = this.props.event ? 'in-event' : ''
 
@@ -80,18 +99,8 @@ class Avatar extends React.Component {
       classes += ' one-line'
     }
 
-    const delay = this.props.delay
-
-    if (this.props.scale && Number.isInteger(delay)) {
+    if (this.props.scale) {
       classes += ' scale'
-
-      if (!this.state.scaled) {
-        setTimeout(() => {
-          this.setState({
-            scaled: true
-          })
-        }, 100 + 250 * delay)
-      }
     }
 
     if (this.state.scaled) {
