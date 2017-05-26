@@ -9,6 +9,7 @@ class Avatar extends React.Component {
     this.state = {
       url: null,
       title: null,
+      shouldScale: false,
       scaled: false
     }
   }
@@ -79,14 +80,18 @@ class Avatar extends React.Component {
       classes += ' one-line'
     }
 
-    if (this.props.scale) {
+    const delay = this.props.delay
+
+    if (this.props.scale && Number.isInteger(delay)) {
       classes += ' scale'
 
-      setTimeout(() => {
-        this.setState({
-          scaled: true
-        })
-      }, 100)
+      if (!this.state.scaled) {
+        setTimeout(() => {
+          this.setState({
+            scaled: true
+          })
+        }, 100 + 250 * delay)
+      }
     }
 
     if (this.state.scaled) {
@@ -112,7 +117,7 @@ class Avatar extends React.Component {
 
           .scale {
             transform: scale(0);
-            transition: all 1s;
+            transition: all 0.6s;
           }
 
           .scaled {
@@ -138,7 +143,8 @@ Avatar.propTypes = {
   event: object,
   isUser: bool,
   lineCount: number,
-  scale: bool
+  scale: bool,
+  delay: number
 }
 
 export default Avatar
