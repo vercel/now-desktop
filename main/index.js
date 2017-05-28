@@ -334,7 +334,6 @@ app.on('ready', async () => {
   tray.on('click', toggleActivity)
 
   let submenuShown = false
-  let isHighlighted = false
 
   tray.on('right-click', async event => {
     if (windows.main.isVisible()) {
@@ -343,11 +342,6 @@ app.on('ready', async () => {
     }
 
     const menu = loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
-
-    if (!windows.tutorial.isVisible() && !windows.about.isVisible()) {
-      isHighlighted = !isHighlighted
-      tray.setHighlightMode(isHighlighted ? 'always' : 'never')
-    }
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)

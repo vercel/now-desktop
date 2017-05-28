@@ -14,7 +14,9 @@ const windowLeft = win => {
   }
 
   if (
-    windows.tutorial && windows.about === win && windows.tutorial.isVisible()
+    windows.tutorial &&
+    windows.about === win &&
+    windows.tutorial.isVisible()
   ) {
     return true
   }
@@ -52,7 +54,7 @@ module.exports = (win, tray) => {
       process.env.BUSYNESS = highlighted ? 'window-open' : 'ready'
 
       // Highlight the tray or don't
-      tray.setHighlightMode(highlighted ? 'always' : 'never')
+      tray.setHighlightMode(highlighted ? 'always' : 'selection')
     })
   }
 
