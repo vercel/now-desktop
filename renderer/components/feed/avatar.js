@@ -83,7 +83,7 @@ class Avatar extends React.Component {
   }
 
   prepareScale(delay) {
-    const when = 100 + 250 * delay
+    const when = 100 + 100 * delay
 
     setTimeout(() => {
       this.setState({

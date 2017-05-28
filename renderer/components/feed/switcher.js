@@ -326,7 +326,7 @@ class Switcher extends React.Component {
       return
     }
 
-    const delay = 100 + 250 * when
+    const delay = 100 + 100 * when
 
     setTimeout(() => {
       this.setState({
