@@ -114,6 +114,10 @@ class Avatar extends React.Component {
 
         <style jsx>
           {`
+          div {
+            flex-shrink: 0;
+          }
+
           img {
             height: 23px;
             width: 23px;
