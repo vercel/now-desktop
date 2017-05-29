@@ -253,7 +253,7 @@ app.on('ready', async () => {
     return app.exit()
   }
 
-  if (!loggedIn) {
+  if (!loggedIn || firstRun()) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     windows.tutorial.on('ready-to-show', () =>
