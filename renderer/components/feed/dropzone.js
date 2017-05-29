@@ -48,7 +48,7 @@ class DropZone extends React.Component {
       >
         <section>
           <span>
-            <h1>DROP TO DEPLOY</h1>
+            <h1>Drop to Deploy!</h1>
             <p>Your files will be uploaded to <b>now</b>.</p>
           </span>
         </section>
@@ -79,7 +79,7 @@ class DropZone extends React.Component {
 
           span {
             display: block;
-            border: 2px dashed #d0d0d0;
+            border: 1px dashed #d0d0d0;
             height: 100%;
             width: 100%;
             box-sizing: border-box;
@@ -89,20 +89,21 @@ class DropZone extends React.Component {
             flex-direction: column;
           }
 
-          h1, p {
-            margin: 0;
-          }
-
           h1 {
-            color: #4A4A4A;
-            text-transform: uppercase;
-            font-weight: normal;
+            font-size: 16px;
+            margin-bottom: 7px;
           }
 
           p {
-            color: #999999;
-            margin-top: 10px;
-            font-size: 13px;
+            text-align: center;
+            font-size: 12px;
+            width: 250px;
+            line-height: 20px;
+          }
+
+          b {
+            font-weight: normal;
+            text-decoration: underline;
           }
         `}
         </style>

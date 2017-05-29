@@ -21,7 +21,7 @@ class Feed extends React.Component {
     super(props)
 
     this.state = {
-      dropZone: false,
+      dropZone: true,
       events: {},
       scope: null,
       currentUser: null,
