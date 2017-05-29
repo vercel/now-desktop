@@ -1,7 +1,8 @@
 // Packages
-const { dialog } = require('electron')
+const { dialog, nativeImage } = require('electron')
 const determineType = require('deployment-type')
 const pathExists = require('path-exists')
+const { resolve } = require('app-root-path')
 
 // Utilities
 const upload = require('../utils/deployment/upload')
@@ -9,13 +10,17 @@ const { error: showError } = require('../dialogs')
 const getPlan = require('../utils/data/plan')
 
 const ossPrompt = async () => {
+  const iconPath = resolve('./main/static/icons/mac.icns')
+  const icon = nativeImage.createFromPath(iconPath)
+
   const response = dialog.showMessageBox({
     type: 'question',
     message: `You're on the OSS Plan`,
     detail: 'This means that your code and logs will be made public. Do you really want to deploy?',
     buttons: ['Yes', 'No'],
     defaultId: 0,
-    cancelId: 1
+    cancelId: 1,
+    icon
   })
 
   return response === 0
