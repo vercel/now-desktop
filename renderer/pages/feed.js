@@ -16,10 +16,6 @@ import EventMessage from '../components/feed/events'
 import NoEvents from '../components/feed/events/none'
 import Loading from '../components/feed/events/loading'
 
-// Utilities
-import loadData from '../utils/data/load'
-import { API_EVENTS } from '../utils/data/endpoints'
-
 class Feed extends React.Component {
   constructor(props) {
     super(props)
@@ -82,6 +78,13 @@ class Feed extends React.Component {
   }
 
   async loadEvents(scope, loadAll, isUser) {
+    if (!this.remote) {
+      return
+    }
+
+    const loadData = this.remote.require('./utils/data/load')
+    const { API_EVENTS } = this.remote.require('./utils/data/endpoints')
+
     const query = {
       limit: 15
     }

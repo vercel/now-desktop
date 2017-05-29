@@ -8,8 +8,6 @@ import emailProviders from 'email-providers/common'
 // Ours
 import error from '../../utils/error'
 import startRefreshment from '../../utils/refresh'
-import { API_USER } from '../../utils/data/endpoints'
-import loadData from '../../utils/data/load'
 
 const getVerificationData = async (url, email) => {
   const remote = electron.remote || false
@@ -161,6 +159,10 @@ class Login extends Component {
 
     // Also save it to now.json
     const { save: saveConfig } = this.remote.require('./utils/config')
+
+    // Load the user's data
+    const loadData = this.remote.require('./utils/data/load')
+    const { API_USER } = this.remote.require('./utils/data/endpoints')
     const userData = await loadData(API_USER, finalToken)
     const user = userData.user
 

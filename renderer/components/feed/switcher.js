@@ -3,10 +3,6 @@ import electron from 'electron'
 import React from 'react'
 import { func, object } from 'prop-types'
 
-// Utilities
-import loadData from '../../utils/data/load'
-import { API_TEAMS } from '../../utils/data/endpoints'
-
 // Components
 import Avatar from './avatar'
 
@@ -152,6 +148,12 @@ class Switcher extends React.Component {
   }
 
   async loadTeams(firstLoad) {
+    if (!this.remote) {
+      return
+    }
+
+    const loadData = this.remote.require('./utils/data/load')
+    const { API_TEAMS } = this.remote.require('./utils/data/endpoints')
     const data = await loadData(API_TEAMS)
 
     if (!data || !data.teams || !this.props.currentUser) {

@@ -1,15 +1,10 @@
 // Packages
-import electron from 'electron'
-import fetch from 'node-fetch'
+const fetch = require('node-fetch')
+
+// Utilities
+const { get: getConfig } = require('../config')
 
 const getToken = async () => {
-  const remote = electron.remote || false
-
-  if (!remote) {
-    return
-  }
-
-  const { get: getConfig } = remote.require('./utils/config')
   let config
 
   try {
@@ -24,7 +19,7 @@ const getToken = async () => {
 const NETWORK_ERR_CODE = 'network_error'
 const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry'
 
-export default async (path, token) => {
+module.exports = async (path, token) => {
   const headers = {}
   const url = `https://zeit.co/${path}`
 
