@@ -9,11 +9,10 @@ const { moveToApplications } = require('electron-lets-move')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
-const { deploymentOptions, innerMenu, outerMenu } = require('./menu')
+const { innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./actions/deploy')
 const autoUpdater = require('./updates')
-const { prepareCache, startRefreshing, isLoggedIn } = require('./api')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
@@ -32,7 +31,21 @@ let tray = null
 let loggedIn = null
 
 const setLoggedInStatus = async () => {
-  loggedIn = await isLoggedIn()
+  let config
+
+  try {
+    config = await getConfig()
+  } catch (err) {
+    loggedIn = false
+    return
+  }
+
+  if (config.token) {
+    loggedIn = true
+    return
+  }
+
+  loggedIn = false
 }
 
 // Check status once in the beginning when the app starting up
@@ -76,83 +89,14 @@ process.on('uncaughtException', err => {
   showError('Unhandled error appeared', err)
 })
 
-const cache = prepareCache()
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
-const assignAliases = (aliases, deployment) => {
-  if (aliases) {
-    const aliasInfo = aliases.find(a => deployment.uid === a.deploymentId)
-
-    if (aliasInfo) {
-      deployment.url = aliasInfo.alias
-    }
-  }
-
-  return deploymentOptions(deployment)
-}
-
-// Convert date string = API to valid date object
-const toDate = int => new Date(parseInt(int, 10))
-
 const contextMenu = async windows => {
-  const deployments = cache.get('deployments')
-  const aliases = cache.get('aliases')
-
-  const apps = new Map()
-  const deploymentList = []
-
-  if (deployments) {
-    // Order deployments by date
-    deployments.sort((a, b) => toDate(b.created) - toDate(a.created))
-
-    for (const deployment of deployments) {
-      const name = deployment.name
-
-      if (apps.has(name)) {
-        const existingDeployments = apps.get(name)
-        apps.set(name, [...existingDeployments, deployment])
-
-        continue
-      }
-
-      apps.set(name, [deployment])
-    }
-
-    apps.forEach((deployments, label) => {
-      if (deployments.length === 1) {
-        deploymentList.push(assignAliases(aliases, deployments[0]))
-        return
-      }
-
-      deploymentList.push({
-        type: 'separator'
-      })
-
-      deploymentList.push({
-        label,
-        enabled: false
-      })
-
-      for (const deployment of deployments) {
-        deploymentList.push(assignAliases(aliases, deployment))
-      }
-
-      deploymentList.push({
-        type: 'separator'
-      })
-    })
-  }
-
-  const data = {
-    deployments: deploymentList
-  }
-
-  let generatedMenu = await innerMenu(app, tray, data, windows)
+  let generatedMenu = await innerMenu(app, tray, windows)
 
   if (process.env.CONNECTION === 'offline') {
     const last = generatedMenu.slice(-1)[0]
@@ -181,7 +125,7 @@ const fileDropped = async (event, files) => {
     return
   }
 
-  if (!await isLoggedIn()) {
+  if (!loggedIn) {
     return
   }
 
@@ -309,14 +253,7 @@ app.on('ready', async () => {
     return app.exit()
   }
 
-  // If the user is logged in and the app isn't running
-  // the first time, immediately start refreshing the data
-
-  // Otherwise, ask the user to log in using the tutorial
-  if ((await isLoggedIn()) && !firstRun()) {
-    // Periodically rebuild local cache every 10 seconds
-    await startRefreshing()
-  } else {
+  if (!loggedIn) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     windows.tutorial.on('ready-to-show', () =>

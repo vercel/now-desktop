@@ -4,7 +4,6 @@ const fetch = require('node-fetch')
 // Utilities
 const { error: showError } = require('../dialogs')
 const { remove: removeConfig, get: getConfig } = require('../utils/config')
-const { prepareCache } = require('../api')
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/'
 
@@ -96,10 +95,6 @@ module.exports = async () => {
   } catch (err) {
     showError("Couldn't remove config while logging out", err)
   }
-
-  // Clear app cache
-  const cache = prepareCache()
-  cache.clear()
 
   if (windows && windows.tutorial) {
     const tutorialWindow = windows.tutorial
