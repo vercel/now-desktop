@@ -1,14 +1,18 @@
-import Client from 'now-client'
+// Packages
+import electron from 'electron'
 
 export default async token => {
-  if (!token) {
+  const remote = electron.remote || false
+
+  if (!remote) {
     return
   }
 
-  const now = new Client(token)
+  const loadData = remote.require('./utils/data/load')
+  const { API_USER } = remote.require('./utils/data/endpoints')
 
   try {
-    await now.getDeployments()
+    await loadData(API_USER, token)
   } catch (err) {
     console.log('Token within .now.json is not valid')
     console.log('Just ignore the error above')
