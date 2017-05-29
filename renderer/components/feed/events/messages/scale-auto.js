@@ -7,13 +7,13 @@ import Message from '../message'
 export default class Scale extends Message {
   render() {
     const { event } = this.props
-    const { instances } = event.payload
+    const { instances, url } = event.payload
 
     return (
       <p>
         The deployment
         {' '}
-        <b>{event.payload.deploymentId}</b>
+        <b>{url}</b>
         {' '}
         was auto-scaled to
         {' '}
