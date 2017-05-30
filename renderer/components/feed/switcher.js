@@ -92,7 +92,7 @@ class Switcher extends React.Component {
       }, 3000)
     }
 
-    stateTimer()
+    this.checkCurrentTeam().then(stateTimer).catch(stateTimer)
   }
 
   resetScope() {
@@ -112,7 +112,7 @@ class Switcher extends React.Component {
       return
     }
 
-    const { get, save } = this.remote.require('./utils/config')
+    const { get } = this.remote.require('./utils/config')
     const config = await get()
 
     if (!config) {
@@ -124,27 +124,7 @@ class Switcher extends React.Component {
       return
     }
 
-    if (this.state.teams.length === 0) {
-      return
-    }
-
-    const currentTeam = config.currentTeam
-
-    const isCached = this.state.teams.find(team => {
-      return team.id === currentTeam.id
-    })
-
-    if (!isCached) {
-      // If the current team isn't cached, remove it from config
-      await save({
-        currentTeam: {}
-      })
-
-      this.resetScope()
-      return
-    }
-
-    this.changeScope(isCached, true)
+    this.changeScope(config.currentTeam, true)
   }
 
   async loadTeams(firstLoad) {
