@@ -56,5 +56,7 @@ exports.save = async data => {
   }
 
   // Update config file
-  await fs.writeJSON(file, currentContent)
+  await fs.writeJSON(file, currentContent, {
+    spaces: 2
+  })
 }
