@@ -11,7 +11,7 @@ const squirrelStartup = require('electron-squirrel-startup')
 // Utilities
 const { innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
-const deploy = require('./actions/deploy')
+const deploy = require('./utils/deployment')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')

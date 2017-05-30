@@ -13,6 +13,8 @@ const retry = require('async-retry')
 const { parse: parseIni } = require('ini')
 const { readFile, stat, lstat } = require('fs-extra')
 const bytes = require('bytes')
+const determineType = require('deployment-type')
+const pathExists = require('path-exists')
 
 // Utilites
 const notify = require('../../notify')
@@ -426,10 +428,22 @@ class Now extends EventEmitter {
   }
 }
 
-module.exports = async (dir, deploymentType) => {
-  process.env.BUSYNESS = 'deploying'
+module.exports = async dir => {
+  if (!await pathExists(dir)) {
+    throw new Error("Path doesn't exist!")
+  }
 
+  process.env.BUSYNESS = 'deploying'
   const loadingPlan = getPlan()
+
+  let deploymentType
+
+  try {
+    deploymentType = await determineType(dir)
+  } catch (err) {
+    showError('Not able to determine deployment type', err)
+    return
+  }
 
   notify({
     title: 'Deploying...',
