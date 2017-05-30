@@ -4,7 +4,7 @@ const sudo = require('sudo-prompt')
 const { resolve: resolvePath } = require('app-root-path')
 
 // Utilities
-const deploy = require('./utils/deployment')
+const deploy = require('./utils/deploy')
 
 const showDialog = details => {
   const filePath = dialog.showOpenDialog(details)

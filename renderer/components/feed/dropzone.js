@@ -6,7 +6,7 @@ import { func } from 'prop-types'
 class DropZone extends React.Component {
   componentDidMount() {
     const remote = electron.remote || false
-    this.deploy = remote.require('./utils/deployment')
+    this.deploy = remote.require('./utils/deploy')
   }
 
   hideDropZone() {
