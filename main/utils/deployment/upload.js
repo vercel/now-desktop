@@ -405,10 +405,11 @@ module.exports = async (dir, deploymentType) => {
   showError = dialogs.error
 
   let config
+
   try {
     config = await getConfig()
   } catch (err) {
-    showError('Error reading configuration')
+    showError('Error reading configuration while deploying')
     return
   }
 

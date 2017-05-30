@@ -11,7 +11,6 @@ const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
 // Ours
-const { error: showError } = require('./dialogs')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 
@@ -118,9 +117,7 @@ const startAppUpdates = () => {
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
-  } catch (err) {
-    showError('Auto updated could not set feed URL', err)
-  }
+  } catch (err) {}
 
   const checkForUpdates = () => {
     if (process.env.CONNECTION === 'offline') {

@@ -83,12 +83,6 @@ fixPath()
 // the autoupdater if it can restart the application
 process.env.BUSYNESS = 'ready'
 
-// Make sure that unhandled errors get handled
-process.on('uncaughtException', err => {
-  console.error(err)
-  showError('Unhandled error appeared', err)
-})
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()

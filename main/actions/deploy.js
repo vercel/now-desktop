@@ -53,7 +53,7 @@ module.exports = async directory => {
   try {
     deploymentType = await determineType(directory)
   } catch (err) {
-    showError(err)
+    showError('Not able to determine deployment type', err)
     return
   }
 
