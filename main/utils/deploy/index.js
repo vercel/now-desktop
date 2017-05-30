@@ -467,7 +467,8 @@ module.exports = async dir => {
   const now = new Now({
     type: deploymentType,
     token: config.token,
-    debug: true
+    debug: true,
+    currentTeam: config.currentTeam || false
   })
 
   now.on('error', err => showError(err.message))
