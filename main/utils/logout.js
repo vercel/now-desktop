@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 
 // Utilities
 const { error: showError } = require('../dialogs')
-const { remove: removeConfig, get: getConfig } = require('../utils/config')
+const { remove: removeConfig, get: getConfig } = require('./config')
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/'
 

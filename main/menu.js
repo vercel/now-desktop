@@ -2,7 +2,7 @@
 const { Menu, shell } = require('electron')
 
 // Ours
-const logout = require('./actions/logout')
+const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { get: getConfig } = require('./utils/config')
 

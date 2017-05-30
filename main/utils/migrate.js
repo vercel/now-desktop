@@ -2,7 +2,7 @@
 const fetch = require('node-fetch')
 
 // Utilities
-const logout = require('../actions/logout')
+const logout = require('../utils/logout')
 const { get: getConfig, save: saveConfig } = require('./config')
 
 const NETWORK_ERR_CODE = 'network_error'
