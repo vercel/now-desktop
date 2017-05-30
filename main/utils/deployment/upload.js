@@ -297,6 +297,39 @@ class Now extends EventEmitter {
     return this._agent.fetch(_url, opts)
   }
 
+  async remove(deploymentId, { hard }) {
+    const data = { deploymentId, hard }
+
+    await this.retry(async bail => {
+      if (this._debug) {
+        console.time('> [debug] /remove')
+      }
+
+      const res = await this._fetch('/now/remove', {
+        method: 'DELETE',
+        body: data
+      })
+
+      if (this._debug) {
+        console.timeEnd('> [debug] /remove')
+      }
+
+      // No retry on 4xx
+      if (res.status >= 400 && res.status < 500) {
+        if (this._debug) {
+          console.log('> [debug] bailing on removal due to %s', res.status)
+        }
+        return bail(await responseError(res))
+      }
+
+      if (res.status !== 200) {
+        throw new Error('Removing deployment failed')
+      }
+    })
+
+    return true
+  }
+
   upload() {
     const parts = splitArray(this._missing, MAX_CONCURRENT)
 
@@ -432,6 +465,31 @@ module.exports = async (dir, deploymentType) => {
     return
   }
 
+  function ready() {
+    now.close()
+  }
+
+  let plan
+
+  try {
+    plan = await loadingPlan
+  } catch (err) {}
+
+  if (plan && plan.id && plan.id === 'oss') {
+    const shouldDeploy = await ossPrompt()
+
+    if (!shouldDeploy) {
+      await now.remove(now.id, { hard: true })
+
+      notify({
+        title: 'Aborted Deployment',
+        body: 'Because you chose not to continue it.'
+      })
+
+      return
+    }
+  }
+
   const { url } = now
 
   // Open the URL in the default browser
@@ -446,24 +504,6 @@ module.exports = async (dir, deploymentType) => {
     body: 'Opening the deployment in your browser...',
     url
   })
-
-  function ready() {
-    now.close()
-  }
-
-  let plan
-
-  try {
-    plan = await loadingPlan
-  } catch (err) {}
-
-  if (plan) {
-    const shouldDeploy = await ossPrompt()
-
-    if (!shouldDeploy) {
-      return
-    }
-  }
 
   if (now.syncAmount) {
     now.upload()
