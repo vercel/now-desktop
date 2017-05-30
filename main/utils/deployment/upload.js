@@ -14,9 +14,10 @@ const { parse: parseIni } = require('ini')
 const { readFile, stat, lstat } = require('fs-extra')
 const bytes = require('bytes')
 
-// Ours
+// Utilites
 const notify = require('../../notify')
 const { get: getConfig } = require('../config')
+const getPlan = require('../data/plan')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -26,6 +27,7 @@ const {
 const hash = require('./hash')
 const ua = require('./ua')
 const readMetaData = require('./read-metadata')
+const ossPrompt = require('./oss-prompt')
 
 // How many concurrent HTTP/2 stream uploads
 const MAX_CONCURRENT = 4
@@ -394,6 +396,8 @@ class Now extends EventEmitter {
 module.exports = async (dir, deploymentType) => {
   process.env.BUSYNESS = 'deploying'
 
+  const loadingPlan = getPlan()
+
   notify({
     title: 'Deploying...',
     body: 'Uploading the files and creating the deployment.'
@@ -445,6 +449,20 @@ module.exports = async (dir, deploymentType) => {
 
   function ready() {
     now.close()
+  }
+
+  let plan
+
+  try {
+    plan = await loadingPlan
+  } catch (err) {}
+
+  if (plan) {
+    const shouldDeploy = await ossPrompt()
+
+    if (!shouldDeploy) {
+      return
+    }
   }
 
   if (now.syncAmount) {
