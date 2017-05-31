@@ -1,3 +1,6 @@
+// Native
+import qs from 'querystring'
+
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -84,6 +87,28 @@ class EventMessage extends React.Component {
     return null
   }
 
+  getDashboardURL() {
+    const content = this.props.content
+
+    if (content.type !== 'deployment') {
+      return null
+    }
+
+    const { currentUser, team } = this.props
+    const payload = content.payload
+    const host = payload.deploymentUrl || payload.url
+    const [, app, id] = (host || '').match(/^(.+)-([^-]+)\.now\.sh$/) || []
+
+    if (!app || !id) {
+      return null
+    }
+
+    const handle = team ? team.slug : currentUser.username
+    const userId = currentUser.uid
+
+    return '/deployment?' + qs.stringify({ handle, userId, host })
+  }
+
   componentDidMount() {
     if (!this.remote) {
       return
@@ -104,12 +129,32 @@ class EventMessage extends React.Component {
     }
 
     const identificator = this.getID()
+    const dashboardURL = this.getDashboardURL()
 
     if (identificator) {
       menuContent.push({
         label: 'Copy ID',
         click() {
           eventItem.copyToClipboard(identificator, 'ID')
+        }
+      })
+    }
+
+    if (dashboardURL) {
+      if (menuContent.length > 0) {
+        menuContent.push({
+          type: 'separator'
+        })
+      }
+
+      menuContent.push({
+        label: 'Open in Dashboard',
+        click() {
+          if (!eventItem.remote) {
+            return
+          }
+
+          eventItem.remote.shell.openExternal(`https://zeit.co${dashboardURL}`)
         }
       })
     }
