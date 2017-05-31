@@ -219,11 +219,12 @@ app.on('ready', async () => {
     about: aboutWindow(tray)
   }
 
-  // Listen to changes inside .now.json
-  await watchConfig(windows)
-
   // Make the window instances accessible from everywhere
   global.windows = windows
+
+  // Listen to changes inside .now.json
+  // This needs to be called AFTER setting global.windows
+  await watchConfig()
 
   electron.ipcMain.on('open-menu', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {

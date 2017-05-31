@@ -61,12 +61,15 @@ exports.save = async data => {
   })
 }
 
-exports.watchConfig = async windows => {
-  if (!await pathExists(file) || !windows.main) {
+exports.watchConfig = async () => {
+  if (!await pathExists(file) || !global.windows) {
     return
   }
 
-  const mainWindow = windows.main
+  // We use the global `windows` list so that we can
+  // call this method from the renderer without having to pass
+  // the windows
+  const mainWindow = global.windows.main
 
   fs.watch(file, eventType => {
     if (eventType !== 'change') {
