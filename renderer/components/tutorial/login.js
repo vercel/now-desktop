@@ -482,6 +482,7 @@ class Login extends Component {
             font-family: inherit;
             font-size: inherit;
             margin-top: -1px;
+            white-space: nowrap;
           }
 
           #login .auto-complete span.hidden {
