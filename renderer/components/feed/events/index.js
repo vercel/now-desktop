@@ -17,22 +17,87 @@ class EventMessage extends React.Component {
     this.state = {
       url: null
     }
+
+    this.remote = electron.remote || false
+    this.menu = null
   }
 
-  open(event) {
+  click(event) {
     event.preventDefault()
 
     if (!this.state.url) {
       return
     }
 
-    const remote = electron.remote || false
-
-    if (!remote) {
+    if (!this.remote) {
       return
     }
 
-    remote.shell.openExternal(`https://${this.state.url}`)
+    this.remote.shell.openExternal(`https://${this.state.url}`)
+  }
+
+  rightClick(event) {
+    event.preventDefault()
+
+    if (!this.menu) {
+      return
+    }
+
+    this.menu.popup({
+      x: event.clientX,
+      y: event.clientY
+    })
+  }
+
+  copyToClipboard(text, type) {
+    if (!this.remote) {
+      return
+    }
+
+    const notify = this.remote.require('./notify')
+    this.remote.clipboard.writeText(text)
+
+    notify({
+      title: 'Copied to Clipboard',
+      body: `Your clipboard contains deployment ${type}`
+    })
+  }
+
+  componentDidMount() {
+    if (!this.remote) {
+      return
+    }
+
+    const Menu = this.remote.Menu
+    const eventItem = this
+    const content = this.props.content
+
+    const menuContent = []
+
+    if (this.state.url) {
+      menuContent.push({
+        label: 'Copy Address',
+        click() {
+          const url = `https://${eventItem.state.url}`
+          eventItem.copyToClipboard(url, 'address')
+        }
+      })
+    }
+
+    if (content.payload.deploymentId) {
+      menuContent.push({
+        label: 'Copy ID',
+        click() {
+          eventItem.copyToClipboard(content.payload.deploymentId, 'ID')
+        }
+      })
+    }
+
+    if (menuContent.length === 0) {
+      return
+    }
+
+    this.menu = Menu.buildFromTemplate(menuContent)
   }
 
   componentWillMount() {
@@ -98,7 +163,11 @@ class EventMessage extends React.Component {
     }
 
     return (
-      <figure className="event" onClick={this.open.bind(this)}>
+      <figure
+        className="event"
+        onClick={this.click.bind(this)}
+        onContextMenu={this.rightClick.bind(this)}
+      >
         <Avatar event={info} team={this.props.team} />
 
         <figcaption ref={messageRef}>
