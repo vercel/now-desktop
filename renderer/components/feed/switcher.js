@@ -18,6 +18,7 @@ class Switcher extends React.Component {
     }
 
     this.remote = electron.remote || false
+    this.ipcRenderer = electron.ipcRenderer || false
   }
 
   componentWillReceiveProps({ currentUser }) {
@@ -82,17 +83,25 @@ class Switcher extends React.Component {
 
     this.loadTeams().then(listTimer).catch(listTimer)
 
-    // Try to adapt to `currentTeam` in config
-    // We need to because the first one only starts
-    // again once all teams are pulled, that's too long
-    const stateTimer = () => {
-      setTimeout(async () => {
-        await this.checkCurrentTeam()
-        stateTimer()
-      }, 3000)
+    // Check the config for `currentTeam`
+    await this.checkCurrentTeam()
+
+    // Update the scope if the config changes
+    this.listenToConfig()
+  }
+
+  listenToConfig() {
+    if (!this.ipcRenderer) {
+      return
     }
 
-    this.checkCurrentTeam().then(stateTimer).catch(stateTimer)
+    this.ipcRenderer.on('config-changed', () => {
+      if (this.state.teams.length === 0) {
+        return
+      }
+
+      this.checkCurrentTeam()
+    })
   }
 
   resetScope() {

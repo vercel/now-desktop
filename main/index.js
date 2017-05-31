@@ -16,7 +16,11 @@ const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
-const { get: getConfig, save: saveConfig } = require('./utils/config')
+const {
+  get: getConfig,
+  save: saveConfig,
+  watchConfig
+} = require('./utils/config')
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
@@ -214,6 +218,9 @@ app.on('ready', async () => {
     tutorial: tutorialWindow(tray),
     about: aboutWindow(tray)
   }
+
+  // Listen to changes inside .now.json
+  await watchConfig(windows)
 
   // Make the window instances accessible from everywhere
   global.windows = windows

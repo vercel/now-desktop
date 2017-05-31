@@ -60,3 +60,19 @@ exports.save = async data => {
     spaces: 2
   })
 }
+
+exports.watchConfig = async windows => {
+  if (!await pathExists(file) || !windows.main) {
+    return
+  }
+
+  const mainWindow = windows.main
+
+  fs.watch(file, eventType => {
+    if (eventType !== 'change') {
+      return
+    }
+
+    mainWindow.webContents.send('config-changed')
+  })
+}
