@@ -59,8 +59,29 @@ class EventMessage extends React.Component {
 
     notify({
       title: 'Copied to Clipboard',
-      body: `Your clipboard contains deployment ${type}`
+      body: `Your clipboard now contains the selected ${type}.`
     })
+  }
+
+  getID() {
+    const info = this.props.content
+
+    const props = [
+      'payload.deletedUser.username',
+      'payload.slug',
+      'payload.aliasId',
+      'payload.deploymentId'
+    ]
+
+    for (const prop of props) {
+      const id = dotProp.get(info, prop)
+
+      if (id) {
+        return id
+      }
+    }
+
+    return null
   }
 
   componentDidMount() {
@@ -70,8 +91,6 @@ class EventMessage extends React.Component {
 
     const Menu = this.remote.Menu
     const eventItem = this
-    const content = this.props.content
-
     const menuContent = []
 
     if (this.state.url) {
@@ -84,11 +103,13 @@ class EventMessage extends React.Component {
       })
     }
 
-    if (content.payload.deploymentId) {
+    const identificator = this.getID()
+
+    if (identificator) {
       menuContent.push({
         label: 'Copy ID',
         click() {
-          eventItem.copyToClipboard(content.payload.deploymentId, 'ID')
+          eventItem.copyToClipboard(identificator, 'ID')
         }
       })
     }
