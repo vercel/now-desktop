@@ -54,11 +54,10 @@ const setLoggedInStatus = async () => {
 }
 
 // Check status once in the beginning when the app starting up
-setLoggedInStatus()
-
 // And then every 2 seconds
 // We could to this on click on the tray icon, but we
 // don't want to block that action
+setLoggedInStatus()
 setInterval(setLoggedInStatus, 2000)
 
 // Load the app instance from electron
