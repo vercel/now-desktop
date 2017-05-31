@@ -158,7 +158,9 @@ class Login extends Component {
     }
 
     // Also save it to now.json
-    const { save: saveConfig } = this.remote.require('./utils/config')
+    const { save: saveConfig, watchConfig } = this.remote.require(
+      './utils/config'
+    )
 
     // Load the user's data
     const loadData = this.remote.require('./utils/data/load')
@@ -179,6 +181,10 @@ class Login extends Component {
       error('Could not save config', err)
       return
     }
+
+    // Start watching for changes in .now.json
+    // This will update the scope in the main window
+    watchConfig()
 
     const remote = electron.remote || false
 
