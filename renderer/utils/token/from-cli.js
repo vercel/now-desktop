@@ -2,7 +2,6 @@
 import electron from 'electron'
 
 // Utilities
-import startRefreshment from '../refresh'
 import tokenValidated from './validate'
 
 export default async root => {
@@ -38,6 +37,4 @@ export default async root => {
     loginShown: false,
     loginText: `You've already signed in once in the now CLI.\nBecause of this, you've now been logged in automatically.`
   })
-
-  await startRefreshment()
 }

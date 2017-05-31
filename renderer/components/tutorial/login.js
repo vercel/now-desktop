@@ -7,7 +7,6 @@ import emailProviders from 'email-providers/common'
 
 // Ours
 import error from '../../utils/error'
-import startRefreshment from '../../utils/refresh'
 
 const getVerificationData = async (url, email) => {
   const remote = electron.remote || false
@@ -198,9 +197,6 @@ class Login extends Component {
     mainWindow.reload()
 
     mainWindow.once('ready-to-show', async () => {
-      // Load fresh data and auto-update it
-      await startRefreshment()
-
       window.sliderElement.setState({
         loginShown: false,
         loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
