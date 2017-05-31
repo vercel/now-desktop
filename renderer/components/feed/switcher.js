@@ -62,7 +62,7 @@ class Switcher extends React.Component {
         }
 
         try {
-          await this.loadTeams(false)
+          await this.loadTeams()
         } catch (err) {
           listTimer(1000)
           return
@@ -80,7 +80,7 @@ class Switcher extends React.Component {
       return
     }
 
-    this.loadTeams(true).then(listTimer).catch(listTimer)
+    this.loadTeams().then(listTimer).catch(listTimer)
 
     // Try to adapt to `currentTeam` in config
     // We need to because the first one only starts
@@ -127,7 +127,7 @@ class Switcher extends React.Component {
     this.changeScope(config.currentTeam, true)
   }
 
-  async loadTeams(firstLoad) {
+  async loadTeams() {
     if (!this.remote) {
       return
     }
@@ -158,12 +158,6 @@ class Switcher extends React.Component {
 
       // Save teams
       await this.props.setTeams(teams)
-    }
-
-    // See if config has `currentTeam` saved and
-    // update the scope if so
-    if (firstLoad) {
-      await this.checkCurrentTeam()
     }
   }
 
