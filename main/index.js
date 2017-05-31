@@ -21,6 +21,7 @@ const {
   save: saveConfig,
   watchConfig
 } = require('./utils/config')
+const handleException = require('./utils/exception')
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
@@ -60,9 +61,14 @@ setLoggedInStatus()
 // don't want to block that action
 setInterval(setLoggedInStatus, 2000)
 
-// Set the application's name
+// Load the app instance from electron
 const { app } = electron
+
+// Set the application's name
 app.setName('Now')
+
+// Handle uncaught exceptions
+process.on('uncaughtException', handleException)
 
 // Hide dock icon before the app starts
 // This is only required for development because
