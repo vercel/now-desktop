@@ -2,7 +2,7 @@
 const fetch = require('node-fetch')
 
 // Utilities
-const { get: getConfig } = require('../config')
+const { getConfig } = require('../config')
 
 const getToken = async () => {
   let config

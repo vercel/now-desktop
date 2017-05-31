@@ -16,11 +16,7 @@ const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const migrate = require('./utils/migrate')
-const {
-  get: getConfig,
-  save: saveConfig,
-  watchConfig
-} = require('./utils/config')
+const { getConfig, saveConfig, watchConfig } = require('./utils/config')
 const handleException = require('./utils/exception')
 
 // Immediately quit the app if squirrel is launching it

@@ -18,7 +18,7 @@ const pathExists = require('path-exists')
 
 // Utilites
 const notify = require('../../notify')
-const { get: getConfig } = require('../config')
+const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const Agent = require('./agent')
 const {

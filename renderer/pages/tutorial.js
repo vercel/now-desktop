@@ -131,7 +131,7 @@ class Sections extends Component {
       return
     }
 
-    const { get: getConfig } = this.remote.require('./utils/config')
+    const { getConfig } = this.remote.require('./utils/config')
 
     try {
       await getConfig()

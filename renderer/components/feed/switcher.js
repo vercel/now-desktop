@@ -175,7 +175,7 @@ class Switcher extends React.Component {
       return
     }
 
-    const { save: saveConfig } = this.remote.require('./utils/config')
+    const { saveConfig } = this.remote.require('./utils/config')
     const currentUser = this.props.currentUser
 
     if (!currentUser) {

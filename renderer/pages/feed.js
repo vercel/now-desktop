@@ -138,7 +138,7 @@ class Feed extends React.Component {
       return
     }
 
-    const { get: getConfig } = this.remote.require('./utils/config')
+    const { getConfig } = this.remote.require('./utils/config')
     const config = await getConfig()
 
     this.setState({

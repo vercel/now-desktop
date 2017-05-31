@@ -157,9 +157,7 @@ class Login extends Component {
     }
 
     // Also save it to now.json
-    const { save: saveConfig, watchConfig } = this.remote.require(
-      './utils/config'
-    )
+    const { saveConfig, watchConfig } = this.remote.require('./utils/config')
 
     // Load the user's data
     const loadData = this.remote.require('./utils/data/load')

@@ -4,7 +4,7 @@ const { Menu, shell } = require('electron')
 // Ours
 const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
-const { get: getConfig } = require('./utils/config')
+const { getConfig } = require('./utils/config')
 
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()

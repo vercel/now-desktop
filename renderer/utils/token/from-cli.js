@@ -11,9 +11,7 @@ export default async root => {
     return
   }
 
-  const { get: getConfig, remove: removeConfig } = remote.require(
-    './utils/config'
-  )
+  const { getConfig, removeConfig } = remote.require('./utils/config')
   window.sliderElement = root
 
   let config
