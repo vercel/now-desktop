@@ -49,9 +49,7 @@ class Feed extends React.Component {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
-      const isUser = focusedIndex === 0
-
-      this.loadEvents(focusedTeam.id, isUser)
+      this.loadEvents(focusedTeam.id)
     }
 
     // Update the feed of events for each team
@@ -70,15 +68,13 @@ class Feed extends React.Component {
         continue
       }
 
-      const isUser = index === 0
-
       // Wait for the requests to finish (`await`), otherwise
       // the server will get confused and throw an error
-      await this.loadEvents(team.id, isUser)
+      await this.loadEvents(team.id)
     }
   }
 
-  async loadEvents(scope, isUser) {
+  async loadEvents(scope) {
     if (!this.remote) {
       return
     }
@@ -89,12 +85,14 @@ class Feed extends React.Component {
     const teams = this.state.teams
     const relatedCache = teams.find(item => item.id === scope)
     const lastUpdate = relatedCache.lastUpdate
+    const relatedCacheIndex = teams.indexOf(relatedCache)
 
     const query = {
       limit: 15
     }
 
-    if (!isUser) {
+    // Check if it's a user (always the first team)
+    if (relatedCacheIndex > 0) {
       query.teamId = scope
     }
 
@@ -114,9 +112,7 @@ class Feed extends React.Component {
     }
 
     const hasEvents = data.events.length > 0
-
     const events = this.state.events
-    const relatedCacheIndex = teams.indexOf(relatedCache)
     const scopedEvents = events[scope]
 
     if (hasEvents) {
@@ -287,10 +283,12 @@ class Feed extends React.Component {
 
   scrolled(event) {
     const section = event.target
+    const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
+    const distance = section.scrollHeight - section.scrollTop
 
-    console.log(section.scrollTop)
-
-    console.log(this.scrollingSection.scrollHeight)
+    if (distance < offset) {
+      console.log('load data')
+    }
   }
 
   renderEvents() {
@@ -379,7 +377,7 @@ class Feed extends React.Component {
     ])
   }
 
-  loadingIndicator() {
+  loadingOlder() {
     if (this.state.eventFilter) {
       return
     }
@@ -392,7 +390,11 @@ class Feed extends React.Component {
     }
 
     return (
-      <aside>
+      <aside
+        ref={ele => {
+          this.loadingIndicator = ele
+        }}
+      >
         Loading holder events...
 
         <style jsx>
@@ -443,7 +445,7 @@ class Feed extends React.Component {
             onScroll={this.scrolled.bind(this)}
           >
             {this.renderEvents(scope)}
-            {this.loadingIndicator()}
+            {this.loadingOlder()}
           </section>
 
           <Switcher
