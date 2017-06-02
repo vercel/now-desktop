@@ -121,8 +121,8 @@ class Switcher extends React.Component {
       return
     }
 
-    const { get } = this.remote.require('./utils/config')
-    const config = await get()
+    const { getConfig } = this.remote.require('./utils/config')
+    const config = await getConfig()
 
     if (!config) {
       return
