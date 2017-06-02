@@ -120,9 +120,11 @@ class Feed extends React.Component {
     teams[relatedCacheIndex].lastUpdate = data.events[0].created
 
     if (scopedEvents) {
-      events[scope] = makeUnique(data.events.concat(scopedEvents), (a, b) => {
-        return a.id === b.id
-      })
+      const merged = data.events.concat(scopedEvents)
+      const unique = makeUnique(merged, (a, b) => a.id === b.id)
+
+      // Ensure that never more than 40 events are cached
+      events[scope] = unique.slice(0, 40)
     } else {
       events[scope] = data.events
     }
