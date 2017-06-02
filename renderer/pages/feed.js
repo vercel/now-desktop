@@ -281,6 +281,14 @@ class Feed extends React.Component {
     return scopedEvents
   }
 
+  scrolled(event) {
+    const section = event.target
+
+    console.log(section.scrollTop)
+
+    console.log(this.scrollingSection.scrollHeight)
+  }
+
   renderEvents() {
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
@@ -367,6 +375,37 @@ class Feed extends React.Component {
     ])
   }
 
+  loadingIndicator() {
+    if (this.state.eventFilter) {
+      return
+    }
+
+    const scope = this.state.scope
+    const scopedEvents = this.state.events[scope]
+
+    if (!scopedEvents || scopedEvents.length < 15) {
+      return
+    }
+
+    return (
+      <aside>
+        Loading holder events...
+
+        <style jsx>
+          {`
+          aside {
+            font-size: 12px;
+            color: #666666;
+            text-align: center;
+            background: #F5F5F5;
+            padding: 12px 0;
+          }
+        `}
+        </style>
+      </aside>
+    )
+  }
+
   render() {
     const setRef = (name, element) => {
       this[name] = element
@@ -395,9 +434,12 @@ class Feed extends React.Component {
               hide={this.hideDropZone.bind(this)}
             />}
 
-          <section ref={setRef.bind(this, 'scrollingSection')}>
+          <section
+            ref={setRef.bind(this, 'scrollingSection')}
+            onScroll={this.scrolled.bind(this)}
+          >
             {this.renderEvents(scope)}
-            {!this.state.eventFilter && <aside>Loading holder events...</aside>}
+            {this.loadingIndicator()}
           </section>
 
           <Switcher
@@ -431,14 +473,6 @@ class Feed extends React.Component {
             cursor: default;
             flex-shrink: 1;
             position: relative;
-          }
-
-          aside {
-            font-size: 12px;
-            color: #666666;
-            text-align: center;
-            background: #F5F5F5;
-            padding: 12px 0;
           }
 
           /*
