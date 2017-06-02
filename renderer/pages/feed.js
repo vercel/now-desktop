@@ -397,6 +397,7 @@ class Feed extends React.Component {
 
           <section ref={setRef.bind(this, 'scrollingSection')}>
             {this.renderEvents(scope)}
+            <aside>Loading holder events...</aside>
           </section>
 
           <Switcher
@@ -430,6 +431,14 @@ class Feed extends React.Component {
             cursor: default;
             flex-shrink: 1;
             position: relative;
+          }
+
+          aside {
+            font-size: 12px;
+            color: #666666;
+            text-align: center;
+            background: #F5F5F5;
+            padding: 12px 0;
           }
 
           /*
