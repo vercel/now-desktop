@@ -50,7 +50,7 @@ class Feed extends React.Component {
       focusedIndex = teams.indexOf(focusedTeam)
       const isUser = focusedIndex === 0
 
-      this.loadEvents(focusedTeam.id, false, isUser)
+      this.loadEvents(focusedTeam.id, isUser)
     }
 
     // Update the feed of events for each team
@@ -73,11 +73,11 @@ class Feed extends React.Component {
 
       // Wait for the requests to finish (`await`), otherwise
       // the server will get confused and throw an error
-      await this.loadEvents(team.id, false, isUser)
+      await this.loadEvents(team.id, isUser)
     }
   }
 
-  async loadEvents(scope, loadAll, isUser) {
+  async loadEvents(scope, isUser) {
     if (!this.remote) {
       return
     }
@@ -104,16 +104,17 @@ class Feed extends React.Component {
       return
     }
 
-    // Make sure to respect cached events
     const events = this.state.events
+    const teams = this.state.teams
 
-    // Cache events
-    events[scope] = data.events
-    this.setState({ events })
+    const relatedCache = teams.findIndex(item => item.id === scope)
 
-    if (loadAll) {
-      await this.updateEvents(scope)
+    if (relatedCache !== -1) {
+      teams[relatedCache].lastUpdate = Date.now()
     }
+
+    events[scope] = data.events
+    this.setState({ events, teams })
   }
 
   hideWindow(event) {
@@ -191,6 +192,10 @@ class Feed extends React.Component {
   }
 
   async setTeams(teams) {
+    for (const team of teams) {
+      team.lastUpdate = null
+    }
+
     this.setState({ teams })
     await this.updateEvents()
   }
