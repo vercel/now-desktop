@@ -3,7 +3,7 @@ const { resolve } = require('path')
 
 // Packages
 const flatten = require('arr-flatten')
-const unique = require('array-unique')
+const unique = require('make-unique')
 const ignore = require('ignore')
 const _glob = require('glob')
 const { stat, lstat, readdir, readFile } = require('fs-extra')
