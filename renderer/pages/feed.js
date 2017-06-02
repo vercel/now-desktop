@@ -85,12 +85,20 @@ class Feed extends React.Component {
     const loadData = this.remote.require('./utils/data/load')
     const { API_EVENTS } = this.remote.require('./utils/data/endpoints')
 
+    const teams = this.state.teams
+    const relatedCache = teams.find(item => item.id === scope)
+    const lastUpdate = relatedCache.lastUpdate
+
     const query = {
       limit: 15
     }
 
     if (!isUser) {
       query.teamId = scope
+    }
+
+    if (typeof relatedCache !== 'undefined' && lastUpdate) {
+      query.since = lastUpdate
     }
 
     const params = queryString.stringify(query)
@@ -105,15 +113,11 @@ class Feed extends React.Component {
     }
 
     const events = this.state.events
-    const teams = this.state.teams
+    const relatedCacheIndex = teams.indexOf(relatedCache)
 
-    const relatedCache = teams.findIndex(item => item.id === scope)
-
-    if (relatedCache !== -1) {
-      teams[relatedCache].lastUpdate = Date.now()
-    }
-
+    teams[relatedCacheIndex].lastUpdate = data.events[0].created
     events[scope] = data.events
+
     this.setState({ events, teams })
   }
 
@@ -193,7 +197,8 @@ class Feed extends React.Component {
 
   async setTeams(teams) {
     for (const team of teams) {
-      team.lastUpdate = null
+      const relatedCache = this.state.teams.find(item => item.id === team.id)
+      team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
     this.setState({ teams })
@@ -304,8 +309,8 @@ class Feed extends React.Component {
       })
     }
 
-    const eventList = month => {
-      return months[month].map(item => {
+    const eventList = month =>
+      months[month].map(item => {
         return (
           <EventMessage
             content={item}
@@ -315,7 +320,6 @@ class Feed extends React.Component {
           />
         )
       })
-    }
 
     const monthKeys = Object.keys(months)
 
