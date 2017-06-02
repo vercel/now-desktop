@@ -27,7 +27,8 @@ class Feed extends React.Component {
       scope: null,
       currentUser: null,
       teams: [],
-      eventFilter: null
+      eventFilter: null,
+      loading: new Set()
     }
 
     this.remote = electron.remote || false
@@ -74,10 +75,28 @@ class Feed extends React.Component {
     }
   }
 
-  async loadEvents(scope) {
-    if (!this.remote) {
+  isLoading(scope, condition) {
+    const loading = this.state.loading
+
+    if (typeof condition === 'undefined') {
+      return loading.has(scope)
+    }
+
+    if (condition) {
+      loading.add(scope)
+    } else {
+      loading.delete(scope)
+    }
+
+    this.setState({ loading })
+  }
+
+  async loadEvents(scope, until) {
+    if (!this.remote || this.isLoading(scope)) {
       return
     }
+
+    this.isLoading(scope, true)
 
     const loadData = this.remote.require('./utils/data/load')
     const { API_EVENTS } = this.remote.require('./utils/data/endpoints')
@@ -96,7 +115,9 @@ class Feed extends React.Component {
       query.teamId = scope
     }
 
-    if (typeof relatedCache !== 'undefined' && lastUpdate) {
+    if (until) {
+      query.until = until
+    } else if (typeof relatedCache !== 'undefined' && lastUpdate) {
       query.since = lastUpdate
     }
 
@@ -108,6 +129,7 @@ class Feed extends React.Component {
     } catch (err) {}
 
     if (!data || !data.events) {
+      this.isLoading(scope, false)
       return
     }
 
@@ -130,6 +152,7 @@ class Feed extends React.Component {
     }
 
     this.setState({ events, teams })
+    this.isLoading(scope, false)
   }
 
   hideWindow(event) {
@@ -286,8 +309,12 @@ class Feed extends React.Component {
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
 
-    if (distance < offset) {
-      console.log('load data')
+    if (distance < offset + 100) {
+      const scope = this.state.scope
+      const scopedEvents = this.state.events[scope]
+      const lastEvent = scopedEvents[scopedEvents.length - 1]
+
+      this.loadEvents(scope, lastEvent.created)
     }
   }
 
@@ -389,13 +416,13 @@ class Feed extends React.Component {
       return
     }
 
+    const loaderRef = element => {
+      this.loadingIndicator = element
+    }
+
     return (
-      <aside
-        ref={ele => {
-          this.loadingIndicator = ele
-        }}
-      >
-        Loading holder events...
+      <aside ref={loaderRef}>
+        Loading older events...
 
         <style jsx>
           {`
