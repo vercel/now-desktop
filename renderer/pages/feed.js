@@ -6,6 +6,7 @@ import electron from 'electron'
 import React from 'react'
 import moment from 'moment'
 import dotProp from 'dot-prop'
+import makeUnique from 'make-unique'
 
 // Components
 import Title from '../components/title'
@@ -114,9 +115,17 @@ class Feed extends React.Component {
 
     const events = this.state.events
     const relatedCacheIndex = teams.indexOf(relatedCache)
+    const scopedEvents = events[scope]
 
     teams[relatedCacheIndex].lastUpdate = data.events[0].created
-    events[scope] = data.events
+
+    if (scopedEvents) {
+      events[scope] = makeUnique(data.events.concat(scopedEvents), (a, b) => {
+        return a.id === b.id
+      })
+    } else {
+      events[scope] = data.events
+    }
 
     this.setState({ events, teams })
   }
