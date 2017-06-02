@@ -139,7 +139,7 @@ class Search extends React.Component {
           <MagnifyingGlass />
         </span>
 
-        <form ref={formRef}>
+        <div ref={formRef}>
           <input
             type="text"
             ref={inputRef}
@@ -151,7 +151,7 @@ class Search extends React.Component {
           <b onClick={this.hide.bind(this)}>
             <Clear />
           </b>
-        </form>
+        </div>
 
         <style jsx>
           {`
@@ -196,7 +196,7 @@ class Search extends React.Component {
             outline: none;
           }
 
-          form {
+          div {
             width: 100%;
             display: flex;
             justify-content: space-between;
@@ -225,7 +225,7 @@ class Search extends React.Component {
             z-index: 2000;
           }
 
-          .visible form {
+          .visible div {
             opacity: 1;
           }
 
