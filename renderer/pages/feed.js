@@ -397,7 +397,7 @@ class Feed extends React.Component {
 
           <section ref={setRef.bind(this, 'scrollingSection')}>
             {this.renderEvents(scope)}
-            <aside>Loading holder events...</aside>
+            {!this.state.eventFilter && <aside>Loading holder events...</aside>}
           </section>
 
           <Switcher
