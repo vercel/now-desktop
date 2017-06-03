@@ -344,7 +344,7 @@ class Feed extends React.Component {
     const distance = section.scrollHeight - section.scrollTop
     const scope = this.state.scope
 
-    if (distance < offset + 100 && !this.isLoading(scope)) {
+    if (distance < offset + 300 && !this.isLoading(scope)) {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
