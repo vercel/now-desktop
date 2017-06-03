@@ -142,11 +142,21 @@ class Feed extends React.Component {
     }
 
     if (hasEvents && scopedEvents) {
-      const merged = data.events.concat(scopedEvents)
+      let merged
+
+      // When using infinite scrolling, we need to
+      // add the events to the end, otherwise before
+      if (until) {
+        merged = scopedEvents.concat(data.events)
+      } else {
+        merged = data.events.concat(scopedEvents)
+      }
+
       const unique = makeUnique(merged, (a, b) => a.id === b.id)
 
       // Ensure that never more than 40 events are cached
-      events[scope] = unique.slice(0, 40)
+      // But only if infinite scrolling isn't being used
+      events[scope] = until ? unique : unique.slice(0, 40)
     } else {
       events[scope] = data.events
     }
