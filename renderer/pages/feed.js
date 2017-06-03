@@ -209,6 +209,14 @@ class Feed extends React.Component {
         this.scrollingSection.scrollTop = 0
       }
 
+      const events = this.state.events
+      const scope = this.state.scope
+
+      if (scope && events[scope] && events[scope].length > 15) {
+        events[scope] = events[scope].slice(0, 15)
+        this.setState({ events })
+      }
+
       document.removeEventListener('keydown', this.hideWindow.bind(this))
     })
   }
