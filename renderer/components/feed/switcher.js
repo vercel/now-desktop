@@ -189,6 +189,12 @@ class Switcher extends React.Component {
   }
 
   keyDown(event) {
+    const activeItem = document.activeElement
+
+    if (activeItem && activeItem.tagName === 'INPUT') {
+      return
+    }
+
     const code = event.code
     const number = code.includes('Digit') ? code.split('Digit')[1] : false
 
