@@ -166,20 +166,19 @@ class Feed extends React.Component {
   }
 
   hideWindow(event) {
-    if (!event || !event.keyCode) {
+    if (event.keyCode !== 27) {
       return
     }
 
-    if (event.keyCode === 27) {
-      const activeItem = document.activeElement
+    event.preventDefault()
+    const activeItem = document.activeElement
 
-      if (activeItem && activeItem.tagName === 'INPUT') {
-        return
-      }
-
-      const currentWindow = this.remote.getCurrentWindow()
-      currentWindow.hide()
+    if (activeItem && activeItem.tagName === 'INPUT') {
+      return
     }
+
+    const currentWindow = this.remote.getCurrentWindow()
+    currentWindow.hide()
   }
 
   async componentWillMount() {
