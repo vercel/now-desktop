@@ -239,6 +239,28 @@ class Feed extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState === this.state) {
+      return
+    }
+
+    const prevScope = prevState.scope
+
+    if (prevScope === this.state.scope || !prevState.events[prevScope]) {
+      return
+    }
+
+    const prevEvents = prevState.events[prevScope]
+
+    // Ensure that never more than 15 events are cached per inactive scope
+    // This way, the renderer is much faster
+    if (prevEvents.length > 15) {
+      const events = this.state.events
+      events[prevScope] = prevEvents.slice(0, 15)
+      this.setState({ events })
+    }
+  }
+
   async setTeams(teams) {
     for (const team of teams) {
       const relatedCache = this.state.teams.find(item => item.id === team.id)
@@ -315,6 +337,10 @@ class Feed extends React.Component {
   }
 
   scrolled(event) {
+    if (!this.loadingIndicator) {
+      return
+    }
+
     const section = event.target
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
