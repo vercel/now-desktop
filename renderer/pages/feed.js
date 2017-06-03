@@ -154,9 +154,9 @@ class Feed extends React.Component {
 
       const unique = makeUnique(merged, (a, b) => a.id === b.id)
 
-      // Ensure that never more than 40 events are cached
+      // Ensure that never more than 15 events are cached
       // But only if infinite scrolling isn't being used
-      events[scope] = until ? unique : unique.slice(0, 40)
+      events[scope] = until ? unique : unique.slice(0, 15)
     } else {
       events[scope] = data.events
     }
@@ -249,13 +249,12 @@ class Feed extends React.Component {
       return
     }
 
-    const prevEvents = prevState.events[prevScope]
-
     // Ensure that never more than 15 events are cached per inactive scope
     // This way, the renderer is much faster
-    if (prevEvents.length > 15) {
+    if (prevState.events[prevScope].length > 15) {
       const events = this.state.events
-      events[prevScope] = prevEvents.slice(0, 15)
+      events[prevScope] = events[prevScope].slice(0, 15)
+
       this.setState({ events })
     }
   }
