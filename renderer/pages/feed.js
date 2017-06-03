@@ -432,6 +432,11 @@ class Feed extends React.Component {
             text-transform: uppercase;
             font-weight: 200;
             border-bottom: 1px solid #fff;
+            border-top: 1px solid #fff;
+          }
+
+          h1:first-child {
+            border-top: 0;
           }
         `}
         </style>
