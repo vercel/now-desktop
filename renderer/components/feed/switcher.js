@@ -46,6 +46,24 @@ class Switcher extends React.Component {
     for (const state of states) {
       window.addEventListener(state, this.setOnlineState.bind(this))
     }
+
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+
+    if (!currentWindow) {
+      return
+    }
+
+    currentWindow.on('show', () => {
+      document.addEventListener('keydown', this.keyDown.bind(this))
+    })
+
+    currentWindow.on('hide', () => {
+      document.removeEventListener('keydown', this.keyDown.bind(this))
+    })
   }
 
   setOnlineState() {
@@ -167,6 +185,20 @@ class Switcher extends React.Component {
 
       // Save teams
       await this.props.setTeams(teams)
+    }
+  }
+
+  keyDown(event) {
+    const code = event.code
+    const number = code.includes('Digit') ? code.split('Digit')[1] : false
+
+    if (number && number <= 9 && this.state.teams.length > 1) {
+      if (this.state.teams[number - 1]) {
+        event.preventDefault()
+
+        const relatedTeam = this.state.teams[number - 1]
+        this.changeScope(relatedTeam)
+      }
     }
   }
 
