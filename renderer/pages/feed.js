@@ -431,6 +431,7 @@ class Feed extends React.Component {
             top: 0;
             text-transform: uppercase;
             font-weight: 200;
+            border-bottom: 1px solid #fff;
           }
         `}
         </style>
@@ -467,6 +468,7 @@ class Feed extends React.Component {
             color: #666666;
             text-align: center;
             background: #F5F5F5;
+            border-top: 1px solid #fff;
             padding: 12px 0;
             display: flex;
             justify-content: center;
