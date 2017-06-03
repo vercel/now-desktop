@@ -432,7 +432,8 @@ class Feed extends React.Component {
 
     return (
       <aside ref={loaderRef}>
-        Loading older events...
+        <img src="/static/loading.gif" />
+        <span>Loading Older Events...</span>
 
         <style jsx>
           {`
@@ -442,6 +443,14 @@ class Feed extends React.Component {
             text-align: center;
             background: #F5F5F5;
             padding: 12px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          img {
+            height: 17px;
+            margin-right: 8px;
           }
         `}
         </style>
