@@ -4,12 +4,14 @@ const fetch = require('node-fetch')
 // Utilities
 const { error: showError } = require('../dialogs')
 const { removeConfig, getConfig } = require('./config')
+const userAgent = require('./user-agent')
 
 const endpoint = 'https://zeit.co/api/www/user/tokens/'
 
 const requestHeaders = token => ({
   headers: {
-    Authorization: `bearer ${token}`
+    Authorization: `bearer ${token}`,
+    'user-agent': userAgent
   }
 })
 

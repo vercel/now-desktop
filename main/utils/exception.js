@@ -6,6 +6,9 @@ const { app } = require('electron')
 const serializeError = require('serialize-error')
 const fetch = require('node-fetch')
 
+// Utilities
+const userAgent = require('./user-agent')
+
 module.exports = async error => {
   // Make the error sendable using GET
   const errorParts = serializeError(error)
@@ -20,7 +23,11 @@ module.exports = async error => {
 
   // Post the error to slack
   try {
-    await fetch('https://errors.zeit.sh/?' + query)
+    await fetch('https://errors.zeit.sh/?' + query, {
+      headers: {
+        'user-agent': userAgent
+      }
+    })
   } catch (err) {}
 
   // Restart the app, so that it doesn't continue

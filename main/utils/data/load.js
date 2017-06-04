@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 
 // Utilities
 const { getConfig } = require('../config')
+const userAgent = require('../user-agent')
 
 const getToken = async () => {
   let config
@@ -27,7 +28,9 @@ module.exports = async (path, token) => {
   // but we need to make another network request to
   // get all the user details before we can save to config there
   const authToken = token || (await getToken())
+
   headers.Authorization = `bearer ${authToken}`
+  headers['user-agent'] = userAgent
 
   let res
   let data

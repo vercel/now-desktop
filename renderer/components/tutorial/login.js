@@ -8,16 +8,11 @@ import emailProviders from 'email-providers/common'
 // Ours
 import error from '../../utils/error'
 
-const getVerificationData = async (url, email) => {
-  const remote = electron.remote || false
-
-  if (!remote) {
-    return
-  }
-
+const getVerificationData = async (url, email, remote) => {
   const os = remote.require('os')
   const hyphens = new RegExp('-', 'g')
   const host = os.hostname().replace(hyphens, ' ').replace('.local', '')
+  const userAgent = remote.require('./utils/user-agent')
 
   const body = JSON.stringify({
     email,
@@ -30,7 +25,8 @@ const getVerificationData = async (url, email) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': JSON.stringify(body).length
+      'Content-Length': JSON.stringify(body).length,
+      'user-agent': userAgent
     },
     body
   })
@@ -48,14 +44,20 @@ const getVerificationData = async (url, email) => {
   }
 }
 
-const verify = async (url, email, token) => {
+const verify = async (url, email, token, remote) => {
   const query = {
     email,
     token
   }
 
   const apiURL = url + '/now/registration/verify?' + stringifyQuery(query)
-  const res = await fetch(apiURL)
+  const userAgent = remote.require('./utils/user-agent')
+
+  const res = await fetch(apiURL, {
+    headers: {
+      'user-agent': userAgent
+    }
+  })
 
   const body = await res.json()
   return body.token
@@ -113,8 +115,9 @@ class Login extends Component {
     })
 
     window.sliderElement.setState({
-      loginText: `Sending an email for the verification of your address` +
-        `<span class="sending-status"><i>.</i><i>.</i><i>.</i></span>`
+      loginText:
+        `Sending an email for the verification of your address` +
+          `<span class="sending-status"><i>.</i><i>.</i><i>.</i></span>`
     })
 
     this.setState({
@@ -122,7 +125,11 @@ class Login extends Component {
     })
 
     const apiURL = 'https://api.zeit.co'
-    const { token, securityCode } = await getVerificationData(apiURL, email)
+    const { token, securityCode } = await getVerificationData(
+      apiURL,
+      email,
+      this.remote
+    )
 
     if (!token) {
       this.setState({
@@ -133,9 +140,10 @@ class Login extends Component {
     }
 
     window.sliderElement.setState({
-      loginText: `We sent an email to <strong>${email}</strong>.\n` +
-        `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
-        `<b class="security-token">${securityCode}</b>`
+      loginText:
+        `We sent an email to <strong>${email}</strong>.\n` +
+          `Please follow the steps provided in it and make sure\nthe security token matches this one:` +
+          `<b class="security-token">${securityCode}</b>`
     })
 
     let finalToken
@@ -145,7 +153,7 @@ class Login extends Component {
       await sleep(2500)
 
       try {
-        finalToken = await verify(apiURL, email, token)
+        finalToken = await verify(apiURL, email, token, this.remote)
       } catch (err) {}
 
       console.log('Waiting for token...')
@@ -197,7 +205,8 @@ class Login extends Component {
     mainWindow.once('ready-to-show', async () => {
       window.sliderElement.setState({
         loginShown: false,
-        loginText: "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
+        loginText:
+          "Congrats! <strong>You're signed in.</strong>\nAre you ready to deploy something?"
       })
     })
   }

@@ -20,6 +20,7 @@ const pathExists = require('path-exists')
 const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
+const ua = require('../user-agent')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -27,7 +28,6 @@ const {
   docker: getDockerFiles
 } = require('./get-files')
 const hash = require('./hash')
-const ua = require('./ua')
 const readMetaData = require('./read-metadata')
 const ossPrompt = require('./oss-prompt')
 

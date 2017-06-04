@@ -19,6 +19,7 @@ const pipe = require('promisepipe')
 
 // Utilities
 const { runAsRoot } = require('../dialogs')
+const userAgent = require('./user-agent')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -229,7 +230,11 @@ exports.getBinarySuffix = () => (process.platform === 'win32' ? '.exe' : '')
 
 exports.getURL = async () => {
   const url = 'https://now-cli-latest.zeit.sh'
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    headers: {
+      'user-agent': userAgent
+    }
+  })
 
   if (!response.ok) {
     throw new Error('Binary response not okay')
@@ -297,7 +302,12 @@ exports.download = async (url, binaryName, onUpdate) => {
     }
   })
 
-  const binaryDownload = await fetch(url)
+  const binaryDownload = await fetch(url, {
+    headers: {
+      'user-agent': userAgent
+    }
+  })
+
   const { body } = binaryDownload
 
   if (onUpdate) {
