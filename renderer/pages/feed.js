@@ -1,5 +1,6 @@
 // Native
 import queryString from 'querystring'
+import os from 'os'
 
 // Packages
 import electron from 'electron'
@@ -504,10 +505,11 @@ class Feed extends React.Component {
 
     const scope = this.state.scope
     const searchShown = this.getEvents(scope) && true
+    const isWindows = os.platform() === 'win32'
 
     return (
       <main>
-        <TopArrow />
+        {!isWindows && <TopArrow />}
 
         <div onDragEnter={this.showDropZone.bind(this)}>
           <Title
@@ -539,6 +541,8 @@ class Feed extends React.Component {
             currentUser={this.state.currentUser}
           />
         </div>
+
+        {isWindows && <TopArrow bottom />}
 
         <style jsx>
           {`

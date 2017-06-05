@@ -1,3 +1,6 @@
+// Native
+import os from 'os'
+
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -368,12 +371,16 @@ class Switcher extends React.Component {
     }
 
     const teams = this.renderTeams()
-    let createClasses = null
+    const classes = []
 
     if (this.state.createTeam) {
-      createClasses = 'shown'
+      classes.push('shown')
     } else {
       this.prepareCreateTeam(teams.length)
+    }
+
+    if (os.platform() === 'win32') {
+      classes.push('windows')
     }
 
     return (
@@ -385,7 +392,7 @@ class Switcher extends React.Component {
               <li
                 onClick={this.createTeam}
                 title="Create a Team"
-                className={createClasses}
+                className={classes.join(' ')}
               >
                 <i />
                 <i />
@@ -442,6 +449,10 @@ class Switcher extends React.Component {
             position: fixed;
             left: calc(290px - 40px);
             bottom: 0;
+          }
+
+          .windows + .shadow {
+            bottom: 12px;
           }
 
           li {

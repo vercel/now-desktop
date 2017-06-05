@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import React from 'react'
+import { bool } from 'prop-types'
 
 // Components
 import Caret from '../../vectors/caret'
@@ -97,6 +98,7 @@ class TopArrow extends React.Component {
     return (
       <span
         style={style}
+        className={this.props.bottom && 'bottom'}
         onDragOver={this.preventDefault}
         onDrop={this.preventDefault}
       >
@@ -114,11 +116,19 @@ class TopArrow extends React.Component {
             display: flex;
             justify-content: center;
           }
+
+          .bottom {
+            transform: rotate(180deg);
+          }
         `}
         </style>
       </span>
     )
   }
+}
+
+TopArrow.propTypes = {
+  bottom: bool
 }
 
 export default TopArrow
