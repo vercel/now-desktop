@@ -1,3 +1,6 @@
+// Native
+import os from 'os'
+
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -89,10 +92,15 @@ class TopArrow extends React.Component {
   }
 
   render() {
-    const style = {}
+    const isWin = os.platform() === 'win32'
+
+    const style = {
+      textAlign: isWin ? 'right' : 'left'
+    }
 
     if (this.state.left) {
-      style.paddingLeft = this.state.left
+      const direction = isWin ? 'Right' : 'Left'
+      style['padding' + direction] = this.state.left
     }
 
     return (
