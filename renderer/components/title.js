@@ -1,3 +1,6 @@
+// Native
+import os from 'os'
+
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -35,8 +38,18 @@ class Title extends React.Component {
       this.deployIcon = icon
     }
 
+    const classes = []
+
+    if (this.props.light) {
+      classes.push('light')
+    }
+
+    if (os.platform() === 'win32') {
+      classes.push('windows')
+    }
+
     return (
-      <aside className={this.props.light && 'light'}>
+      <aside className={classes.join(' ')}>
         {this.props.light &&
           this.props.searchShown &&
           <Search
@@ -118,6 +131,10 @@ class Title extends React.Component {
 
           .light .deploy.hidden {
             opacity: 0;
+          }
+
+          .windows {
+            border-radius: 0;
           }
         `}
         </style>
