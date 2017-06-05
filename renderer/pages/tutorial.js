@@ -186,7 +186,8 @@ class Sections extends Component {
       this.setState({
         tested: true,
         loginShown: false,
-        loginText: "<b>You're already logged in!</b>\nClick here to go back to the application:"
+        loginText:
+          "<b>You're already logged in!</b>\nClick here to go back to the application:"
       })
     } else {
       this.setState({
@@ -246,11 +247,11 @@ class Sections extends Component {
       <div>
         {platform() === 'win32' &&
           <div className="window-controls">
-            <span onClick={this.handleMinimizeClick}>
+            <span onClick={this.handleMinimizeClick.bind(this)}>
               <MinimizeSVG />
             </span>
 
-            <span onClick={this.handleCloseClick}>
+            <span onClick={this.handleCloseClick.bind(this)}>
               <CloseSVG />
             </span>
           </div>}
@@ -368,7 +369,7 @@ class Sections extends Component {
   }
 }
 
-const Tutorial = () => (
+const Tutorial = () =>
   <Container>
     <main>
       <Title>Welcome to Now</Title>
@@ -386,6 +387,5 @@ const Tutorial = () => (
       </style>
     </main>
   </Container>
-)
 
 export default Tutorial
