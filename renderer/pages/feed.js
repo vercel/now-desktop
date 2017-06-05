@@ -581,7 +581,7 @@ class Feed extends React.Component {
         <style jsx global>
           {`
           body {
-            font-family: BlinkMacSystemFont;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Helvetica Neue, sans-serif;
             -webkit-font-smoothing: antialiased;
             margin: 0;
             overflow: hidden;
