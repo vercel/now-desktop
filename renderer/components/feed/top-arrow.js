@@ -1,10 +1,6 @@
-// Native
-import os from 'os'
-
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { bool } from 'prop-types'
 
 // Components
 import Caret from '../../vectors/caret'
@@ -92,21 +88,15 @@ class TopArrow extends React.Component {
   }
 
   render() {
-    const isWin = os.platform() === 'win32'
-
-    const style = {
-      textAlign: isWin ? 'right' : 'left'
-    }
+    const style = {}
 
     if (this.state.left) {
-      const direction = isWin ? 'Right' : 'Left'
-      style['padding' + direction] = this.state.left
+      style.paddingLeft = this.state.left
     }
 
     return (
       <span
         style={style}
-        className={this.props.bottom && 'bottom'}
         onDragOver={this.preventDefault}
         onDrop={this.preventDefault}
       >
@@ -124,19 +114,11 @@ class TopArrow extends React.Component {
             display: flex;
             justify-content: center;
           }
-
-          .bottom {
-            transform: rotate(180deg);
-          }
         `}
         </style>
       </span>
     )
   }
-}
-
-TopArrow.propTypes = {
-  bottom: bool
 }
 
 export default TopArrow

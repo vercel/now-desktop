@@ -542,8 +542,6 @@ class Feed extends React.Component {
           />
         </div>
 
-        {isWindows && <TopArrow bottom />}
-
         <style jsx>
           {`
           main, div {
