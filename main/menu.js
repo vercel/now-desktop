@@ -9,7 +9,7 @@ const { getConfig } = require('./utils/config')
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
 
-  return [
+  return Menu.buildFromTemplate([
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
@@ -85,7 +85,7 @@ exports.innerMenu = async function(app, tray, windows) {
       click: app.quit,
       role: 'quit'
     }
-  ]
+  ])
 }
 
 exports.outerMenu = (app, windows) => {

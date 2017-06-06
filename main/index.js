@@ -95,25 +95,11 @@ app.on('window-all-closed', () => {
 })
 
 const contextMenu = async windows => {
-  let generatedMenu = await innerMenu(app, tray, windows)
-
   if (process.env.CONNECTION === 'offline') {
-    const last = generatedMenu.slice(-1)[0]
-
-    generatedMenu = [
-      {
-        label: "You're offline!",
-        enabled: false
-      },
-      {
-        type: 'separator'
-      }
-    ]
-
-    generatedMenu.push(last)
+    return outerMenu(app, windows)
   }
 
-  return electron.Menu.buildFromTemplate(generatedMenu)
+  return innerMenu(app, tray, windows)
 }
 
 const fileDropped = async (event, files) => {
