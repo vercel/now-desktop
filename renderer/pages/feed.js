@@ -29,7 +29,8 @@ class Feed extends React.Component {
       currentUser: null,
       teams: [],
       eventFilter: null,
-      loading: new Set()
+      loading: new Set(),
+      online: true
     }
 
     this.remote = electron.remote || false
@@ -183,6 +184,17 @@ class Feed extends React.Component {
   }
 
   async componentWillMount() {
+    // Support SSR
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const states = ['online', 'offline']
+
+    for (const state of states) {
+      window.addEventListener(state, this.setOnlineState.bind(this))
+    }
+
     if (!this.remote) {
       return
     }
@@ -219,6 +231,12 @@ class Feed extends React.Component {
       }
 
       document.removeEventListener('keydown', this.hideWindow.bind(this))
+    })
+  }
+
+  setOnlineState() {
+    this.setState({
+      online: navigator.onLine
     })
   }
 
@@ -362,6 +380,10 @@ class Feed extends React.Component {
   }
 
   renderEvents() {
+    if (!this.state.online) {
+      return <Loading offline />
+    }
+
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
 

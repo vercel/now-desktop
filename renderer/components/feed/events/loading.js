@@ -1,11 +1,12 @@
 // Packages
 import React from 'react'
+import { bool } from 'prop-types'
 
-const Loading = () => (
+const Loading = ({ offline }) =>
   <aside>
     <section>
       <img src="/static/loading.gif" />
-      <p>Loading Events...</p>
+      <p>{offline ? 'Waiting for a Connection...' : 'Loading Events...'}</p>
     </section>
 
     <style jsx>
@@ -35,6 +36,9 @@ const Loading = () => (
     `}
     </style>
   </aside>
-)
+
+Loading.propTypes = {
+  offline: bool
+}
 
 export default Loading
