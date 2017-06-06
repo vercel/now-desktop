@@ -1,5 +1,6 @@
 // Native
 const path = require('path')
+const { platform } = require('os')
 
 // Packages
 const { BrowserWindow } = require('electron')
@@ -89,9 +90,15 @@ exports.aboutWindow = tray => {
 }
 
 exports.mainWindow = tray => {
+  let windowHeight = 380
+
+  if (platform() === 'win32') {
+    windowHeight -= 12
+  }
+
   const win = new BrowserWindow({
     width: 330,
-    height: 380,
+    height: windowHeight,
     title: 'Now',
     resizable: false,
     show: false,
