@@ -20,31 +20,33 @@ module.exports = (tray, window) => {
   // This module needs to be loaded after the app is ready
   // I don't know why, but that's required by electron
   const { screen } = require('electron')
-
   const windowSize = window.getSize()
-  const trayCenter = trayBounds.x + trayBounds.width / 2
 
-  let horizontalPosition = trayCenter - windowSize[0] / 2
-  let verticalPosition = trayBounds.height + 6
+  let horizontalPosition
+  let verticalPosition
+
+  if (!isWin) {
+    const trayCenter = trayBounds.x + trayBounds.width / 2
+
+    horizontalPosition = trayCenter - windowSize[0] / 2
+    verticalPosition = trayBounds.height + 6
+  }
 
   // Find the current display
   const display = screen.getDisplayMatching(trayBounds)
+  const displayArea = display.workAreaSize
 
-  if (display) {
-    const displayArea = display.workAreaSize
-
+  if (isWin) {
+    horizontalPosition = displayArea.width - windowSize[0]
+    verticalPosition = displayArea.height - windowSize[1]
+  } else {
     const left = horizontalPosition + windowSize[0]
-    const maxLeft = displayArea.width - (isWin ? 25 : 18)
+    const maxLeft = displayArea.width - 18
 
     // Check if window would be outside screen
     // If yes, make sure it isn't
     if (left > maxLeft) {
       horizontalPosition -= left - maxLeft
-    }
-
-    if (isWin) {
-      const offset = trayBounds.height + windowSize[1] - 25
-      verticalPosition = displayArea.height - offset
     }
   }
 
