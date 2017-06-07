@@ -61,8 +61,8 @@ exports.saveConfig = async data => {
   })
 }
 
-exports.watchConfig = async () => {
-  if (!await exists() || !global.windows) {
+const configChanged = async eventType => {
+  if (!global.windows) {
     return
   }
 
@@ -71,16 +71,22 @@ exports.watchConfig = async () => {
   // the windows
   const mainWindow = global.windows.main
 
-  fs.watch(file, async eventType => {
-    if (eventType === 'rename') {
-      if (!await exists()) {
-        // Load it now to make app faster
-        require('./logout')()
-      }
-
-      return
+  if (eventType === 'rename') {
+    if (!await exists()) {
+      // Load it now to make app faster
+      require('./logout')()
     }
 
-    mainWindow.webContents.send('config-changed')
-  })
+    return
+  }
+
+  mainWindow.webContents.send('config-changed')
+}
+
+exports.watchConfig = async () => {
+  if (!await exists()) {
+    return
+  }
+
+  fs.watch(file, configChanged)
 }
