@@ -293,10 +293,6 @@ class Feed extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState === this.state) {
-      return
-    }
-
     const prevScope = prevState.scope
 
     if (prevScope === this.state.scope || !prevState.events[prevScope]) {
@@ -467,11 +463,11 @@ class Feed extends React.PureComponent {
       return <NoEvents />
     }
 
-    // We need to force-re-render each heading
-    // because the sticky styling would otherwise glitch
-    // around when switching the scope (Math.random)
+    // We can't just use `month` as the ID for each heading,
+    // because they would glitch around in that case (as
+    // the month is the same across scopes)
     return monthKeys.map(month => [
-      <h1 key={Math.random()}>
+      <h1 key={scope + month}>
         {month}
 
         <style jsx>
