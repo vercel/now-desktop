@@ -71,12 +71,21 @@ const configChanged = async eventType => {
   // the windows
   const mainWindow = global.windows.main
 
+  // Load it now to make app faster
+  const logout = require('./logout')
+
   if (eventType === 'rename') {
     if (!await exists()) {
-      // Load it now to make app faster
-      require('./logout')()
+      logout()
     }
 
+    return
+  }
+
+  try {
+    await exports.getConfig()
+  } catch (err) {
+    logout()
     return
   }
 
