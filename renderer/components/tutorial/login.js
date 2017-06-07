@@ -345,7 +345,7 @@ class Login extends React.PureComponent {
     const inputProps = {
       type: 'email',
       value: this.state.value,
-      placeholder: 'jane@doe.com',
+      placeholder: 'you@domain.com',
       onChange: this.handleChange.bind(this),
       onKeyDown: this.handleKey.bind(this),
       onFocus: this.toggleFocus.bind(this),
