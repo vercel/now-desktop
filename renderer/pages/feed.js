@@ -552,18 +552,20 @@ class Feed extends React.PureComponent {
     const searchShown = this.getEvents(scope) && true
     const isWindows = os.platform() === 'win32'
 
+    const activeScope = this.state.teams.find(team => team.id === scope)
+
     return (
       <main>
         {!isWindows && <TopArrow />}
 
         <div onDragEnter={this.showDropZone.bind(this)}>
           <Title
-            light
             setFilter={this.setFilter.bind(this)}
             setSearchRef={setRef.bind(this, 'searchField')}
             searchShown={searchShown}
+            light
           >
-            Now
+            {activeScope ? activeScope.name : 'Now'}
           </Title>
 
           {this.state.dropZone &&
