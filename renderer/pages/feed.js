@@ -8,6 +8,7 @@ import React from 'react'
 import moment from 'moment'
 import dotProp from 'dot-prop'
 import makeUnique from 'make-unique'
+import compare from 'just-compare'
 
 // Components
 import Title from '../components/title'
@@ -34,6 +35,7 @@ class Feed extends React.Component {
     }
 
     this.remote = electron.remote || false
+    this.ipcRenderer = electron.ipcRenderer || false
   }
 
   async updateEvents(excludeID) {
@@ -183,6 +185,28 @@ class Feed extends React.Component {
     currentWindow.hide()
   }
 
+  listenToUserChange() {
+    if (!this.ipcRenderer) {
+      return
+    }
+
+    // Update the `currentUser` state to reflect
+    // switching the account using `now login`
+    this.ipcRenderer.on('config-changed', (event, config) => {
+      if (compare(this.state.currentUser, config.user)) {
+        return
+      }
+
+      // Clear up the events to load new ones
+      const events = this.state.events
+
+      events[this.state.scope] = []
+      events[config.user.uid] = []
+
+      this.setState({ currentUser: config.user, events })
+    })
+  }
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -206,6 +230,9 @@ class Feed extends React.Component {
       scope: config.user.uid,
       currentUser: config.user
     })
+
+    // Switch the `currentUser` property if config changes
+    this.listenToUserChange()
 
     const currentWindow = this.remote.getCurrentWindow()
 
