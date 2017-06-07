@@ -82,14 +82,16 @@ const configChanged = async eventType => {
     return
   }
 
+  let content
+
   try {
-    await exports.getConfig()
+    content = await exports.getConfig()
   } catch (err) {
     logout()
     return
   }
 
-  mainWindow.webContents.send('config-changed')
+  mainWindow.webContents.send('config-changed', content)
 }
 
 exports.watchConfig = async () => {

@@ -113,12 +113,12 @@ class Switcher extends React.Component {
       return
     }
 
-    this.ipcRenderer.on('config-changed', () => {
+    this.ipcRenderer.on('config-changed', (event, config) => {
       if (this.state.teams.length === 0) {
         return
       }
 
-      this.checkCurrentTeam()
+      this.checkCurrentTeam(config)
     })
   }
 
@@ -134,16 +134,14 @@ class Switcher extends React.Component {
     })
   }
 
-  async checkCurrentTeam() {
+  async checkCurrentTeam(config) {
     if (!this.remote) {
       return
     }
 
-    const { getConfig } = this.remote.require('./utils/config')
-    const config = await getConfig()
-
     if (!config) {
-      return
+      const { getConfig } = this.remote.require('./utils/config')
+      config = await getConfig()
     }
 
     if (!config.currentTeam) {
