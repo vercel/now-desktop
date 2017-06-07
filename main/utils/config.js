@@ -6,11 +6,11 @@ const { homedir } = require('os')
 const fs = require('fs-extra')
 const pathExists = require('path-exists')
 
-// Path to config file
 const file = path.join(homedir(), '.now.json')
+const exists = () => pathExists(file)
 
 exports.getConfig = async onlyCheckToken => {
-  if (!await pathExists(file)) {
+  if (!await exists()) {
     throw new Error(`Could retrieve config file, it doesn't exist`)
   }
 
@@ -62,7 +62,7 @@ exports.saveConfig = async data => {
 }
 
 exports.watchConfig = async () => {
-  if (!await pathExists(file) || !global.windows) {
+  if (!await exists() || !global.windows) {
     return
   }
 
@@ -71,8 +71,13 @@ exports.watchConfig = async () => {
   // the windows
   const mainWindow = global.windows.main
 
-  fs.watch(file, eventType => {
-    if (eventType !== 'change') {
+  fs.watch(file, async eventType => {
+    if (eventType === 'rename') {
+      if (!await exists()) {
+        // Load it now to make app faster
+        require('./logout')()
+      }
+
       return
     }
 
