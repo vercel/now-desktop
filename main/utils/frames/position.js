@@ -1,6 +1,9 @@
 // Native
 const { platform } = require('os')
 
+// Packages
+const compare = require('just-compare')
+
 let trayBoundsCache = null
 
 module.exports = (tray, window) => {
@@ -9,7 +12,7 @@ module.exports = (tray, window) => {
 
   if (trayBoundsCache) {
     // Compare only the object props
-    if (JSON.stringify(trayBoundsCache) === JSON.stringify(trayBounds)) {
+    if (compare(trayBoundsCache, trayBounds)) {
       return
     }
   }
