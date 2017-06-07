@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import Deploy from '../vectors/deploy'
 import Search from './feed/search'
 
-class Title extends React.Component {
+class Title extends React.PureComponent {
   componentDidMount() {
     const remote = electron.remote || false
 

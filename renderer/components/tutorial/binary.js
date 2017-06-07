@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React, { Component } from 'react'
+import React from 'react'
 import exists from 'path-exists'
 
 // Utilities
@@ -14,7 +14,7 @@ const initialState = {
   progress: false
 }
 
-class Binary extends Component {
+class Binary extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -219,7 +219,8 @@ class Binary extends Component {
           from the command line, if you{`'`}d like to.
         </p>
         <p>
-          Press the button below to install it! When a new version gets released, we
+          Press the button below to install it! When a new version gets
+          released, we
           {`'`}
           ll automatically update it for you.
         </p>

@@ -13,7 +13,7 @@ import ms from 'ms'
 import Avatar from '../avatar'
 import messageComponents from './messages'
 
-class EventMessage extends React.Component {
+class EventMessage extends React.PureComponent {
   constructor(props) {
     super(props)
 

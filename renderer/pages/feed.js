@@ -19,7 +19,7 @@ import EventMessage from '../components/feed/events'
 import NoEvents from '../components/feed/events/none'
 import Loading from '../components/feed/events/loading'
 
-class Feed extends React.Component {
+class Feed extends React.PureComponent {
   constructor(props) {
     super(props)
 

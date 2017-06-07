@@ -6,7 +6,7 @@ import { func, object } from 'prop-types'
 // Components
 import Avatar from './avatar'
 
-class Switcher extends React.Component {
+class Switcher extends React.PureComponent {
   constructor(props) {
     super(props)
 

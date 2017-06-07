@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { stringify as stringifyQuery } from 'querystring'
-import React, { Component } from 'react'
+import React from 'react'
 import AutoSizeInput from 'react-input-autosize'
 import emailProviders from 'email-providers/common'
 
@@ -76,7 +76,7 @@ const initialState = {
   waiting: false
 }
 
-class Login extends Component {
+class Login extends React.PureComponent {
   constructor(props) {
     super(props)
 

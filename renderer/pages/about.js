@@ -3,7 +3,7 @@ import { platform } from 'os'
 
 // Packages
 import electron from 'electron'
-import React, { Component } from 'react'
+import React from 'react'
 import timeAgo from 'time-ago'
 import isDev from 'electron-is-dev'
 
@@ -43,7 +43,7 @@ const openLink = event => {
   event.preventDefault()
 }
 
-class About extends Component {
+class About extends React.PureComponent {
   constructor(props) {
     super(props)
     this.remote = electron.remote || false

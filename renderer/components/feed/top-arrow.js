@@ -5,7 +5,7 @@ import React from 'react'
 // Components
 import Caret from '../../vectors/caret'
 
-class TopArrow extends React.Component {
+class TopArrow extends React.PureComponent {
   constructor(props) {
     super(props)
 

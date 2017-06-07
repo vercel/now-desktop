@@ -3,7 +3,7 @@ import { platform } from 'os'
 
 // Packages
 import electron from 'electron'
-import React, { Component } from 'react'
+import React from 'react'
 import Slider from 'react-slick'
 
 // Helpers
@@ -83,7 +83,7 @@ const sliderSettings = {
   }
 }
 
-class Sections extends Component {
+class Sections extends React.PureComponent {
   constructor(props) {
     super(props)
 

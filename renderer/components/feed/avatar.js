@@ -2,7 +2,7 @@
 import React from 'react'
 import { object, bool, number } from 'prop-types'
 
-class Avatar extends React.Component {
+class Avatar extends React.PureComponent {
   constructor(props) {
     super(props)
 

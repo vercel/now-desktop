@@ -3,7 +3,7 @@ import electron from 'electron'
 import React from 'react'
 import { func } from 'prop-types'
 
-class DropZone extends React.Component {
+class DropZone extends React.PureComponent {
   componentDidMount() {
     const remote = electron.remote || false
     this.deploy = remote.require('./utils/deploy')

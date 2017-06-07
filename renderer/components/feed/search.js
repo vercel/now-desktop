@@ -7,7 +7,7 @@ import { func } from 'prop-types'
 import MagnifyingGlass from '../../vectors/search'
 import Clear from '../../vectors/clear'
 
-class Search extends React.Component {
+class Search extends React.PureComponent {
   constructor(props) {
     super(props)
 
