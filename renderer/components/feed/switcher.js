@@ -447,7 +447,7 @@ class Switcher extends React.PureComponent {
             width: 23px;
             border-radius: 100%;
             box-sizing: border-box;
-            border: 1px solid #b1b1b1;
+            border: 1px solid #E8E8E8;
             position: relative;
             transition: border .2s, transform 0.6s;
             flex-shrink: 0;
@@ -463,32 +463,36 @@ class Switcher extends React.PureComponent {
           }
 
           li i {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            display: block;
+            transition: all .2s ease;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
           }
 
           li i:before {
             content: '';
             display: block;
-            background: #b1b1b1;
-            height: 11px;
-            width: 1px;
-            transition: all .2s ease;
+            background: #999999;
           }
 
           li:hover i:before {
-            height: 15px;
             background: #4e4e4e;
           }
 
-          li i:last-child {
-            transform: rotate(90deg);
+          li i:first-child:before {
+            height: 9px;
+            width: 1px;
+          }
+
+          li i:last-child:before {
+            width: 9px;
+            height: 1px;
           }
 
           aside {
