@@ -33,7 +33,8 @@ exports.tutorialWindow = tray => {
     titleBarStyle: 'hidden-inset',
     backgroundColor: '#000',
     webPreferences: {
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      devTools: true
     }
   })
 
@@ -79,7 +80,8 @@ exports.aboutWindow = tray => {
     frame: false,
     backgroundColor: '#ECECEC',
     webPreferences: {
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      devTools: true
     }
   })
 
@@ -109,7 +111,8 @@ exports.mainWindow = tray => {
     frame: false,
     movable: false,
     webPreferences: {
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      devTools: true
     }
   })
 
