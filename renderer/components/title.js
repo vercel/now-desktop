@@ -7,10 +7,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // Components
+import Done from '../vectors/done'
 import Deploy from '../vectors/deploy'
 import Search from './feed/search'
 
 class Title extends React.PureComponent {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      updateMessage: false
+    }
+  }
+
   componentDidMount() {
     const remote = electron.remote || false
 
@@ -33,6 +42,22 @@ class Title extends React.PureComponent {
     this.deployIcon.classList.remove('hidden')
   }
 
+  scopeUpdated() {
+    if (this.state.updateMessage) {
+      return
+    }
+
+    this.setState({
+      updateMessage: true
+    })
+
+    setTimeout(() => {
+      this.setState({
+        updateMessage: false
+      })
+    }, 2000)
+  }
+
   render() {
     const deployIconRef = icon => {
       this.deployIcon = icon
@@ -46,6 +71,10 @@ class Title extends React.PureComponent {
 
     if (os.platform() === 'win32') {
       classes.push('windows')
+    }
+
+    if (this.state.updateMessage) {
+      classes.push('scope-updated')
     }
 
     return (
@@ -69,6 +98,11 @@ class Title extends React.PureComponent {
           >
             <Deploy />
           </span>}
+
+        <section>
+          <Done />
+          <p>Context updated for now CLI!</p>
+        </section>
 
         <style jsx>
           {`
@@ -135,6 +169,29 @@ class Title extends React.PureComponent {
 
           .windows {
             border-radius: 0;
+          }
+
+          section {
+            opacity: 0;
+            transition: all .5s ease;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            font-size: 12px;
+            align-items: center;
+            display: flex;
+            padding-left: 17px;
+          }
+
+          section p {
+            margin-left: 12px;
+          }
+
+          .scope-updated section {
+            opacity: 1;
           }
         `}
         </style>

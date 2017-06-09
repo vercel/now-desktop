@@ -563,6 +563,7 @@ class Feed extends React.PureComponent {
             setFilter={this.setFilter.bind(this)}
             setSearchRef={setRef.bind(this, 'searchField')}
             searchShown={searchShown}
+            ref={setRef.bind(this, 'title')}
             light
           >
             {activeScope ? activeScope.name : 'Now'}
@@ -586,6 +587,7 @@ class Feed extends React.PureComponent {
             setFeedScope={this.setScope.bind(this)}
             setTeams={this.setTeams.bind(this)}
             currentUser={this.state.currentUser}
+            titleRef={this.title}
           />
         </div>
 

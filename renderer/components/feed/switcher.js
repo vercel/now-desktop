@@ -206,7 +206,7 @@ class Switcher extends React.PureComponent {
     }
   }
 
-  async updateConfig(team) {
+  async updateConfig(team, updateMessage) {
     if (!this.remote) {
       return
     }
@@ -234,9 +234,15 @@ class Switcher extends React.PureComponent {
     }
 
     await saveConfig(info)
+
+    // Show a notification that the context was updated
+    // in the title bar
+    if (updateMessage && this.props.titleRef) {
+      this.props.titleRef.scopeUpdated()
+    }
   }
 
-  changeScope(team, saveToConfig) {
+  changeScope(team, saveToConfig, byHand) {
     // If the clicked item in the team switcher is
     // already the active one, don't do anything
     if (this.state.scope === team.id) {
@@ -256,7 +262,7 @@ class Switcher extends React.PureComponent {
 
     // Save the new `currentTeam` to the config
     if (saveToConfig) {
-      this.updateConfig(team)
+      this.updateConfig(team, byHand)
     }
   }
 
@@ -292,7 +298,7 @@ class Switcher extends React.PureComponent {
       const isActive = this.state.scope === team.id ? 'active' : ''
 
       const clicked = () => {
-        this.changeScope(team, true)
+        this.changeScope(team, true, true)
       }
 
       return (
@@ -554,7 +560,8 @@ class Switcher extends React.PureComponent {
 Switcher.propTypes = {
   setFeedScope: func,
   currentUser: object,
-  setTeams: func
+  setTeams: func,
+  titleRef: object
 }
 
 export default Switcher
