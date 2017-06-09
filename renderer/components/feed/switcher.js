@@ -2,6 +2,7 @@
 import electron from 'electron'
 import React from 'react'
 import { func, object } from 'prop-types'
+import exists from 'path-exists'
 
 // Components
 import Avatar from './avatar'
@@ -238,6 +239,13 @@ class Switcher extends React.PureComponent {
     // Show a notification that the context was updated
     // in the title bar
     if (updateMessage && this.props.titleRef) {
+      const { getFile } = this.remote.require('./utils/binary')
+
+      // Only show the notification if the CLI is installed
+      if (!await exists(getFile())) {
+        return
+      }
+
       this.props.titleRef.scopeUpdated()
     }
   }
