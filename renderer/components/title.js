@@ -79,25 +79,27 @@ class Title extends React.PureComponent {
 
     return (
       <aside className={classes.join(' ')}>
-        {this.props.light &&
-          this.props.searchShown &&
-          <Search
-            hideDeployIcon={this.hideDeployIcon.bind(this)}
-            showDeployIcon={this.showDeployIcon.bind(this)}
-            setFeedFilter={this.props.setFilter || false}
-            setSearchRef={this.props.setSearchRef || false}
-          />}
+        <div>
+          {this.props.light &&
+            this.props.searchShown &&
+            <Search
+              hideDeployIcon={this.hideDeployIcon.bind(this)}
+              showDeployIcon={this.showDeployIcon.bind(this)}
+              setFeedFilter={this.props.setFilter || false}
+              setSearchRef={this.props.setSearchRef || false}
+            />}
 
-        <h1>{this.props.children}</h1>
+          <h1>{this.props.children}</h1>
 
-        {this.props.light &&
-          <span
-            className="deploy"
-            onClick={this.selectToDeploy.bind(this)}
-            ref={deployIconRef}
-          >
-            <Deploy />
-          </span>}
+          {this.props.light &&
+            <span
+              className="deploy"
+              onClick={this.selectToDeploy.bind(this)}
+              ref={deployIconRef}
+            >
+              <Deploy />
+            </span>}
+        </div>
 
         <section>
           <Done />
@@ -126,7 +128,7 @@ class Title extends React.PureComponent {
             color: #9B9B9B;
             font-size: 12px;
             letter-spacing: 0.02em;
-            font-weight: 400
+            font-weight: 400;
           }
 
           .light {
@@ -173,7 +175,7 @@ class Title extends React.PureComponent {
 
           section {
             opacity: 0;
-            transition: all .5s ease;
+            transition: opacity .8s ease;
             position: absolute;
             left: 0;
             top: 0;
@@ -184,6 +186,7 @@ class Title extends React.PureComponent {
             align-items: center;
             display: flex;
             padding-left: 17px;
+            pointer-events: none;
           }
 
           section p {
@@ -192,6 +195,14 @@ class Title extends React.PureComponent {
 
           .scope-updated section {
             opacity: 1;
+          }
+
+          div {
+            transition: opacity .5s ease;
+          }
+
+          .scope-updated div {
+            opacity: 0;
           }
         `}
         </style>
