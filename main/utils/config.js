@@ -9,6 +9,8 @@ const pathExists = require('path-exists')
 const file = path.join(homedir(), '.now.json')
 const exists = () => pathExists(file)
 
+let configWatcher = null
+
 exports.getConfig = async onlyCheckToken => {
   if (!await exists()) {
     throw new Error(`Could retrieve config file, it doesn't exist`)
@@ -28,6 +30,11 @@ exports.getConfig = async onlyCheckToken => {
 }
 
 exports.removeConfig = async () => {
+  // Stop watching the config file
+  if (configWatcher) {
+    configWatcher.close()
+  }
+
   await fs.remove(file)
 }
 
@@ -99,5 +106,5 @@ exports.watchConfig = async () => {
     return
   }
 
-  fs.watch(file, configChanged)
+  configWatcher = fs.watch(file, configChanged)
 }
