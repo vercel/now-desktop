@@ -33,6 +33,9 @@ exports.removeConfig = async () => {
   // Stop watching the config file
   if (configWatcher) {
     configWatcher.close()
+
+    // Reset the watcher state back to none
+    configWatcher = null
   }
 
   await fs.remove(file)
