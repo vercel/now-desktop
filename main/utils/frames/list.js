@@ -15,7 +15,7 @@ const positionWindow = require('./position')
 // Ensure that people can open the developer tools
 // even in production
 debug({
-  enabled: !isDev
+  enabled: true
 })
 
 const windowURL = page => {
