@@ -6,10 +6,17 @@ const { platform } = require('os')
 const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
 const { resolve } = require('app-root-path')
+const debug = require('electron-debug')
 
 // Utilities
 const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
+
+// Ensure that people can open the developer tools
+// even in production
+debug({
+  enabled: !isDev
+})
 
 const windowURL = page => {
   if (isDev) {
@@ -125,7 +132,7 @@ exports.mainWindow = tray => {
   // This can only happen if the dev tools are not open
   // Otherwise, we won't be able to debug the renderer
   win.on('blur', () => {
-    if (isDev && win.webContents.isDevToolsOpened()) {
+    if (win.webContents.isDevToolsOpened()) {
       return
     }
 
