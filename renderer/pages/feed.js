@@ -38,7 +38,7 @@ class Feed extends React.PureComponent {
     this.ipcRenderer = electron.ipcRenderer || false
   }
 
-  async updateEvents(excludeID) {
+  async updateEvents(excludeID, firstLoad) {
     const teams = this.state.teams
 
     if (!teams || Object.keys(teams).length === 0) {
@@ -54,7 +54,7 @@ class Feed extends React.PureComponent {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
-      this.loadEvents(focusedTeam.id)
+      this.loadEvents(focusedTeam.id, null, firstLoad)
     }
 
     // Update the feed of events for each team
@@ -75,7 +75,7 @@ class Feed extends React.PureComponent {
 
       // Wait for the requests to finish (`await`), otherwise
       // the server will get confused and throw an error
-      await this.loadEvents(team.id)
+      await this.loadEvents(team.id, null, firstLoad)
     }
   }
 
@@ -95,7 +95,7 @@ class Feed extends React.PureComponent {
     this.setState({ loading })
   }
 
-  async loadEvents(scope, until) {
+  async loadEvents(scope, until, firstLoad) {
     if (!this.remote || this.isLoading(scope)) {
       return
     }
@@ -167,6 +167,13 @@ class Feed extends React.PureComponent {
 
     this.setState({ events, teams })
     this.isLoading(scope, false)
+
+    // When loading the data the first time, we need to skip
+    // the state comparision, because it takes a very long time
+    // for so much data. For the data updates afterwards it's fine
+    if (firstLoad) {
+      this.forceUpdate()
+    }
   }
 
   hideWindow(event) {
@@ -309,14 +316,14 @@ class Feed extends React.PureComponent {
     }
   }
 
-  async setTeams(teams) {
+  async setTeams(teams, firstLoad) {
     for (const team of teams) {
       const relatedCache = this.state.teams.find(item => item.id === team.id)
       team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
     this.setState({ teams })
-    await this.updateEvents()
+    await this.updateEvents(false, firstLoad)
   }
 
   setFilter(eventFilter) {
