@@ -194,7 +194,7 @@ app.on('ready', async () => {
   }
 
   // Ensure that `next` works with `electron`
-  await prepareNext(electron, resolvePath('./renderer'))
+  await prepareNext('./renderer')
 
   // Extract each window out of the list
   const { mainWindow, tutorialWindow, aboutWindow } = windowList
