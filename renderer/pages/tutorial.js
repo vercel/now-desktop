@@ -450,7 +450,7 @@ const Tutorial = () =>
           display: flex !important;
           justify-content: center;
           align-items: center;
-          background: linear-gradient(to left, #000, transparent);
+          background: linear-gradient(to left, #fff, transparent);
           cursor: pointer;
           opacity: 0;
           transition: opacity .3s ease;
@@ -460,7 +460,7 @@ const Tutorial = () =>
           cursor: default;
         }
         .slick-arrow:not(.slick-disabled) {
-          opacity: .5 !important;
+          opacity: .2 !important;
         }
         .slick-arrow:not(.slick-disabled):hover {
           opacity: 1 !important;
