@@ -53,9 +53,8 @@ const sliderSettings = {
   afterChange(index) {
     const input = window.loginInput
     const inputElement = window.loginInputElement
-    const video = window.usageVideo
 
-    if (!input || !video) {
+    if (!input) {
       return
     }
 
@@ -70,15 +69,6 @@ const sliderSettings = {
         // Reset value of login form if not verifying
         input.setState(initialState)
       }
-    }
-
-    if (index === 1) {
-      video.play()
-    } else {
-      setTimeout(() => {
-        video.pause()
-        video.currentTime = 0
-      }, 500)
     }
   }
 }
@@ -216,20 +206,6 @@ class Sections extends React.PureComponent {
   }
 
   render() {
-    const isWin = platform() === 'win32'
-    const fileName = isWin ? 'usage-win.webm' : 'usage.webm'
-    const videoStyle = isWin ? { width: '80%' } : {}
-
-    const videoSettings = {
-      preload: true,
-      loop: true,
-      src: `/static/${fileName}`,
-      style: videoStyle,
-      ref: c => {
-        window.usageVideo = c
-      }
-    }
-
     const loginTextRef = element => {
       window.loginText = element
     }
@@ -261,10 +237,6 @@ class Sections extends React.PureComponent {
             <h1>
               <b>Now</b> — Realtime global deployments
             </h1>
-          </section>
-
-          <section id="usage">
-            <video {...videoSettings} />
           </section>
 
           <section id="cli">
@@ -336,11 +308,6 @@ class Sections extends React.PureComponent {
               font-weight: 400;
               margin: 25px 0 0 0;
               cursor: default;
-            }
-            #usage video {
-              width: 582px;
-              position: relative;
-              z-index: 0;
             }
             #login p {
               text-align: center;
@@ -511,6 +478,7 @@ const Tutorial = () =>
           left: 0;
           right: 0;
           height: 60px;
+
           justify-content: center;
           align-items: center;
           list-style: none;
