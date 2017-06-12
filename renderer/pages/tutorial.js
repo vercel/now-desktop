@@ -456,6 +456,9 @@ const Tutorial = () =>
           transition: opacity .3s ease;
           -webkit-app-region: no-drag;
         }
+        .slick-arrow.slick-disabled {
+          cursor: default;
+        }
         .slick-arrow:not(.slick-disabled) {
           opacity: .5 !important;
         }
@@ -478,7 +481,6 @@ const Tutorial = () =>
           left: 0;
           right: 0;
           height: 60px;
-
           justify-content: center;
           align-items: center;
           list-style: none;
@@ -497,6 +499,7 @@ const Tutorial = () =>
           border: 0;
           text-indent: -999px;
           border-radius: 100%;
+
           padding: 0;
           opacity: .5;
           cursor: pointer;
