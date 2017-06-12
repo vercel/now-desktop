@@ -489,27 +489,25 @@ const Tutorial = () =>
         .slick-dots li {
           display: block;
           -webkit-app-region: no-drag;
-          margin: 0 4px;
+          margin: 0 3px;
         }
         .slick-dots li button {
           display: block;
           height: 10px;
           width: 10px;
-          background: #fff;
+          background: #CCCCCC;
           border: 0;
           text-indent: -999px;
           border-radius: 100%;
-
           padding: 0;
-          opacity: .5;
           cursor: pointer;
-          transition: opacity .4s;
+          transition: background .4s;
         }
         .slick-dots li button:focus {
           outline: 0;
         }
         .slick-dots li button:hover, .slick-dots li.slick-active button {
-          opacity: 1;
+          background: #000;
         }
       `}
     </style>
