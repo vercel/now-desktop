@@ -120,14 +120,15 @@ class Title extends React.PureComponent {
               background: #fff;
               z-index: 5;
               user-select: none;
+
               cursor: default;
             }
             h1 {
               margin: 0;
-              color: #9B9B9B;
+              color: #000000;
               font-size: 12px;
               letter-spacing: 0.02em;
-              font-weight: 400;
+              font-weight: 500;
             }
             .light {
               height: 35px;
