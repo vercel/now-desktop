@@ -122,60 +122,52 @@ class Binary extends React.PureComponent {
 
           <style jsx>
             {`
-            article {
-              width: 415px;
-              font-size: 14px;
-              text-align: center;
-              line-height: 22px;
-            }
-
-            .install-status i {
-              font-weight: 700;
-              font-style: normal;
-              animation-name: blink;
-              animation-duration: 1.4s;
-              animation-iteration-count: infinite;
-              animation-fill-mode: both;
-              font-size: 150%;
-            }
-
-            .install-status i:nth-child(3) {
-              animation-delay: .2s;
-            }
-
-            .install-status i:nth-child(4) {
-              animation-delay: .4s;
-            }
-
-            @keyframes blink {
-              0% {
-                opacity: 0.1;
+              article {
+                width: 415px;
+                font-size: 14px;
+                text-align: center;
+                line-height: 22px;
               }
-
-              20% {
-                opacity: 1;
+              .install-status i {
+                font-weight: 700;
+                font-style: normal;
+                animation-name: blink;
+                animation-duration: 1.4s;
+                animation-iteration-count: infinite;
+                animation-fill-mode: both;
+                font-size: 150%;
               }
-
-              100% {
-                opacity: .2;
+              .install-status i:nth-child(3) {
+                animation-delay: .2s;
               }
-            }
-
-            .progress {
-              background: #636363;
-              height: 20px;
-              width: 250px;
-              overflow: hidden;
-              margin: 20px auto 0 auto;
-              border-radius: 3px;
-            }
-
-            .progress span {
-              display: block;
-              background: #fff;
-              height: inherit;
-            }
-          `}
+              .install-status i:nth-child(4) {
+                animation-delay: .4s;
+              }
+              @keyframes blink {
+                0% {
+                  opacity: 0.1;
+                }
+                20% {
+                  opacity: 1;
+                }
+                100% {
+                  opacity: .2;
+                }
+              }
+              .progress {
+                background: #636363;
+                height: 20px;
+                width: 250px;
+                overflow: hidden;
+                margin: 20px auto 0 auto;
+                border-radius: 3px;
+              }
+              .progress span {
+                display: block;
+                background: #fff;
+                height: inherit;
+              }
+            `}
           </style>
         </article>
       )
@@ -190,20 +182,18 @@ class Binary extends React.PureComponent {
 
           <style jsx>
             {`
-            article {
-              width: 415px;
-              font-size: 14px;
-              text-align: center;
-              line-height: 22px;
-            }
-
-            code {
-              font-weight: 700;
-              background: #212121;
-              padding: 1px 7px;
-              border-radius: 3px;
-            }
-          `}
+              article {
+                width: 415px;
+                font-size: 14px;
+                text-align: center;
+                line-height: 22px;
+              }
+              code {
+                background: #eaeaea;
+                padding: 1px 7px;
+                border-radius: 3px;
+              }
+            `}
           </style>
         </article>
       )
@@ -229,55 +219,50 @@ class Binary extends React.PureComponent {
 
         <style jsx>
           {`
-          article {
-            width: 415px;
-            font-size: 14px;
-            text-align: center;
-            line-height: 22px;
-          }
-
-          code {
-            font-weight: 700;
-            background: #212121;
-            padding: 1px 7px;
-            border-radius: 3px;
-          }
-
-          .button {
-            font-weight: 700;
-            text-transform: uppercase;
-            background: #000;
-            border: 2px solid #fff;
-            text-align: center;
-            text-decoration: none;
-            color: #fff;
-            font-size: 12px;
-            padding: 8px 20px;
-            transition: color .2s ease, background .2s ease;
-            cursor: pointer;
-            display: inline-block;
-            line-height: normal;
-            -webkit-app-region: no-drag;
-          }
-
-          .button:hover {
-            background: #fff;
-            color: #000;
-          }
-
-          .install {
-            margin-top: 20px;
-            display: inline-block;
-          }
-
-          .install.off {
-            background: transparent;
-            font-size: 13px;
-            cursor: default;
-            color: #636363;
-            border-color: currentColor;
-          }
-        `}
+            article {
+              width: 415px;
+              font-size: 14px;
+              text-align: center;
+              line-height: 22px;
+            }
+            code {
+              font-weight: 600;
+              background: #eaeaea;
+              padding: 1px 7px;
+              border-radius: 3px;
+            }
+            .button {
+              font-weight: 700;
+              text-transform: uppercase;
+              background: #000;
+              border: 2px solid #fff;
+              text-align: center;
+              text-decoration: none;
+              color: #fff;
+              font-size: 12px;
+              padding: 8px 20px;
+              transition: color .2s ease, background .2s ease;
+              cursor: pointer;
+              display: inline-block;
+              line-height: normal;
+              -webkit-app-region: no-drag;
+            }
+            .button:hover {
+              background: #fff;
+              color: #000;
+            }
+            .install {
+              margin-top: 20px;
+              display: inline-block;
+            }
+            .install.off {
+              background: transparent;
+              font-size: 13px;
+              cursor: default;
+              color: #999999;
+              border-color: currentColor;
+            }
+          `}
         </style>
       </article>
     )

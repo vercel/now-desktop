@@ -302,16 +302,13 @@ class Sections extends React.PureComponent {
               line-height: normal;
               -webkit-app-region: no-drag;
             }
-
             a {
               -webkit-app-region: no-drag;
             }
-
             .button:hover {
               background: #fff;
               color: #000;
             }
-
             .window-controls {
               display: flex;
               justify-content: flex-end;
@@ -324,7 +321,6 @@ class Sections extends React.PureComponent {
               z-index: 5000; /* the slick arrow is at 4000 */
               background: transparent;
             }
-
             .window-controls span {
               opacity: .5;
               font-size: 0;
@@ -332,24 +328,20 @@ class Sections extends React.PureComponent {
               -webkit-app-region: no-drag;
               margin-left: 10px;
             }
-
             .window-controls span:hover {
               opacity: 1;
             }
-
             #intro h1 {
               font-size: 15px;
               font-weight: 400;
               margin: 25px 0 0 0;
               cursor: default;
             }
-
             #usage video {
               width: 582px;
               position: relative;
               z-index: 0;
             }
-
             #login p {
               text-align: center;
               margin: 0;
@@ -357,11 +349,10 @@ class Sections extends React.PureComponent {
               line-height: 24px;
               white-space: pre;
             }
-
             #login a {
               margin-top: 30px;
             }
-        `}
+          `}
         </style>
       </div>
     )
@@ -376,8 +367,8 @@ const Tutorial = () =>
     <style jsx>
       {`
         main {
-          color: #fff;
-          background: #000;
+          color: #000;
+          background: #fff;
           height: 100vh;
           width: 100vw;
         }
@@ -388,15 +379,19 @@ const Tutorial = () =>
       {`
         body {
           margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Helvetica Neue, sans-serif;
+          font-family: -apple-system,
+            BlinkMacSystemFont,
+            Segoe UI,
+            Roboto,
+            Oxygen,
+            Helvetica Neue,
+            sans-serif;
           -webkit-font-smoothing: antialiased;
           -webkit-app-region: drag;
         }
-
         ::selection {
           background: #A7D8FF;
         }
-
         .slick-slider {
           position: relative;
           display: block;
@@ -406,7 +401,6 @@ const Tutorial = () =>
           touch-action: pan-y;
           -webkit-tap-highlight-color: transparent;
         }
-
         .slick-list {
           position: relative;
           display: block;
@@ -414,83 +408,64 @@ const Tutorial = () =>
           margin: 0;
           padding: 0;
         }
-
         .slick-list:focus {
           outline: none;
         }
-
         .slick-list.dragging {
           cursor: pointer;
           cursor: hand;
         }
-
-        .slick-slider .slick-track,
-        .slick-slider .slick-list {
+        .slick-slider .slick-track, .slick-slider .slick-list {
           transform: translate3d(0, 0, 0);
         }
-
         .slick-track {
           position: relative;
           top: 0;
           left: 0;
           display: block;
         }
-
-        .slick-track:before,
-        .slick-track:after {
+        .slick-track:before, .slick-track:after {
           display: table;
           content: '';
         }
-
         .slick-track:after {
           clear: both;
         }
-
         .slick-loading .slick-track {
           visibility: hidden;
         }
-
         .slick-slide {
           display: none;
           float: left;
           height: 100%;
           min-height: 1px;
         }
-
         [dir='rtl'] .slick-slide {
           float: right;
         }
-
         .slick-slide img {
           display: block;
         }
-
         .slick-slide.slick-loading img {
           display: none;
         }
-
         .slick-slide.dragging img {
           pointer-events: none;
         }
-
         .slick-initialized .slick-slide {
           display: block;
         }
-
         .slick-loading .slick-slide {
           visibility: hidden;
         }
-
         .slick-vertical .slick-slide {
           display: block;
           height: auto;
           border: 1px solid transparent;
         }
-
         .slick-arrow.slick-hidden {
           display: none;
         }
-
         .slick-initialized .slick-slide {
           height: 100vh;
           justify-content: center;
@@ -499,7 +474,6 @@ const Tutorial = () =>
           flex-direction: column;
           width: 100%;
         }
-
         .slick-arrow {
           height: 100vh !important;
           z-index: 4000;
@@ -515,24 +489,19 @@ const Tutorial = () =>
           transition: opacity .3s ease;
           -webkit-app-region: no-drag;
         }
-
         .slick-arrow:not(.slick-disabled) {
           opacity: .5 !important;
         }
-
         .slick-arrow:not(.slick-disabled):hover {
           opacity: 1 !important;
         }
-
         .slick-arrow.slick-prev {
           left: 0;
           transform: rotate(180deg);
         }
-
         .slick-arrow.slick-next {
           right: 0;
         }
-
         .slick-dots {
           margin: 0;
           padding: 0;
@@ -547,13 +516,11 @@ const Tutorial = () =>
           list-style: none;
           z-index: 100;
         }
-
         .slick-dots li {
           display: block;
           -webkit-app-region: no-drag;
           margin: 0 4px;
         }
-
         .slick-dots li button {
           display: block;
           height: 10px;
@@ -567,13 +534,10 @@ const Tutorial = () =>
           cursor: pointer;
           transition: opacity .4s;
         }
-
         .slick-dots li button:focus {
           outline: 0;
         }
-
-        .slick-dots li button:hover,
-        .slick-dots li.slick-active button {
+        .slick-dots li button:hover, .slick-dots li.slick-active button {
           opacity: 1;
         }
       `}
