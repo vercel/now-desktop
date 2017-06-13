@@ -94,19 +94,10 @@ class Binary extends React.PureComponent {
     }
 
     if (this.state.installing) {
-      const dots = this.state.progress === false ? '' : '...'
-
       return (
         <article>
           <p className="install-status">
-            <strong>{'Installing the Command Line Interface' + dots}</strong>
-
-            {this.state.progress === false &&
-              <span>
-                <i>.</i>
-                <i>.</i>
-                <i>.</i>
-              </span>}
+            <strong>Installing the Command Line Interface...</strong>
           </p>
 
           <p>
@@ -128,32 +119,6 @@ class Binary extends React.PureComponent {
                 text-align: center;
                 line-height: 22px;
               }
-              .install-status i {
-                font-weight: 700;
-                font-style: normal;
-                animation-name: blink;
-                animation-duration: 1.4s;
-                animation-iteration-count: infinite;
-                animation-fill-mode: both;
-                font-size: 150%;
-              }
-              .install-status i:nth-child(3) {
-                animation-delay: .2s;
-              }
-              .install-status i:nth-child(4) {
-                animation-delay: .4s;
-              }
-              @keyframes blink {
-                0% {
-                  opacity: 0.1;
-                }
-                20% {
-                  opacity: 1;
-                }
-                100% {
-                  opacity: .2;
-                }
-              }
               .progress {
                 background: #CCC;
                 height: 20px;
@@ -165,7 +130,6 @@ class Binary extends React.PureComponent {
               .progress span {
                 display: block;
                 background: #000;
-
                 height: inherit;
               }
             `}
