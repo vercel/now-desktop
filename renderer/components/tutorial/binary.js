@@ -225,7 +225,7 @@ class Binary extends React.PureComponent {
               font-size: 13px;
               cursor: default;
               color: #999999;
-              border-color: currentColor;
+              border-color: transparent;
             }
           `}
         </style>
