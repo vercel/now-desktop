@@ -50,7 +50,7 @@ const loadBundled = async (section, utils) => {
   return tempLocation
 }
 
-export default async section => {
+export default async function() {
   const remote = electron.remote || false
 
   if (!remote) {
@@ -67,24 +67,22 @@ export default async section => {
   const utils = remote.require('./utils/binary')
   const notify = remote.require('./notify')
 
-  if (section) {
-    section.setState({
-      installing: true,
-      downloading: true
-    })
-  }
+  this.setState({
+    installing: true,
+    downloading: true
+  })
 
   let tempLocation
 
   // Prepare progress bar (make it show up)
-  section.setState({
+  this.setState({
     progress: 0
   })
 
   try {
-    tempLocation = await loadBundled(section, utils)
+    tempLocation = await loadBundled(this, utils)
   } catch (err) {
-    section.setState({
+    this.setState({
       installing: false,
       done: false
     })
@@ -94,12 +92,10 @@ export default async section => {
   }
 
   // Let the user know we're finished
-  if (section) {
-    section.setState({
-      installing: false,
-      done: true
-    })
-  }
+  this.setState({
+    installing: false,
+    done: true
+  })
 
   notify({
     title: 'Finished Installing now CLI',

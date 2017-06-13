@@ -6,6 +6,9 @@ import exists from 'path-exists'
 // Utilities
 import installBinary from '../../../utils/load-binary'
 
+// Components
+import Button from '../button'
+
 const initialState = {
   binaryInstalled: false,
   installing: false,
@@ -82,28 +85,9 @@ class Binary extends React.PureComponent {
   }
 
   render() {
-    const element = this
+    const { installing, done, binaryInstalled } = this.state
 
-    let classes = 'button install'
-    let installText = 'Install now'
-
-    if (this.state.binaryInstalled) {
-      classes += ' off'
-      installText = 'Already installed'
-    }
-
-    const binaryButton = {
-      className: classes,
-      onClick() {
-        if (element.state.binaryInstalled) {
-          return
-        }
-
-        installBinary(element)
-      }
-    }
-
-    if (this.state.installing) {
+    if (installing) {
       return (
         <article>
           <p className="install-status">
@@ -148,7 +132,7 @@ class Binary extends React.PureComponent {
       )
     }
 
-    if (this.state.done) {
+    if (done) {
       return (
         <article>
           <p><strong>Hooray! 🎉</strong></p>
@@ -199,16 +183,18 @@ class Binary extends React.PureComponent {
           {' '}
           <code>now</code>
           {' '}
-          from the command line, if you{`'`}d like to.
+          from the command line, if you{"'"}d like to.
         </p>
         <p>
           Press the button below to install it! When a new version gets
           released, we
-          {`'`}
+          {"'"}
           ll automatically update it for you.
         </p>
 
-        <a {...binaryButton}>{installText}</a>
+        <Button disabled={binaryInstalled} onClick={installBinary.bind(this)}>
+          {binaryInstalled ? 'Already installed' : 'Install now'}
+        </Button>
 
         <style jsx>
           {`
@@ -223,37 +209,6 @@ class Binary extends React.PureComponent {
               background: #eaeaea;
               padding: 1px 7px;
               border-radius: 3px;
-            }
-            .button {
-              font-weight: 700;
-              text-transform: uppercase;
-              background: #000;
-              text-align: center;
-              text-decoration: none;
-              color: #fff;
-              font-size: 12px;
-              padding: 10px 28px;
-              transition: color .2s ease, background .2s ease;
-              cursor: pointer;
-              display: inline-block;
-              line-height: normal;
-              -webkit-app-region: no-drag;
-              border: 2px solid currentColor;
-            }
-            .button:hover {
-              background: transparent;
-              color: #000;
-            }
-            .install {
-              margin-top: 20px;
-              display: inline-block;
-            }
-            .install.off {
-              background: transparent;
-              font-size: 13px;
-              cursor: default;
-              color: #CCCCCC;
-              border-color: currentColor;
             }
           `}
         </style>

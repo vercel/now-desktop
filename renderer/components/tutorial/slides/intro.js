@@ -1,8 +1,10 @@
 // Packages
+import electron from 'electron'
 import React, { PureComponent } from 'react'
 
 // Components
 import LoginForm from '../form'
+import Button from '../button'
 import Logo from '../../../vectors/logo'
 
 // Styles
@@ -17,6 +19,26 @@ class Intro extends PureComponent {
       security: null,
       done: false
     }
+
+    this.remote = electron.remote || false
+  }
+
+  handleReady(event) {
+    event.preventDefault()
+
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+    const windows = this.remote.getGlobal('windows')
+
+    if (!windows || !windows.about) {
+      return
+    }
+
+    // Close the tutorial
+    currentWindow.emit('open-tray', windows.about)
   }
 
   render() {
@@ -57,6 +79,8 @@ class Intro extends PureComponent {
             Congrats! <strong>{"You're signed in."}</strong><br />Are you ready
             to deploy something?
           </p>
+          <Button onClick={this.handleReady.bind(this)}>Get Started</Button>
+
           <style jsx>{introStyles}</style>
         </article>
       )

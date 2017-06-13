@@ -80,22 +80,6 @@ class Sections extends React.PureComponent {
     this.remote = electron.remote || false
   }
 
-  handleReady() {
-    if (!this.remote) {
-      return
-    }
-
-    const currentWindow = this.remote.getCurrentWindow()
-    const windows = this.remote.getGlobal('windows')
-
-    if (!windows || !windows.about) {
-      return
-    }
-
-    // Close the tutorial
-    currentWindow.emit('open-tray', windows.about)
-  }
-
   handleMinimizeClick() {
     if (!this.remote) {
       return
@@ -407,7 +391,6 @@ const Tutorial = () =>
         }
         .slick-arrow {
           height: 100vh !important;
-
           z-index: 4000;
           top: 0;
           position: fixed;
