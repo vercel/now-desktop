@@ -9,7 +9,7 @@ import installBinary from '../../../utils/load-binary'
 const initialState = {
   binaryInstalled: false,
   installing: false,
-  done: false,
+  done: true,
   downloading: false,
   progress: false
 }
@@ -69,6 +69,16 @@ class Binary extends React.PureComponent {
 
       this.setState(originalState)
     })
+  }
+
+  openDocumentation(event) {
+    event.preventDefault()
+
+    if (!this.remote) {
+      return
+    }
+
+    this.remote.shell.openExternal('https://zeit.co/docs')
   }
 
   render() {
@@ -142,8 +152,17 @@ class Binary extends React.PureComponent {
       return (
         <article>
           <p><strong>Hooray! 🎉</strong></p>
-          <p>The binary successfully landed on your device!</p>
-          <p>You can now use <code>now</code> from the command line.</p>
+          <p>
+            The binary successfully landed on your device! You can now use{' '}
+            <code>now</code> from the command line.
+          </p>
+
+          <p>
+            If you want to learn more about how to take advantage of our
+            command line interface,{' '}
+            <a onClick={this.openDocumentation.bind(this)}>this</a> will be
+            helpful.
+          </p>
 
           <style jsx>
             {`
@@ -157,6 +176,15 @@ class Binary extends React.PureComponent {
                 background: #eaeaea;
                 padding: 1px 7px;
                 border-radius: 3px;
+                font-weight: 600;
+              }
+              a {
+                text-decoration: none;
+                color: #067DF7;
+                cursor: pointer;
+              }
+              a:hover {
+                border-bottom: 1px solid #067DF7;
               }
             `}
           </style>
@@ -198,6 +226,7 @@ class Binary extends React.PureComponent {
             }
             .button {
               font-weight: 700;
+
               text-transform: uppercase;
               background: #000;
               text-align: center;
