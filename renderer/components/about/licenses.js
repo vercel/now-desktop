@@ -3,6 +3,9 @@ import electron from 'electron'
 import React from 'react'
 import getLicenses from 'load-licenses'
 
+// Styles
+import styles from '../../styles/components/about/licenses'
+
 const loadLicenses = () => {
   const remote = electron.remote || false
 
@@ -13,7 +16,7 @@ const loadLicenses = () => {
   return getLicenses(remote.process.mainModule)
 }
 
-const Licenses = () => (
+const Licenses = () =>
   <section>
     {loadLicenses().map((item, index) => {
       return (
@@ -24,39 +27,8 @@ const Licenses = () => (
         </details>
       )
     })}
-    <style jsx>
-      {`
-      details {
-        margin-bottom: 10px;
-      }
 
-      p {
-        font-size: 13px;
-        line-height: 19px;
-      }
-
-      summary {
-        color: #707070;
-        font-size: 12px;
-        cursor: pointer;
-        transition: color .2s ease;
-        display: inline-block;
-      }
-
-      summary:focus {
-        outline: none;
-      }
-
-      summary:hover {
-        color: #000;
-      }
-
-      details[open] summary {
-        color: #000;
-      }
-    `}
-    </style>
+    <style jsx>{styles}</style>
   </section>
-)
 
 export default Licenses

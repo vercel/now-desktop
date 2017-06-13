@@ -5,6 +5,9 @@ import React from 'react'
 // Components
 import Caret from '../../vectors/caret'
 
+// Styles
+import styles from '../../styles/components/feed/top-arrow'
+
 class TopArrow extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -102,20 +105,7 @@ class TopArrow extends React.PureComponent {
       >
         <Caret />
 
-        <style jsx>
-          {`
-          span {
-            height: 12px;
-            flex-shrink: 0;
-            display: block;
-          }
-
-          span:not([style]) {
-            display: flex;
-            justify-content: center;
-          }
-        `}
-        </style>
+        <style jsx>{styles}</style>
       </span>
     )
   }

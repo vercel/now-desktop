@@ -9,6 +9,9 @@ import moment from 'moment'
 import dotProp from 'dot-prop'
 import ms from 'ms'
 
+// Styles
+import { localStyles, globalStyles } from '../../styles/components/feed/event'
+
 // Components
 import Avatar from './avatar'
 import messageComponents from './messages'
@@ -246,80 +249,8 @@ class EventMessage extends React.PureComponent {
           <span>{this.parseDate(info.created)}</span>
         </figcaption>
 
-        <style jsx>
-          {`
-            figure {
-              margin: 0;
-              display: flex;
-              justify-content: space-between;
-            }
-            figure:hover {
-              background: #F5F5F5;
-            }
-            figure figcaption {
-              border-top: 1px solid #F5F5F5;
-              padding: 10px 10px 10px 0;
-              box-sizing: border-box;
-              display: flex;
-              justify-content: space-between;
-              flex-shrink: 1;
-
-              word-break: break-word;
-              flex-grow: 1;
-            }
-            figure:last-child figcaption {
-              padding-bottom: 10px;
-            }
-            figure:last-child figcaption {
-              border-bottom: 0;
-            }
-            figure figcaption span {
-              font-size: 10px;
-              color: #9B9B9B;
-              flex-shrink: 0;
-            }
-          `}
-        </style>
-
-        <style jsx global>
-          {`
-            h1 + .event figcaption {
-              border-top: 0 !important;
-            }
-            .event p {
-              font-size: 12px;
-              margin: 0;
-              line-height: 17px;
-              display: block;
-              color: #666;
-              padding-right: 10px;
-              flex-shrink: 1;
-            }
-            .event p b {
-              font-weight: normal;
-              color: #000;
-            }
-            .event p code {
-              font-family: Menlo,
-                Monaco,
-                Lucida Console,
-                Liberation Mono,
-                serif;
-              background: #f5f5f5;
-              padding: 2px 5px;
-              border-radius: 3px;
-              font-size: 12px;
-              margin: 5px 0;
-              display: block;
-            }
-            .event:hover p code {
-              background: #e8e8e8;
-            }
-            .event:hover + .event figcaption {
-              border-top-color: transparent;
-            }
-          `}
-        </style>
+        <style jsx>{localStyles}</style>
+        <style jsx global>{globalStyles}</style>
       </figure>
     )
   }
