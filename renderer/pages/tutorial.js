@@ -26,16 +26,7 @@ import {
 class Sections extends React.PureComponent {
   constructor(props) {
     super(props)
-
-    this.state = {
-      loginShown: true,
-      loginText:
-        'To start using the app, simply enter\nyour email address below.',
-      tested: false
-    }
-
     this.remote = electron.remote || false
-    this.initialState = Object.assign({}, this.state)
   }
 
   sliderChanged(index) {
@@ -46,16 +37,13 @@ class Sections extends React.PureComponent {
       return
     }
 
-    const slider = document.querySelector('.slick-track')
-    const slideCount = slider.childElementCount
-
     // If it's the last slide, auto-focus on input
     if (inputElement && input) {
-      if (index === slideCount - 1) {
+      if (index === 0) {
         inputElement.focus()
       } else if (!input.state.classes.includes('verifying')) {
         // Reset value of login form if not verifying
-        input.setState(this.initialState)
+        input.setState(input.initialState)
       }
     }
   }
