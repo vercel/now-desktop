@@ -20,8 +20,12 @@ import NoEvents from '../components/feed/events/none'
 import Loading from '../components/feed/events/loading'
 
 // Styles
-import { feedStyles, headingStyles, loaderStyles } from '../styles/pages/feed'
-import pageStyles from '../styles/pages/all'
+import {
+  feedStyles,
+  headingStyles,
+  loaderStyles,
+  pageStyles
+} from '../styles/pages/feed'
 
 class Feed extends React.PureComponent {
   constructor(props) {
