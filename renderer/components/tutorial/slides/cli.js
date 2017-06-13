@@ -4,7 +4,7 @@ import React from 'react'
 import exists from 'path-exists'
 
 // Utilities
-import installBinary from '../../utils/load-binary'
+import installBinary from '../../../utils/load-binary'
 
 const initialState = {
   binaryInstalled: false,

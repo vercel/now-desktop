@@ -16,7 +16,7 @@ import CloseSVG from '../vectors/close-window'
 
 // Components
 import Title from '../components/title'
-import Binary from '../components/tutorial/binary'
+import CLI from '../components/tutorial/slides/cli'
 import Intro from '../components/tutorial/slides/intro'
 
 const SliderArrows = props => {
@@ -231,7 +231,7 @@ class Sections extends React.PureComponent {
           </section>
 
           <section id="cli">
-            <Binary />
+            <CLI />
           </section>
         </Slider>
 
@@ -256,6 +256,7 @@ class Sections extends React.PureComponent {
             a {
               -webkit-app-region: no-drag;
             }
+
             .button:hover {
               background: #fff;
               color: #000;
@@ -406,6 +407,7 @@ const Tutorial = () =>
         }
         .slick-arrow {
           height: 100vh !important;
+
           z-index: 4000;
           top: 0;
           position: fixed;
