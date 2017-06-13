@@ -12,8 +12,8 @@ import CloseSVG from '../vectors/close-window'
 
 // Components
 import Title from '../components/title'
-import CLI from '../components/tutorial/slides/binary'
-import Intro from '../components/tutorial/slides/intro'
+import CLI from '../components/tutorial/cli'
+import Intro from '../components/tutorial/intro'
 import SliderArrow from '../components/tutorial/arrow'
 
 // Styles

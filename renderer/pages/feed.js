@@ -15,9 +15,9 @@ import Title from '../components/title'
 import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
 import TopArrow from '../components/feed/top-arrow'
-import EventMessage from '../components/feed/events'
-import NoEvents from '../components/feed/events/none'
-import Loading from '../components/feed/events/loading'
+import EventMessage from '../components/feed/event'
+import NoEvents from '../components/feed/none'
+import Loading from '../components/feed/loading'
 
 // Styles
 import {
