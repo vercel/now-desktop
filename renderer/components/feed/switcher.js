@@ -71,9 +71,16 @@ class Switcher extends React.PureComponent {
   }
 
   setOnlineState() {
-    this.setState({
-      online: navigator.onLine
-    })
+    const online = navigator.onLine
+    const newState = { online }
+
+    // Ensure that button for creating new team animates
+    // when the app recovers from being offline
+    if (!online) {
+      newState.createTeam = false
+    }
+
+    this.setState(newState)
   }
 
   async componentDidMount() {
@@ -385,7 +392,7 @@ class Switcher extends React.PureComponent {
 
     if (this.state.createTeam) {
       classes.push('shown')
-    } else {
+    } else if (this.state.online) {
       this.prepareCreateTeam(teams.length)
     }
 
