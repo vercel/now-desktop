@@ -93,6 +93,28 @@ class LoginForm extends PureComponent {
     this.prepareSuggestion(value)
   }
 
+  resetState() {
+    // This method is also being used from somewhere
+    // else, not just in this file
+    this.setState(this.initialState)
+  }
+
+  componentWillMount() {
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+
+    currentWindow.on('show', () => {
+      this.loginInput.focus()
+    })
+
+    currentWindow.on('hide', () => {
+      this.resetState()
+    })
+  }
+
   prepareSuggestion(value) {
     if (value === '') {
       return

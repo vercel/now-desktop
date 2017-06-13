@@ -39,7 +39,7 @@ class Sections extends React.PureComponent {
         inputElement.focus()
       } else if (!input.state.classes.includes('verifying')) {
         // Reset value of login form if not verifying
-        input.setState(input.initialState)
+        input.resetState()
       }
     }
   }
