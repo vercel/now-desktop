@@ -9,7 +9,7 @@ import installBinary from '../../../utils/load-binary'
 const initialState = {
   binaryInstalled: false,
   installing: false,
-  done: true,
+  done: false,
   downloading: false,
   progress: false
 }
@@ -226,7 +226,6 @@ class Binary extends React.PureComponent {
             }
             .button {
               font-weight: 700;
-
               text-transform: uppercase;
               background: #000;
               text-align: center;
@@ -253,8 +252,8 @@ class Binary extends React.PureComponent {
               background: transparent;
               font-size: 13px;
               cursor: default;
-              color: #999999;
-              border-color: transparent;
+              color: #CCCCCC;
+              border-color: currentColor;
             }
           `}
         </style>
