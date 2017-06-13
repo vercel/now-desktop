@@ -13,7 +13,6 @@ import tokenFromCLI from '../utils/token/from-cli'
 import ArrowSVG from '../vectors/arrow'
 import MinimizeSVG from '../vectors/minimize-window'
 import CloseSVG from '../vectors/close-window'
-import LogoSVG from '../vectors/logo'
 
 // Components
 import Title from '../components/title'
@@ -231,14 +230,6 @@ class Sections extends React.PureComponent {
             <Intro />
           </section>
 
-          <section id="intro">
-            <LogoSVG />
-
-            <h1>
-              <b>Now</b> — Realtime global deployments
-            </h1>
-          </section>
-
           <section id="cli">
             <Binary />
           </section>
@@ -291,12 +282,6 @@ class Sections extends React.PureComponent {
             .window-controls span:hover {
               opacity: 1;
             }
-            #intro h1 {
-              font-size: 15px;
-              font-weight: 400;
-              margin: 25px 0 0 0;
-              cursor: default;
-            }
           `}
         </style>
       </div>
@@ -343,7 +328,6 @@ const Tutorial = () =>
           box-sizing: border-box;
           user-select: none;
           -webkit-touch-callout: none;
-
           touch-action: pan-y;
           -webkit-tap-highlight-color: transparent;
         }
@@ -480,7 +464,6 @@ const Tutorial = () =>
           border-radius: 100%;
           padding: 0;
           cursor: pointer;
-
           transition: background .4s;
         }
         .slick-dots li button:focus {
