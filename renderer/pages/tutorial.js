@@ -83,6 +83,13 @@ class Sections extends React.PureComponent {
     const slider = this.slider
     const loginInputElement = window.loginInputElement
 
+    // Prevent user from tabbing through the inputs
+    // This leads to an unusable UI
+    if (keyCode === 9) {
+      event.preventDefault()
+      return
+    }
+
     if (document.activeElement === loginInputElement) {
       if (keyCode === 27) {
         // ESC
