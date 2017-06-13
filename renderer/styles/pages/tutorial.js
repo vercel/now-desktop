@@ -1,4 +1,4 @@
-export const sliderStyles = `
+export const sliderStyle = `
   body {
     margin: 0;
     font-family: -apple-system,
@@ -197,7 +197,7 @@ export const sliderStyles = `
   }
 `
 
-export const wrapperStyles = `
+export const wrapStyle = `
   main {
     color: #000;
     background: #fff;
@@ -206,7 +206,7 @@ export const wrapperStyles = `
   }
 `
 
-export const controlStyles = `
+export const controlStyle = `
   .window-controls {
     display: flex;
     justify-content: flex-end;

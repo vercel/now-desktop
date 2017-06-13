@@ -17,11 +17,7 @@ import Intro from '../components/tutorial/intro'
 import SliderArrow from '../components/tutorial/arrow'
 
 // Styles
-import {
-  sliderStyles,
-  wrapperStyles,
-  controlStyles
-} from '../styles/pages/tutorial'
+import { sliderStyle, wrapStyle, controlStyle } from '../styles/pages/tutorial'
 
 class Sections extends React.PureComponent {
   constructor(props) {
@@ -161,7 +157,7 @@ class Sections extends React.PureComponent {
           </section>
         </Slider>
 
-        <style jsx>{controlStyles}</style>
+        <style jsx>{controlStyle}</style>
       </div>
     )
   }
@@ -172,8 +168,8 @@ const Tutorial = () =>
     <Title>Welcome to Now</Title>
     <Sections />
 
-    <style jsx>{wrapperStyles}</style>
-    <style jsx global>{sliderStyles}</style>
+    <style jsx>{wrapStyle}</style>
+    <style jsx global>{sliderStyle}</style>
   </main>
 
 export default Tutorial
