@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import { func, bool, string } from 'prop-types'
 
 // Styles
-import styles from '../../styles/button'
+import styles from '../../styles/components/button'
 
 class Button extends PureComponent {
   clicked(event) {

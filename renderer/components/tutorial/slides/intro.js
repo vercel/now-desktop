@@ -8,7 +8,7 @@ import Button from '../button'
 import Logo from '../../../vectors/logo'
 
 // Styles
-import introStyles from '../../../styles/intro'
+import introStyles from '../../../styles/components/intro'
 
 class Intro extends PureComponent {
   constructor(props) {

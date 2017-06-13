@@ -16,7 +16,7 @@ import CloseSVG from '../vectors/close-window'
 
 // Components
 import Title from '../components/title'
-import CLI from '../components/tutorial/slides/cli'
+import CLI from '../components/tutorial/slides/binary'
 import Intro from '../components/tutorial/slides/intro'
 
 const SliderArrows = props => {
@@ -240,7 +240,6 @@ class Sections extends React.PureComponent {
             a {
               -webkit-app-region: no-drag;
             }
-
             .button:hover {
               background: #fff;
               color: #000;

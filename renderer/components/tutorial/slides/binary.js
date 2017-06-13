@@ -9,6 +9,9 @@ import installBinary from '../../../utils/load-binary'
 // Components
 import Button from '../button'
 
+// Styles
+import binaryStyles from '../../../styles/components/binary'
+
 const initialState = {
   binaryInstalled: false,
   installing: false,
@@ -105,29 +108,7 @@ class Binary extends React.PureComponent {
               <span style={{ width: `${this.state.progress}%` }} />
             </aside>}
 
-          <style jsx>
-            {`
-              article {
-                width: 415px;
-                font-size: 14px;
-                text-align: center;
-                line-height: 22px;
-              }
-              .progress {
-                background: #CCC;
-                height: 20px;
-                width: 250px;
-                overflow: hidden;
-                margin: 40px auto 0 auto;
-                border-radius: 3px;
-              }
-              .progress span {
-                display: block;
-                background: #000;
-                height: inherit;
-              }
-            `}
-          </style>
+          <style jsx>{binaryStyles}</style>
         </article>
       )
     }
@@ -148,30 +129,7 @@ class Binary extends React.PureComponent {
             helpful.
           </p>
 
-          <style jsx>
-            {`
-              article {
-                width: 415px;
-                font-size: 14px;
-                text-align: center;
-                line-height: 22px;
-              }
-              code {
-                background: #eaeaea;
-                padding: 1px 7px;
-                border-radius: 3px;
-                font-weight: 600;
-              }
-              a {
-                text-decoration: none;
-                color: #067DF7;
-                cursor: pointer;
-              }
-              a:hover {
-                border-bottom: 1px solid #067DF7;
-              }
-            `}
-          </style>
+          <style jsx>{binaryStyles}</style>
         </article>
       )
     }
@@ -196,22 +154,7 @@ class Binary extends React.PureComponent {
           {binaryInstalled ? 'Already installed' : 'Install now'}
         </Button>
 
-        <style jsx>
-          {`
-            article {
-              width: 415px;
-              font-size: 14px;
-              text-align: center;
-              line-height: 22px;
-            }
-            code {
-              font-weight: 600;
-              background: #eaeaea;
-              padding: 1px 7px;
-              border-radius: 3px;
-            }
-          `}
-        </style>
+        <style jsx>{binaryStyles}</style>
       </article>
     )
   }
