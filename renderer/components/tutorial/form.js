@@ -164,7 +164,7 @@ class LoginForm extends PureComponent {
       waiting: true
     })
 
-    this.props.intro.setState({
+    this.props.setIntroState({
       sendingMail: true
     })
 
@@ -187,9 +187,12 @@ class LoginForm extends PureComponent {
       return
     }
 
-    this.props.intro.setState({
+    this.props.setIntroState({
       sendingMail: false,
-      securityCode
+      security: {
+        email,
+        code: securityCode
+      }
     })
 
     let finalToken
@@ -249,12 +252,12 @@ class LoginForm extends PureComponent {
     mainWindow.reload()
 
     mainWindow.once('ready-to-show', async () => {
-      if (!this.props.intro) {
+      if (!this.props.setIntroState) {
         return
       }
 
-      this.props.intro.setState({
-        securityCode: null,
+      this.props.setIntroState({
+        security: null,
         done: true
       })
     })
@@ -464,21 +467,6 @@ class LoginForm extends PureComponent {
                 font-style: normal;
                 visibility: hidden;
               }
-              #login .sending-status i {
-                font-weight: 700;
-                font-style: normal;
-                animation-name: blink;
-                animation-duration: 1.4s;
-                animation-iteration-count: infinite;
-                animation-fill-mode: both;
-                font-size: 150%;
-              }
-              #login .sending-status i:nth-child(3) {
-                animation-delay: .2s;
-              }
-              #login .sending-status i:nth-child(4) {
-                animation-delay: .4s;
-              }
               @keyframes shake {
                 0%, 100% {
                   transform: translate3d(0, 0, 0);
@@ -488,17 +476,6 @@ class LoginForm extends PureComponent {
                 }
                 20%, 40%, 60%, 80% {
                   transform: translate3d(10px, 0, 0);
-                }
-              }
-              @keyframes blink {
-                0% {
-                  opacity: 0.1;
-                }
-                20% {
-                  opacity: 1;
-                }
-                100% {
-                  opacity: .2;
                 }
               }
             `}
