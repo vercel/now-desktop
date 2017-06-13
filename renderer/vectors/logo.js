@@ -2,12 +2,20 @@
 import React from 'react'
 
 const Logo = () =>
-  <svg width="39px" height="35px" viewBox="0 0 42 38" version="1.1">
-    <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+  <svg
+    width="43"
+    height="40"
+    viewBox="0 0 43 40"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g stroke="#000" fill="none" fillRule="evenodd">
       <path
-        d="M20.6,0 L0,37.2 L41.3,37.2 L20.6,0 L20.6,0 Z M19.1,7 L34.4,35 L3.6,35 L19.1,7 L19.1,7 Z"
-        id="Shape"
-        fill="#000"
+        strokeWidth="2.1875"
+        d="M21.331521 3.05101328L40.663042 37.9972047H2z"
+      />
+      <path
+        d="M38.9255319 37.5512821L20.6702128 4.34615385M39.7553191 37.5512821L21.5 4.34615385M38.0957446 37.5512821L20.6702128 5.24358974M37.2659575 37.5512821L20.6702128 6.14102564M19.8404255 6.14102564L38.0957446 37.5512821M36.4361702 37.5512821L19.8404255 7.03846154M33.1170213 30.3717948l-6.6382979-11.6666666"
+        strokeWidth="1.94444444"
       />
     </g>
   </svg>

@@ -99,7 +99,7 @@ class Binary extends React.PureComponent {
       return (
         <article>
           <p className="install-status">
-            <strong>{'Installing the command line interface' + dots}</strong>
+            <strong>{'Installing the Command Line Interface' + dots}</strong>
 
             {this.state.progress === false &&
               <span>
@@ -155,16 +155,17 @@ class Binary extends React.PureComponent {
                 }
               }
               .progress {
-                background: #636363;
+                background: #CCC;
                 height: 20px;
                 width: 250px;
                 overflow: hidden;
-                margin: 20px auto 0 auto;
+                margin: 40px auto 0 auto;
                 border-radius: 3px;
               }
               .progress span {
                 display: block;
-                background: #fff;
+                background: #000;
+
                 height: inherit;
               }
             `}
@@ -235,20 +236,20 @@ class Binary extends React.PureComponent {
               font-weight: 700;
               text-transform: uppercase;
               background: #000;
-              border: 2px solid #fff;
               text-align: center;
               text-decoration: none;
               color: #fff;
               font-size: 12px;
-              padding: 8px 20px;
+              padding: 10px 28px;
               transition: color .2s ease, background .2s ease;
               cursor: pointer;
               display: inline-block;
               line-height: normal;
               -webkit-app-region: no-drag;
+              border: 2px solid currentColor;
             }
             .button:hover {
-              background: #fff;
+              background: transparent;
               color: #000;
             }
             .install {

@@ -417,7 +417,7 @@ class LoginForm extends PureComponent {
                 border-bottom-color: #EAEAEA;
                 min-width: 300px;
                 text-align: center;
-                margin-top: 40px;
+                margin-top: 25px;
                 transition: all 0.4s ease;
                 cursor: text;
                 -webkit-app-region: no-drag;

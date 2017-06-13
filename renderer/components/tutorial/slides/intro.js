@@ -24,6 +24,7 @@ class Intro extends PureComponent {
             }
             p {
               font-size: 14px;
+              margin: 75px 0 0 0;
             }
           `}
         </style>
