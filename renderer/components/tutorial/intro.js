@@ -70,7 +70,7 @@ class Intro extends PureComponent {
   }
 
   render() {
-    const { sendingMail, security, done } = this.state
+    const { sendingMail, security, done, tested } = this.state
 
     if (sendingMail) {
       return (
@@ -94,6 +94,21 @@ class Intro extends PureComponent {
             security token matches this one:
             <b className="security-token">{security.code}</b>
           </p>
+
+          <style jsx>{introStyles}</style>
+        </article>
+      )
+    }
+
+    if (done && tested) {
+      return (
+        <article>
+          <Logo />
+          <p className="has-tiny-spacing">
+            <b>{"You're already logged in!"}</b><br />Click here to go back to
+            the application:
+          </p>
+          <Button onClick={this.handleReady.bind(this)}>SHOW EVENT FEED</Button>
 
           <style jsx>{introStyles}</style>
         </article>

@@ -19,6 +19,10 @@ export default `
     margin-top: 75px;
   }
 
+  p.has-tiny-spacing {
+    margin-top: 55px;
+  }
+
   .sending-status i {
     font-weight: 700;
     font-style: normal;

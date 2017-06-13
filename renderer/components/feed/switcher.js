@@ -406,7 +406,7 @@ class Switcher extends React.PureComponent {
 
               <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
             </ul>
-          : <p className="offline">{`You're offline!`}</p>}
+          : <p className="offline">{"You're offline!"}</p>}
 
         <a
           className="toggle-menu"
