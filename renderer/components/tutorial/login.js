@@ -93,14 +93,6 @@ class LoginForm extends PureComponent {
     this.prepareSuggestion(value)
   }
 
-  componentWillUnmount() {
-    if (!this.apiRequest) {
-      return
-    }
-
-    this.apiRequest.abort()
-  }
-
   prepareSuggestion(value) {
     if (value === '') {
       return
