@@ -9,10 +9,14 @@ export default `
 
   p {
     font-size: 14px;
-    margin: 75px 0 0 0;
+    margin: 0;
     line-height: 24px;
     max-width: 420px;
     text-align: center;
+  }
+
+  p.has-spacing {
+    margin-top: 75px;
   }
 
   .sending-status i {

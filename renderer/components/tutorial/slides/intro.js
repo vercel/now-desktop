@@ -65,7 +65,9 @@ class Intro extends PureComponent {
     return (
       <article>
         <Logo />
-        <p>To start using the app, simply enter your email address below.</p>
+        <p className="has-spacing">
+          To start using the app, simply enter your email address below.
+        </p>
         <LoginForm setIntroState={this.setState.bind(this)} />
 
         <style jsx>{introStyles}</style>
