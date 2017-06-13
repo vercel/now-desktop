@@ -115,6 +115,7 @@
     "resumer": "0.0.0",
     "semver": "5.3.0",
     "serialize-error": "2.1.0",
+    "sleep-promise": "2.0.0",
     "split-array": "1.0.1",
     "sudo-prompt": "7.0.0",
     "time-ago": "0.1.0",

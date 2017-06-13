@@ -17,8 +17,8 @@ import LogoSVG from '../vectors/logo'
 
 // Components
 import Title from '../components/title'
-import Login from '../components/tutorial/login'
 import Binary from '../components/tutorial/binary'
+import Intro from '../components/tutorial/slides/intro'
 
 const SliderArrows = props => {
   const properties = Object.assign({}, props)
@@ -206,10 +206,6 @@ class Sections extends React.PureComponent {
   }
 
   render() {
-    const loginTextRef = element => {
-      window.loginText = element
-    }
-
     if (this.state.loginShown && this.state.tested) {
       tokenFromCLI(this)
     }
@@ -231,6 +227,10 @@ class Sections extends React.PureComponent {
             </span>
           </div>}
         <Slider {...sliderSettings} ref={setRef.bind(this)}>
+          <section id="first">
+            <Intro />
+          </section>
+
           <section id="intro">
             <LogoSVG />
 
@@ -241,18 +241,6 @@ class Sections extends React.PureComponent {
 
           <section id="cli">
             <Binary />
-          </section>
-
-          <section id="login">
-            <p
-              ref={loginTextRef}
-              dangerouslySetInnerHTML={{ __html: this.state.loginText }}
-            />
-            {this.state && this.state.loginShown
-              ? <Login />
-              : <a className="button" onClick={this.handleReady.bind(this)}>
-                  Get Started
-                </a>}
           </section>
         </Slider>
 
@@ -309,16 +297,6 @@ class Sections extends React.PureComponent {
               margin: 25px 0 0 0;
               cursor: default;
             }
-            #login p {
-              text-align: center;
-              margin: 0;
-              font-size: 15px;
-              line-height: 24px;
-              white-space: pre;
-            }
-            #login a {
-              margin-top: 30px;
-            }
           `}
         </style>
       </div>
@@ -365,6 +343,7 @@ const Tutorial = () =>
           box-sizing: border-box;
           user-select: none;
           -webkit-touch-callout: none;
+
           touch-action: pan-y;
           -webkit-tap-highlight-color: transparent;
         }
@@ -501,6 +480,7 @@ const Tutorial = () =>
           border-radius: 100%;
           padding: 0;
           cursor: pointer;
+
           transition: background .4s;
         }
         .slick-dots li button:focus {
