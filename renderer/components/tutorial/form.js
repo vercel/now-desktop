@@ -405,26 +405,8 @@ class LoginForm extends PureComponent {
                 font-family: inherit;
                 font-size: inherit;
               }
-              #login .security-token {
-                display: block;
-                margin-top: 35px;
-                background: #212121;
-                border-radius: 3px;
-                font-weight: normal;
-                padding: 10px;
-                font-weight: 700;
-                font-size: 13px;
-                letter-spacing: 0.15em;
-              }
               #login input:focus {
                 color: #000;
-              }
-              #login p {
-                text-align: center;
-                margin: 0;
-                font-size: 15px;
-                line-height: 24px;
-                white-space: pre;
               }
               #login a {
                 margin-top: 30px;
@@ -433,18 +415,13 @@ class LoginForm extends PureComponent {
                 border-bottom-style: solid;
                 border-bottom-width: 1px;
                 border-bottom-color: #EAEAEA;
-                min-width: 250px;
+                min-width: 300px;
                 text-align: center;
                 margin-top: 40px;
                 transition: all 0.4s ease;
                 cursor: text;
                 -webkit-app-region: no-drag;
-                font-size: 12px;
-                font-family: Menlo,
-                  Monaco,
-                  Lucida Console,
-                  Liberation Mono,
-                  serif;
+                font-size: 14px;
               }
               #login .auto-complete.focus {
                 border-bottom-color: #067DF7;
@@ -474,10 +451,10 @@ class LoginForm extends PureComponent {
                 color: #999;
                 line-height: 35px;
                 text-align: left;
-                text-indent: 1px;
+                text-indent: 0px;
                 font-family: inherit;
                 font-size: inherit;
-                margin-top: -1px;
+                margin-top: -2px;
                 white-space: nowrap;
               }
               #login .auto-complete span.hidden {
