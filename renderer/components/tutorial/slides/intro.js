@@ -3,7 +3,7 @@ import electron from 'electron'
 import React, { PureComponent } from 'react'
 
 // Components
-import LoginForm from '../form'
+import LoginForm from '../login'
 import Button from '../button'
 import Logo from '../../../vectors/logo'
 
@@ -17,10 +17,27 @@ class Intro extends PureComponent {
     this.state = {
       sendingMail: false,
       security: null,
-      done: false
+      done: false,
+      tested: false
     }
 
     this.remote = electron.remote || false
+  }
+
+  async loggedIn() {
+    if (!this.remote) {
+      return
+    }
+
+    const { getConfig } = this.remote.require('./utils/config')
+
+    try {
+      await getConfig()
+    } catch (err) {
+      return false
+    }
+
+    return true
   }
 
   handleReady(event) {
@@ -39,6 +56,17 @@ class Intro extends PureComponent {
 
     // Close the tutorial
     currentWindow.emit('open-tray', windows.about)
+  }
+
+  async componentWillMount() {
+    if (!await this.loggedIn()) {
+      return
+    }
+
+    this.setState({
+      tested: true,
+      done: true
+    })
   }
 
   render() {

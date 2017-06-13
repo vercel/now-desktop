@@ -6,11 +6,7 @@ import electron from 'electron'
 import React from 'react'
 import Slider from 'react-slick'
 
-// Helpers
-import tokenFromCLI from '../utils/token/from-cli'
-
 // Vectors
-import ArrowSVG from '../vectors/arrow'
 import MinimizeSVG from '../vectors/minimize-window'
 import CloseSVG from '../vectors/close-window'
 
@@ -18,38 +14,31 @@ import CloseSVG from '../vectors/close-window'
 import Title from '../components/title'
 import CLI from '../components/tutorial/slides/binary'
 import Intro from '../components/tutorial/slides/intro'
+import SliderArrow from '../components/tutorial/arrow'
 
-const SliderArrows = props => {
-  const properties = Object.assign({}, props)
+// Styles
+import {
+  sliderStyles,
+  wrapperStyles,
+  controlStyles
+} from '../styles/pages/tutorial'
 
-  const uselessProps = ['currentSlide', 'slideCount']
+class Sections extends React.PureComponent {
+  constructor(props) {
+    super(props)
 
-  for (const prop of uselessProps) {
-    delete properties[prop]
+    this.state = {
+      loginShown: true,
+      loginText:
+        'To start using the app, simply enter\nyour email address below.',
+      tested: false
+    }
+
+    this.remote = electron.remote || false
+    this.initialState = Object.assign({}, this.state)
   }
 
-  return (
-    <div {...properties}>
-      <ArrowSVG />
-    </div>
-  )
-}
-
-const initialState = {
-  loginShown: true,
-  loginText: 'To start using the app, simply enter\nyour email address below.',
-  tested: false
-}
-
-const sliderSettings = {
-  speed: 500,
-  infinite: false,
-  dots: true,
-  draggable: false,
-  accessibility: false,
-  nextArrow: <SliderArrows direction="next" />,
-  prevArrow: <SliderArrows direction="prev" />,
-  afterChange(index) {
+  sliderChanged(index) {
     const input = window.loginInput
     const inputElement = window.loginInputElement
 
@@ -66,18 +55,9 @@ const sliderSettings = {
         inputElement.focus()
       } else if (!input.state.classes.includes('verifying')) {
         // Reset value of login form if not verifying
-        input.setState(initialState)
+        input.setState(this.initialState)
       }
     }
-  }
-}
-
-class Sections extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = initialState
-    this.remote = electron.remote || false
   }
 
   handleMinimizeClick() {
@@ -96,22 +76,6 @@ class Sections extends React.PureComponent {
 
     const currentWindow = this.remote.getCurrentWindow()
     currentWindow.hide()
-  }
-
-  async loggedIn() {
-    if (!this.remote) {
-      return
-    }
-
-    const { getConfig } = this.remote.require('./utils/config')
-
-    try {
-      await getConfig()
-    } catch (err) {
-      return false
-    }
-
-    return true
   }
 
   arrowKeys(event) {
@@ -151,22 +115,6 @@ class Sections extends React.PureComponent {
     // Make arrow keys work for navigating slider
     document.addEventListener('keydown', this.arrowKeys.bind(this), false)
 
-    // Check if already logged in
-    const loggedIn = await this.loggedIn()
-
-    if (loggedIn) {
-      this.setState({
-        tested: true,
-        loginShown: false,
-        loginText:
-          "<b>You're already logged in!</b>\nClick here to go back to the application:"
-      })
-    } else {
-      this.setState({
-        tested: true
-      })
-    }
-
     if (!this.remote) {
       return
     }
@@ -174,14 +122,6 @@ class Sections extends React.PureComponent {
     const currentWindow = this.remote.getCurrentWindow()
 
     currentWindow.on('close', async () => {
-      // Don't reset slider if logged out
-      // If the user enters some details and hides
-      // the window for some time, we don't want the
-      // slider to flick away
-      if (!await this.loggedIn()) {
-        return
-      }
-
       if (this.slider) {
         this.slider.slickGoTo(0)
       }
@@ -189,12 +129,19 @@ class Sections extends React.PureComponent {
   }
 
   render() {
-    if (this.state.loginShown && this.state.tested) {
-      tokenFromCLI(this)
+    const sliderSettings = {
+      speed: 500,
+      infinite: false,
+      dots: true,
+      draggable: false,
+      accessibility: false,
+      nextArrow: <SliderArrow direction="next" />,
+      prevArrow: <SliderArrow direction="prev" />,
+      afterChange: this.sliderChanged
     }
 
-    const setRef = c => {
-      this.slider = c
+    const setRef = element => {
+      this.slider = element
     }
 
     return (
@@ -219,55 +166,7 @@ class Sections extends React.PureComponent {
           </section>
         </Slider>
 
-        <style jsx>
-          {`
-            .button {
-              font-weight: 700;
-              text-transform: uppercase;
-              background: #000;
-              border: 2px solid #fff;
-              text-align: center;
-              text-decoration: none;
-              color: #fff;
-              font-size: 12px;
-              padding: 8px 20px;
-              transition: all .2s ease;
-              cursor: pointer;
-              display: inline-block;
-              line-height: normal;
-              -webkit-app-region: no-drag;
-            }
-            a {
-              -webkit-app-region: no-drag;
-            }
-            .button:hover {
-              background: #fff;
-              color: #000;
-            }
-            .window-controls {
-              display: flex;
-              justify-content: flex-end;
-              position: fixed;
-              right: 0;
-              top: 0;
-              left: 0;
-              height: 10px;
-              padding: 10px;
-              z-index: 5000; /* the slick arrow is at 4000 */
-              background: transparent;
-            }
-            .window-controls span {
-              opacity: .5;
-              font-size: 0;
-              display: block;
-              -webkit-app-region: no-drag;
-              margin-left: 10px;
-            }
-            .window-controls span:hover {
-              opacity: 1;
-            }
-          `}
-        </style>
+        <style jsx>{controlStyles}</style>
       </div>
     )
   }
@@ -278,186 +177,8 @@ const Tutorial = () =>
     <Title>Welcome to Now</Title>
     <Sections />
 
-    <style jsx>
-      {`
-        main {
-          color: #000;
-          background: #fff;
-          height: 100vh;
-          width: 100vw;
-        }
-      `}
-    </style>
-
-    <style jsx global>
-      {`
-        body {
-          margin: 0;
-          font-family: -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Helvetica Neue,
-            sans-serif;
-          -webkit-font-smoothing: antialiased;
-          -webkit-app-region: drag;
-        }
-        ::selection {
-          background: #A7D8FF;
-        }
-        .slick-slider {
-          position: relative;
-          display: block;
-          box-sizing: border-box;
-          user-select: none;
-          -webkit-touch-callout: none;
-          touch-action: pan-y;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .slick-list {
-          position: relative;
-          display: block;
-          overflow: hidden;
-          margin: 0;
-          padding: 0;
-        }
-        .slick-list:focus {
-          outline: none;
-        }
-        .slick-list.dragging {
-          cursor: pointer;
-          cursor: hand;
-        }
-        .slick-slider .slick-track, .slick-slider .slick-list {
-          transform: translate3d(0, 0, 0);
-        }
-        .slick-track {
-          position: relative;
-          top: 0;
-          left: 0;
-          display: block;
-        }
-        .slick-track:before, .slick-track:after {
-          display: table;
-          content: '';
-        }
-        .slick-track:after {
-          clear: both;
-        }
-        .slick-loading .slick-track {
-          visibility: hidden;
-        }
-        .slick-slide {
-          display: none;
-          float: left;
-          height: 100%;
-          min-height: 1px;
-        }
-        [dir='rtl'] .slick-slide {
-          float: right;
-        }
-        .slick-slide img {
-          display: block;
-        }
-        .slick-slide.slick-loading img {
-          display: none;
-        }
-        .slick-slide.dragging img {
-          pointer-events: none;
-        }
-        .slick-initialized .slick-slide {
-          display: block;
-        }
-        .slick-loading .slick-slide {
-          visibility: hidden;
-        }
-        .slick-vertical .slick-slide {
-          display: block;
-          height: auto;
-          border: 1px solid transparent;
-        }
-        .slick-arrow.slick-hidden {
-          display: none;
-        }
-        .slick-initialized .slick-slide {
-          height: 100vh;
-          justify-content: center;
-          align-items: center;
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-        }
-        .slick-arrow {
-          height: 100vh !important;
-          z-index: 4000;
-          top: 0;
-          position: fixed;
-          width: 50px !important;
-          display: flex !important;
-          justify-content: center;
-          align-items: center;
-          background: linear-gradient(to left, #fff, transparent);
-          cursor: pointer;
-          opacity: 0;
-          transition: opacity .3s ease;
-          -webkit-app-region: no-drag;
-        }
-        .slick-arrow.slick-disabled {
-          cursor: default;
-        }
-        .slick-arrow:not(.slick-disabled) {
-          opacity: .2 !important;
-        }
-        .slick-arrow:not(.slick-disabled):hover {
-          opacity: 1 !important;
-        }
-        .slick-arrow.slick-prev {
-          left: 0;
-          transform: rotate(180deg);
-        }
-        .slick-arrow.slick-next {
-          right: 0;
-        }
-        .slick-dots {
-          margin: 0;
-          padding: 0;
-          position: fixed;
-          display: flex !important;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 60px;
-          justify-content: center;
-          align-items: center;
-          list-style: none;
-          z-index: 100;
-        }
-        .slick-dots li {
-          display: block;
-          -webkit-app-region: no-drag;
-          margin: 0 3px;
-        }
-        .slick-dots li button {
-          display: block;
-          height: 10px;
-          width: 10px;
-          background: #CCCCCC;
-          border: 0;
-          text-indent: -999px;
-          border-radius: 100%;
-          padding: 0;
-          cursor: pointer;
-          transition: background .4s;
-        }
-        .slick-dots li button:focus {
-          outline: 0;
-        }
-        .slick-dots li button:hover, .slick-dots li.slick-active button {
-          background: #000;
-        }
-      `}
-    </style>
+    <style jsx>{wrapperStyles}</style>
+    <style jsx global>{sliderStyles}</style>
   </main>
 
 export default Tutorial
