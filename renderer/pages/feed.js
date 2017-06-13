@@ -99,7 +99,7 @@ class Feed extends React.PureComponent {
     this.setState({ loading })
   }
 
-  async loadEvents(scope, until, firstLoad) {
+  async loadEvents(scope, until, forceUpdate) {
     if (!this.remote || this.isLoading(scope)) {
       return
     }
@@ -175,7 +175,7 @@ class Feed extends React.PureComponent {
     // When loading the data the first time, we need to skip
     // the state comparision, because it takes a very long time
     // for so much data. For the data updates afterwards it's fine
-    if (firstLoad) {
+    if (forceUpdate) {
       this.forceUpdate()
     }
   }
@@ -409,7 +409,7 @@ class Feed extends React.PureComponent {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      this.loadEvents(scope, lastEvent.created)
+      this.loadEvents(scope, lastEvent.created, true)
     }
   }
 
