@@ -94,6 +94,17 @@ class Switcher extends React.PureComponent {
         try {
           await this.loadTeams()
         } catch (err) {
+          // Check if app is even online
+          this.setOnlineState()
+
+          // Also do the same for the feed, so that
+          // both components reflect the online state
+          if (this.props.onlineStateFeed) {
+            this.props.onlineStateFeed()
+          }
+
+          // Then retry, to ensure that we get the
+          // data once it's working again
           listTimer(1000)
           return
         }

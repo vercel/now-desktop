@@ -561,6 +561,7 @@ class Feed extends React.PureComponent {
             setTeams={this.setTeams.bind(this)}
             currentUser={this.state.currentUser}
             titleRef={this.title}
+            onlineStateFeed={this.setOnlineState.bind(this)}
           />
         </div>
 
