@@ -115,7 +115,7 @@ class Search extends React.PureComponent {
     // Allow feed to close the search when switching
     // the team scope
     if (this.props.setSearchRef) {
-      this.props.setSearchRef(this)
+      this.props.setSearchRef(this, 'searchField')
     }
 
     currentWindow.on('show', () => {

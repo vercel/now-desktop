@@ -44,6 +44,22 @@ class Feed extends React.PureComponent {
 
     this.remote = electron.remote || false
     this.ipcRenderer = electron.ipcRenderer || false
+    this.isWindows = os.platform() === 'win32'
+
+    const toBind = [
+      'showDropZone',
+      'setFilter',
+      'hideDropZone',
+      'scrolled',
+      'setTeams',
+      'setScope',
+      'setOnlineState',
+      'setReference'
+    ]
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
   }
 
   async updateEvents(excludeID, firstLoad) {
@@ -516,52 +532,68 @@ class Feed extends React.PureComponent {
     )
   }
 
-  render() {
-    const setRef = (name, element) => {
-      this[name] = element
+  setReference(item, name) {
+    if (!item) {
+      return
     }
 
+    if (name) {
+      this[name] = item
+      return
+    }
+
+    if (item.props && item.props.name) {
+      name = item.props.name
+    } else if (item.getAttribute) {
+      name = item.getAttribute('name')
+    }
+
+    if (!name) {
+      return
+    }
+
+    this[name] = item
+  }
+
+  render() {
     const scope = this.state.scope
     const searchShown = this.getEvents(scope) && true
-    const isWindows = os.platform() === 'win32'
 
     const activeScope = this.state.teams.find(team => team.id === scope)
 
     return (
       <main>
-        {!isWindows && <TopArrow />}
+        {!this.isWindows && <TopArrow />}
 
-        <div onDragEnter={this.showDropZone.bind(this)}>
+        <div onDragEnter={this.showDropZone}>
           <Title
-            setFilter={this.setFilter.bind(this)}
-            setSearchRef={setRef.bind(this, 'searchField')}
+            setFilter={this.setFilter}
+            setSearchRef={this.setReference}
             searchShown={searchShown}
-            ref={setRef.bind(this, 'title')}
+            ref={this.setReference}
             light
+            name="title"
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
 
-          {this.state.dropZone &&
-            <DropZone
-              ref={setRef.bind(this, 'dropZone')}
-              hide={this.hideDropZone.bind(this)}
-            />}
+          {this.state.dropZone && <DropZone hide={this.hideDropZone} />}
 
           <section
-            ref={setRef.bind(this, 'scrollingSection')}
-            onScroll={this.scrolled.bind(this)}
+            ref={this.setReference}
+            onScroll={this.scrolled}
+            name="scrollingSection"
           >
             {this.renderEvents(scope)}
             {this.loadingOlder()}
           </section>
 
           <Switcher
-            setFeedScope={this.setScope.bind(this)}
-            setTeams={this.setTeams.bind(this)}
+            setFeedScope={this.setScope}
+            setTeams={this.setTeams}
             currentUser={this.state.currentUser}
             titleRef={this.title}
-            onlineStateFeed={this.setOnlineState.bind(this)}
+            onlineStateFeed={this.setOnlineState}
           />
         </div>
 
