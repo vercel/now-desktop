@@ -9,6 +9,7 @@ import moment from 'moment'
 import dotProp from 'dot-prop'
 import makeUnique from 'make-unique'
 import compare from 'just-compare'
+import setRef from 'react-refs'
 
 // Components
 import Title from '../components/title'
@@ -45,6 +46,7 @@ class Feed extends React.PureComponent {
     this.remote = electron.remote || false
     this.ipcRenderer = electron.ipcRenderer || false
     this.isWindows = os.platform() === 'win32'
+    this.setReference = setRef.bind(this)
 
     const toBind = [
       'showDropZone',
@@ -53,8 +55,7 @@ class Feed extends React.PureComponent {
       'scrolled',
       'setTeams',
       'setScope',
-      'setOnlineState',
-      'setReference'
+      'setOnlineState'
     ]
 
     for (const bindable of toBind) {
@@ -530,29 +531,6 @@ class Feed extends React.PureComponent {
         <style jsx>{loaderStyles}</style>
       </aside>
     )
-  }
-
-  setReference(item, name) {
-    if (!item) {
-      return
-    }
-
-    if (name) {
-      this[name] = item
-      return
-    }
-
-    if (item.props && item.props.name) {
-      name = item.props.name
-    } else if (item.getAttribute) {
-      name = item.getAttribute('name')
-    }
-
-    if (!name) {
-      return
-    }
-
-    this[name] = item
   }
 
   render() {
