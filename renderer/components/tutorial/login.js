@@ -339,7 +339,7 @@ class LoginForm extends PureComponent {
     }
 
     try {
-      await this.tryLogin(value)
+      await this.tryLogin(value.toLowerCase())
     } catch (err) {
       error('Not able to retrieve verification token', err)
     }
