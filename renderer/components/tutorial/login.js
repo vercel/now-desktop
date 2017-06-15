@@ -143,10 +143,8 @@ class LoginForm extends PureComponent {
       })
 
       if (sug) {
-        const receiver = value.trim().split('@')[0]
-        const suggestion = receiver + '@' + sug
-
-        const suffix = suggestion.replace(value, '')
+        const parts = value.trim().split('@')
+        const suffix = sug.substr(parts[1].length, sug.length)
 
         this.setState({
           suggestion: '<i>' + value + '</i>' + suffix
