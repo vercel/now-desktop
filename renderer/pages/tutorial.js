@@ -74,7 +74,7 @@ class Sections extends React.PureComponent {
       return
     }
 
-    if (document.activeElement === loginInputElement) {
+    if (document.activeElement.tagName === 'INPUT') {
       if (keyCode === 27) {
         // ESC
         // This is necessary because on Windows and Linux
