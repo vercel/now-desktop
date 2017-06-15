@@ -285,6 +285,12 @@ class LoginForm extends PureComponent {
 
     const keyCode = event.keyCode
 
+    // Don't allow using spaces in the input
+    if (keyCode === 32) {
+      event.preventDefault()
+      return
+    }
+
     const isEnter = keyCode === 13
     const initialValue = this.initialState.value
 
