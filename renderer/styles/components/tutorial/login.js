@@ -38,7 +38,7 @@ export default `
   }
 
   .login.focus {
-    border-bottom-color: #067DF7;
+    border-bottom-color: #000;
   }
 
   .login.verifying {
