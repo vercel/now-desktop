@@ -63,7 +63,7 @@ class Feed extends React.PureComponent {
     }
   }
 
-  async updateEvents(excludeID, firstLoad) {
+  async updateEvents(excludeID) {
     const teams = this.state.teams
 
     if (!teams || Object.keys(teams).length === 0) {
@@ -79,7 +79,7 @@ class Feed extends React.PureComponent {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
-      this.loadEvents(focusedTeam.id, null, firstLoad)
+      this.loadEvents(focusedTeam.id, null)
     }
 
     // Update the feed of events for each team
@@ -100,7 +100,7 @@ class Feed extends React.PureComponent {
 
       // Wait for the requests to finish (`await`), otherwise
       // the server will get confused and throw an error
-      await this.loadEvents(team.id, null, firstLoad)
+      await this.loadEvents(team.id, null)
     }
   }
 
@@ -120,7 +120,7 @@ class Feed extends React.PureComponent {
     this.setState({ loading })
   }
 
-  async loadEvents(scope, until, forceUpdate) {
+  async loadEvents(scope, until) {
     if (!this.remote || this.isLoading(scope)) {
       return
     }
@@ -192,13 +192,6 @@ class Feed extends React.PureComponent {
 
     this.setState({ events, teams })
     this.isLoading(scope, false)
-
-    // When loading the data the first time, we need to skip
-    // the state comparision, because it takes a very long time
-    // for so much data. For the data updates afterwards it's fine
-    if (forceUpdate) {
-      this.forceUpdate()
-    }
   }
 
   hideWindow(event) {
@@ -316,14 +309,14 @@ class Feed extends React.PureComponent {
     }
   }
 
-  async setTeams(teams, firstLoad) {
+  async setTeams(teams) {
     for (const team of teams) {
       const relatedCache = this.state.teams.find(item => item.id === team.id)
       team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
     this.setState({ teams })
-    await this.updateEvents(false, firstLoad)
+    await this.updateEvents(false)
   }
 
   setFilter(eventFilter) {
@@ -405,7 +398,7 @@ class Feed extends React.PureComponent {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      this.loadEvents(scope, lastEvent.created, true)
+      this.loadEvents(scope, lastEvent.created)
     }
   }
 

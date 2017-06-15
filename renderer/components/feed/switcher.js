@@ -121,7 +121,7 @@ class Switcher extends React.PureComponent {
       return
     }
 
-    this.loadTeams(true).then(listTimer).catch(listTimer)
+    this.loadTeams().then(listTimer).catch(listTimer)
 
     // Check the config for `currentTeam`
     await this.checkCurrentTeam()
@@ -174,7 +174,7 @@ class Switcher extends React.PureComponent {
     this.changeScope(config.currentTeam, true)
   }
 
-  async loadTeams(firstLoad) {
+  async loadTeams() {
     if (!this.remote) {
       return
     }
@@ -204,7 +204,7 @@ class Switcher extends React.PureComponent {
       }
 
       // Save teams
-      await this.props.setTeams(teams, firstLoad)
+      await this.props.setTeams(teams)
     }
   }
 
