@@ -183,9 +183,9 @@ class Feed extends React.PureComponent {
 
       const unique = makeUnique(merged, (a, b) => a.id === b.id)
 
-      // Ensure that never more than 15 events are cached
+      // Ensure that never more than 100 events are cached
       // But only if infinite scrolling isn't being used
-      events[scope] = until ? unique : unique.slice(0, 15)
+      events[scope] = until ? unique : unique.slice(0, 100)
     } else {
       events[scope] = data.events
     }
@@ -281,14 +281,6 @@ class Feed extends React.PureComponent {
         this.scrollingSection.scrollTop = 0
       }
 
-      const events = this.state.events
-      const scope = this.state.scope
-
-      if (scope && events[scope] && events[scope].length > 15) {
-        events[scope] = events[scope].slice(0, 15)
-        this.setState({ events })
-      }
-
       document.removeEventListener('keydown', this.hideWindow.bind(this))
     })
   }
@@ -321,23 +313,6 @@ class Feed extends React.PureComponent {
     // Hide search field when switching team scope
     if (this.searchField) {
       this.searchField.hide(true)
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const prevScope = prevState.scope
-
-    if (prevScope === this.state.scope || !prevState.events[prevScope]) {
-      return
-    }
-
-    // Ensure that never more than 15 events are cached per inactive scope
-    // This way, the renderer is much faster
-    if (prevState.events[prevScope].length > 15) {
-      const events = this.state.events
-      events[prevScope] = events[prevScope].slice(0, 15)
-
-      this.setState({ events })
     }
   }
 
