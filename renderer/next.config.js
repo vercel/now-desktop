@@ -1,7 +1,5 @@
-const BabiliPlugin = require('babili-webpack-plugin')
-
 module.exports = {
-  webpack(config, { dev }) {
+  webpack(config) {
     config.target = 'electron-renderer'
 
     // Hide the "dependency is a critical expression" warnings
@@ -11,10 +9,6 @@ module.exports = {
     config.plugins = config.plugins.filter(plugin => {
       return plugin.constructor.name !== 'UglifyJsPlugin'
     })
-
-    if (!dev) {
-      config.plugins.push(new BabiliPlugin())
-    }
 
     return config
   },
