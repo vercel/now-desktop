@@ -456,6 +456,7 @@ class Switcher extends React.PureComponent {
         <a
           className="toggle-menu"
           onClick={this.openMenu}
+          onContextMenu={this.openMenu}
           ref={this.setReference}
           name="menu"
         >
