@@ -48,19 +48,15 @@ class Feed extends React.PureComponent {
     this.isWindows = os.platform() === 'win32'
     this.setReference = setRef.bind(this)
 
-    const toBind = [
-      'showDropZone',
-      'setFilter',
-      'hideDropZone',
-      'scrolled',
-      'setTeams',
-      'setScope',
-      'setOnlineState'
-    ]
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    // This looks pretty ugly but is actually much
+    // faster than looping over an array
+    this.showDropZone = this.showDropZone.bind(this)
+    this.setFilter = this.setFilter.bind(this)
+    this.hideDropZone = this.hideDropZone.bind(this)
+    this.scrolled = this.scrolled.bind(this)
+    this.setTeams = this.setTeams.bind(this)
+    this.setScope = this.setScope.bind(this)
+    this.setOnlineState = this.setOnlineState.bind(this)
   }
 
   async updateEvents(excludeID) {
@@ -530,7 +526,7 @@ class Feed extends React.PureComponent {
             onScroll={this.scrolled}
             name="scrollingSection"
           >
-            {this.renderEvents(scope)}
+            {this.renderEvents()}
             {this.loadingOlder()}
           </section>
 
