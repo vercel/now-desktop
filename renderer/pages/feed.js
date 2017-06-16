@@ -165,7 +165,6 @@ class Feed extends React.Component {
     const scopedEvents = events[scope]
 
     if (!hasEvents && events[scope]) {
-      console.log('nope')
       this.loading.delete(scope)
       return
     }

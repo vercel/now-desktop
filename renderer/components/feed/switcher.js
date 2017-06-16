@@ -23,6 +23,14 @@ class Switcher extends React.PureComponent {
 
     this.remote = electron.remote || false
     this.ipcRenderer = electron.ipcRenderer || false
+
+    if (electron.remote) {
+      const load = electron.remote.require
+
+      this.binaryUtils = load('./utils/binary')
+      this.loadData = load('./utils/data/load')
+      this.endpoints = load('./utils/data/endpoints')
+    }
   }
 
   componentWillReceiveProps({ currentUser }) {
@@ -179,9 +187,8 @@ class Switcher extends React.PureComponent {
       return
     }
 
-    const loadData = this.remote.require('./utils/data/load')
-    const { API_TEAMS } = this.remote.require('./utils/data/endpoints')
-    const data = await loadData(API_TEAMS)
+    const { API_TEAMS } = this.endpoints
+    const data = await this.loadData(API_TEAMS)
 
     if (!data || !data.teams || !this.props.currentUser) {
       return
@@ -260,7 +267,7 @@ class Switcher extends React.PureComponent {
     // Show a notification that the context was updated
     // in the title bar
     if (updateMessage && this.props.titleRef) {
-      const { getFile } = this.remote.require('./utils/binary')
+      const { getFile } = this.binaryUtils
 
       // Only show the notification if the CLI is installed
       if (!await exists(getFile())) {
