@@ -21,7 +21,8 @@ class LoginForm extends PureComponent {
       focus: false,
       classes: [],
       suggestion: '',
-      waiting: false
+      waiting: false,
+      mounted: false
     }
 
     this.initialState = Object.assign({}, this.state)
@@ -100,12 +101,16 @@ class LoginForm extends PureComponent {
   }
 
   resetState() {
+    if (!this.state.mounted) {
+      return
+    }
+
     // This method is also being used from somewhere
     // else, not just in this file
     this.setState(this.initialState)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.remote) {
       return
     }
@@ -118,6 +123,16 @@ class LoginForm extends PureComponent {
 
     currentWindow.on('hide', () => {
       this.resetState()
+    })
+
+    this.setState({
+      mounted: true
+    })
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      mounted: false
     })
   }
 
