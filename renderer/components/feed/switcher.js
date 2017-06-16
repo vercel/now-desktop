@@ -93,10 +93,10 @@ class Switcher extends React.PureComponent {
   }
 
   async componentDidMount() {
-    const listTimer = time => {
+    const listTimer = () => {
       setTimeout(async () => {
         if (!this.state.online) {
-          listTimer(1000)
+          listTimer()
           return
         }
 
@@ -114,19 +114,19 @@ class Switcher extends React.PureComponent {
 
           // Then retry, to ensure that we get the
           // data once it's working again
-          listTimer(1000)
+          listTimer()
           return
         }
 
         listTimer()
-      }, time || 4000)
+      }, 1000)
     }
 
     // Only start updating teams once they're loaded!
     // This needs to be async so that we can already
     // start the state timer below for the data that's already cached
     if (!this.state.online) {
-      listTimer(1000)
+      listTimer()
       return
     }
 
