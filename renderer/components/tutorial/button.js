@@ -6,6 +6,11 @@ import { func, bool, string } from 'prop-types'
 import styles from '../../styles/components/tutorial/button'
 
 class Button extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.clicked = this.clicked.bind(this)
+  }
+
   clicked(event) {
     event.preventDefault()
 
@@ -24,7 +29,7 @@ class Button extends PureComponent {
     }
 
     return (
-      <a href="#" onClick={this.clicked.bind(this)} className={classes}>
+      <a href="#" onClick={this.clicked} className={classes}>
         {this.props.children}
         <style jsx>{styles}</style>
       </a>

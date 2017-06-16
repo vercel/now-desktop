@@ -5,6 +5,7 @@ import { platform } from 'os'
 import electron from 'electron'
 import React from 'react'
 import Slider from 'react-slick'
+import setRef from 'react-refs'
 
 // Vectors
 import MinimizeSVG from '../vectors/minimize-window'
@@ -22,7 +23,16 @@ import { sliderStyle, wrapStyle, controlStyle } from '../styles/pages/tutorial'
 class Sections extends React.PureComponent {
   constructor(props) {
     super(props)
+
     this.remote = electron.remote || false
+    this.setReference = setRef.bind(this)
+    this.isWindows = platform() === 'win32'
+
+    const toBind = ['handleCloseClick', 'handleMinimizeClick', 'arrowKeys']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
   }
 
   sliderChanged(index) {
@@ -104,7 +114,7 @@ class Sections extends React.PureComponent {
 
   async componentDidMount() {
     // Make arrow keys work for navigating slider
-    document.addEventListener('keydown', this.arrowKeys.bind(this), false)
+    document.addEventListener('keydown', this.arrowKeys, false)
 
     if (!this.remote) {
       return
@@ -131,23 +141,19 @@ class Sections extends React.PureComponent {
       afterChange: this.sliderChanged
     }
 
-    const setRef = element => {
-      this.slider = element
-    }
-
     return (
       <div>
-        {platform() === 'win32' &&
+        {this.isWindows &&
           <div className="window-controls">
-            <span onClick={this.handleMinimizeClick.bind(this)}>
+            <span onClick={this.handleMinimizeClick}>
               <MinimizeSVG />
             </span>
 
-            <span onClick={this.handleCloseClick.bind(this)}>
+            <span onClick={this.handleCloseClick}>
               <CloseSVG />
             </span>
           </div>}
-        <Slider {...sliderSettings} ref={setRef.bind(this)}>
+        <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section id="first">
             <Intro />
           </section>

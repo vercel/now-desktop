@@ -5,6 +5,7 @@ import os from 'os'
 import electron from 'electron'
 import React from 'react'
 import PropTypes from 'prop-types'
+import setRef from 'react-refs'
 
 // Styles
 import styles from '../styles/components/title'
@@ -18,8 +19,13 @@ class Title extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = {
-      updateMessage: false
+    this.state = { updateMessage: false }
+    this.setReference = setRef.bind(this)
+
+    const toBind = ['selectToDeploy', 'hideDeployIcon', 'showDeployIcon']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
     }
   }
 
@@ -62,10 +68,6 @@ class Title extends React.PureComponent {
   }
 
   render() {
-    const deployIconRef = icon => {
-      this.deployIcon = icon
-    }
-
     const classes = []
 
     if (this.props.light) {
@@ -86,8 +88,8 @@ class Title extends React.PureComponent {
           {this.props.light &&
             this.props.searchShown &&
             <Search
-              hideDeployIcon={this.hideDeployIcon.bind(this)}
-              showDeployIcon={this.showDeployIcon.bind(this)}
+              hideDeployIcon={this.hideDeployIcon}
+              showDeployIcon={this.showDeployIcon}
               setFeedFilter={this.props.setFilter || false}
               setSearchRef={this.props.setSearchRef || false}
             />}
@@ -97,8 +99,9 @@ class Title extends React.PureComponent {
           {this.props.light &&
             <span
               className="deploy"
-              onClick={this.selectToDeploy.bind(this)}
-              ref={deployIconRef}
+              onClick={this.selectToDeploy}
+              ref={this.setReference}
+              name="deployIcon"
             >
               <Deploy />
             </span>}

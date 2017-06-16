@@ -26,6 +26,12 @@ class LoginForm extends PureComponent {
 
     this.initialState = Object.assign({}, this.state)
     this.remote = electron.remote || false
+
+    const toBind = ['handleChange', 'handleKey', 'toggleFocus']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
   }
 
   async verify(url, email, token, remote) {
@@ -365,10 +371,10 @@ class LoginForm extends PureComponent {
       type: 'email',
       value: this.state.value,
       placeholder: 'you@domain.com',
-      onChange: this.handleChange.bind(this),
-      onKeyDown: this.handleKey.bind(this),
-      onFocus: this.toggleFocus.bind(this),
-      onBlur: this.toggleFocus.bind(this),
+      onChange: this.handleChange,
+      onKeyDown: this.handleKey,
+      onFocus: this.toggleFocus,
+      onBlur: this.toggleFocus,
       ref: item => {
         window.loginInputElement = item
         this.loginInput = item

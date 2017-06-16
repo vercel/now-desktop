@@ -4,6 +4,7 @@ import React from 'react'
 import { func, object } from 'prop-types'
 import exists from 'path-exists'
 import compare from 'just-compare'
+import setRef from 'react-refs'
 
 // Styles
 import styles from '../../styles/components/feed/switcher'
@@ -24,6 +25,7 @@ class Switcher extends React.PureComponent {
 
     this.remote = electron.remote || false
     this.ipcRenderer = electron.ipcRenderer || false
+    this.setReference = setRef.bind(this)
 
     if (electron.remote) {
       const load = electron.remote.require
@@ -31,6 +33,12 @@ class Switcher extends React.PureComponent {
       this.binaryUtils = load('./utils/binary')
       this.loadData = load('./utils/data/load')
       this.endpoints = load('./utils/data/endpoints')
+    }
+
+    const toBind = ['scrollToEnd', 'openMenu']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
     }
   }
 
@@ -417,14 +425,6 @@ class Switcher extends React.PureComponent {
   }
 
   render() {
-    const menuRef = element => {
-      this.menu = element
-    }
-
-    const listRef = element => {
-      this.list = element
-    }
-
     const teams = this.renderTeams()
     const classes = []
 
@@ -437,7 +437,7 @@ class Switcher extends React.PureComponent {
     return (
       <aside>
         {this.state.online
-          ? <ul ref={listRef}>
+          ? <ul ref={this.setReference} name="list">
               {teams}
 
               <li
@@ -449,14 +449,15 @@ class Switcher extends React.PureComponent {
                 <i />
               </li>
 
-              <span className="shadow" onClick={this.scrollToEnd.bind(this)} />
+              <span className="shadow" onClick={this.scrollToEnd} />
             </ul>
           : <p className="offline">{"You're offline!"}</p>}
 
         <a
           className="toggle-menu"
-          onClick={this.openMenu.bind(this)}
-          ref={menuRef}
+          onClick={this.openMenu}
+          ref={this.setReference}
+          name="menu"
         >
           <i />
           <i />

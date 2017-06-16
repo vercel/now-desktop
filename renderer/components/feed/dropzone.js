@@ -7,6 +7,16 @@ import { func } from 'prop-types'
 import styles from '../../styles/components/feed/dropzone'
 
 class DropZone extends React.PureComponent {
+  constructor(props) {
+    super(props)
+
+    const toBind = ['droppedFile', 'hideDropZone']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
+  }
+
   componentDidMount() {
     const remote = electron.remote || false
     this.deploy = remote.require('./utils/deploy')
@@ -45,9 +55,9 @@ class DropZone extends React.PureComponent {
   render() {
     return (
       <aside
-        onDragLeave={this.hideDropZone.bind(this)}
+        onDragLeave={this.hideDropZone}
         onDragOver={this.preventDefault}
-        onDrop={this.droppedFile.bind(this)}
+        onDrop={this.droppedFile}
       >
         <section>
           <span>

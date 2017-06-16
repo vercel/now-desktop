@@ -22,6 +22,12 @@ class Intro extends PureComponent {
     }
 
     this.remote = electron.remote || false
+
+    const toBind = ['setState', 'handleReady']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
   }
 
   async loggedIn() {
@@ -108,7 +114,7 @@ class Intro extends PureComponent {
             <b>{"You're already logged in!"}</b><br />Click here to go back to
             the application:
           </p>
-          <Button onClick={this.handleReady.bind(this)}>SHOW EVENT FEED</Button>
+          <Button onClick={this.handleReady}>SHOW EVENT FEED</Button>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -122,7 +128,7 @@ class Intro extends PureComponent {
             Congrats! <strong>{"You're signed in."}</strong><br />Are you ready
             to deploy something?
           </p>
-          <Button onClick={this.handleReady.bind(this)}>Get Started</Button>
+          <Button onClick={this.handleReady}>Get Started</Button>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -135,7 +141,7 @@ class Intro extends PureComponent {
         <p className="has-spacing">
           To start using the app, simply enter your email address below.
         </p>
-        <LoginForm setIntroState={this.setState.bind(this)} />
+        <LoginForm setIntroState={this.setState} />
 
         <style jsx>{introStyles}</style>
       </article>

@@ -26,6 +26,9 @@ class Binary extends React.PureComponent {
 
     this.state = initialState
     this.remote = electron.remote || false
+
+    this.openDocumentation = this.openDocumentation.bind(this)
+    this.installBinary = installBinary.bind(this)
   }
 
   async binaryInstalled() {
@@ -125,7 +128,7 @@ class Binary extends React.PureComponent {
           <p>
             If you want to learn more about how to take advantage of our
             command line interface,{' '}
-            <a onClick={this.openDocumentation.bind(this)}>this</a> will be
+            <a onClick={this.openDocumentation}>this</a> will be
             helpful.
           </p>
 
@@ -150,7 +153,7 @@ class Binary extends React.PureComponent {
           ll automatically update it for you.
         </p>
 
-        <Button disabled={binaryInstalled} onClick={installBinary.bind(this)}>
+        <Button disabled={binaryInstalled} onClick={this.installBinary}>
           {binaryInstalled ? 'Already installed' : 'Install now'}
         </Button>
 

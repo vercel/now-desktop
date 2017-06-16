@@ -2,6 +2,7 @@
 import electron from 'electron'
 import React from 'react'
 import { func } from 'prop-types'
+import setRef from 'react-refs'
 
 // Vectors
 import MagnifyingGlass from '../../vectors/search'
@@ -14,8 +15,13 @@ class Search extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = {
-      shown: false
+    this.state = { shown: false }
+    this.setReference = setRef.bind(this)
+
+    const toBind = ['hide', 'show', 'typed']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
     }
   }
 
@@ -128,30 +134,23 @@ class Search extends React.PureComponent {
   }
 
   render() {
-    const inputRef = input => {
-      this.input = input
-    }
-
-    const formRef = form => {
-      this.form = form
-    }
-
     return (
       <aside className={this.state.shown ? 'visible' : ''}>
-        <span onClick={this.show.bind(this)}>
+        <span onClick={this.show}>
           <MagnifyingGlass />
         </span>
 
-        <div ref={formRef}>
+        <div ref={this.setReference} name="form">
           <input
             type="text"
-            ref={inputRef}
+            ref={this.setReference}
             placeholder="Search the Timeline..."
-            onKeyUp={this.typed.bind(this)}
+            onKeyUp={this.typed}
             onKeyDown={this.selectAll}
+            name="input"
           />
 
-          <b onClick={this.hide.bind(this)}>
+          <b onClick={this.hide}>
             <Clear />
           </b>
         </div>

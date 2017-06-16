@@ -26,6 +26,12 @@ class EventMessage extends React.PureComponent {
 
     this.remote = electron.remote || false
     this.menu = null
+
+    const toBind = ['click', 'rightClick']
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
   }
 
   click(event) {
@@ -227,19 +233,15 @@ class EventMessage extends React.PureComponent {
       return null
     }
 
-    const messageRef = element => {
-      this.message = element
-    }
-
     return (
       <figure
         className="event"
-        onClick={this.click.bind(this)}
-        onContextMenu={this.rightClick.bind(this)}
+        onClick={this.click}
+        onContextMenu={this.rightClick}
       >
         <Avatar event={info} team={this.props.team} />
 
-        <figcaption ref={messageRef}>
+        <figcaption>
           <Message
             event={info}
             user={this.props.currentUser}
