@@ -39,7 +39,6 @@ class Feed extends React.PureComponent {
       currentUser: null,
       teams: [],
       eventFilter: null,
-      loading: new Set(),
       online: true
     }
 
@@ -57,6 +56,9 @@ class Feed extends React.PureComponent {
     this.setTeams = this.setTeams.bind(this)
     this.setScope = this.setScope.bind(this)
     this.setOnlineState = this.setOnlineState.bind(this)
+
+    // Ensure that we're not loading events again
+    this.loading = new Set()
   }
 
   async updateEvents(excludeID) {
@@ -100,28 +102,12 @@ class Feed extends React.PureComponent {
     }
   }
 
-  isLoading(scope, condition) {
-    const loading = this.state.loading
-
-    if (typeof condition === 'undefined') {
-      return loading.has(scope)
-    }
-
-    if (condition) {
-      loading.add(scope)
-    } else {
-      loading.delete(scope)
-    }
-
-    this.setState({ loading })
-  }
-
   async loadEvents(scope, until) {
-    if (!this.remote || this.isLoading(scope)) {
+    if (!this.remote || this.loading.has(scope)) {
       return
     }
 
-    this.isLoading(scope, true)
+    this.loading.add(scope)
 
     const loadData = this.remote.require('./utils/data/load')
     const { API_EVENTS } = this.remote.require('./utils/data/endpoints')
@@ -154,7 +140,7 @@ class Feed extends React.PureComponent {
     } catch (err) {}
 
     if (!data || !data.events) {
-      this.isLoading(scope, false)
+      this.loading.delete(scope)
       return
     }
 
@@ -187,7 +173,7 @@ class Feed extends React.PureComponent {
     }
 
     this.setState({ events, teams })
-    this.isLoading(scope, false)
+    this.loading.delete(scope)
   }
 
   hideWindow(event) {
@@ -389,8 +375,9 @@ class Feed extends React.PureComponent {
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
     const scope = this.state.scope
+    const notLoading = !this.loading.has(scope)
 
-    if (distance < offset + 300 && !this.isLoading(scope)) {
+    if (notLoading && distance < offset + 300) {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
