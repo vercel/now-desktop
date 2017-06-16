@@ -28,7 +28,7 @@ import {
   pageStyles
 } from '../styles/pages/feed'
 
-class Feed extends React.PureComponent {
+class Feed extends React.Component {
   constructor(props) {
     super(props)
 
@@ -47,15 +47,20 @@ class Feed extends React.PureComponent {
     this.isWindows = os.platform() === 'win32'
     this.setReference = setRef.bind(this)
 
-    // This looks pretty ugly but is actually much
-    // faster than looping over an array
-    this.showDropZone = this.showDropZone.bind(this)
-    this.setFilter = this.setFilter.bind(this)
-    this.hideDropZone = this.hideDropZone.bind(this)
-    this.scrolled = this.scrolled.bind(this)
-    this.setTeams = this.setTeams.bind(this)
-    this.setScope = this.setScope.bind(this)
-    this.setOnlineState = this.setOnlineState.bind(this)
+    const toBind = [
+      'showDropZone',
+      'setFilter',
+      'hideDropZone',
+      'scrolled',
+      'setTeams',
+      'setScope',
+      'setOnlineState',
+      'setReference'
+    ]
+
+    for (const bindable of toBind) {
+      this[bindable] = this[bindable].bind(this)
+    }
 
     // Ensure that we're not loading events again
     this.loading = new Set()
@@ -172,8 +177,10 @@ class Feed extends React.PureComponent {
       events[scope] = data.events
     }
 
-    this.setState({ events, teams })
-    this.loading.delete(scope)
+    this.setState({ events, teams }, () => {
+      // Now the infinite scroller can load data again
+      this.loading.delete(scope)
+    })
   }
 
   hideWindow(event) {
