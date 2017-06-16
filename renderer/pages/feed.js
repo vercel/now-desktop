@@ -483,12 +483,8 @@ class Feed extends React.PureComponent {
       return
     }
 
-    const loaderRef = element => {
-      this.loadingIndicator = element
-    }
-
     return (
-      <aside ref={loaderRef}>
+      <aside ref={this.setReference} name="loadingIndicator">
         <img src="/static/loading.gif" />
         <span>Loading Older Events...</span>
 
