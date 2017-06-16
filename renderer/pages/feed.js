@@ -134,7 +134,11 @@ class Feed extends React.Component {
     if (until) {
       query.until = until
     } else if (typeof relatedCache !== 'undefined' && lastUpdate) {
-      query.since = lastUpdate
+      // Ensure that we only load events that were created
+      // after the most recent one, so that we don't get the most
+      // recent one included
+      const startDate = Date.parse(lastUpdate) + 1
+      query.since = new Date(startDate).toISOString()
     }
 
     const params = queryString.stringify(query)
@@ -152,6 +156,11 @@ class Feed extends React.Component {
     const hasEvents = data.events.length > 0
     const events = this.state.events
     const scopedEvents = events[scope]
+
+    if (!hasEvents && events[scope]) {
+      this.loading.delete(scope)
+      return
+    }
 
     if (hasEvents) {
       teams[relatedCacheIndex].lastUpdate = data.events[0].created
