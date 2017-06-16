@@ -3,6 +3,7 @@ import electron from 'electron'
 import React from 'react'
 import { func, object } from 'prop-types'
 import exists from 'path-exists'
+import compare from 'just-compare'
 
 // Styles
 import styles from '../../styles/components/feed/switcher'
@@ -182,6 +183,25 @@ class Switcher extends React.PureComponent {
     this.changeScope(config.currentTeam, true)
   }
 
+  haveUpdated(data) {
+    const copies = []
+
+    // We need to copy each team object,
+    // because some part of the system seems
+    // to get angry if we remove a property on this
+    // object directly - this prop then won't be
+    // accessible from a different place anymore
+    for (const team of this.state.teams) {
+      copies.push(Object.assign({}, team))
+    }
+
+    for (const team of copies) {
+      delete team.lastUpdate
+    }
+
+    return !compare(data, copies)
+  }
+
   async loadTeams() {
     if (!this.remote) {
       return
@@ -202,16 +222,16 @@ class Switcher extends React.PureComponent {
       name: user.username
     })
 
-    // Only update state if the list of teams has changed
-    if (this.state.teams !== teams) {
+    const updated = this.haveUpdated(teams)
+
+    if (updated) {
       this.setState({ teams })
+    }
 
-      if (!this.props.setTeams) {
-        return
-      }
-
-      // Save teams
-      await this.props.setTeams(teams)
+    if (this.props.setTeams) {
+      // When passing `null`, the feed will only
+      // update the events, not the teams
+      await this.props.setTeams(updated ? teams : null)
     }
   }
 

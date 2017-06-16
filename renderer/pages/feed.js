@@ -74,7 +74,7 @@ class Feed extends React.Component {
     this.loading = new Set()
   }
 
-  async updateEvents(excludeID) {
+  async updateEvents() {
     const teams = this.state.teams
 
     if (!teams || Object.keys(teams).length === 0) {
@@ -90,16 +90,12 @@ class Feed extends React.Component {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
-      this.loadEvents(focusedTeam.id, null)
+      this.loadEvents(focusedTeam.id)
     }
 
     // Update the feed of events for each team
     for (const team of teams) {
       const index = teams.indexOf(team)
-
-      if (excludeID && team.id === excludeID) {
-        continue
-      }
 
       // Don't load the focused team, because we updated
       // that one already above. We need to test for `undefined` here
@@ -111,7 +107,7 @@ class Feed extends React.Component {
 
       // Wait for the requests to finish (`await`), otherwise
       // the server will get confused and throw an error
-      await this.loadEvents(team.id, null)
+      await this.loadEvents(team.id)
     }
   }
 
@@ -315,13 +311,20 @@ class Feed extends React.Component {
   }
 
   async setTeams(teams) {
+    if (!teams) {
+      // If the teams didn't change, only the events
+      // should be updated
+      await this.updateEvents()
+      return
+    }
+
     for (const team of teams) {
       const relatedCache = this.state.teams.find(item => item.id === team.id)
       team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
     this.setState({ teams })
-    await this.updateEvents(false)
+    await this.updateEvents()
   }
 
   setFilter(eventFilter) {
