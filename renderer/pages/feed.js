@@ -47,6 +47,14 @@ class Feed extends React.Component {
     this.isWindows = os.platform() === 'win32'
     this.setReference = setRef.bind(this)
 
+    // Load the necessary helpers before usign them
+    if (electron.remote) {
+      const load = electron.remote.require
+
+      this.loadData = load('./utils/data/load')
+      this.endpoints = load('./utils/data/endpoints')
+    }
+
     const toBind = [
       'showDropZone',
       'setFilter',
@@ -114,9 +122,6 @@ class Feed extends React.Component {
 
     this.loading.add(scope)
 
-    const loadData = this.remote.require('./utils/data/load')
-    const { API_EVENTS } = this.remote.require('./utils/data/endpoints')
-
     const teams = this.state.teams
     const relatedCache = teams.find(item => item.id === scope)
     const lastUpdate = relatedCache.lastUpdate
@@ -142,10 +147,12 @@ class Feed extends React.Component {
     }
 
     const params = queryString.stringify(query)
+    const { API_EVENTS } = this.endpoints
+
     let data
 
     try {
-      data = await loadData(`${API_EVENTS}?${params}`)
+      data = await this.loadData(`${API_EVENTS}?${params}`)
     } catch (err) {}
 
     if (!data || !data.events) {
@@ -158,6 +165,7 @@ class Feed extends React.Component {
     const scopedEvents = events[scope]
 
     if (!hasEvents && events[scope]) {
+      console.log('nope')
       this.loading.delete(scope)
       return
     }
