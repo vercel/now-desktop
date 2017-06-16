@@ -105,9 +105,7 @@ class Feed extends React.Component {
         continue
       }
 
-      // Wait for the requests to finish (`await`), otherwise
-      // the server will get confused and throw an error
-      await this.loadEvents(team.id)
+      this.loadEvents(team.id)
     }
   }
 
