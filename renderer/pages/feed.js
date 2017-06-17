@@ -265,6 +265,7 @@ class Feed extends React.Component {
     }
 
     currentWindow.on('show', () => {
+      this.forceUpdate()
       document.addEventListener('keydown', this.hideWindow.bind(this))
     })
 
