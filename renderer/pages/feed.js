@@ -349,7 +349,8 @@ class Feed extends React.Component {
       'payload.username',
       'payload.plan',
       'payload.domain',
-      'payload.cn'
+      'payload.cn',
+      'payload.invitedUser.username'
     ]
 
     // Split search phrase into keywords but make
