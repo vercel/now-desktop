@@ -103,11 +103,13 @@ class Feed extends React.Component {
   }
 
   async loadEvents(scope, until) {
-    if (!this.remote || this.loading.has(scope)) {
+    if (!this.remote) {
       return
     }
 
-    this.loading.add(scope)
+    if (until) {
+      this.loading.add(scope)
+    }
 
     const teams = this.state.teams
     const relatedCache = teams.find(item => item.id === scope)
@@ -143,7 +145,10 @@ class Feed extends React.Component {
     } catch (err) {}
 
     if (!data || !data.events) {
-      this.loading.delete(scope)
+      if (until) {
+        this.loading.delete(scope)
+      }
+
       return
     }
 
@@ -152,13 +157,17 @@ class Feed extends React.Component {
     const scopedEvents = events[scope]
 
     if (!hasEvents && events[scope]) {
-      this.loading.delete(scope)
+      if (until) {
+        this.loading.delete(scope)
+      }
+
       return
     }
 
-    if (hasEvents) {
-      teams[relatedCacheIndex].lastUpdate = data.events[0].created
-    }
+    const newLastUpdate = hasEvents
+      ? data.events[0].created
+      : new Date().toISOString()
+    teams[relatedCacheIndex].lastUpdate = newLastUpdate
 
     if (hasEvents && scopedEvents) {
       let merged
@@ -180,9 +189,11 @@ class Feed extends React.Component {
       events[scope] = data.events
     }
 
-    this.setState({ events, teams }, () => {
-      // Now the infinite scroller can load data again
-      this.loading.delete(scope)
+    // Ensure that we're not dealing with the same
+    // objects or array ever again
+    this.setState({
+      events: JSON.parse(JSON.stringify(events)),
+      teams: JSON.parse(JSON.stringify(teams))
     })
   }
 
@@ -414,6 +425,23 @@ class Feed extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const newEvents = this.state.events
+    const oldEvents = prevState.events
+
+    for (const team in newEvents) {
+      if (!{}.hasOwnProperty.call(newEvents, team)) {
+        continue
+      }
+
+      if (newEvents[team] !== oldEvents[team] && this.loading.has(team)) {
+        // Allow infinite scroll to trigger a new
+        // data download again
+        this.loading.delete(team)
+      }
+    }
+  }
+
   renderEvents() {
     if (!this.state.online) {
       return <Loading offline />
@@ -514,6 +542,8 @@ class Feed extends React.Component {
     const searchShown = this.getEvents(scope) && true
 
     const activeScope = this.state.teams.find(team => team.id === scope)
+
+    console.log('render')
 
     return (
       <main>
