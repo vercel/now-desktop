@@ -369,7 +369,7 @@ class Feed extends React.Component {
           continue
         }
 
-        if (new RegExp(keywords.join('|')).test(toSearch)) {
+        if (new RegExp(keywords.join('|'), 'i').test(toSearch)) {
           return true
         }
       }
