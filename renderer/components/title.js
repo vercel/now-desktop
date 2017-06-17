@@ -22,11 +22,9 @@ class Title extends React.PureComponent {
     this.state = { updateMessage: false }
     this.setReference = setRef.bind(this)
 
-    const toBind = ['selectToDeploy', 'hideDeployIcon', 'showDeployIcon']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.selectToDeploy = this.selectToDeploy.bind(this)
+    this.hideDeployIcon = this.hideDeployIcon.bind(this)
+    this.showDeployIcon = this.showDeployIcon.bind(this)
   }
 
   componentDidMount() {

@@ -23,11 +23,8 @@ class Intro extends PureComponent {
 
     this.remote = electron.remote || false
 
-    const toBind = ['setState', 'handleReady']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.setState = this.setState.bind(this)
+    this.handleReady = this.handleReady.bind(this)
   }
 
   async loggedIn() {

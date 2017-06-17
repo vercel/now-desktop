@@ -27,17 +27,11 @@ class About extends React.PureComponent {
     this.remote = electron.remote || false
     this.isWindows = platform() === 'win32'
 
-    const toBind = [
-      'handleTutorial',
-      'updateStatus',
-      'handleCloseClick',
-      'openLink',
-      'getAppVersion'
-    ]
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.handleTutorial = this.handleTutorial.bind(this)
+    this.updateStatus = this.updateStatus.bind(this)
+    this.handleCloseClick = this.handleCloseClick.bind(this)
+    this.openLink = this.openLink.bind(this)
+    this.getAppVersion = this.getAppVersion.bind(this)
   }
 
   getAppVersion() {

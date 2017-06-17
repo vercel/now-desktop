@@ -55,20 +55,13 @@ class Feed extends React.Component {
       this.endpoints = load('./utils/data/endpoints')
     }
 
-    const toBind = [
-      'showDropZone',
-      'setFilter',
-      'hideDropZone',
-      'scrolled',
-      'setTeams',
-      'setScope',
-      'setOnlineState',
-      'setReference'
-    ]
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.showDropZone = this.showDropZone.bind(this)
+    this.setFilter = this.setFilter.bind(this)
+    this.hideDropZone = this.hideDropZone.bind(this)
+    this.scrolled = this.scrolled.bind(this)
+    this.setTeams = this.setTeams.bind(this)
+    this.setScope = this.setScope.bind(this)
+    this.setOnlineState = this.setOnlineState.bind(this)
 
     // Ensure that we're not loading events again
     this.loading = new Set()

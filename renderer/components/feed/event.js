@@ -27,11 +27,8 @@ class EventMessage extends React.PureComponent {
     this.remote = electron.remote || false
     this.menu = null
 
-    const toBind = ['click', 'rightClick']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.click = this.click.bind(this)
+    this.rightClick = this.rightClick.bind(this)
   }
 
   click(event) {

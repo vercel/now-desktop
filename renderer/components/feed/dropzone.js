@@ -10,11 +10,8 @@ class DropZone extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    const toBind = ['droppedFile', 'hideDropZone']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.droppedFile = this.droppedFile.bind(this)
+    this.hideDropZone = this.hideDropZone.bind(this)
   }
 
   componentDidMount() {

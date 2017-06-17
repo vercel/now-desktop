@@ -35,11 +35,8 @@ class Switcher extends React.PureComponent {
       this.endpoints = load('./utils/data/endpoints')
     }
 
-    const toBind = ['scrollToEnd', 'openMenu']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.scrollToEnd = this.scrollToEnd.bind(this)
+    this.openMenu = this.openMenu.bind(this)
   }
 
   componentWillReceiveProps({ currentUser }) {

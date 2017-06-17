@@ -18,11 +18,9 @@ class Search extends React.PureComponent {
     this.state = { shown: false }
     this.setReference = setRef.bind(this)
 
-    const toBind = ['hide', 'show', 'typed']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.hide = this.hide.bind(this)
+    this.show = this.show.bind(this)
+    this.typed = this.typed.bind(this)
   }
 
   show() {

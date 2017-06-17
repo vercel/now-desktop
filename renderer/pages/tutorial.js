@@ -28,11 +28,9 @@ class Sections extends React.PureComponent {
     this.setReference = setRef.bind(this)
     this.isWindows = platform() === 'win32'
 
-    const toBind = ['handleCloseClick', 'handleMinimizeClick', 'arrowKeys']
-
-    for (const bindable of toBind) {
-      this[bindable] = this[bindable].bind(this)
-    }
+    this.handleCloseClick = this.handleCloseClick.bind(this)
+    this.handleMinimizeClick = this.handleMinimizeClick.bind(this)
+    this.arrowKeys = this.arrowKeys.bind(this)
   }
 
   sliderChanged(index) {
