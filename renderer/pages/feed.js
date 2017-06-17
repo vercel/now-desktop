@@ -395,13 +395,18 @@ class Feed extends React.Component {
       return
     }
 
+    const scope = this.state.scope
+
+    // Check if we're already pulling data
+    if (this.loading.has(scope)) {
+      return
+    }
+
     const section = event.target
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
-    const scope = this.state.scope
-    const notLoading = !this.loading.has(scope)
 
-    if (notLoading && distance < offset + 300) {
+    if (distance < offset + 300) {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
