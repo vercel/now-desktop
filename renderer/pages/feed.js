@@ -20,6 +20,10 @@ import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
 
+// Utilities
+import loadData from '../utils/data/load'
+import { API_EVENTS } from '../utils/data/endpoints'
+
 // Styles
 import {
   feedStyles,
@@ -46,14 +50,6 @@ class Feed extends React.Component {
     this.ipcRenderer = electron.ipcRenderer || false
     this.isWindows = os.platform() === 'win32'
     this.setReference = setRef.bind(this)
-
-    // Load the necessary helpers before usign them
-    if (electron.remote) {
-      const load = electron.remote.require
-
-      this.loadData = load('./utils/data/load')
-      this.endpoints = load('./utils/data/endpoints')
-    }
 
     this.showDropZone = this.showDropZone.bind(this)
     this.setFilter = this.setFilter.bind(this)
@@ -136,12 +132,10 @@ class Feed extends React.Component {
     }
 
     const params = queryString.stringify(query)
-    const { API_EVENTS } = this.endpoints
-
     let data
 
     try {
-      data = await this.loadData(`${API_EVENTS}?${params}`)
+      data = await loadData(`${API_EVENTS}?${params}`)
     } catch (err) {}
 
     if (!data || !data.events) {

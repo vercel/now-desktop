@@ -9,6 +9,10 @@ import setRef from 'react-refs'
 // Styles
 import styles from '../../styles/components/feed/switcher'
 
+// Utilities
+import loadData from '../../utils/data/load'
+import { API_TEAMS } from '../../utils/data/endpoints'
+
 // Components
 import Avatar from './avatar'
 
@@ -29,10 +33,7 @@ class Switcher extends React.PureComponent {
 
     if (electron.remote) {
       const load = electron.remote.require
-
       this.binaryUtils = load('./utils/binary')
-      this.loadData = load('./utils/data/load')
-      this.endpoints = load('./utils/data/endpoints')
     }
 
     this.scrollToEnd = this.scrollToEnd.bind(this)
@@ -212,8 +213,7 @@ class Switcher extends React.PureComponent {
       return
     }
 
-    const { API_TEAMS } = this.endpoints
-    const data = await this.loadData(API_TEAMS)
+    const data = await loadData(API_TEAMS)
 
     if (!data || !data.teams || !this.props.currentUser) {
       return

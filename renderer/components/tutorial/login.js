@@ -6,7 +6,9 @@ import AutoSizeInput from 'react-input-autosize'
 import React, { PureComponent } from 'react'
 import sleep from 'sleep-promise'
 
-// Ours
+// Utilities
+import loadData from '../../utils/data/load'
+import { API_USER } from '../../utils/data/endpoints'
 import error from '../../utils/error'
 
 // Styles
@@ -251,8 +253,6 @@ class LoginForm extends PureComponent {
     const { saveConfig, watchConfig } = this.remote.require('./utils/config')
 
     // Load the user's data
-    const loadData = this.remote.require('./utils/data/load')
-    const { API_USER } = this.remote.require('./utils/data/endpoints')
     const userData = await loadData(API_USER, finalToken)
     const user = userData.user
 
