@@ -543,8 +543,6 @@ class Feed extends React.Component {
 
     const activeScope = this.state.teams.find(team => team.id === scope)
 
-    console.log('render')
-
     return (
       <main>
         {!this.isWindows && <TopArrow />}
