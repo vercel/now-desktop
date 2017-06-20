@@ -5,6 +5,7 @@ import emailProviders from 'email-providers/common'
 import AutoSizeInput from 'react-input-autosize'
 import React, { PureComponent } from 'react'
 import sleep from 'sleep-promise'
+import { func } from 'prop-types'
 
 // Utilities
 import loadData from '../../utils/data/load'
@@ -437,6 +438,10 @@ class LoginForm extends PureComponent {
       </aside>
     )
   }
+}
+
+LoginForm.propTypes = {
+  setIntroState: func
 }
 
 export default LoginForm
