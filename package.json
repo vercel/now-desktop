@@ -127,7 +127,7 @@
   "devDependencies": {
     "devtron": "1.4.0",
     "electron": "1.7.1",
-    "electron-builder": "19.5.1",
+    "electron-builder": "19.6.0",
     "electron-builder-squirrel-windows": "19.6.0",
     "eslint-config-prettier": "2.2.0",
     "eslint-plugin-react": "7.1.0",
