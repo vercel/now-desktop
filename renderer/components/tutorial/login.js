@@ -118,6 +118,10 @@ class LoginForm extends PureComponent {
     const currentWindow = this.remote.getCurrentWindow()
 
     currentWindow.on('show', () => {
+      if (!this.loginInput) {
+        return
+      }
+
       this.loginInput.focus()
     })
 
