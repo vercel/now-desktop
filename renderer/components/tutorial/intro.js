@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import React, { PureComponent } from 'react'
+import { func } from 'prop-types'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -70,6 +71,16 @@ class Intro extends PureComponent {
       tested: true,
       done: true
     })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.done && this.state.done) {
+      if (!this.props.setLoggedIn) {
+        return
+      }
+
+      this.props.setLoggedIn(true)
+    }
   }
 
   render() {
@@ -144,6 +155,10 @@ class Intro extends PureComponent {
       </article>
     )
   }
+}
+
+Intro.propTypes = {
+  setLoggedIn: func
 }
 
 export default Intro

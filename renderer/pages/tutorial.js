@@ -24,6 +24,10 @@ class Sections extends React.PureComponent {
   constructor(props) {
     super(props)
 
+    this.state = {
+      loggedIn: false
+    }
+
     this.remote = electron.remote || false
     this.setReference = setRef.bind(this)
     this.isWindows = platform() === 'win32'
@@ -31,6 +35,7 @@ class Sections extends React.PureComponent {
     this.handleCloseClick = this.handleCloseClick.bind(this)
     this.handleMinimizeClick = this.handleMinimizeClick.bind(this)
     this.arrowKeys = this.arrowKeys.bind(this)
+    this.setLoggedIn = this.setLoggedIn.bind(this)
   }
 
   sliderChanged(index) {
@@ -50,6 +55,10 @@ class Sections extends React.PureComponent {
         input.resetState()
       }
     }
+  }
+
+  setLoggedIn(loggedIn) {
+    this.setState({ loggedIn })
   }
 
   handleMinimizeClick() {
@@ -128,15 +137,18 @@ class Sections extends React.PureComponent {
   }
 
   render() {
+    const loggedIn = this.state.loggedIn
+
     const sliderSettings = {
       speed: 500,
       infinite: false,
-      dots: true,
       draggable: false,
       accessibility: false,
       nextArrow: <SliderArrow direction="next" />,
       prevArrow: <SliderArrow direction="prev" />,
-      afterChange: this.sliderChanged
+      afterChange: this.sliderChanged,
+      arrows: loggedIn,
+      dots: loggedIn
     }
 
     return (
@@ -153,7 +165,7 @@ class Sections extends React.PureComponent {
           </div>}
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section id="first">
-            <Intro />
+            <Intro setLoggedIn={this.setLoggedIn} />
           </section>
 
           <section id="cli">
