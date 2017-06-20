@@ -84,7 +84,6 @@ class Title extends React.PureComponent {
       <aside className={classes.join(' ')}>
         <div>
           {this.props.light &&
-            this.props.searchShown &&
             <Search
               hideDeployIcon={this.hideDeployIcon}
               showDeployIcon={this.showDeployIcon}
@@ -123,8 +122,7 @@ Title.propTypes = {
   ]),
   light: PropTypes.bool,
   setFilter: PropTypes.func,
-  setSearchRef: PropTypes.func,
-  searchShown: PropTypes.bool
+  setSearchRef: PropTypes.func
 }
 
 export default Title

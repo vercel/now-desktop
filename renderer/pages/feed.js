@@ -391,16 +391,6 @@ class Feed extends React.Component {
     return matches
   }
 
-  getEvents(scope) {
-    const scopedEvents = this.state.events[scope]
-
-    if (!scopedEvents || scopedEvents.length === 0) {
-      return false
-    }
-
-    return scopedEvents
-  }
-
   scrolled(event) {
     if (!this.loadingIndicator) {
       return
@@ -539,8 +529,6 @@ class Feed extends React.Component {
 
   render() {
     const scope = this.state.scope
-    const searchShown = this.getEvents(scope) && true
-
     const activeScope = this.state.teams.find(team => team.id === scope)
 
     return (
@@ -551,7 +539,6 @@ class Feed extends React.Component {
           <Title
             setFilter={this.setFilter}
             setSearchRef={this.setReference}
-            searchShown={searchShown}
             ref={this.setReference}
             light
             name="title"
