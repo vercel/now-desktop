@@ -524,8 +524,9 @@ class Feed extends React.Component {
   }
 
   render() {
-    const scope = this.state.scope
-    const activeScope = this.state.teams.find(team => team.id === scope)
+    const activeScope = this.state.teams.find(team => {
+      return team.id === this.state.scope
+    })
 
     return (
       <main>
@@ -538,6 +539,7 @@ class Feed extends React.Component {
             ref={this.setReference}
             light
             name="title"
+            searchShown={Boolean(activeScope)}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
