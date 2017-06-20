@@ -6,6 +6,10 @@ module.exports = {
     // There's no need to care about them
     config.module.exprContextCritical = false
 
+    // Prevent huge sourcemaps from being created,
+    // makes the devtools much faster
+    config.devtool = false
+
     config.plugins = config.plugins.filter(plugin => {
       return plugin.constructor.name !== 'UglifyJsPlugin'
     })
