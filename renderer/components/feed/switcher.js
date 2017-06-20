@@ -125,7 +125,7 @@ class Switcher extends React.PureComponent {
         }
 
         listTimer()
-      }, 1000)
+      }, 10000)
     }
 
     // Only start updating teams once they're loaded!

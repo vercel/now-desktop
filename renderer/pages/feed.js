@@ -79,7 +79,7 @@ class Feed extends React.Component {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
-      this.loadEvents(focusedTeam.id)
+      await this.loadEvents(focusedTeam.id)
     }
 
     // Update the feed of events for each team
@@ -94,7 +94,7 @@ class Feed extends React.Component {
         continue
       }
 
-      this.loadEvents(team.id)
+      await this.loadEvents(team.id)
     }
   }
 
