@@ -58,6 +58,7 @@ class Feed extends React.Component {
     this.setTeams = this.setTeams.bind(this)
     this.setScope = this.setScope.bind(this)
     this.setOnlineState = this.setOnlineState.bind(this)
+    this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
 
     // Ensure that we're not loading events again
     this.loading = new Set()
@@ -315,6 +316,15 @@ class Feed extends React.Component {
     }
   }
 
+  setScopeWithSlug(slug) {
+    const { id } = this.detectScope('slug', slug)
+    this.setScope(id)
+  }
+
+  detectScope(property, value) {
+    return this.state.teams.find(team => team[property] === value)
+  }
+
   async setTeams(teams) {
     if (!teams) {
       // If the teams didn't change, only the events
@@ -479,6 +489,7 @@ class Feed extends React.Component {
             key={item.id}
             currentUser={this.state.currentUser}
             team={scopedTeam}
+            setScopeWithSlug={this.setScopeWithSlug}
           />
         )
       })
@@ -524,9 +535,7 @@ class Feed extends React.Component {
   }
 
   render() {
-    const activeScope = this.state.teams.find(team => {
-      return team.id === this.state.scope
-    })
+    const activeScope = this.detectScope('id', this.state.scope)
 
     return (
       <main>
@@ -561,6 +570,7 @@ class Feed extends React.Component {
             currentUser={this.state.currentUser}
             titleRef={this.title}
             onlineStateFeed={this.setOnlineState}
+            activeScope={activeScope}
           />
         </div>
 

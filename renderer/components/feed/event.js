@@ -4,7 +4,7 @@ import qs from 'querystring'
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { object } from 'prop-types'
+import { object, func } from 'prop-types'
 import moment from 'moment'
 import dotProp from 'dot-prop'
 import ms from 'ms'
@@ -31,8 +31,13 @@ class EventMessage extends React.PureComponent {
     this.rightClick = this.rightClick.bind(this)
   }
 
-  click(event) {
-    event.preventDefault()
+  click() {
+    const { content, setScopeWithSlug } = this.props
+
+    if (content.type === 'team' && setScopeWithSlug) {
+      setScopeWithSlug(content.payload.slug)
+      return
+    }
 
     if (!this.state.url) {
       return
@@ -258,7 +263,8 @@ class EventMessage extends React.PureComponent {
 EventMessage.propTypes = {
   content: object,
   currentUser: object,
-  team: object
+  team: object,
+  setScopeWithSlug: func
 }
 
 export default EventMessage

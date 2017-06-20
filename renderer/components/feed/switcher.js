@@ -40,7 +40,12 @@ class Switcher extends React.PureComponent {
     this.openMenu = this.openMenu.bind(this)
   }
 
-  componentWillReceiveProps({ currentUser }) {
+  componentWillReceiveProps({ currentUser, activeScope }) {
+    if (activeScope) {
+      this.changeScope(activeScope, true, true, true)
+      return
+    }
+
     if (!currentUser) {
       return
     }
@@ -304,19 +309,17 @@ class Switcher extends React.PureComponent {
     }
   }
 
-  changeScope(team, saveToConfig, byHand) {
+  changeScope(team, saveToConfig, byHand, noFeed) {
     // If the clicked item in the team switcher is
     // already the active one, don't do anything
     if (this.state.scope === team.id) {
       return
     }
 
-    if (!this.props.setFeedScope) {
-      return
+    if (!noFeed && this.props.setFeedScope) {
+      // Load different messages into the feed
+      this.props.setFeedScope(team.id)
     }
-
-    // Load different messages into the feed
-    this.props.setFeedScope(team.id)
 
     // Make the team/user icon look active by
     // syncing the scope with the feed
@@ -473,7 +476,8 @@ Switcher.propTypes = {
   setFeedScope: func,
   currentUser: object,
   setTeams: func,
-  titleRef: object
+  titleRef: object,
+  activeScope: object
 }
 
 export default Switcher
