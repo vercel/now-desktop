@@ -39,6 +39,11 @@ module.exports = async (path, token = null, opts = {}) => {
   // get all the user details before we can save to config there
   const authToken = token || (await getToken())
 
+  // Without a token, there's no need to continue
+  if (!authToken) {
+    return false
+  }
+
   headers.Authorization = `bearer ${authToken}`
   headers['user-agent'] = userAgent
 
@@ -51,6 +56,17 @@ module.exports = async (path, token = null, opts = {}) => {
 
   try {
     res = await fetch(url, { ...opts, headers })
+
+    if (res.status === 403) {
+      const remote = electron.remote || false
+
+      if (remote) {
+        // Log out
+        remote.require('./utils/logout')()
+      }
+
+      return false
+    }
 
     if (opts.throwOnHTTPError && (res.status < 200 || res.status >= 300)) {
       if (res.headers.get('Content-Type') === 'application/json') {
