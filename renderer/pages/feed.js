@@ -162,9 +162,14 @@ class Feed extends React.Component {
       return
     }
 
-    const newLastUpdate = hasEvents
-      ? data.events[0].created
-      : new Date().toISOString()
+    let newLastUpdate
+
+    if (hasEvents) {
+      newLastUpdate = data.events[0].created
+    } else {
+      newLastUpdate = new Date().toISOString()
+    }
+
     teams[relatedCacheIndex].lastUpdate = newLastUpdate
 
     if (hasEvents && scopedEvents) {
