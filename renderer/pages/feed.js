@@ -444,10 +444,6 @@ class Feed extends React.Component {
       return <Loading />
     }
 
-    if (scopedEvents.length === 0) {
-      return <NoEvents />
-    }
-
     const filteredEvents = this.filterEvents(scopedEvents)
 
     if (filteredEvents.length === 0) {
