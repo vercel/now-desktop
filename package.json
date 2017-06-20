@@ -127,7 +127,7 @@
   "devDependencies": {
     "devtron": "1.4.0",
     "electron": "1.7.1",
-    "electron-builder": "19.6.0",
+    "electron-builder": "19.6.1",
     "electron-builder-squirrel-windows": "19.6.0",
     "eslint-config-prettier": "2.2.0",
     "eslint-plugin-react": "7.1.0",
@@ -138,7 +138,7 @@
     "prop-types": "15.5.10",
     "react": "15.6.1",
     "react-dom": "15.6.1",
-    "react-refs": "3.0.0",
+    "react-refs": "3.0.3",
     "xo": "0.18.2"
   }
 }
