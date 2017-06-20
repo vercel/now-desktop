@@ -15,7 +15,6 @@ const deploy = require('./utils/deploy')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
-const migrate = require('./utils/migrate')
 const { getConfig, saveConfig, watchConfig } = require('./utils/config')
 const handleException = require('./utils/exception')
 
@@ -154,9 +153,6 @@ const moveApp = async () => {
 }
 
 app.on('ready', async () => {
-  // Switch over to the new config structure
-  await migrate()
-
   // Offer to move app to Applications directory
   await moveApp()
 

@@ -3,7 +3,6 @@ const ms = require('ms')
 
 // Utilities
 const loadData = require('./load')
-const { API_PLAN } = require('./endpoints')
 
 async function parsePlan(json) {
   const { subscription } = json
@@ -35,6 +34,6 @@ async function parsePlan(json) {
 }
 
 module.exports = async () => {
-  const json = await loadData(API_PLAN)
+  const json = await loadData('/api/plan')
   return parsePlan(json)
 }
