@@ -79,6 +79,8 @@ class Feed extends React.Component {
       })
 
       focusedIndex = teams.indexOf(focusedTeam)
+
+      // It's important that this is being `await`ed
       await this.loadEvents(focusedTeam.id)
     }
 
@@ -94,6 +96,7 @@ class Feed extends React.Component {
         continue
       }
 
+      // It's important that this is being `await`ed
       await this.loadEvents(team.id)
     }
   }
@@ -315,7 +318,8 @@ class Feed extends React.Component {
   async setTeams(teams) {
     if (!teams) {
       // If the teams didn't change, only the events
-      // should be updated
+      // should be updated.
+      // It's important that this is being `await`ed
       await this.updateEvents()
       return
     }
@@ -326,6 +330,8 @@ class Feed extends React.Component {
     }
 
     this.setState({ teams })
+
+    // It's important that this is being `await`ed
     await this.updateEvents()
   }
 

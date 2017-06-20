@@ -107,6 +107,7 @@ class Switcher extends React.PureComponent {
         }
 
         try {
+          // It's important that this is being `await`ed
           await this.loadTeams()
         } catch (err) {
           // Check if app is even online
@@ -125,7 +126,7 @@ class Switcher extends React.PureComponent {
         }
 
         listTimer()
-      }, 10000)
+      }, 3000)
     }
 
     // Only start updating teams once they're loaded!
