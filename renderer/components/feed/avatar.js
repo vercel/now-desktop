@@ -50,7 +50,7 @@ class Avatar extends React.PureComponent {
   async setURL() {
     if (this.isGeistEvent()) {
       this.setState({
-        url: `https://cdn.zeit.co/logos/black-bg-logo-1200.png`
+        url: `/static/zeit-logo.png`
       })
 
       return
