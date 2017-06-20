@@ -17,10 +17,8 @@ class Avatar extends React.PureComponent {
   }
 
   componentWillMount() {
-    const isUser = this.isUser()
-
-    this.setURL(isUser)
-    this.setTitle(isUser)
+    this.setURL()
+    this.setTitle()
   }
 
   componentDidMount() {
@@ -33,28 +31,39 @@ class Avatar extends React.PureComponent {
     }
   }
 
-  isUser() {
-    const { event, team } = this.props
-    let right = event || this.props.isUser
+  isGeistEvent() {
+    const { event } = this.props
 
-    if (event) {
-      const teamEvents = [
-        'deployment-unfreeze',
-        'deployment-freeze',
-        'scale-auto'
-      ]
-
-      if (Object.keys(team).length !== 0 && teamEvents.includes(event.type)) {
-        right = false
-      }
+    if (!event) {
+      return false
     }
 
-    return right
+    const valid = ['deployment-unfreeze', 'deployment-freeze', 'scale-auto']
+
+    if (valid.includes(event.type)) {
+      return true
+    }
+
+    return false
   }
 
-  async setURL(isUser) {
-    const { event, team } = this.props
+  async setURL() {
+    if (this.isGeistEvent()) {
+      this.setState({
+        url: `https://cdn.zeit.co/logos/black-bg-logo-1200.png`
+      })
+
+      return
+    }
+
+    const { event, team, isUser } = this.props
+
+    let validUser = event || isUser
     let id
+
+    if (Object.keys(team) > 0) {
+      validUser = false
+    }
 
     if (event) {
       id = event.user ? event.user.uid : event.userId
@@ -62,16 +71,16 @@ class Avatar extends React.PureComponent {
       id = team.id
     }
 
-    const imageID = isUser ? id : `?teamId=${team.id}`
-    const separator = isUser ? '?' : '&'
+    const imageID = validUser ? id : `?teamId=${team.id}`
+    const separator = validUser ? '?' : '&'
 
     this.setState({
       url: `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
     })
   }
 
-  async setTitle(isUser) {
-    const { event, team } = this.props
+  async setTitle() {
+    const { event, team, isUser } = this.props
     let title
 
     if (event && event.user) {
