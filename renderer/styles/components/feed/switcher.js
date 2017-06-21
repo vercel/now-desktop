@@ -16,7 +16,7 @@ export default `
 
   ul:after {
     content: '';
-    width: 23px;
+    width: 20px;
     display: block;
     height: inherit;
     flex-shrink: 0;
@@ -29,10 +29,10 @@ export default `
   ul .shadow {
     display: block;
     height: 40px;
-    width: 40px;
+    width: 20px;
     background: linear-gradient(to right, transparent, #fff);
     position: fixed;
-    left: calc(290px - 40px);
+    left: calc(290px - 20px);
     bottom: 0;
   }
 
