@@ -104,7 +104,15 @@ class Switcher extends React.Component {
 
   setOnlineState() {
     const online = navigator.onLine
-    this.setState({ online })
+    const newState = { online }
+
+    // Ensure that the animations for the teams
+    // fading in works after recovering from offline mode
+    if (!online) {
+      newState.initialized = false
+    }
+
+    this.setState(newState)
   }
 
   async componentDidMount() {
@@ -302,6 +310,12 @@ class Switcher extends React.Component {
     const when = 100 + 100 * teamsCount + 600
 
     setTimeout(() => {
+      // Ensure that the animations for the teams
+      // fading in works after recovering from offline mode
+      if (!this.state.online) {
+        return
+      }
+
       this.setState({
         initialized: true
       })
