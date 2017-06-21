@@ -497,6 +497,7 @@ class Switcher extends React.Component {
               lockAxis="x"
               pressDelay={1000}
               onSortEnd={this.onSortEnd}
+              helperClass="switcher-helper"
             />
           : <p className="offline">{"You're offline!"}</p>}
 
@@ -513,6 +514,20 @@ class Switcher extends React.Component {
         </a>
 
         <style jsx>{styles}</style>
+
+        <style jsx global>
+          {`
+            .switcher-helper {
+              position: relative;
+              opacity: 1 !important;
+            }
+            .switcher-helper div {
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+          `}
+        </style>
       </aside>
     )
   }
