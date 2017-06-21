@@ -45,6 +45,9 @@ class Switcher extends React.Component {
     this.openMenu = this.openMenu.bind(this)
     this.onSortEnd = this.onSortEnd.bind(this)
     this.onSortStart = this.onSortStart.bind(this)
+
+    // Don't update state when dragging teams
+    this.moving = false
   }
 
   componentWillReceivePropfs({ currentUser, activeScope }) {
@@ -259,7 +262,11 @@ class Switcher extends React.Component {
     const updated = this.haveUpdated(teams)
 
     if (updated) {
-      this.setState({ teams })
+      // Ensure that we're not dealing with the same
+      // objects or array ever again
+      this.setState({
+        teams: JSON.parse(JSON.stringify(teams))
+      })
     }
 
     if (this.props.setTeams) {
@@ -354,6 +361,14 @@ class Switcher extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.moving || this.state === nextState) {
+      return false
+    }
+
+    return true
+  }
+
   openMenu() {
     // The menu toggler element has children
     // we have the ability to prevent the event from
@@ -378,6 +393,9 @@ class Switcher extends React.Component {
   onSortEnd({ oldIndex, newIndex }) {
     document.body.classList.toggle('is-moving')
 
+    // Allow the state to update again
+    this.moving = false
+
     this.setState({
       teams: arrayMove(this.state.teams, oldIndex, newIndex)
     })
@@ -385,6 +403,9 @@ class Switcher extends React.Component {
 
   onSortStart() {
     document.body.classList.toggle('is-moving')
+
+    // Prevent the state from being updated
+    this.moving = true
   }
 
   createTeam() {
