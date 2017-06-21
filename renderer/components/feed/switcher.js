@@ -10,6 +10,7 @@ import {
   SortableElement,
   arrayMove
 } from 'react-sortable-hoc'
+import makeUnique from 'make-unique'
 
 // Styles
 import styles from '../../styles/components/feed/switcher'
@@ -206,22 +207,22 @@ class Switcher extends React.Component {
   }
 
   haveUpdated(data) {
-    const copies = []
+    const newData = JSON.parse(JSON.stringify(data))
+    const currentData = JSON.parse(JSON.stringify(this.state.teams))
 
-    // We need to copy each team object,
-    // because some part of the system seems
-    // to get angry if we remove a property on this
-    // object directly - this prop then won't be
-    // accessible from a different place anymore
-    for (const team of this.state.teams) {
-      copies.push(Object.assign({}, team))
+    const merged = currentData.concat(newData)
+
+    const ordered = makeUnique(merged, (a, b) => {
+      return a.id === b.id
+    })
+
+    if (compare(ordered, currentData)) {
+      return false
     }
 
-    for (const team of copies) {
-      delete team.lastUpdate
-    }
-
-    return !compare(data, copies)
+    // Ensure that we're not dealing with the same
+    // objects or array ever again
+    return JSON.parse(JSON.stringify(ordered))
   }
 
   orderTeams(list) {
@@ -262,17 +263,13 @@ class Switcher extends React.Component {
     const updated = this.haveUpdated(teams)
 
     if (updated) {
-      // Ensure that we're not dealing with the same
-      // objects or array ever again
-      this.setState({
-        teams: JSON.parse(JSON.stringify(teams))
-      })
+      this.setState({ teams: updated })
     }
 
     if (this.props.setTeams) {
       // When passing `null`, the feed will only
       // update the events, not the teams
-      await this.props.setTeams(updated ? teams : null)
+      await this.props.setTeams(updated || null)
     }
   }
 
