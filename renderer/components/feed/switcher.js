@@ -410,8 +410,9 @@ class Switcher extends React.Component {
   }
 
   renderItem() {
-    return SortableElement(({ team, teamIndex }) => {
+    return SortableElement(({ team }) => {
       const isActive = this.state.scope === team.id ? 'active' : ''
+      const isUser = !team.id.includes('team')
 
       const clicked = event => {
         event.preventDefault()
@@ -420,7 +421,7 @@ class Switcher extends React.Component {
 
       return (
         <li onClick={clicked} className={isActive} key={team.id}>
-          <Avatar team={team} isUser={teamIndex === 0} />
+          <Avatar team={team} isUser={isUser} />
 
           <style jsx>
             {`
@@ -452,7 +453,7 @@ class Switcher extends React.Component {
     const Item = this.renderItem()
 
     return this.state.teams.map((team, index) =>
-      <Item key={team.id} index={index} team={team} teamIndex={index} />
+      <Item key={team.id} index={index} team={team} />
     )
   }
 
@@ -494,7 +495,7 @@ class Switcher extends React.Component {
           ? <List
               axis="x"
               lockAxis="x"
-              pressDelay={20}
+              pressDelay={1000}
               onSortEnd={this.onSortEnd}
             />
           : <p className="offline">{"You're offline!"}</p>}
