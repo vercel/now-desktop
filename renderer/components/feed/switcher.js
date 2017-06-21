@@ -551,6 +551,7 @@ class Switcher extends React.Component {
             .switcher-helper {
               position: relative;
               opacity: 1 !important;
+              z-index: 1000;
             }
             .switcher-helper div {
               position: absolute;

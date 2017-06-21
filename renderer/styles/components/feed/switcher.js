@@ -34,6 +34,7 @@ export default `
     position: fixed;
     left: calc(290px - 20px);
     bottom: 0;
+    z-index: 2000;
   }
 
   li {
