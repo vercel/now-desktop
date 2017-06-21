@@ -214,6 +214,22 @@ class Switcher extends React.PureComponent {
     return !compare(data, copies)
   }
 
+  orderTeams(list) {
+    return list.sort((a, b) => {
+      if (!a.name || !b.name) {
+        return 0
+      }
+
+      if (a.name < b.name) {
+        return -1
+      } else if (a.name > b.name) {
+        return 1
+      }
+
+      return 0
+    })
+  }
+
   async loadTeams() {
     if (!this.remote) {
       return
@@ -225,7 +241,7 @@ class Switcher extends React.PureComponent {
       return
     }
 
-    const teams = data.teams
+    const teams = this.orderTeams(data.teams)
     const user = this.props.currentUser
 
     teams.unshift({
