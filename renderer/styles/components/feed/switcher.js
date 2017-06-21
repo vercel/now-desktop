@@ -1,4 +1,4 @@
-export default `
+export const listStyle = `
   ul {
     margin: 0 0 0 10px;
     list-style: none;
@@ -36,7 +36,49 @@ export default `
     bottom: 0;
     z-index: 2000;
   }
+`
 
+/*
+  Do not user hidden overflow here, otherwise
+  the images will be cut off at the bottom
+  that's a renderer-bug in chromium
+*/
+
+export const itemStyle = `
+  li {
+    width: 23px;
+    height: 23px;
+    border-radius: 100%;
+    margin-right: 10px;
+    opacity: .3;
+    transition-duraction: 300ms;
+  }
+
+  li.active {
+    opacity: 1;
+    cursor: default;
+  }
+`
+
+export const helperStyle = `
+  .switcher-helper {
+    position: relative;
+    opacity: 1 !important;
+    z-index: 1000;
+  }
+
+  .switcher-helper div {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  body.is-moving {
+    cursor: move;
+  }
+`
+
+export const wrapStyle = `
   aside {
     height: 40px;
     bottom: 0;

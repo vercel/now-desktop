@@ -13,7 +13,12 @@ import {
 import makeUnique from 'make-unique'
 
 // Styles
-import styles from '../../styles/components/feed/switcher'
+import {
+  wrapStyle,
+  listStyle,
+  itemStyle,
+  helperStyle
+} from '../../styles/components/feed/switcher'
 
 // Utilities
 import loadData from '../../utils/data/load'
@@ -466,27 +471,7 @@ class Switcher extends React.Component {
             delay={index}
           />
 
-          <style jsx>
-            {`
-              /*
-              Do not user hidden overflow here, otherwise
-              the images will be cut off at the bottom
-              that's a renderer-bug in chromium
-            */
-              li {
-                width: 23px;
-                height: 23px;
-                border-radius: 100%;
-                margin-right: 10px;
-                opacity: .3;
-                transition-duraction: 300ms;
-              }
-              li.active {
-                opacity: 1;
-                cursor: default;
-              }
-            `}
-          </style>
+          <style jsx>{itemStyle}</style>
         </li>
       )
     })
@@ -511,7 +496,7 @@ class Switcher extends React.Component {
         <CreateTeam scale={shouldScale} delay={teams.length} />
         <span className="shadow" onClick={this.scrollToEnd} />
 
-        <style jsx>{styles}</style>
+        <style jsx>{listStyle}</style>
       </ul>
     )
   }
@@ -546,25 +531,8 @@ class Switcher extends React.Component {
           <i />
         </a>
 
-        <style jsx>{styles}</style>
-
-        <style jsx global>
-          {`
-            .switcher-helper {
-              position: relative;
-              opacity: 1 !important;
-              z-index: 1000;
-            }
-            .switcher-helper div {
-              position: absolute;
-              top: 0;
-              left: 0;
-            }
-            body.is-moving {
-              cursor: move;
-            }
-          `}
-        </style>
+        <style jsx>{wrapStyle}</style>
+        <style jsx global>{helperStyle}</style>
       </aside>
     )
   }
