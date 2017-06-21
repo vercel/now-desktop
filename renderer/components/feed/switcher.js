@@ -498,6 +498,8 @@ class Switcher extends React.Component {
               pressDelay={1000}
               onSortEnd={this.onSortEnd}
               helperClass="switcher-helper"
+              lockToContainerEdges={true}
+              lockOffset="0%"
             />
           : <p className="offline">{"You're offline!"}</p>}
 

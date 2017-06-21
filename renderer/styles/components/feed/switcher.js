@@ -1,12 +1,12 @@
 export default `
   ul {
-    margin: 0;
+    margin: 0 0 0 10px;
     list-style: none;
     display: flex;
     flex-direction: row;
     flex-shrink: 1;
     flex-grow: 1;
-    padding: 0 0 0 10px;
+    padding: 0;
     height: inherit;
     align-items: center;
     overflow-x: auto;
