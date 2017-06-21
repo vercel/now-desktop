@@ -44,9 +44,10 @@ class Switcher extends React.Component {
     this.scrollToEnd = this.scrollToEnd.bind(this)
     this.openMenu = this.openMenu.bind(this)
     this.onSortEnd = this.onSortEnd.bind(this)
+    this.onSortStart = this.onSortStart.bind(this)
   }
 
-  componentWillReceiveProps({ currentUser, activeScope }) {
+  componentWillReceivePropfs({ currentUser, activeScope }) {
     if (activeScope) {
       this.changeScope(activeScope, true, true, true)
       return
@@ -375,9 +376,15 @@ class Switcher extends React.Component {
   }
 
   onSortEnd({ oldIndex, newIndex }) {
+    document.body.classList.toggle('is-moving')
+
     this.setState({
       teams: arrayMove(this.state.teams, oldIndex, newIndex)
     })
+  }
+
+  onSortStart() {
+    document.body.classList.toggle('is-moving')
   }
 
   createTeam() {
@@ -497,6 +504,7 @@ class Switcher extends React.Component {
               lockAxis="x"
               pressDelay={1000}
               onSortEnd={this.onSortEnd}
+              onSortStart={this.onSortStart}
               helperClass="switcher-helper"
               lockToContainerEdges={true}
               lockOffset="0%"
@@ -527,6 +535,9 @@ class Switcher extends React.Component {
               position: absolute;
               top: 0;
               left: 0;
+            }
+            body.is-moving {
+              cursor: move;
             }
           `}
         </style>
