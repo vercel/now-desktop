@@ -65,6 +65,7 @@
       "node"
     ],
     "rules": {
+      "new-cap": 0,
       "import/no-extraneous-dependencies": 0,
       "import/no-unresolved": 0,
       "no-await-in-loop": 0,

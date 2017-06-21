@@ -5,6 +5,11 @@ import { func, object } from 'prop-types'
 import exists from 'path-exists'
 import compare from 'just-compare'
 import setRef from 'react-refs'
+import {
+  SortableContainer,
+  SortableElement,
+  arrayMove
+} from 'react-sortable-hoc'
 
 // Styles
 import styles from '../../styles/components/feed/switcher'
@@ -16,7 +21,7 @@ import { API_TEAMS } from '../../utils/data/endpoints'
 // Components
 import Avatar from './avatar'
 
-class Switcher extends React.PureComponent {
+class Switcher extends React.Component {
   constructor(props) {
     super(props)
 
@@ -38,6 +43,7 @@ class Switcher extends React.PureComponent {
 
     this.scrollToEnd = this.scrollToEnd.bind(this)
     this.openMenu = this.openMenu.bind(this)
+    this.onSortEnd = this.onSortEnd.bind(this)
   }
 
   componentWillReceiveProps({ currentUser, activeScope }) {
@@ -368,47 +374,9 @@ class Switcher extends React.PureComponent {
     })
   }
 
-  renderTeams() {
-    if (!this.state) {
-      return
-    }
-
-    const teams = this.state.teams
-
-    return teams.map((team, index) => {
-      const isActive = this.state.scope === team.id ? 'active' : ''
-
-      const clicked = () => {
-        this.changeScope(team, true, true)
-      }
-
-      return (
-        <li onClick={clicked} className={isActive} key={team.id}>
-          <Avatar team={team} isUser={index === 0} scale delay={index} />
-
-          <style jsx>
-            {`
-              /*
-              Do not user hidden overflow here, otherwise
-              the images will be cut off at the bottom
-              that's a renderer-bug in chromium
-            */
-              li {
-                width: 23px;
-                height: 23px;
-                border-radius: 100%;
-                margin-right: 10px;
-                opacity: .3;
-                transition: opacity .3s ease;
-              }
-              li.active {
-                opacity: 1;
-                cursor: default;
-              }
-            `}
-          </style>
-        </li>
-      )
+  onSortEnd({ oldIndex, newIndex }) {
+    this.setState({
+      teams: arrayMove(this.state.teams, oldIndex, newIndex)
     })
   }
 
@@ -441,7 +409,54 @@ class Switcher extends React.PureComponent {
     }, delay)
   }
 
-  render() {
+  renderItem() {
+    return SortableElement(({ team, teamIndex }) => {
+      const isActive = this.state.scope === team.id ? 'active' : ''
+
+      const clicked = event => {
+        event.preventDefault()
+        this.changeScope(team, true, true)
+      }
+
+      return (
+        <li onClick={clicked} className={isActive} key={team.id}>
+          <Avatar team={team} isUser={teamIndex === 0} />
+
+          <style jsx>
+            {`
+              /*
+              Do not user hidden overflow here, otherwise
+              the images will be cut off at the bottom
+              that's a renderer-bug in chromium
+            */
+              li {
+                width: 23px;
+                height: 23px;
+                border-radius: 100%;
+                margin-right: 10px;
+                opacity: .3;
+                transition-duraction: 300ms;
+              }
+              li.active {
+                opacity: 1;
+                cursor: default;
+              }
+            `}
+          </style>
+        </li>
+      )
+    })
+  }
+
+  renderTeams() {
+    const Item = this.renderItem()
+
+    return this.state.teams.map((team, index) =>
+      <Item key={team.id} index={index} team={team} teamIndex={index} />
+    )
+  }
+
+  renderList() {
     const teams = this.renderTeams()
     const classes = []
 
@@ -451,23 +466,37 @@ class Switcher extends React.PureComponent {
       this.prepareCreateTeam(teams.length)
     }
 
+    return SortableContainer(() =>
+      <ul ref={this.setReference} name="list">
+        {teams}
+
+        <li
+          onClick={this.createTeam}
+          title="Create a Team"
+          className={classes.join(' ')}
+        >
+          <i />
+          <i />
+        </li>
+
+        <span className="shadow" onClick={this.scrollToEnd} />
+        <style jsx>{styles}</style>
+      </ul>
+    )
+  }
+
+  render() {
+    const List = this.renderList()
+
     return (
       <aside>
         {this.state.online
-          ? <ul ref={this.setReference} name="list">
-              {teams}
-
-              <li
-                onClick={this.createTeam}
-                title="Create a Team"
-                className={classes.join(' ')}
-              >
-                <i />
-                <i />
-              </li>
-
-              <span className="shadow" onClick={this.scrollToEnd} />
-            </ul>
+          ? <List
+              axis="x"
+              lockAxis="x"
+              pressDelay={20}
+              onSortEnd={this.onSortEnd}
+            />
           : <p className="offline">{"You're offline!"}</p>}
 
         <a
