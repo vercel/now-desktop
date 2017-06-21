@@ -215,7 +215,6 @@ class Switcher extends React.Component {
   haveUpdated(data) {
     const newData = JSON.parse(JSON.stringify(data))
     const currentData = JSON.parse(JSON.stringify(this.state.teams))
-
     const merged = currentData.concat(newData)
 
     const ordered = makeUnique(merged, (a, b) => {
@@ -257,8 +256,6 @@ class Switcher extends React.Component {
     if (!data || !data.teams || !this.props.currentUser) {
       return
     }
-
-    data.teams = data.teams.splice(0, 5)
 
     const teams = this.orderTeams(data.teams)
     const user = this.props.currentUser
