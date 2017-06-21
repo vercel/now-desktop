@@ -21,6 +21,7 @@ import { API_TEAMS } from '../../utils/data/endpoints'
 
 // Components
 import Avatar from './avatar'
+import CreateTeam from './create-team'
 
 class Switcher extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class Switcher extends React.Component {
       teams: [],
       scope: null,
       online: true,
-      createTeam: false
+      initialized: false
     }
 
     this.remote = electron.remote || false
@@ -103,15 +104,7 @@ class Switcher extends React.Component {
 
   setOnlineState() {
     const online = navigator.onLine
-    const newState = { online }
-
-    // Ensure that button for creating new team animates
-    // when the app recovers from being offline
-    if (!online) {
-      newState.createTeam = false
-    }
-
-    this.setState(newState)
+    this.setState({ online })
   }
 
   async componentDidMount() {
@@ -252,6 +245,8 @@ class Switcher extends React.Component {
       return
     }
 
+    data.teams = data.teams.splice(0, 5)
+
     const teams = this.orderTeams(data.teams)
     const user = this.props.currentUser
 
@@ -291,6 +286,26 @@ class Switcher extends React.Component {
         this.changeScope(relatedTeam)
       }
     }
+  }
+
+  componentDidUpdate() {
+    if (this.state.initialized) {
+      return
+    }
+
+    const teamsCount = this.state.teams.length
+
+    if (teamsCount === 0) {
+      return
+    }
+
+    const when = 100 + 100 * teamsCount + 600
+
+    setTimeout(() => {
+      this.setState({
+        initialized: true
+      })
+    }, when)
   }
 
   async updateConfig(team, updateMessage) {
@@ -405,10 +420,6 @@ class Switcher extends React.Component {
     this.moving = true
   }
 
-  createTeam() {
-    electron.shell.openExternal('https://zeit.co/teams/create')
-  }
-
   scrollToEnd(event) {
     event.preventDefault()
 
@@ -420,24 +431,12 @@ class Switcher extends React.Component {
     list.scrollLeft = list.scrollWidth
   }
 
-  prepareCreateTeam(when) {
-    if (when === 0) {
-      return
-    }
-
-    const delay = 100 + 100 * when
-
-    setTimeout(() => {
-      this.setState({
-        createTeam: true
-      })
-    }, delay)
-  }
-
   renderItem() {
     return SortableElement(({ team }) => {
       const isActive = this.state.scope === team.id ? 'active' : ''
       const isUser = !team.id.includes('team')
+      const index = this.state.teams.indexOf(team)
+      const shouldScale = !this.state.initialized
 
       const clicked = event => {
         event.preventDefault()
@@ -446,7 +445,12 @@ class Switcher extends React.Component {
 
       return (
         <li onClick={clicked} className={isActive} key={team.id}>
-          <Avatar team={team} isUser={isUser} />
+          <Avatar
+            team={team}
+            isUser={isUser}
+            scale={shouldScale}
+            delay={index}
+          />
 
           <style jsx>
             {`
@@ -484,28 +488,15 @@ class Switcher extends React.Component {
 
   renderList() {
     const teams = this.renderTeams()
-    const classes = []
-
-    if (this.state.createTeam) {
-      classes.push('shown')
-    } else if (this.state.online) {
-      this.prepareCreateTeam(teams.length)
-    }
+    const shouldScale = !this.state.initialized
 
     return SortableContainer(() =>
       <ul ref={this.setReference} name="list">
         {teams}
 
-        <li
-          onClick={this.createTeam}
-          title="Create a Team"
-          className={classes.join(' ')}
-        >
-          <i />
-          <i />
-        </li>
-
+        <CreateTeam scale={shouldScale} delay={teams.length} />
         <span className="shadow" onClick={this.scrollToEnd} />
+
         <style jsx>{styles}</style>
       </ul>
     )
