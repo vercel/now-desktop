@@ -459,7 +459,7 @@ class Switcher extends React.Component {
     }
 
     const list = this.list
-    list.scrollLeft = list.scrollWidth
+    list.scrollLeft = list.offsetWidth
   }
 
   renderItem() {
@@ -515,7 +515,7 @@ class Switcher extends React.Component {
     return (
       <aside>
         {this.state.online
-          ? <div className="list-container">
+          ? <div className="list-container" ref={this.setReference} name="list">
               <div className="list-scroll">
                 <List
                   axis="x"
