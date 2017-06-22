@@ -57,7 +57,7 @@ class Switcher extends React.Component {
     this.moving = false
   }
 
-  componentWillReceivePropfs({ currentUser, activeScope }) {
+  componentWillReceiveProps({ currentUser, activeScope }) {
     if (activeScope) {
       this.changeScope(activeScope, true, true, true)
       return
