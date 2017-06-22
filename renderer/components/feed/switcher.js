@@ -499,15 +499,10 @@ class Switcher extends React.Component {
 
   renderList() {
     const teams = this.renderTeams()
-    const shouldScale = !this.state.initialized
 
     return SortableContainer(() =>
-      <ul ref={this.setReference} name="list">
+      <ul>
         {teams}
-
-        <CreateTeam scale={shouldScale} delay={teams.length} />
-        <span className="shadow" onClick={this.scrollToEnd} />
-
         <style jsx>{listStyle}</style>
       </ul>
     )
@@ -515,21 +510,28 @@ class Switcher extends React.Component {
 
   render() {
     const List = this.renderList()
+    const shouldScale = !this.state.initialized
+    const delay = this.state.teams.length
 
     return (
       <aside>
         {this.state.online
-          ? <List
-              axis="x"
-              lockAxis="x"
-              pressDelay={1000}
-              onSortEnd={this.onSortEnd}
-              onSortStart={this.onSortStart}
-              onSortMove={this.onSortMove}
-              helperClass="switcher-helper"
-              lockToContainerEdges={true}
-              lockOffset="0%"
-            />
+          ? <div className="list-container">
+              <div className="list-scroll">
+                <List
+                  axis="x"
+                  lockAxis="x"
+                  pressDelay={1000}
+                  onSortEnd={this.onSortEnd}
+                  onSortStart={this.onSortStart}
+                  onSortMove={this.onSortMove}
+                  helperClass="switcher-helper"
+                  lockToContainerEdges={true}
+                  lockOffset="0%"
+                />
+                <CreateTeam scale={shouldScale} delay={delay} />
+              </div>
+            </div>
           : <p className="offline">{"You're offline!"}</p>}
 
         <a

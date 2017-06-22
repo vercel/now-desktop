@@ -1,40 +1,13 @@
 export const listStyle = `
   ul {
-    margin: 0 0 0 10px;
+    margin: 0;
     list-style: none;
     display: flex;
     flex-direction: row;
-    flex-shrink: 1;
-    flex-grow: 1;
     padding: 0;
     height: inherit;
     align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
     position: relative;
-  }
-
-  ul:after {
-    content: '';
-    width: 20px;
-    display: block;
-    height: inherit;
-    flex-shrink: 0;
-  }
-
-  ul::-webkit-scrollbar {
-    display: none;
-  }
-
-  ul .shadow {
-    display: block;
-    height: 40px;
-    width: 20px;
-    background: linear-gradient(to right, transparent, #fff);
-    position: fixed;
-    left: calc(290px - 20px);
-    bottom: 0;
-    z-index: 2000;
   }
 `
 
@@ -52,6 +25,10 @@ export const itemStyle = `
     margin-right: 10px;
     opacity: .3;
     transition-duraction: 300ms;
+  }
+
+  li:last-child {
+    margin-right: 0;
   }
 
   li.active {
@@ -119,6 +96,39 @@ export const wrapStyle = `
 
   aside .toggle-menu:hover i {
     opacity: 1;
+  }
+
+  .list-scroll {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .list-container {
+    flex-shrink: 1;
+    flex-grow: 1;
+    display: flex;
+    height: inherit;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-left: 10px;
+    position: relative;
+  }
+
+  .list-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shadow {
+    display: block;
+    height: 40px;
+    width: 20px;
+    background: linear-gradient(to right, transparent, #fff);
+    position: fixed;
+    left: calc(290px - 20px);
+    bottom: 0;
+    z-index: 2000;
   }
 
   .offline {

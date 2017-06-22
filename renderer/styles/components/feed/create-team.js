@@ -1,5 +1,5 @@
 export default `
-  li {
+  a {
     height: 23px;
     width: 23px;
     border-radius: 100%;
@@ -8,22 +8,24 @@ export default `
     position: relative;
     transition: border .2s;
     flex-shrink: 0;
+    margin: 0 20px 0 10px;
+    display: block;
   }
 
-  li.scale {
+  a.scale {
     transition: border .2s, transform 0.6s;
     transform: scale(0);
   }
 
-  li.scaled {
+  a.scaled {
     transform: scale(1);
   }
 
-  li:hover {
+  a:hover {
     border-color: #4e4e4e;
   }
 
-  li i {
+  a i {
     display: block;
     transition: all .2s ease;
     display: flex;
@@ -36,22 +38,22 @@ export default `
     top: 0;
   }
 
-  li i:before {
+  a i:before {
     content: '';
     display: block;
     background: #999999;
   }
 
-  li:hover i:before {
+  a:hover i:before {
     background: #4e4e4e;
   }
 
-  li i:first-child:before {
+  a i:first-child:before {
     height: 9px;
     width: 1px;
   }
 
-  li i:last-child:before {
+  a i:last-child:before {
     width: 9px;
     height: 1px;
   }

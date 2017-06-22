@@ -47,7 +47,7 @@ class CreateTeam extends React.PureComponent {
     }
 
     return (
-      <li
+      <a
         onClick={this.createTeam}
         title="Create a Team"
         className={classes.join(' ')}
@@ -56,7 +56,7 @@ class CreateTeam extends React.PureComponent {
         <i />
 
         <style jsx>{styles}</style>
-      </li>
+      </a>
     )
   }
 }
