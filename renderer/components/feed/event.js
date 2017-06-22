@@ -131,7 +131,7 @@ class EventMessage extends React.PureComponent {
 
     if (this.state.url) {
       menuContent.push({
-        label: 'Copy Address',
+        label: 'Copy URL',
         click() {
           const url = `https://${eventItem.state.url}`
           eventItem.copyToClipboard(url, 'address')
