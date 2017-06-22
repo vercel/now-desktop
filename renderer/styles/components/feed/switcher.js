@@ -79,6 +79,8 @@ export const wrapStyle = `
     align-items: center;
     flex-direction: column;
     flex-shrink: 0;
+    z-index: 2000;
+    background: #fff;
   }
 
   aside .toggle-menu i {
