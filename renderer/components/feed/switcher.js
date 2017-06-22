@@ -214,12 +214,17 @@ class Switcher extends React.Component {
 
   haveUpdated(data) {
     const newData = JSON.parse(JSON.stringify(data))
-    const currentData = JSON.parse(JSON.stringify(this.state.teams))
-    const merged = currentData.concat(newData)
+    let currentData = JSON.parse(JSON.stringify(this.state.teams))
 
-    const ordered = makeUnique(merged, (a, b) => {
-      return a.id === b.id
-    })
+    if (currentData.length > 0) {
+      // Remove teams that the user has left
+      currentData = currentData.filter(team => {
+        return Boolean(newData.find(item => item.id === team.id))
+      })
+    }
+
+    const merged = currentData.concat(newData)
+    const ordered = makeUnique(merged, (a, b) => a.id === b.id)
 
     if (compare(ordered, currentData)) {
       return false
