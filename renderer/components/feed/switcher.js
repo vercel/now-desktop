@@ -410,7 +410,7 @@ class Switcher extends React.Component {
     }
 
     const info = {
-      currentTeam: {}
+      currentTeam: null
     }
 
     // Only add fresh data to config if new scope is team, not user
