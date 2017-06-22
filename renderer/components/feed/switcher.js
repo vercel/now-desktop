@@ -52,7 +52,6 @@ class Switcher extends React.Component {
     this.openMenu = this.openMenu.bind(this)
     this.onSortEnd = this.onSortEnd.bind(this)
     this.onSortStart = this.onSortStart.bind(this)
-    this.onSortMove = this.onSortMove.bind(this)
 
     // Don't update state when dragging teams
     this.moving = false
@@ -437,20 +436,6 @@ class Switcher extends React.Component {
     this.moving = true
   }
 
-  onSortMove(event) {
-    if (!this.list) {
-      return
-    }
-
-    const position = event.clientX
-
-    if (position < 0) {
-      return
-    }
-
-    this.list.scrollLeft = position - 23
-  }
-
   scrollToEnd(event) {
     event.preventDefault()
 
@@ -523,7 +508,6 @@ class Switcher extends React.Component {
                   pressDelay={1000}
                   onSortEnd={this.onSortEnd}
                   onSortStart={this.onSortStart}
-                  onSortMove={this.onSortMove}
                   helperClass="switcher-helper"
                   lockToContainerEdges={true}
                   lockOffset="0%"
