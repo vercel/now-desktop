@@ -6,6 +6,7 @@ const { homedir } = require('os')
 const fs = require('fs-extra')
 const pathExists = require('path-exists')
 const groom = require('groom')
+const deepExtend = require('deep-extend')
 
 const file = path.join(homedir(), '.now.json')
 const exists = () => pathExists(file)
@@ -14,7 +15,7 @@ let configWatcher = null
 
 exports.getConfig = async onlyCheckToken => {
   if (!await exists()) {
-    throw new Error(`Could retrieve config file, it doesn't exist`)
+    throw new Error("Could retrieve config file, it doesn't exist")
   }
 
   const content = await fs.readJSON(file)
@@ -50,7 +51,7 @@ exports.saveConfig = async data => {
   } catch (err) {}
 
   // Merge new data with the existing
-  currentContent = Object.assign(currentContent, data)
+  currentContent = deepExtend(currentContent, data)
 
   // Remove all the data that should be removed (like `null` props)
   currentContent = groom(currentContent)
