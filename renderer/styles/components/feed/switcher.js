@@ -42,16 +42,28 @@ export const helperStyle = `
     position: relative;
     opacity: 1 !important;
     z-index: 1000;
+    overflow: visible;
   }
 
   .switcher-helper div {
     position: absolute;
     top: 0;
     left: 0;
+    animation: scale .4s forwards;
   }
 
   body.is-moving {
     cursor: move;
+  }
+
+  @keyframes scale {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.15);
+    }
   }
 `
 

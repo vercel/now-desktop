@@ -258,8 +258,6 @@ class Switcher extends React.Component {
       return
     }
 
-    data.teams = data.teams.splice(0, 5)
-
     const teams = this.orderTeams(data.teams)
     const user = this.props.currentUser
 
