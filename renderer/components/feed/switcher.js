@@ -214,6 +214,35 @@ class Switcher extends React.Component {
     this.changeScope(config.currentTeam, true)
   }
 
+  async applyTeamOrder(list) {
+    const { getConfig } = this.configUtils
+    let config
+
+    try {
+      config = await getConfig()
+    } catch (err) {}
+
+    if (!config || !config.desktop || !config.desktop.teamOrder) {
+      return
+    }
+
+    const order = config.desktop.teamOrder
+    const newList = []
+
+    for (const position of order) {
+      const index = order.indexOf(position)
+
+      newList[index] = list.find(item => {
+        const name = item.slug || item.name
+        return name === position
+      })
+    }
+
+    // Apply the new data at the end, but keep order
+    const merged = newList.concat(list)
+    return makeUnique(merged, (a, b) => a.id === b.id)
+  }
+
   haveUpdated(data) {
     const newData = JSON.parse(JSON.stringify(data))
     let currentData = JSON.parse(JSON.stringify(this.state.teams))
@@ -234,10 +263,13 @@ class Switcher extends React.Component {
 
     // Ensure that we're not dealing with the same
     // objects or array ever again
-    return JSON.parse(JSON.stringify(ordered))
+    const copy = JSON.parse(JSON.stringify(ordered))
+
+    // Then order the teams as saved in the config
+    return this.applyTeamOrder(copy)
   }
 
-  orderTeams(list) {
+  orderByAlphabet(list) {
     return list.sort((a, b) => {
       if (!a.name || !b.name) {
         return 0
@@ -264,7 +296,7 @@ class Switcher extends React.Component {
       return
     }
 
-    const teams = this.orderTeams(data.teams)
+    const teams = this.orderByAlphabet(data.teams)
     const user = this.props.currentUser
 
     teams.unshift({
@@ -272,7 +304,7 @@ class Switcher extends React.Component {
       name: user.username
     })
 
-    const updated = this.haveUpdated(teams)
+    const updated = await this.haveUpdated(teams)
 
     if (updated) {
       this.setState({ teams: updated })
