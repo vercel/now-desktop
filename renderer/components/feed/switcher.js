@@ -258,6 +258,8 @@ class Switcher extends React.Component {
       return
     }
 
+    data.teams = data.teams.splice(0, 5)
+
     const teams = this.orderTeams(data.teams)
     const user = this.props.currentUser
 
@@ -510,7 +512,6 @@ class Switcher extends React.Component {
 
   render() {
     const List = this.renderList()
-    const shouldScale = !this.state.initialized
     const delay = this.state.teams.length
 
     return (
@@ -529,7 +530,7 @@ class Switcher extends React.Component {
                   lockToContainerEdges={true}
                   lockOffset="0%"
                 />
-                <CreateTeam scale={shouldScale} delay={delay} />
+                <CreateTeam delay={delay} />
               </div>
 
               <span className="shadow" onClick={this.scrollToEnd} />

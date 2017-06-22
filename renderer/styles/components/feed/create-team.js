@@ -6,13 +6,9 @@ export default `
     box-sizing: border-box;
     border: 1px solid #E8E8E8;
     position: relative;
-    transition: border .2s;
     flex-shrink: 0;
     margin: 0 20px 0 10px;
     display: block;
-  }
-
-  a.scale {
     transition: border .2s, transform 0.6s;
     transform: scale(0);
   }

@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { number, bool } from 'prop-types'
+import { number } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/create-team'
@@ -18,20 +18,24 @@ class CreateTeam extends React.PureComponent {
   }
 
   componentDidMount() {
-    if (!this.props.scale) {
+    this.checkScale(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.checkScale(nextProps)
+  }
+
+  checkScale(props) {
+    const { delay } = props
+
+    if (this.state.scaled || delay === 0) {
       return
     }
 
-    if (!this.state.scaled) {
-      this.prepareScale(this.props.delay)
-    }
+    this.prepareScale(delay)
   }
 
   prepareScale(delay) {
-    if (delay === 0) {
-      return
-    }
-
     const when = 100 + 100 * delay
 
     setTimeout(() => {
@@ -43,10 +47,6 @@ class CreateTeam extends React.PureComponent {
 
   render() {
     const classes = []
-
-    if (this.props.scale) {
-      classes.push('scale')
-    }
 
     if (this.state.scaled) {
       classes.push('scaled')
@@ -68,8 +68,7 @@ class CreateTeam extends React.PureComponent {
 }
 
 CreateTeam.propTypes = {
-  delay: number,
-  scale: bool
+  delay: number
 }
 
 export default CreateTeam
