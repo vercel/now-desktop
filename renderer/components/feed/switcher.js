@@ -239,7 +239,11 @@ class Switcher extends React.Component {
     }
 
     // Apply the new data at the end, but keep order
-    const merged = newList.concat(list)
+    return this.merge(newList, list)
+  }
+
+  merge(first, second) {
+    const merged = first.concat(second)
     return makeUnique(merged, (a, b) => a.id === b.id)
   }
 
@@ -254,8 +258,7 @@ class Switcher extends React.Component {
       })
     }
 
-    const merged = currentData.concat(newData)
-    const ordered = makeUnique(merged, (a, b) => a.id === b.id)
+    const ordered = this.merge(currentData, newData)
 
     if (compare(ordered, currentData)) {
       return false
