@@ -223,7 +223,7 @@ class Switcher extends React.Component {
     } catch (err) {}
 
     if (!config || !config.desktop || !config.desktop.teamOrder) {
-      return
+      return list
     }
 
     const order = config.desktop.teamOrder
