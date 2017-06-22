@@ -1,4 +1,5 @@
 // Packages
+import electron from 'electron'
 import React from 'react'
 import { number, bool } from 'prop-types'
 
@@ -9,6 +10,11 @@ class CreateTeam extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = { scaled: false }
+  }
+
+  open(event) {
+    event.preventDefault()
+    electron.shell.openExternal('https://zeit.co/teams/create')
   }
 
   componentDidMount() {
@@ -48,7 +54,7 @@ class CreateTeam extends React.PureComponent {
 
     return (
       <a
-        onClick={this.createTeam}
+        onClick={this.open}
         title="Create a Team"
         className={classes.join(' ')}
       >
