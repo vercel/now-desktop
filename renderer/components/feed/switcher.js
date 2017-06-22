@@ -531,6 +531,8 @@ class Switcher extends React.Component {
                 />
                 <CreateTeam scale={shouldScale} delay={delay} />
               </div>
+
+              <span className="shadow" onClick={this.scrollToEnd} />
             </div>
           : <p className="offline">{"You're offline!"}</p>}
 
