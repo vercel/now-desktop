@@ -120,8 +120,8 @@ class Feed extends React.Component {
       limit: 15
     }
 
-    // Check if it's a user (always the first team)
-    if (relatedCacheIndex > 0) {
+    // Check if it's a team or a user
+    if (relatedCache.slug) {
       query.teamId = scope
     }
 
