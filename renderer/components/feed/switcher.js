@@ -45,7 +45,9 @@ class Switcher extends React.Component {
 
     if (electron.remote) {
       const load = electron.remote.require
+
       this.binaryUtils = load('./utils/binary')
+      this.configUtils = load('./utils/config')
     }
 
     this.scrollToEnd = this.scrollToEnd.bind(this)
@@ -423,14 +425,38 @@ class Switcher extends React.Component {
     })
   }
 
+  saveTeamOrder(teams) {
+    const teamOrder = []
+
+    for (const team of teams) {
+      teamOrder.push(team.slug || team.name)
+    }
+
+    const { saveConfig } = this.configUtils
+
+    saveConfig({
+      desktop: { teamOrder }
+    })
+  }
+
   onSortEnd({ oldIndex, newIndex }) {
     document.body.classList.toggle('is-moving')
 
     // Allow the state to update again
     this.moving = false
 
+    // Don't update if it was dropped at the same position
+    if (oldIndex === newIndex) {
+      return
+    }
+
+    const teams = arrayMove(this.state.teams, oldIndex, newIndex)
+    this.saveTeamOrder(teams)
+
+    // Ensure that we're not dealing with the same
+    // objects or array ever again
     this.setState({
-      teams: arrayMove(this.state.teams, oldIndex, newIndex)
+      teams: JSON.parse(JSON.stringify(teams))
     })
   }
 

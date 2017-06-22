@@ -5,6 +5,7 @@ const { homedir } = require('os')
 // Packages
 const fs = require('fs-extra')
 const pathExists = require('path-exists')
+const merge = require('merge')
 
 const file = path.join(homedir(), '.now.json')
 const exists = () => pathExists(file)
@@ -49,7 +50,7 @@ exports.saveConfig = async data => {
   } catch (err) {}
 
   // Merge new data with the existing
-  currentContent = Object.assign(currentContent, data)
+  currentContent = merge.recursive(true, currentContent, data)
 
   for (const newProp in data) {
     if (!{}.hasOwnProperty.call(data, newProp)) {
