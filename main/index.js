@@ -132,7 +132,9 @@ const moveApp = async () => {
     config = {}
   }
 
-  if (config.noMoveWanted || isDev) {
+  const noMove = config.desktop && config.desktop.noMoveWanted
+
+  if (noMove || isDev) {
     return
   }
 
@@ -147,7 +149,9 @@ const moveApp = async () => {
 
   if (!moved) {
     await saveConfig({
-      noMoveWanted: true
+      desktop: {
+        noMoveWanted: true
+      }
     })
   }
 }
