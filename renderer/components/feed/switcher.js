@@ -229,6 +229,10 @@ class Switcher extends React.Component {
     const order = config.desktop.teamOrder
     const newList = []
 
+    if (!Array.isArray(order) || order.length === 0) {
+      return list
+    }
+
     for (const position of order) {
       const index = order.indexOf(position)
 
