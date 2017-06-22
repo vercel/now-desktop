@@ -5,7 +5,6 @@ const { homedir } = require('os')
 // Packages
 const fs = require('fs-extra')
 const pathExists = require('path-exists')
-const merge = require('merge')
 const groom = require('groom')
 
 const file = path.join(homedir(), '.now.json')
@@ -51,10 +50,25 @@ exports.saveConfig = async data => {
   } catch (err) {}
 
   // Merge new data with the existing
-  currentContent = merge.recursive(true, currentContent, data)
+  currentContent = Object.assign(currentContent, data)
 
   // Remove all the data that should be removed (like `null` props)
   currentContent = groom(currentContent)
+
+  // And ensure that empty objects are also gone
+  for (const newProp in data) {
+    if (!{}.hasOwnProperty.call(data, newProp)) {
+      continue
+    }
+
+    const propContent = currentContent[newProp]
+    const isObject = typeof propContent === 'object'
+
+    // Ensure that there are no empty objects inside the config
+    if (isObject && Object.keys(propContent).length === 0) {
+      delete currentContent[newProp]
+    }
+  }
 
   // Update config file
   await fs.writeJSON(file, currentContent, {
