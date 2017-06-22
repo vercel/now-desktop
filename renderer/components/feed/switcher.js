@@ -214,6 +214,30 @@ class Switcher extends React.Component {
     this.changeScope(config.currentTeam, true)
   }
 
+  handleSavedOrder(newData, order) {
+    const ordered = JSON.parse(JSON.stringify(order))
+
+    for (const position of ordered) {
+      const index = ordered.indexOf(position)
+
+      ordered[index] = newData.find(item => {
+        const name = item.slug || item.name
+        return name === position
+      })
+    }
+
+    if (!compare(newData, ordered)) {
+      return
+    }
+
+    const { saveConfig } = this.configUtils
+
+    // Remove property `teamOrder` from config
+    saveConfig({
+      desktop: { teamOrder: null }
+    })
+  }
+
   async applyTeamOrder(list) {
     const { getConfig } = this.configUtils
     let config
@@ -241,6 +265,9 @@ class Switcher extends React.Component {
         return name === position
       })
     }
+
+    // See if the saved order is even necessary
+    this.handleSavedOrder(list, order)
 
     // Apply the new data at the end, but keep order
     return this.merge(newList, list)
