@@ -174,12 +174,21 @@ class Switcher extends React.Component {
     this.listenToConfig()
   }
 
+  async checkTeamOrder() {
+    const order = await this.getTeamOrder()
+    const updated = await this.applyTeamOrder(this.state.teams, order)
+
+    if (updated) {
+      this.setState({ teams: updated })
+    }
+  }
+
   listenToConfig() {
     if (!this.ipcRenderer) {
       return
     }
 
-    this.ipcRenderer.on('config-changed', (event, config) => {
+    this.ipcRenderer.on('config-changed', async (event, config) => {
       if (this.state.teams.length === 0) {
         return
       }
@@ -189,7 +198,11 @@ class Switcher extends React.Component {
         return
       }
 
-      this.checkCurrentTeam(config)
+      // Check for the `currentTeam` property in the config
+      await this.checkCurrentTeam(config)
+
+      // Do the same for the `desktop.teamOrder` property
+      await this.checkTeamOrder()
     })
   }
 
@@ -243,12 +256,23 @@ class Switcher extends React.Component {
       return
     }
 
-    const { saveConfig } = this.configUtils
-
     // Remove property `teamOrder` from config
-    saveConfig({
+    this.saveConfig({
       desktop: { teamOrder: null }
     })
+  }
+
+  async saveConfig(newConfig) {
+    const { saveConfig } = this.configUtils
+
+    // Ensure that we're not handling the
+    // event triggered by changes made to the config
+    // because the changes were triggered manually
+    // inside this app
+    this.savingConfig = true
+
+    // Then update the config file
+    await saveConfig(newConfig)
   }
 
   async getTeamOrder() {
@@ -424,7 +448,6 @@ class Switcher extends React.Component {
       return
     }
 
-    const { saveConfig } = this.remote.require('./utils/config')
     const currentUser = this.props.currentUser
 
     if (!currentUser) {
@@ -446,12 +469,8 @@ class Switcher extends React.Component {
       }
     }
 
-    // Ensure that config doesn't get checked when the
-    // file is updated from this component
-    this.savingConfig = true
-
     // And then update the config file
-    await saveConfig(info)
+    await this.saveConfig(info)
 
     // Show a notification that the context was updated
     // in the title bar
@@ -525,9 +544,7 @@ class Switcher extends React.Component {
       teamOrder.push(team.slug || team.name)
     }
 
-    const { saveConfig } = this.configUtils
-
-    saveConfig({
+    this.saveConfig({
       desktop: { teamOrder }
     })
   }
