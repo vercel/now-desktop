@@ -57,6 +57,10 @@ class Switcher extends React.Component {
 
     // Don't update state when dragging teams
     this.moving = false
+
+    // Ensure that config doesn't get checked when the
+    // file is updated from this component
+    this.savingConfig = false
   }
 
   componentWillReceiveProps({ currentUser, activeScope }) {
@@ -177,6 +181,11 @@ class Switcher extends React.Component {
 
     this.ipcRenderer.on('config-changed', (event, config) => {
       if (this.state.teams.length === 0) {
+        return
+      }
+
+      if (this.savingConfig) {
+        this.savingConfig = false
         return
       }
 
@@ -424,6 +433,11 @@ class Switcher extends React.Component {
       }
     }
 
+    // Ensure that config doesn't get checked when the
+    // file is updated from this component
+    this.savingConfig = true
+
+    // And then update the config file
     await saveConfig(info)
 
     // Show a notification that the context was updated

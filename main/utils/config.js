@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 const pathExists = require('path-exists')
 const groom = require('groom')
 const deepExtend = require('deep-extend')
+const { watch } = require('chokidar')
 
 const file = path.join(homedir(), '.now.json')
 const exists = () => pathExists(file)
@@ -77,7 +78,7 @@ exports.saveConfig = async data => {
   })
 }
 
-const configChanged = async eventType => {
+const configChanged = async logout => {
   if (!global.windows) {
     return
   }
@@ -86,17 +87,6 @@ const configChanged = async eventType => {
   // call this method from the renderer without having to pass
   // the windows
   const mainWindow = global.windows.main
-
-  // Load it now to make app faster
-  const logout = require('./logout')
-
-  if (eventType === 'rename') {
-    if (!await exists()) {
-      logout()
-    }
-
-    return
-  }
 
   let content
 
@@ -115,5 +105,14 @@ exports.watchConfig = async () => {
     return
   }
 
-  configWatcher = fs.watch(file, configChanged)
+  // Load this now, because it otherwise doesn't work
+  const logout = require('./logout')
+
+  // Start watching the config file and
+  // inform the renderer about changes inside it
+  configWatcher = watch(file)
+  configWatcher.on('change', () => configChanged(logout))
+
+  // Log out when config file is removed
+  configWatcher.on('unlink', logout)
 }
