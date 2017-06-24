@@ -224,6 +224,10 @@ class Switcher extends React.Component {
   }
 
   handleSavedOrder(newData, order) {
+    if (!order) {
+      return
+    }
+
     const ordered = JSON.parse(JSON.stringify(order))
 
     for (const position of ordered) {
@@ -247,7 +251,7 @@ class Switcher extends React.Component {
     })
   }
 
-  async applyTeamOrder(list) {
+  async getTeamOrder() {
     const { getConfig } = this.configUtils
     let config
 
@@ -256,13 +260,22 @@ class Switcher extends React.Component {
     } catch (err) {}
 
     if (!config || !config.desktop || !config.desktop.teamOrder) {
-      return list
+      return false
     }
 
     const order = config.desktop.teamOrder
-    const newList = []
 
     if (!Array.isArray(order) || order.length === 0) {
+      return false
+    }
+
+    return order
+  }
+
+  async applyTeamOrder(list, order) {
+    const newList = []
+
+    if (!order) {
       return list
     }
 
@@ -287,7 +300,7 @@ class Switcher extends React.Component {
     return makeUnique(merged, (a, b) => a.id === b.id)
   }
 
-  haveUpdated(data) {
+  async haveUpdated(data) {
     const newData = JSON.parse(JSON.stringify(data))
     let currentData = JSON.parse(JSON.stringify(this.state.teams))
 
@@ -299,17 +312,17 @@ class Switcher extends React.Component {
     }
 
     const ordered = this.merge(currentData, newData)
+    const copy = JSON.parse(JSON.stringify(ordered))
+    const order = await this.getTeamOrder()
 
     if (compare(ordered, currentData)) {
+      // See if the saved order is even necessary
+      this.handleSavedOrder(newData, order)
       return false
     }
 
-    // Ensure that we're not dealing with the same
-    // objects or array ever again
-    const copy = JSON.parse(JSON.stringify(ordered))
-
     // Then order the teams as saved in the config
-    return this.applyTeamOrder(copy)
+    return this.applyTeamOrder(copy, order)
   }
 
   orderByAlphabet(list) {
