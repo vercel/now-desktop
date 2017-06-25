@@ -14,7 +14,7 @@ const exists = () => pathExists(file)
 
 let configWatcher = null
 
-exports.getConfig = async onlyCheckToken => {
+exports.getConfig = async () => {
   if (!await exists()) {
     throw new Error("Could retrieve config file, it doesn't exist")
   }
@@ -25,7 +25,7 @@ exports.getConfig = async onlyCheckToken => {
     throw new Error('No token contained inside config file')
   }
 
-  if (!onlyCheckToken && !content.user) {
+  if (!content.user) {
     throw new Error('No user contained inside config file')
   }
 
