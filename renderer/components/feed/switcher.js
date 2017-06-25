@@ -630,7 +630,7 @@ class Switcher extends React.Component {
                 <List
                   axis="x"
                   lockAxis="x"
-                  pressDelay={1000}
+                  shouldCancelStart={e => !e.metaKey}
                   onSortEnd={this.onSortEnd}
                   onSortStart={this.onSortStart}
                   helperClass="switcher-helper"
