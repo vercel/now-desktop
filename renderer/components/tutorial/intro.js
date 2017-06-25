@@ -122,7 +122,7 @@ class Intro extends PureComponent {
             <b>{"You're already logged in!"}</b><br />Click here to go back to
             the application:
           </p>
-          <Button onClick={this.handleReady}>SHOW EVENT FEED</Button>
+          <Button onClick={this.handleReady}>SHOW APP</Button>
 
           <style jsx>{introStyles}</style>
         </article>
