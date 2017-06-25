@@ -349,22 +349,6 @@ class Switcher extends React.Component {
     return this.applyTeamOrder(copy, order)
   }
 
-  orderByAlphabet(list) {
-    return list.sort((a, b) => {
-      if (!a.name || !b.name) {
-        return 0
-      }
-
-      if (a.name < b.name) {
-        return -1
-      } else if (a.name > b.name) {
-        return 1
-      }
-
-      return 0
-    })
-  }
-
   async loadTeams() {
     if (!this.remote) {
       return
@@ -376,7 +360,7 @@ class Switcher extends React.Component {
       return
     }
 
-    const teams = this.orderByAlphabet(data.teams)
+    const teams = data.teams
     const user = this.props.currentUser
 
     teams.unshift({
