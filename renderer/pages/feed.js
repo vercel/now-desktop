@@ -195,12 +195,7 @@ class Feed extends React.Component {
       events[scope] = data.events
     }
 
-    // Ensure that we're not dealing with the same
-    // objects or array ever again
-    this.setState({
-      events: JSON.parse(JSON.stringify(events)),
-      teams: JSON.parse(JSON.stringify(teams))
-    })
+    this.setState({ events, teams })
   }
 
   hideWindow(event) {
