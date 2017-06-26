@@ -258,6 +258,7 @@ app.on('ready', async () => {
   // Define major event listeners for tray
   tray.on('drop-files', fileDropped)
   tray.on('click', toggleActivity)
+  tray.on('double-click', toggleActivity)
 
   let submenuShown = false
 
