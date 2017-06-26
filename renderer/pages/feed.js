@@ -382,20 +382,22 @@ class Feed extends React.Component {
 
       if (filtering) {
         let markup = renderToStaticMarkup(item.message)
-        let found = false
 
+        const found = []
         const text = strip(markup)
 
         for (const word of keywords) {
           if (text.indexOf(word) === -1) {
+            found.push(false)
             continue
           }
 
-          found = true
+          found.push(true)
           markup = markup.replace(word, `<mark>${word}</mark>`)
         }
 
-        if (!found) {
+        // Don't include event if it doesn't contain any keywords
+        if (!found.every(item => item)) {
           return false
         }
 
