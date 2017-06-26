@@ -375,11 +375,10 @@ class Feed extends React.Component {
         team: scopedTeam
       }
 
-      const Message = <MessageComponent {...args} />
-      item.rendered = Message
+      item.message = <MessageComponent {...args} />
 
       if (filtering) {
-        const fullText = strip(renderToStaticMarkup(Message))
+        const fullText = strip(renderToStaticMarkup(item.message))
         const found = keywords.every(word => fullText.indexOf(word) !== -1)
 
         if (!found) {
@@ -474,6 +473,7 @@ class Feed extends React.Component {
             currentUser={this.state.currentUser}
             team={scopedTeam}
             setScopeWithSlug={this.setScopeWithSlug}
+            message={item.message}
           />
         )
       })

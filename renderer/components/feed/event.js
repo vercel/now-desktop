@@ -14,7 +14,6 @@ import { localStyles, globalStyles } from '../../styles/components/feed/event'
 
 // Components
 import Avatar from './avatar'
-import messageComponents from './messages'
 
 class EventMessage extends React.PureComponent {
   constructor(props) {
@@ -229,11 +228,7 @@ class EventMessage extends React.PureComponent {
 
   render() {
     const info = this.props.content
-    const Message = messageComponents.get(info.type)
-
-    if (!Message) {
-      return null
-    }
+    const Message = this.props.message
 
     return (
       <figure
@@ -244,12 +239,7 @@ class EventMessage extends React.PureComponent {
         <Avatar event={info} team={this.props.team} />
 
         <figcaption>
-          <Message
-            event={info}
-            user={this.props.currentUser}
-            team={this.props.team}
-          />
-
+          {Message}
           <span>{this.parseDate(info.created)}</span>
         </figcaption>
 
@@ -264,7 +254,8 @@ EventMessage.propTypes = {
   content: object,
   currentUser: object,
   team: object,
-  setScopeWithSlug: func
+  setScopeWithSlug: func,
+  message: object
 }
 
 export default EventMessage
