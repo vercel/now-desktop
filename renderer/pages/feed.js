@@ -483,8 +483,8 @@ class Feed extends React.Component {
       months[month].push(message)
     }
 
-    const eventList = month =>
-      months[month].map(item => {
+    const eventList = month => {
+      return months[month].map(item => {
         const args = {
           content: item,
           currentUser: this.state.currentUser,
@@ -495,6 +495,7 @@ class Feed extends React.Component {
 
         return <EventMessage {...args} key={item.id} />
       })
+    }
 
     const monthKeys = Object.keys(months)
 
