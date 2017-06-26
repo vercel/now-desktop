@@ -388,7 +388,16 @@ class Feed extends React.Component {
           }
 
           found.push(true)
-          markup = markup.replace(new RegExp(word, 'g'), `<mark>${word}</mark>`)
+
+          markup = markup.replace(new RegExp(word, 'gi'), (match, offset) => {
+            const before = markup.charAt(offset - 1)
+
+            if (before === '<' || before === '/') {
+              return word
+            }
+
+            return `<mark>${word}</mark>`
+          })
         }
 
         // Don't include event if it doesn't contain any keywords
