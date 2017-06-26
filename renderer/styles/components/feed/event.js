@@ -76,4 +76,8 @@ export const globalStyles = `
   .event:hover + .event figcaption {
     border-top-color: transparent;
   }
+
+  .event mark {
+    background: #ffff21;
+  }
 `
