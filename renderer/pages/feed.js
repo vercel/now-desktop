@@ -357,32 +357,40 @@ class Feed extends React.Component {
   }
 
   filterEvents(list, scopedTeam) {
-    // If there's no filter enabled, just hand
-    // the list of events back unchanged
-    if (!this.state.eventFilter) {
-      return list
+    const filtering = Boolean(this.state.eventFilter)
+    let keywords = null
+
+    if (filtering) {
+      // Split search phrase into keywords but make
+      // sure to avoid empty ones (in turn, `.includes` is not ok)
+      keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
-    // Split search phrase into keywords but make
-    // sure to avoid empty ones (in turn, `.includes` is not ok)
-    const keywords = this.state.eventFilter.match(/[^ ]+/g)
-
-    const matches = list.filter(item => {
+    const events = list.map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
-      const Message = (
-        <MessageComponent
-          event={item}
-          user={this.state.currentUser}
-          team={scopedTeam}
-        />
-      )
+      const args = {
+        event: item,
+        user: this.state.currentUser,
+        team: scopedTeam
+      }
 
-      const fullText = strip(renderToStaticMarkup(Message))
-      return new RegExp(keywords.join('|'), 'i').test(fullText)
+      const Message = <MessageComponent {...args} />
+      item.rendered = Message
+
+      if (filtering) {
+        const fullText = strip(renderToStaticMarkup(Message))
+        const found = keywords.every(word => fullText.indexOf(word) !== -1)
+
+        if (!found) {
+          return false
+        }
+      }
+
+      return item
     })
 
-    return matches
+    return events.filter(item => item)
   }
 
   scrolled(event) {
