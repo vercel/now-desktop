@@ -447,7 +447,7 @@ class Feed extends React.Component {
     }
   }
 
-  renderEvents() {
+  renderEvents(scopedTeam) {
     if (!this.state.online) {
       return <Loading offline />
     }
@@ -476,14 +476,6 @@ class Feed extends React.Component {
       }
 
       months[month].push(message)
-    }
-
-    let scopedTeam = {}
-
-    if (this.state.teams && scope !== this.state.currentUser.uid) {
-      scopedTeam = this.state.teams.find(team => {
-        return team.id === scope
-      })
     }
 
     const eventList = month =>
@@ -565,7 +557,7 @@ class Feed extends React.Component {
             onScroll={this.scrolled}
             name="scrollingSection"
           >
-            {this.renderEvents()}
+            {this.renderEvents(activeScope)}
             {this.loadingOlder()}
           </section>
 
