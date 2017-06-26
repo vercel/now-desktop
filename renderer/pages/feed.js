@@ -11,6 +11,7 @@ import compare from 'just-compare'
 import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import strip from 'strip'
+import parseHTML from 'html-to-react'
 
 // Components
 import Title from '../components/title'
@@ -358,6 +359,8 @@ class Feed extends React.Component {
 
   filterEvents(list, scopedTeam) {
     const filtering = Boolean(this.state.eventFilter)
+    const HTML = parseHTML.Parser
+
     let keywords = null
 
     if (filtering) {
@@ -378,12 +381,25 @@ class Feed extends React.Component {
       item.message = <MessageComponent {...args} />
 
       if (filtering) {
-        const fullText = strip(renderToStaticMarkup(item.message))
-        const found = keywords.every(word => fullText.indexOf(word) !== -1)
+        let markup = renderToStaticMarkup(item.message)
+        const text = strip(markup)
+        let found = false
+
+        for (const word of keywords) {
+          if (text.indexOf(word) === -1) {
+            continue
+          }
+
+          found = true
+          markup = markup.replace(word, `<mark>${word}</mark>`)
+        }
 
         if (!found) {
           return false
         }
+
+        const { parse } = new HTML()
+        item.message = parse(markup)
       }
 
       return item
