@@ -485,16 +485,15 @@ class Feed extends React.Component {
 
     const eventList = month =>
       months[month].map(item => {
-        return (
-          <EventMessage
-            content={item}
-            key={item.id}
-            currentUser={this.state.currentUser}
-            team={scopedTeam}
-            setScopeWithSlug={this.setScopeWithSlug}
-            message={item.message}
-          />
-        )
+        const args = {
+          content: item,
+          currentUser: this.state.currentUser,
+          team: scopedTeam,
+          setScopeWithSlug: this.setScopeWithSlug,
+          message: item.message
+        }
+
+        return <EventMessage {...args} key={item.id} />
       })
 
     const monthKeys = Object.keys(months)
