@@ -6,10 +6,11 @@ import os from 'os'
 import electron from 'electron'
 import React from 'react'
 import moment from 'moment'
-import dotProp from 'dot-prop'
 import makeUnique from 'make-unique'
 import compare from 'just-compare'
 import setRef from 'react-refs'
+import { renderToStaticMarkup } from 'react-dom/server'
+import strip from 'strip'
 
 // Components
 import Title from '../components/title'
@@ -19,6 +20,7 @@ import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
+import messageComponents from '../components/feed/messages'
 
 // Utilities
 import loadData from '../utils/data/load'
@@ -354,53 +356,30 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list) {
+  filterEvents(list, scopedTeam) {
     // If there's no filter enabled, just hand
     // the list of events back unchanged
     if (!this.state.eventFilter) {
       return list
     }
 
-    // Properties to search in
-    const searchable = [
-      'payload.deploymentId',
-      'user.email',
-      'user.username',
-      'payload.name',
-      'payload.url',
-      'payload.alias',
-      'payload.oldTeam',
-      'payload.newTeam',
-      'payload.slug',
-      'payload.username',
-      'payload.plan',
-      'payload.domain',
-      'payload.cn',
-      'payload.invitedUser.username'
-    ]
-
     // Split search phrase into keywords but make
     // sure to avoid empty ones (in turn, `.includes` is not ok)
     const keywords = this.state.eventFilter.match(/[^ ]+/g)
 
     const matches = list.filter(item => {
-      for (const prop of searchable) {
-        const toSearch = dotProp.get(item, prop)
+      const MessageComponent = messageComponents.get(item.type)
 
-        if (!toSearch) {
-          continue
-        }
+      const Message = (
+        <MessageComponent
+          event={item}
+          user={this.state.currentUser}
+          team={scopedTeam}
+        />
+      )
 
-        if (typeof toSearch !== 'string') {
-          continue
-        }
-
-        if (new RegExp(keywords.join('|'), 'i').test(toSearch)) {
-          return true
-        }
-      }
-
-      return false
+      const fullText = strip(renderToStaticMarkup(Message))
+      return new RegExp(keywords.join('|'), 'i').test(fullText)
     })
 
     return matches
@@ -459,7 +438,7 @@ class Feed extends React.Component {
       return <Loading />
     }
 
-    const filteredEvents = this.filterEvents(scopedEvents)
+    const filteredEvents = this.filterEvents(scopedEvents, scopedTeam)
 
     if (filteredEvents.length === 0) {
       return <NoEvents filtered />

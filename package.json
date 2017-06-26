@@ -144,6 +144,7 @@
     "react-dom": "15.6.1",
     "react-refs": "3.0.4",
     "react-sortable-hoc": "0.6.3",
+    "strip": "3.0.0",
     "xo": "0.18.2"
   }
 }
