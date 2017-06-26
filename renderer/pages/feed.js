@@ -382,8 +382,9 @@ class Feed extends React.Component {
 
       if (filtering) {
         let markup = renderToStaticMarkup(item.message)
-        const text = strip(markup)
         let found = false
+
+        const text = strip(markup)
 
         for (const word of keywords) {
           if (text.indexOf(word) === -1) {
