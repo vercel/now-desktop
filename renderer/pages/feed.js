@@ -117,7 +117,7 @@ class Feed extends React.Component {
     const relatedCacheIndex = teams.indexOf(relatedCache)
 
     const query = {
-      limit: 15
+      limit: 30
     }
 
     // Check if it's a team or a user
@@ -525,7 +525,7 @@ class Feed extends React.Component {
     const scope = this.state.scope
     const scopedEvents = this.state.events[scope]
 
-    if (!scopedEvents || scopedEvents.length < 15) {
+    if (!scopedEvents || scopedEvents.length < 30) {
       return
     }
 
