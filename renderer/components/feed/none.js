@@ -29,9 +29,7 @@ const NoEvents = ({ filtered }) =>
           </p>
         ]}
 
-    <style jsx>
-      {styles}
-    </style>
+    <style jsx>{styles}</style>
   </div>
 
 NoEvents.propTypes = {

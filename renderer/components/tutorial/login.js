@@ -430,9 +430,7 @@ class LoginForm extends PureComponent {
           />
         </div>
 
-        <style jsx global>
-          {styles}
-        </style>
+        <style jsx global>{styles}</style>
       </aside>
     )
   }

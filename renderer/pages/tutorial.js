@@ -209,9 +209,7 @@ class Sections extends React.PureComponent {
           </section>
         </Slider>
 
-        <style jsx>
-          {controlStyle}
-        </style>
+        <style jsx>{controlStyle}</style>
       </div>
     )
   }
@@ -222,12 +220,8 @@ const Tutorial = () =>
     <Title>Welcome to Now</Title>
     <Sections />
 
-    <style jsx>
-      {wrapStyle}
-    </style>
-    <style jsx global>
-      {sliderStyle}
-    </style>
+    <style jsx>{wrapStyle}</style>
+    <style jsx global>{sliderStyle}</style>
   </main>
 
 export default Tutorial
