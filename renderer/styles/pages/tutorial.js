@@ -162,7 +162,7 @@ export const sliderStyle = `
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 50px;
     justify-content: center;
     align-items: center;
     list-style: none;

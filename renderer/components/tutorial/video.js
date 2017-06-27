@@ -27,13 +27,12 @@ const Video = () => {
             width: 100%;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 60px;
+            padding-bottom: 50px;
           }
           figure:after {
             content: '';
             background: #EAEAEA;
             height: 1px;
-
             width: 100%;
             display: block;
           }
