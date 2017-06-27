@@ -364,59 +364,59 @@ class Feed extends React.Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
-    return list
-      .map(item => {
-        const MessageComponent = messageComponents.get(item.type)
+    const events = list.map(item => {
+      const MessageComponent = messageComponents.get(item.type)
 
-        const args = {
-          event: item,
-          user: this.state.currentUser,
-          team: scopedTeam
-        }
+      const args = {
+        event: item,
+        user: this.state.currentUser,
+        team: scopedTeam
+      }
 
-        item.message = <MessageComponent {...args} />
+      item.message = <MessageComponent {...args} />
 
-        if (filtering) {
-          let markup = renderToStaticMarkup(item.message)
+      if (filtering) {
+        let markup = renderToStaticMarkup(item.message)
 
-          const found = []
-          const text = strip(markup)
+        const found = []
+        const text = strip(markup)
 
-          for (const word of keywords) {
-            // Check if the event message contains the keyword
-            // and ignore the case
-            if (!new RegExp(word, 'i').test(text)) {
-              found.push(false)
-              continue
+        for (const word of keywords) {
+          // Check if the event message contains the keyword
+          // and ignore the case
+          if (!new RegExp(word, 'i').test(text)) {
+            found.push(false)
+            continue
+          }
+
+          found.push(true)
+
+          markup = markup.replace(new RegExp(word, 'gi'), (match, offset) => {
+            const before = markup.charAt(offset - 1)
+
+            // Don't replace HTML elements
+            if (before === '<' || before === '/') {
+              return match
             }
 
-            found.push(true)
-
-            markup = markup.replace(new RegExp(word, 'gi'), (match, offset) => {
-              const before = markup.charAt(offset - 1)
-
-              // Don't replace HTML elements
-              if (before === '<' || before === '/') {
-                return match
-              }
-
-              // Highlight the text we've found
-              return `<mark>${match}</mark>`
-            })
-          }
-
-          // Don't include event if it doesn't contain any keywords
-          if (!found.every(item => item)) {
-            return false
-          }
-
-          // Return a React element
-          item.message = new HTML().parse(markup)
+            // Highlight the text we've found
+            return `<mark>${match}</mark>`
+          })
         }
 
-        return item
-      })
-      .filter(item => item)
+        // Don't include event if it doesn't contain any keywords
+        if (!found.every(item => item)) {
+          return false
+        }
+
+        // Return a React element
+        item.message = new HTML().parse(markup)
+      }
+
+      return item
+    })
+
+    return events.filter(item => item)
   }
 
   scrolled(event) {
