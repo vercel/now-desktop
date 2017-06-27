@@ -39,6 +39,7 @@ class Sections extends React.PureComponent {
     this.arrowKeys = this.arrowKeys.bind(this)
     this.setLoggedIn = this.setLoggedIn.bind(this)
     this.sliderChanged = this.sliderChanged.bind(this)
+    this.startTutorial = this.startTutorial.bind(this)
   }
 
   sliderChanged(index) {
@@ -124,6 +125,14 @@ class Sections extends React.PureComponent {
     event.preventDefault()
   }
 
+  startTutorial() {
+    if (!this.slider) {
+      return
+    }
+
+    this.slider.slickGoTo(2)
+  }
+
   async componentDidMount() {
     // Make arrow keys work for navigating slider
     document.addEventListener('keydown', this.arrowKeys, false)
@@ -171,7 +180,10 @@ class Sections extends React.PureComponent {
           </div>}
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section>
-            <Intro setLoggedIn={this.setLoggedIn} />
+            <Intro
+              startTutorial={this.startTutorial}
+              setLoggedIn={this.setLoggedIn}
+            />
           </section>
 
           <section>

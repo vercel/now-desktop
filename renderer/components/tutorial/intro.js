@@ -25,7 +25,8 @@ class Intro extends PureComponent {
     this.remote = electron.remote || false
 
     this.setState = this.setState.bind(this)
-    this.handleReady = this.handleReady.bind(this)
+    this.showApp = this.showApp.bind(this)
+    this.startTutorial = this.startTutorial.bind(this)
   }
 
   async loggedIn() {
@@ -44,7 +45,7 @@ class Intro extends PureComponent {
     return true
   }
 
-  handleReady(event) {
+  showApp(event) {
     event.preventDefault()
 
     if (!this.remote) {
@@ -60,6 +61,16 @@ class Intro extends PureComponent {
 
     // Close the tutorial
     currentWindow.emit('open-tray', windows.about)
+  }
+
+  startTutorial(event) {
+    event.preventDefault()
+
+    if (!this.props.startTutorial) {
+      return
+    }
+
+    this.props.startTutorial()
   }
 
   async componentWillMount() {
@@ -122,7 +133,7 @@ class Intro extends PureComponent {
             <b>{"You're already logged in!"}</b><br />Click here to go back to
             the application:
           </p>
-          <Button onClick={this.handleReady}>SHOW APP</Button>
+          <Button onClick={this.showApp}>Show App</Button>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -136,7 +147,7 @@ class Intro extends PureComponent {
             Congrats! <strong>{"You're signed in."}</strong><br />Are you ready
             to deploy something?
           </p>
-          <Button onClick={this.handleReady}>Get Started</Button>
+          <Button onClick={this.startTutorial}>Get Started</Button>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -158,7 +169,8 @@ class Intro extends PureComponent {
 }
 
 Intro.propTypes = {
-  setLoggedIn: func
+  setLoggedIn: func,
+  startTutorial: func
 }
 
 export default Intro
