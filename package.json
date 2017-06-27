@@ -74,7 +74,7 @@
   },
   "greenkeeper": {
     "ignore": [
-      "electron-builder-squirrel-windows"
+      "prettier"
     ]
   },
   "license": "MIT",
@@ -139,7 +139,7 @@
     "husky": "0.14.1",
     "lint-staged": "4.0.0",
     "next": "3.0.0-beta15",
-    "prettier": "1.5.0",
+    "prettier": "1.4.4",
     "prop-types": "15.5.10",
     "react": "15.6.1",
     "react-dom": "15.6.1",
