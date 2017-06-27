@@ -382,7 +382,9 @@ class Feed extends React.Component {
         const text = strip(markup)
 
         for (const word of keywords) {
-          if (text.indexOf(word) === -1) {
+          // Check if the event message contains the keyword
+          // and ignore the case
+          if (!new RegExp(word, 'i').test(text)) {
             found.push(false)
             continue
           }
