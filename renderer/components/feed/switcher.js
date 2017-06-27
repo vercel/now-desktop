@@ -593,7 +593,9 @@ class Switcher extends React.Component {
             delay={index}
           />
 
-          <style jsx>{itemStyle}</style>
+          <style jsx>
+            {itemStyle}
+          </style>
         </li>
       )
     })
@@ -613,7 +615,9 @@ class Switcher extends React.Component {
     return SortableContainer(() =>
       <ul>
         {teams}
-        <style jsx>{listStyle}</style>
+        <style jsx>
+          {listStyle}
+        </style>
       </ul>
     )
   }
@@ -642,7 +646,9 @@ class Switcher extends React.Component {
 
               <span className="shadow" onClick={this.scrollToEnd} />
             </div>
-          : <p className="offline">{"You're offline!"}</p>}
+          : <p className="offline">
+              {"You're offline!"}
+            </p>}
 
         <a
           className="toggle-menu"
@@ -656,8 +662,12 @@ class Switcher extends React.Component {
           <i />
         </a>
 
-        <style jsx>{wrapStyle}</style>
-        <style jsx global>{helperStyle}</style>
+        <style jsx>
+          {wrapStyle}
+        </style>
+        <style jsx global>
+          {helperStyle}
+        </style>
       </aside>
     )
   }

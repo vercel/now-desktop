@@ -22,13 +22,19 @@ const Licenses = () =>
       return (
         item.name.includes('now-desktop') ||
         <details key={index}>
-          <summary>{item.name}</summary>
-          <p>{item.license}</p>
+          <summary>
+            {item.name}
+          </summary>
+          <p>
+            {item.license}
+          </p>
         </details>
       )
     })}
 
-    <style jsx>{styles}</style>
+    <style jsx>
+      {styles}
+    </style>
   </section>
 
 export default Licenses

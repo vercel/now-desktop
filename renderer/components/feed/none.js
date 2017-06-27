@@ -23,14 +23,15 @@ const NoEvents = ({ filtered }) =>
           <h1 key="heading">No Activity to Show!</h1>,
           <p key="description">
             Drag a project into this window (or select it using the button on
-            the top right) to trigger
-            {' '}
+            the top right) to trigger{' '}
             <b onClick={openDocs}>your first deployment</b>
             .
           </p>
         ]}
 
-    <style jsx>{styles}</style>
+    <style jsx>
+      {styles}
+    </style>
   </div>
 
 NoEvents.propTypes = {

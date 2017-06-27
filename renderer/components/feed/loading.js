@@ -9,10 +9,14 @@ const Loading = ({ offline }) =>
   <aside>
     <section>
       <img src="/static/loading.gif" />
-      <p>{offline ? 'Waiting for a Connection...' : 'Loading Events...'}</p>
+      <p>
+        {offline ? 'Waiting for a Connection...' : 'Loading Events...'}
+      </p>
     </section>
 
-    <style jsx>{styles}</style>
+    <style jsx>
+      {styles}
+    </style>
   </aside>
 
 Loading.propTypes = {
