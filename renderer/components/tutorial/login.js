@@ -24,12 +24,12 @@ class LoginForm extends PureComponent {
       focus: false,
       classes: [],
       suggestion: '',
-      waiting: false,
-      mounted: false
+      waiting: false
     }
 
     this.initialState = Object.assign({}, this.state)
     this.remote = electron.remote || false
+    this.mounted = false
 
     this.handleChange = this.handleChange.bind(this)
     this.handleKey = this.handleKey.bind(this)
@@ -102,7 +102,7 @@ class LoginForm extends PureComponent {
   }
 
   resetState() {
-    if (!this.state.mounted) {
+    if (!this.mounted) {
       return
     }
 
@@ -130,15 +130,11 @@ class LoginForm extends PureComponent {
       this.resetState()
     })
 
-    this.setState({
-      mounted: true
-    })
+    this.mounted = true
   }
 
   componentWillUnmount() {
-    this.setState({
-      mounted: false
-    })
+    this.mounted = false
   }
 
   prepareSuggestion(value) {
