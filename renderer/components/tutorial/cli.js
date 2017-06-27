@@ -2,6 +2,7 @@
 import electron from 'electron'
 import React from 'react'
 import exists from 'path-exists'
+import { func } from 'prop-types'
 
 // Utilities
 import installBinary from '../../utils/load-binary'
@@ -48,6 +49,16 @@ class Binary extends React.PureComponent {
     }
 
     return true
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const method = this.props.setBinaryState
+
+    if (this.state === prevState || !method) {
+      return
+    }
+
+    method(this.state.binaryInstalled)
   }
 
   async componentDidMount() {
@@ -161,6 +172,10 @@ class Binary extends React.PureComponent {
       </article>
     )
   }
+}
+
+Binary.propTypes = {
+  setBinaryState: func
 }
 
 export default Binary

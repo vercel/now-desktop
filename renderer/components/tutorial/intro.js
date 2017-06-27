@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import React, { PureComponent } from 'react'
-import { func } from 'prop-types'
+import { func, bool } from 'prop-types'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -19,7 +19,8 @@ class Intro extends PureComponent {
       sendingMail: false,
       security: null,
       done: false,
-      tested: false
+      tested: false,
+      binaryInstalled: false
     }
 
     this.remote = electron.remote || false
@@ -28,6 +29,18 @@ class Intro extends PureComponent {
     this.showApp = this.showApp.bind(this)
     this.startTutorial = this.moveSlider.bind(this, 2)
     this.startCLI = this.moveSlider.bind(this, 1)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const value = nextProps.binaryInstalled
+
+    if (typeof value === 'undefined') {
+      return
+    }
+
+    this.setState({
+      binaryInstalled: value
+    })
   }
 
   async loggedIn() {
@@ -94,7 +107,7 @@ class Intro extends PureComponent {
   }
 
   render() {
-    const { sendingMail, security, done, tested } = this.state
+    const { sendingMail, security, done, tested, binaryInstalled } = this.state
 
     if (sendingMail) {
       return (
@@ -125,6 +138,15 @@ class Intro extends PureComponent {
     }
 
     if (done && tested) {
+      const installationProps = {
+        space: true,
+        onClick: this.startCLI
+      }
+
+      if (binaryInstalled) {
+        installationProps.disabled = true
+      }
+
       return (
         <article>
           <p><b>{"You're already logged in!"}</b></p>
@@ -137,7 +159,7 @@ class Intro extends PureComponent {
 
           <div>
             <Button onClick={this.startTutorial}>Start Tutorial</Button>
-            <Button onClick={this.startCLI} space>Install Now CLI</Button>
+            <Button {...installationProps}>Install Now CLI</Button>
           </div>
 
           <span className="sub" onClick={this.showApp}>Show Event Feed</span>
@@ -187,7 +209,8 @@ class Intro extends PureComponent {
 
 Intro.propTypes = {
   setLoggedIn: func,
-  moveSlider: func
+  moveSlider: func,
+  binaryInstalled: bool
 }
 
 export default Intro

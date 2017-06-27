@@ -33,7 +33,7 @@ class Button extends PureComponent {
     }
 
     return (
-      <a href="#" onClick={this.clicked} className={classes}>
+      <a href="#" onClick={this.clicked} className={classes.join(' ')}>
         {this.props.children}
         <style jsx>{styles}</style>
       </a>
