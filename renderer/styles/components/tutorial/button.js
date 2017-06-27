@@ -7,13 +7,13 @@ export default `
     text-decoration: none;
     color: #fff;
     font-size: 12px;
-    padding: 10px 28px;
+    padding: 9px 28px;
     transition: color .2s ease, background .2s ease;
     cursor: pointer;
     display: inline-block;
     line-height: normal;
     -webkit-app-region: no-drag;
-    border: 2px solid currentColor;
+    border: 2px solid #000;
     margin-top: 20px;
   }
 
@@ -24,9 +24,12 @@ export default `
 
   a.disabled {
     background: transparent;
-    font-size: 13px;
     cursor: default;
     color: #CCCCCC;
     border-color: currentColor;
+  }
+
+  a.has-space {
+    margin-left: 10px;
   }
 `

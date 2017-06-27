@@ -28,6 +28,10 @@ class Button extends PureComponent {
       classes.push('disabled')
     }
 
+    if (this.props.space) {
+      classes.push('has-space')
+    }
+
     return (
       <a href="#" onClick={this.clicked} className={classes}>
         {this.props.children}
@@ -40,7 +44,8 @@ class Button extends PureComponent {
 Button.propTypes = {
   onClick: func,
   disabled: bool,
-  children: string
+  children: string,
+  space: bool
 }
 
 export default Button

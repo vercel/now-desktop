@@ -166,6 +166,11 @@ class Sections extends React.PureComponent {
       dots: loggedIn
     }
 
+    const introSettings = {
+      moveSlider: this.moveSlider,
+      setLoggedIn: this.setLoggedIn
+    }
+
     return (
       <div>
         {this.isWindows &&
@@ -180,10 +185,7 @@ class Sections extends React.PureComponent {
           </div>}
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section>
-            <Intro
-              moveSlider={this.moveSlider}
-              setLoggedIn={this.setLoggedIn}
-            />
+            <Intro {...introSettings} />
           </section>
 
           <section>

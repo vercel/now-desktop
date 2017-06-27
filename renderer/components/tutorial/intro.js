@@ -127,12 +127,20 @@ class Intro extends PureComponent {
     if (done && tested) {
       return (
         <article>
-          <Logo />
-          <p className="has-tiny-spacing">
-            <b>{"You're already logged in!"}</b><br />Click here to go back to
-            the application:
+          <p><b>{"You're already logged in!"}</b></p>
+
+          <p className="has-mini-spacing">
+            Do you want to learn how to take advantage
+            of Now Desktop or install Now CLI (our command line
+            interface)?
           </p>
-          <Button onClick={this.showApp}>Show App</Button>
+
+          <div>
+            <Button onClick={this.startTutorial}>Start Tutorial</Button>
+            <Button onClick={this.startCLI} space>Install Now CLI</Button>
+          </div>
+
+          <span className="sub" onClick={this.showApp}>Show Event Feed</span>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -154,7 +162,7 @@ class Intro extends PureComponent {
 
           <div>
             <Button onClick={this.startTutorial}>Start Tutorial</Button>
-            <Button onClick={this.startCLI}>Install Now CLI</Button>
+            <Button onClick={this.startCLI} space>Install Now CLI</Button>
           </div>
 
           <span className="sub" onClick={this.showApp}>Skip Introduction</span>
