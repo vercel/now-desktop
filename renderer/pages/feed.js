@@ -394,11 +394,12 @@ class Feed extends React.Component {
           markup = markup.replace(new RegExp(word, 'gi'), (match, offset) => {
             const before = markup.charAt(offset - 1)
 
+            // Don't replace HTML elements
             if (before === '<' || before === '/') {
-              return word
+              return match
             }
 
-            return `<mark>${word}</mark>`
+            return `<mark>${match}</mark>`
           })
         }
 
