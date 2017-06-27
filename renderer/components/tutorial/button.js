@@ -32,8 +32,19 @@ class Button extends PureComponent {
       classes.push('has-space')
     }
 
+    const options = {
+      href: '#',
+      onClick: this.clicked,
+      className: classes.join(' ')
+    }
+
+    if (this.props.title) {
+      options.title = this.props.title
+      options.style = { cursor: 'help' }
+    }
+
     return (
-      <a href="#" onClick={this.clicked} className={classes.join(' ')}>
+      <a {...options}>
         {this.props.children}
         <style jsx>{styles}</style>
       </a>
@@ -45,7 +56,8 @@ Button.propTypes = {
   onClick: func,
   disabled: bool,
   children: string,
-  space: bool
+  space: bool,
+  title: string
 }
 
 export default Button

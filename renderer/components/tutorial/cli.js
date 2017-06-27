@@ -53,12 +53,16 @@ class Binary extends React.PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     const method = this.props.setBinaryState
+    const { binaryInstalled, done } = this.state
 
     if (this.state === prevState || !method) {
       return
     }
 
-    method(this.state.binaryInstalled)
+    // Disable button for installing CLI in intro
+    // if it's already there or the installation
+    // has finished
+    method(done || binaryInstalled)
   }
 
   async componentDidMount() {

@@ -145,6 +145,7 @@ class Intro extends PureComponent {
 
       if (binaryInstalled) {
         installationProps.disabled = true
+        installationProps.title = 'Now CLI is already installed'
       }
 
       return (
