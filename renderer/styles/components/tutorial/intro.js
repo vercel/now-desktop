@@ -5,6 +5,7 @@ export default `
     justify-content: center;
     flex-direction: column;
     height: 300px;
+    position: relative;
   }
 
   p {
@@ -56,6 +57,22 @@ export default `
     font-weight: 700;
     font-size: 13px;
     letter-spacing: 0.15em;
+  }
+
+  .sub {
+    cursor: pointer;
+    color: #999999;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all .2s ease;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .sub:hover {
+    color: #000;
   }
 
   @keyframes blink {

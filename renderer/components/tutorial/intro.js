@@ -157,6 +157,7 @@ class Intro extends PureComponent {
             <Button onClick={this.startCLI}>Install Now CLI</Button>
           </div>
 
+          <span className="sub" onClick={this.showApp}>Skip Introduction</span>
           <style jsx>{introStyles}</style>
         </article>
       )
