@@ -16,6 +16,7 @@ import Title from '../components/title'
 import CLI from '../components/tutorial/cli'
 import Intro from '../components/tutorial/intro'
 import SliderArrow from '../components/tutorial/arrow'
+import Video from '../components/tutorial/video'
 
 // Styles
 import { sliderStyle, wrapStyle, controlStyle } from '../styles/pages/tutorial'
@@ -170,6 +171,10 @@ class Sections extends React.PureComponent {
 
           <section>
             <CLI />
+          </section>
+
+          <section>
+            <Video />
           </section>
         </Slider>
 
