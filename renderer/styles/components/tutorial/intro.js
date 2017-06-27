@@ -23,6 +23,10 @@ export default `
     margin-top: 55px;
   }
 
+  p.has-mini-spacing {
+    margin-top: 15px;
+  }
+
   .sending-status i {
     font-weight: 700;
     font-style: normal;

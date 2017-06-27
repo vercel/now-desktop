@@ -26,7 +26,8 @@ class Intro extends PureComponent {
 
     this.setState = this.setState.bind(this)
     this.showApp = this.showApp.bind(this)
-    this.startTutorial = this.startTutorial.bind(this)
+    this.startTutorial = this.moveSlider.bind(this, 2)
+    this.startCLI = this.moveSlider.bind(this, 1)
   }
 
   async loggedIn() {
@@ -63,14 +64,12 @@ class Intro extends PureComponent {
     currentWindow.emit('open-tray', windows.about)
   }
 
-  startTutorial(event) {
-    event.preventDefault()
-
-    if (!this.props.startTutorial) {
+  moveSlider(index) {
+    if (!this.props.moveSlider) {
       return
     }
 
-    this.props.startTutorial()
+    this.props.moveSlider(index)
   }
 
   async componentWillMount() {
@@ -144,10 +143,19 @@ class Intro extends PureComponent {
       return (
         <article>
           <p>
-            Congrats! <strong>{"You're signed in."}</strong><br />Are you ready
-            to deploy something?
+            Congrats, <strong>{"you're now signed in!"} 🎉</strong>
           </p>
-          <Button onClick={this.startTutorial}>Get Started</Button>
+
+          <p className="has-mini-spacing">
+            Do you want to learn how to take advantage
+            of Now Desktop or install Now CLI (our command line
+            interface)?
+          </p>
+
+          <div>
+            <Button onClick={this.startTutorial}>Start Tutorial</Button>
+            <Button onClick={this.startCLI}>Install Now CLI</Button>
+          </div>
 
           <style jsx>{introStyles}</style>
         </article>
@@ -170,7 +178,7 @@ class Intro extends PureComponent {
 
 Intro.propTypes = {
   setLoggedIn: func,
-  startTutorial: func
+  moveSlider: func
 }
 
 export default Intro

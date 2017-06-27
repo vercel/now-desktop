@@ -39,7 +39,7 @@ class Sections extends React.PureComponent {
     this.arrowKeys = this.arrowKeys.bind(this)
     this.setLoggedIn = this.setLoggedIn.bind(this)
     this.sliderChanged = this.sliderChanged.bind(this)
-    this.startTutorial = this.startTutorial.bind(this)
+    this.moveSlider = this.moveSlider.bind(this)
   }
 
   sliderChanged(index) {
@@ -125,12 +125,12 @@ class Sections extends React.PureComponent {
     event.preventDefault()
   }
 
-  startTutorial() {
-    if (!this.slider) {
+  moveSlider(index) {
+    if (!this.slider || !index) {
       return
     }
 
-    this.slider.slickGoTo(2)
+    this.slider.slickGoTo(index)
   }
 
   async componentDidMount() {
@@ -181,7 +181,7 @@ class Sections extends React.PureComponent {
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section>
             <Intro
-              startTutorial={this.startTutorial}
+              moveSlider={this.moveSlider}
               setLoggedIn={this.setLoggedIn}
             />
           </section>
