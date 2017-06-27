@@ -26,7 +26,8 @@ class Sections extends React.PureComponent {
     super(props)
 
     this.state = {
-      loggedIn: false
+      loggedIn: false,
+      index: 0
     }
 
     this.remote = electron.remote || false
@@ -37,6 +38,7 @@ class Sections extends React.PureComponent {
     this.handleMinimizeClick = this.handleMinimizeClick.bind(this)
     this.arrowKeys = this.arrowKeys.bind(this)
     this.setLoggedIn = this.setLoggedIn.bind(this)
+    this.sliderChanged = this.sliderChanged.bind(this)
   }
 
   sliderChanged(index) {
@@ -56,6 +58,8 @@ class Sections extends React.PureComponent {
         input.resetState()
       }
     }
+
+    this.setState({ index })
   }
 
   setLoggedIn(loggedIn) {
@@ -139,6 +143,7 @@ class Sections extends React.PureComponent {
 
   render() {
     const loggedIn = this.state.loggedIn
+    const index = this.state.index
 
     const sliderSettings = {
       speed: 500,
@@ -174,7 +179,7 @@ class Sections extends React.PureComponent {
           </section>
 
           <section>
-            <Video />
+            <Video slider={this.slider} playing={index === 2} />
           </section>
         </Slider>
 
