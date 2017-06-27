@@ -164,11 +164,11 @@ class Sections extends React.PureComponent {
             </span>
           </div>}
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
-          <section id="first">
+          <section>
             <Intro setLoggedIn={this.setLoggedIn} />
           </section>
 
-          <section id="cli">
+          <section>
             <CLI />
           </section>
         </Slider>
