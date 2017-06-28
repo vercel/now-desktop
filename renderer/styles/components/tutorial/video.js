@@ -1,4 +1,4 @@
-export default `
+export const coreStyles = `
   figure {
     display: flex;
     flex-direction: column;
@@ -18,6 +18,12 @@ export default `
     display: block;
   }
 
+  video {
+    width: 500px;
+  }
+`
+
+export const captionStyles = `
   figcaption {
     text-align: center;
     margin-bottom: 20px;
@@ -36,9 +42,5 @@ export default `
     font-weight: normal;
     margin: 0;
     letter-spacing: 1px;
-  }
-
-  video {
-    width: 500px;
   }
 `

@@ -4,7 +4,10 @@ import setRef from 'react-refs'
 import { bool, string } from 'prop-types'
 
 // Styles
-import styles from '../../styles/components/tutorial/video'
+import {
+  coreStyles,
+  captionStyles
+} from '../../styles/components/tutorial/video'
 
 class Video extends Component {
   constructor(props) {
@@ -58,7 +61,7 @@ class Video extends Component {
           <h2>Deploy anything</h2>
           <h1>Drag And Drop any Folder or File</h1>
 
-          <style jsx>{styles}</style>
+          <style jsx>{captionStyles}</style>
         </figcaption>
       )
     }
@@ -69,7 +72,7 @@ class Video extends Component {
           <h2>See Every Event</h2>
           <h1>Your Activity Feed</h1>
 
-          <style jsx>{styles}</style>
+          <style jsx>{captionStyles}</style>
         </figcaption>
       )
     }
@@ -91,7 +94,7 @@ class Video extends Component {
         {this.renderCaption(name)}
 
         <video {...videoSettings} />
-        <style jsx>{styles}</style>
+        <style jsx>{coreStyles}</style>
       </figure>
     )
   }
