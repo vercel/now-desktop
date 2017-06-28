@@ -14,7 +14,7 @@ module.exports = async info => {
     title: 'Removal of ' + info.name,
     message: 'Do you really want to delete this deployment?',
     detail: info.name,
-    buttons: ['Yes', 'Hell, no!']
+    buttons: ['Yes', 'No!']
   })
 
   // If so, do nothing
