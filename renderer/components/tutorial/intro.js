@@ -19,28 +19,14 @@ class Intro extends PureComponent {
       sendingMail: false,
       security: null,
       done: false,
-      tested: false,
-      binaryInstalled: false
+      tested: false
     }
 
     this.remote = electron.remote || false
 
     this.setState = this.setState.bind(this)
     this.showApp = this.showApp.bind(this)
-    this.startTutorial = this.moveSlider.bind(this, 2)
-    this.startCLI = this.moveSlider.bind(this, 1)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const value = nextProps.binaryInstalled
-
-    if (typeof value === 'undefined') {
-      return
-    }
-
-    this.setState({
-      binaryInstalled: value
-    })
+    this.startTutorial = this.moveSlider.bind(this, 1)
   }
 
   async loggedIn() {
@@ -107,7 +93,7 @@ class Intro extends PureComponent {
   }
 
   render() {
-    const { sendingMail, security, done, tested, binaryInstalled } = this.state
+    const { sendingMail, security, done, tested } = this.state
 
     if (sendingMail) {
       return (
@@ -138,31 +124,16 @@ class Intro extends PureComponent {
     }
 
     if (done && tested) {
-      const installationProps = {
-        space: true,
-        onClick: this.startCLI
-      }
-
-      if (binaryInstalled) {
-        installationProps.disabled = true
-        installationProps.title = 'Now CLI is already installed'
-      }
-
       return (
         <article>
           <p><b>{"You're already logged in!"}</b></p>
 
           <p className="has-mini-spacing">
-            Do you want to learn how to take advantage
-            of Now Desktop or install Now CLI (our command line
-            interface)?
+            If you want to learn again how to take advantage of
+            this application, simply click the button below:
           </p>
 
-          <div>
-            <Button onClick={this.startTutorial}>Start Tutorial</Button>
-            <Button {...installationProps}>Install Now CLI</Button>
-          </div>
-
+          <Button onClick={this.startTutorial}>Repeat Tutorial</Button>
           <span className="sub" onClick={this.showApp}>Show Event Feed</span>
 
           <style jsx>{introStyles}</style>
@@ -183,12 +154,9 @@ class Intro extends PureComponent {
             interface)?
           </p>
 
-          <div>
-            <Button onClick={this.startTutorial}>Start Tutorial</Button>
-            <Button onClick={this.startCLI} space>Install Now CLI</Button>
-          </div>
+          <Button onClick={this.startTutorial}>Start Tutorial</Button>
 
-          <span className="sub" onClick={this.showApp}>Skip Introduction</span>
+          <span className="sub" onClick={this.showApp}>Skip Intro</span>
           <style jsx>{introStyles}</style>
         </article>
       )

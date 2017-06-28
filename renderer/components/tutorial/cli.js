@@ -2,7 +2,6 @@
 import electron from 'electron'
 import React from 'react'
 import exists from 'path-exists'
-import { func } from 'prop-types'
 
 // Utilities
 import installBinary from '../../utils/load-binary'
@@ -49,20 +48,6 @@ class Binary extends React.PureComponent {
     }
 
     return true
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const method = this.props.setBinaryState
-    const { binaryInstalled, done } = this.state
-
-    if (this.state === prevState || !method) {
-      return
-    }
-
-    // Disable button for installing CLI in intro
-    // if it's already there or the installation
-    // has finished
-    method(done || binaryInstalled)
   }
 
   async componentDidMount() {
@@ -176,10 +161,6 @@ class Binary extends React.PureComponent {
       </article>
     )
   }
-}
-
-Binary.propTypes = {
-  setBinaryState: func
 }
 
 export default Binary

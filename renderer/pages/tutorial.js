@@ -27,7 +27,6 @@ class Sections extends React.PureComponent {
 
     this.state = {
       loggedIn: false,
-      binaryInstalled: false,
       index: 0
     }
 
@@ -41,7 +40,6 @@ class Sections extends React.PureComponent {
     this.setLoggedIn = this.setLoggedIn.bind(this)
     this.sliderChanged = this.sliderChanged.bind(this)
     this.moveSlider = this.moveSlider.bind(this)
-    this.setBinaryState = this.setBinaryState.bind(this)
   }
 
   sliderChanged(index) {
@@ -63,16 +61,6 @@ class Sections extends React.PureComponent {
     }
 
     this.setState({ index })
-  }
-
-  setBinaryState(status) {
-    if (status === this.state.binaryInstalled) {
-      return
-    }
-
-    this.setState({
-      binaryInstalled: status
-    })
   }
 
   setLoggedIn(loggedIn) {
@@ -163,7 +151,7 @@ class Sections extends React.PureComponent {
   }
 
   render() {
-    const { loggedIn, index, binaryInstalled } = this.state
+    const { loggedIn, index } = this.state
 
     const sliderSettings = {
       speed: 500,
@@ -179,8 +167,7 @@ class Sections extends React.PureComponent {
 
     const introSettings = {
       moveSlider: this.moveSlider,
-      setLoggedIn: this.setLoggedIn,
-      binaryInstalled
+      setLoggedIn: this.setLoggedIn
     }
 
     return (
@@ -201,7 +188,7 @@ class Sections extends React.PureComponent {
           </section>
 
           <section>
-            <CLI setBinaryState={this.setBinaryState} />
+            <CLI />
           </section>
 
           <section>

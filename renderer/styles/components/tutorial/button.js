@@ -28,8 +28,4 @@ export default `
     color: #CCCCCC;
     border-color: currentColor;
   }
-
-  a.has-space {
-    margin-left: 10px;
-  }
 `

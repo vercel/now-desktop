@@ -28,10 +28,6 @@ class Button extends PureComponent {
       classes.push('disabled')
     }
 
-    if (this.props.space) {
-      classes.push('has-space')
-    }
-
     const options = {
       href: '#',
       onClick: this.clicked,
@@ -56,7 +52,6 @@ Button.propTypes = {
   onClick: func,
   disabled: bool,
   children: string,
-  space: bool,
   title: string
 }
 
