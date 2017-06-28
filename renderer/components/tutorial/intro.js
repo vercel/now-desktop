@@ -149,9 +149,8 @@ class Intro extends PureComponent {
           </p>
 
           <p className="has-mini-spacing">
-            Do you want to learn how to take advantage
-            of Now Desktop or install Now CLI (our command line
-            interface)?
+            To learn more about how to take advantage of this application,
+            simply click the button right below:
           </p>
 
           <Button onClick={this.startTutorial}>Start Tutorial</Button>
