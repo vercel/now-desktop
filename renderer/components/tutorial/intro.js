@@ -54,14 +54,9 @@ class Intro extends PureComponent {
     }
 
     const currentWindow = this.remote.getCurrentWindow()
-    const windows = this.remote.getGlobal('windows')
 
-    if (!windows || !windows.about) {
-      return
-    }
-
-    // Close the tutorial
-    currentWindow.emit('open-tray', windows.about)
+    // Show the event feed
+    currentWindow.emit('open-tray')
   }
 
   moveSlider(index) {
