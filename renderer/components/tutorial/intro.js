@@ -22,6 +22,7 @@ class Intro extends PureComponent {
       tested: false
     }
 
+    this.initialState = Object.assign({}, this.state)
     this.remote = electron.remote || false
 
     this.setState = this.setState.bind(this)
@@ -79,6 +80,29 @@ class Intro extends PureComponent {
     this.setState({
       tested: true,
       done: true
+    })
+  }
+
+  componentDidMount() {
+    if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+
+    // Ensure that intro shows a different message
+    // after the window was closed and re-opened after
+    // getting logged in
+    currentWindow.on('hide', () => {
+      const { done, tested } = this.state
+
+      if (!done || tested) {
+        return
+      }
+
+      this.setState({
+        tested: true
+      })
     })
   }
 
