@@ -145,7 +145,7 @@ class Intro extends PureComponent {
       return (
         <article>
           <p>
-            Congrats, <strong>{"you're now signed in!"} 🎉</strong>
+            Congrats, <strong>{"you're now signed in!"}</strong>
           </p>
 
           <p className="has-mini-spacing">
