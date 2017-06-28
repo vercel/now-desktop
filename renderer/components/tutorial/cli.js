@@ -12,19 +12,19 @@ import binaryStyles from '../../styles/components/tutorial/cli'
 // Components
 import Button from './button'
 
-const initialState = {
-  binaryInstalled: false,
-  installing: false,
-  done: false,
-  downloading: false,
-  progress: false
-}
-
 class Binary extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = initialState
+    this.initialState = {
+      binaryInstalled: false,
+      installing: false,
+      done: false,
+      downloading: false,
+      progress: false
+    }
+
+    this.state = Object.assign({}, this.initialState)
     this.remote = electron.remote || false
 
     this.openDocumentation = this.openDocumentation.bind(this)
@@ -73,7 +73,7 @@ class Binary extends React.PureComponent {
         return
       }
 
-      const originalState = Object.assign({}, initialState)
+      const originalState = Object.assign({}, this.initialState)
       originalState.binaryInstalled = await this.binaryInstalled()
 
       this.setState(originalState)
