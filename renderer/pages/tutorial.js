@@ -17,6 +17,7 @@ import CLI from '../components/tutorial/cli'
 import Intro from '../components/tutorial/intro'
 import SliderArrow from '../components/tutorial/arrow'
 import Video from '../components/tutorial/video'
+import End from '../components/tutorial/end'
 
 // Styles
 import { sliderStyle, wrapStyle, controlStyle } from '../styles/pages/tutorial'
@@ -205,6 +206,10 @@ class Sections extends React.PureComponent {
               slider={this.slider}
               playing={index === 3}
             />
+          </section>
+
+          <section>
+            <End />
           </section>
         </Slider>
 
