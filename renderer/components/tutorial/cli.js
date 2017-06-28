@@ -16,7 +16,7 @@ class Binary extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.initialState = {
+    this.state = {
       binaryInstalled: false,
       installing: false,
       done: false,
@@ -24,7 +24,7 @@ class Binary extends React.PureComponent {
       progress: false
     }
 
-    this.state = Object.assign({}, this.initialState)
+    this.initialState = Object.assign({}, this.state)
     this.remote = electron.remote || false
 
     this.openDocumentation = this.openDocumentation.bind(this)
