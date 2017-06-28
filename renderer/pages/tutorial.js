@@ -192,7 +192,19 @@ class Sections extends React.PureComponent {
           </section>
 
           <section>
-            <Video slider={this.slider} playing={index === 2} />
+            <Video
+              name="drag-and-drop"
+              slider={this.slider}
+              playing={index === 2}
+            />
+          </section>
+
+          <section>
+            <Video
+              name="event-feed"
+              slider={this.slider}
+              playing={index === 3}
+            />
           </section>
         </Slider>
 

@@ -1,7 +1,7 @@
 // Packages
 import React, { Component } from 'react'
 import setRef from 'react-refs'
-import { bool } from 'prop-types'
+import { bool, string } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/tutorial/video'
@@ -51,21 +51,44 @@ class Video extends Component {
     video.play()
   }
 
+  renderCaption(name) {
+    if (name === 'drag-and-drop') {
+      return (
+        <figcaption>
+          <h2>Deploy anything</h2>
+          <h1>Drag And Drop any Folder or File</h1>
+
+          <style jsx>{styles}</style>
+        </figcaption>
+      )
+    }
+
+    if (name === 'event-feed') {
+      return (
+        <figcaption>
+          <h2>See Every Event</h2>
+          <h1>Your Activity Feed</h1>
+
+          <style jsx>{styles}</style>
+        </figcaption>
+      )
+    }
+  }
+
   render() {
+    const { name } = this.props
+
     const videoSettings = {
       preload: true,
       loop: true,
-      src: '/static/tutorial/drag-and-drop.webm',
+      src: `/static/tutorial/${name}.webm`,
       ref: this.setRef,
       name: 'video'
     }
 
     return (
       <figure>
-        <figcaption>
-          <h2>Deploy anything</h2>
-          <h1>Drag And Drop any Folder or File</h1>
-        </figcaption>
+        {this.renderCaption(name)}
 
         <video {...videoSettings} />
         <style jsx>{styles}</style>
@@ -75,7 +98,8 @@ class Video extends Component {
 }
 
 Video.propTypes = {
-  playing: bool
+  playing: bool,
+  name: string
 }
 
 export default Video
