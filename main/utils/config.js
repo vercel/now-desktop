@@ -14,18 +14,18 @@ const exists = () => pathExists(file)
 
 let configWatcher = null
 
-exports.getConfig = async () => {
+exports.getConfig = async noCheck => {
   if (!await exists()) {
     throw new Error("Could retrieve config file, it doesn't exist")
   }
 
   const content = await fs.readJSON(file)
 
-  if (!content.token) {
+  if (!noCheck && !content.token) {
     throw new Error('No token contained inside config file')
   }
 
-  if (!content.user) {
+  if (!noCheck && !content.user) {
     throw new Error('No user contained inside config file')
   }
 

@@ -127,7 +127,7 @@ const moveApp = async () => {
   let config
 
   try {
-    config = await getConfig()
+    config = await getConfig(true)
   } catch (err) {
     config = {}
   }
