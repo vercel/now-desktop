@@ -12,6 +12,7 @@ import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import strip from 'strip'
 import parseHTML from 'html-to-react'
+import retry from 'async-retry'
 
 // Components
 import Title from '../components/title'
@@ -154,7 +155,10 @@ class Feed extends React.Component {
     }
 
     const hasEvents = data.events.length > 0
-    const events = this.state.events
+
+    // Copying this object is important, because we need
+    // to get rif of possible circular references
+    const events = Object.assign({}, this.state.events)
     const scopedEvents = events[scope]
 
     if (!hasEvents && events[scope]) {
@@ -439,7 +443,14 @@ class Feed extends React.Component {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      this.loadEvents(scope, lastEvent.created)
+      retry(
+        () => {
+          this.loadEvents(scope, lastEvent.created)
+        },
+        {
+          retries: 500
+        }
+      )
     }
   }
 
