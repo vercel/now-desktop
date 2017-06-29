@@ -242,12 +242,16 @@ app.on('ready', async () => {
     return app.exit()
   }
 
-  if (!loggedIn || firstRun()) {
+  if (firstRun()) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    windows.tutorial.on('ready-to-show', () =>
-      toggleWindow(null, windows.tutorial)
-    )
+    windows.tutorial.once('ready-to-show', toggleActivity)
+  } else {
+    const mainWindow = windows.main
+
+    if (!mainWindow.isVisible()) {
+      mainWindow.once('ready-to-show', toggleActivity)
+    }
   }
 
   // When quitting the app, force close the tutorial and about windows
