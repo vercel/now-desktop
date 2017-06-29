@@ -275,18 +275,18 @@ class LoginForm extends PureComponent {
     // This will update the scope in the main window
     watchConfig()
 
-    const remote = electron.remote || false
-
-    if (!remote) {
+    if (!this.remote) {
       return
     }
 
-    const windows = remote.getGlobal('windows')
-    const mainWindow = windows.main
+    const { main, tutorial } = this.remote.getGlobal('windows')
 
-    mainWindow.reload()
+    // Ensure that the event feed starts fresh
+    main.reload()
 
-    mainWindow.once('ready-to-show', async () => {
+    // As soon as the event feed has finished reloading,
+    // adjust the content of the intro
+    main.once('ready-to-show', async () => {
       if (!this.props.setIntroState) {
         return
       }
@@ -295,6 +295,10 @@ class LoginForm extends PureComponent {
         security: null,
         done: true
       })
+
+      // Focus on current window so that the user
+      // can start the tutorial, now that he's logged in
+      tutorial.focus()
     })
   }
 
