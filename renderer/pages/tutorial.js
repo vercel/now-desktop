@@ -38,29 +38,16 @@ class Sections extends React.PureComponent {
     this.handleCloseClick = this.handleCloseClick.bind(this)
     this.handleMinimizeClick = this.handleMinimizeClick.bind(this)
     this.arrowKeys = this.arrowKeys.bind(this)
-    this.setLoggedIn = this.setLoggedIn.bind(this)
-    this.sliderChanged = this.sliderChanged.bind(this)
+    this.setLoggedIn = this.saveState.bind(this, 'loggedIn')
+    this.sliderChanged = this.saveState.bind(this, 'index')
     this.moveSlider = this.moveSlider.bind(this)
   }
 
-  sliderChanged(index) {
-    const input = window.loginInput
-    const inputElement = window.loginInputElement
+  saveState(property, value) {
+    const content = {}
+    content[property] = value
 
-    if (!input) {
-      return
-    }
-
-    // If it's the first slide, auto-focus on input
-    if (inputElement && input && index === 0) {
-      inputElement.focus()
-    }
-
-    this.setState({ index })
-  }
-
-  setLoggedIn(loggedIn) {
-    this.setState({ loggedIn })
+    this.setState(content)
   }
 
   handleMinimizeClick() {
