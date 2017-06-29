@@ -51,14 +51,9 @@ class Sections extends React.PureComponent {
       return
     }
 
-    // If it's the last slide, auto-focus on input
-    if (inputElement && input) {
-      if (index === 0) {
-        inputElement.focus()
-      } else if (!input.state.classes.includes('verifying')) {
-        // Reset value of login form if not verifying
-        input.resetState()
-      }
+    // If it's the first slide, auto-focus on input
+    if (inputElement && input && index === 0) {
+      inputElement.focus()
     }
 
     this.setState({ index })

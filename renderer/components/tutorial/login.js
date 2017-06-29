@@ -101,16 +101,6 @@ class LoginForm extends PureComponent {
     this.prepareSuggestion(value)
   }
 
-  resetState() {
-    if (!this.mounted) {
-      return
-    }
-
-    // This method is also being used from somewhere
-    // else, not just in this file
-    this.setState(this.initialState)
-  }
-
   componentDidMount() {
     if (!this.remote) {
       return
@@ -124,10 +114,6 @@ class LoginForm extends PureComponent {
       }
 
       this.loginInput.focus()
-    })
-
-    currentWindow.on('hide', () => {
-      this.resetState()
     })
 
     this.mounted = true
