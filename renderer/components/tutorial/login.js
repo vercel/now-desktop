@@ -1,7 +1,6 @@
 // Packages
 import electron from 'electron'
 import { stringify as stringifyQuery } from 'querystring'
-import emailProviders from 'email-providers/common'
 import AutoSizeInput from 'react-input-autosize'
 import React, { PureComponent } from 'react'
 import sleep from 'sleep-promise'
@@ -11,6 +10,7 @@ import { func } from 'prop-types'
 import loadData from '../../utils/data/load'
 import { API_USER } from '../../utils/data/endpoints'
 import error from '../../utils/error'
+import emailProviders from '../../utils/email-providers'
 
 // Styles
 import styles from '../../styles/components/tutorial/login'
@@ -147,9 +147,6 @@ class LoginForm extends PureComponent {
     if (domain && domain[1].length > 0) {
       const match = domain[1]
       let sug
-
-      // Auto-complete @zeit.co email addresses
-      emailProviders.push('zeit.co')
 
       emailProviders.some(dm => {
         // Don't suggest if complete match
