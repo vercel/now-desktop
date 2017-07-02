@@ -184,7 +184,7 @@ class Intro extends PureComponent {
       <article>
         <Logo />
         <p className="has-spacing">
-          To start using the app, simply enter your email address below.
+          To start using the app, simply enter your email address below:
         </p>
         <LoginForm setIntroState={this.setState} />
 
