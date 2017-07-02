@@ -32,7 +32,7 @@ class End extends Component {
   render() {
     return (
       <article>
-        <p><b>That was the tutorial!</b></p>
+        <p><b>{`It's that simple!`}</b></p>
 
         <p className="has-mini-spacing">
           Are you ready to
