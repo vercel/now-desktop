@@ -55,6 +55,7 @@ export const mainStyles = `
   h1, h2 {
     margin: 0;
     cursor: default;
+    user-select: none;
   }
 
   h1 {
@@ -83,6 +84,7 @@ export const mainStyles = `
     right: 0;
     height: 37px;
     line-height: 37px;
+    user-select: none;
   }
 
   article {
@@ -132,6 +134,7 @@ export const mainStyles = `
     margin-top: 11px;
     display: block;
     cursor: default;
+    user-select: none;
   }
 
   .copyright a {
@@ -146,6 +149,10 @@ export const mainStyles = `
 
   .copyright a:hover {
     color: #000;
+  }
+
+  nav {
+    user-select: none;
   }
 
   nav a {
