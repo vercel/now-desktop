@@ -27,6 +27,7 @@ export const captionStyles = `
   figcaption {
     text-align: center;
     margin-bottom: 20px;
+    cursor: default;
   }
 
   h1 {

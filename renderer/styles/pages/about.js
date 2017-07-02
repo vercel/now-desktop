@@ -54,6 +54,7 @@ export const mainStyles = `
 
   h1, h2 {
     margin: 0;
+    cursor: default;
   }
 
   h1 {
@@ -70,7 +71,6 @@ export const mainStyles = `
 
   h2 span {
     color: #5319e7;
-    cursor: pointer;
   }
 
   .window-title {
@@ -120,6 +120,7 @@ export const mainStyles = `
   article a {
     color: #707070;
     text-decoration: none;
+    cursor: default;
   }
 
   article a:hover {
@@ -130,11 +131,13 @@ export const mainStyles = `
     font-size: 11px;
     margin-top: 11px;
     display: block;
+    cursor: default;
   }
 
   .copyright a {
     color: inherit;
     text-decoration: none;
+    cursor: default;
   }
 
   .copyright a:before {
@@ -151,7 +154,7 @@ export const mainStyles = `
     text-decoration: none;
     padding: 0 10px;
     position: relative;
-    cursor: pointer;
+    cursor: default;
   }
 
   nav a:after {

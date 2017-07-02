@@ -11,9 +11,9 @@ export default `
   summary {
     color: #707070;
     font-size: 12px;
-    cursor: pointer;
     transition: color .2s ease;
     display: inline-block;
+    cursor: default;
   }
 
   summary:focus {

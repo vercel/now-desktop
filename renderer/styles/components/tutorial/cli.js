@@ -6,6 +6,10 @@ export default `
     line-height: 22px;
   }
 
+  article p {
+    cursor: default;
+  }
+
   code {
     background: #eaeaea;
     padding: 1px 7px;
@@ -16,7 +20,6 @@ export default `
   a {
     text-decoration: none;
     color: #067DF7;
-    cursor: pointer;
   }
 
   a:hover {

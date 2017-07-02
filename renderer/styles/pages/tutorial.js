@@ -38,11 +38,6 @@ export const sliderStyle = `
     outline: none;
   }
 
-  .slick-list.dragging {
-    cursor: pointer;
-    cursor: hand;
-  }
-
   .slick-slider .slick-track, .slick-slider .slick-list {
     transform: translate3d(0, 0, 0);
   }
@@ -127,7 +122,6 @@ export const sliderStyle = `
     justify-content: center;
     align-items: center;
     background: linear-gradient(to left, #fff, transparent);
-    cursor: pointer;
     opacity: 0;
     transition: opacity .3s ease;
     -webkit-app-region: no-drag;
@@ -184,7 +178,6 @@ export const sliderStyle = `
     text-indent: -999px;
     border-radius: 100%;
     padding: 0;
-    cursor: pointer;
     transition: background .4s;
   }
 

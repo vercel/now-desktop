@@ -9,7 +9,7 @@ export default `
     font-size: 12px;
     padding: 9px 28px;
     transition: color .2s ease, background .2s ease;
-    cursor: pointer;
+    cursor: default;
     display: inline-block;
     line-height: normal;
     -webkit-app-region: no-drag;

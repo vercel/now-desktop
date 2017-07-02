@@ -14,6 +14,7 @@ export default `
     line-height: 24px;
     max-width: 420px;
     text-align: center;
+    cursor: default;
   }
 
   p.has-spacing {
@@ -60,7 +61,6 @@ export default `
   }
 
   .sub {
-    cursor: pointer;
     color: #999999;
     font-size: 12px;
     letter-spacing: 1px;
@@ -70,6 +70,7 @@ export default `
     position: absolute;
     bottom: 0;
     -webkit-app-region: no-drag;
+    cursor: default;
   }
 
   .sub:hover {
