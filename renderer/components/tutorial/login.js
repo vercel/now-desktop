@@ -336,7 +336,6 @@ class LoginForm extends PureComponent {
         classes: ['error']
       })
 
-      console.log('Not a valid email')
       return
     }
 
