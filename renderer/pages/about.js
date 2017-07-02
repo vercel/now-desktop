@@ -9,7 +9,6 @@ import isDev from 'electron-is-dev'
 
 // Vectors
 import CloseWindowSVG from '../vectors/close-window'
-import UpdatedSVG from '../vectors/updated'
 
 // Components
 import Licenses from '../components/about/licenses'
@@ -18,32 +17,39 @@ import Licenses from '../components/about/licenses'
 import showError from '../utils/error'
 
 // Styles
-import { mainStyles, globalStyles, updateStyles } from '../styles/pages/about'
+import { mainStyles, globalStyles } from '../styles/pages/about'
 
 class About extends React.PureComponent {
   constructor(props) {
     super(props)
 
+    this.state = {
+      version: null
+    }
+
     this.remote = electron.remote || false
     this.isWindows = platform() === 'win32'
 
     this.handleTutorial = this.handleTutorial.bind(this)
-    this.updateStatus = this.updateStatus.bind(this)
     this.handleCloseClick = this.handleCloseClick.bind(this)
     this.openLink = this.openLink.bind(this)
-    this.getAppVersion = this.getAppVersion.bind(this)
   }
 
-  getAppVersion() {
+  componentWillMount() {
     if (!this.remote) {
-      return false
+      return
     }
+
+    let version
 
     if (isDev) {
-      return this.remote.process.env.npm_package_version
+      version = this.remote.process.env.npm_package_version
+    } else {
+      version = this.remote.app.getVersion()
     }
 
-    return this.remote.app.getVersion()
+    this.setState({ version })
+    this.getReleaseDate()
   }
 
   openLink(event) {
@@ -57,11 +63,7 @@ class About extends React.PureComponent {
     event.preventDefault()
   }
 
-  async componentDidMount() {
-    await this.lastReleaseDate()
-  }
-
-  async lastReleaseDate() {
+  async getReleaseDate() {
     let data
 
     try {
@@ -87,14 +89,14 @@ class About extends React.PureComponent {
     let localRelease
 
     for (const release of data) {
-      if (release.tag_name === this.getAppVersion()) {
+      if (release.tag_name === this.state.version) {
         localRelease = release
       }
     }
 
     if (!localRelease) {
       this.setState({
-        lastReleaseDate: '(not yet released)'
+        releaseDate: '(not yet released)'
       })
 
       return
@@ -104,7 +106,7 @@ class About extends React.PureComponent {
       const ago = timeAgo().ago(new Date(localRelease.published_at))
 
       this.setState({
-        lastReleaseDate: `(${ago})`
+        releaseDate: `(${ago})`
       })
     }
 
@@ -138,28 +140,7 @@ class About extends React.PureComponent {
     currentWindow.hide()
   }
 
-  updateStatus() {
-    const isDev = this.remote ? this.remote.require('electron-is-dev') : false
-
-    return (
-      <div>
-        {isDev
-          ? <h2 className="update development">
-              {"You're in development mode. No updates!"}
-            </h2>
-          : <h2 className="update latest">
-              <UpdatedSVG onClick={this.handleCloseClick.bind(this)} />
-              {"You're running the latest version!"}
-            </h2>}
-
-        <style jsx>{updateStyles}</style>
-      </div>
-    )
-  }
-
   render() {
-    const appVersion = this.getAppVersion()
-
     return (
       <div>
         {this.isWindows &&
@@ -177,12 +158,10 @@ class About extends React.PureComponent {
           <h2>
             Version
             {' '}
-            {appVersion ? <b>{appVersion}</b> : ''}
+            {this.state.version ? <b>{this.state.version}</b> : ''}
             {' '}
-            {this.state && this.state.lastReleaseDate}
+            {this.state.releaseDate ? this.state.releaseDate : ''}
           </h2>
-
-          {this.updateStatus}
 
           <article>
             <h1>Authors</h1>

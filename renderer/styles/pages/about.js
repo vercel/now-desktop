@@ -192,28 +192,3 @@ export const globalStyles = `
     background: #A7D8FF;
   }
 `
-
-export const updateStyles = `
-  .update {
-    font-size: 11px;
-    margin-top: 5px;
-    display: none;
-  }
-
-  .update.latest {
-    color: #00A819;
-  }
-
-  .update.latest span {
-    cursor: default;
-  }
-
-  .update.latest svg {
-    margin-bottom: -3px;
-    margin-right: 5px;
-  }
-
-  .update.development {
-    color: #0080c1;
-  }
-`
