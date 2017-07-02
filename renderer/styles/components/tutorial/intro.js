@@ -69,6 +69,7 @@ export default `
     transition: all .2s ease;
     position: absolute;
     bottom: 0;
+    -webkit-app-region: no-drag;
   }
 
   .sub:hover {
