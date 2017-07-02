@@ -72,15 +72,20 @@ class Sections extends React.PureComponent {
     const keyCode = event.keyCode
     const slider = this.slider
     const loginInputElement = window.loginInputElement
+    const inputFocused = document.activeElement.tagName === 'INPUT'
 
     // Prevent user from tabbing through the inputs
     // This leads to an unusable UI
     if (keyCode === 9) {
+      if (!inputFocused) {
+        loginInputElement.focus()
+      }
+
       event.preventDefault()
       return
     }
 
-    if (document.activeElement.tagName === 'INPUT') {
+    if (inputFocused) {
       if (keyCode === 27) {
         // ESC
         // This is necessary because on Windows and Linux
