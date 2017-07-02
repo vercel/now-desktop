@@ -383,7 +383,7 @@ class LoginForm extends PureComponent {
       onClick: event => event.stopPropagation()
     }
 
-    if (classes.indexOf('auto-complete') === -1) {
+    if (classes.indexOf('login') === -1) {
       classes.push('login')
     }
 
