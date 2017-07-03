@@ -13,6 +13,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import strip from 'strip'
 import parseHTML from 'html-to-react'
 import retry from 'async-retry'
+import ms from 'ms'
 
 // Components
 import Title from '../components/title'
@@ -240,6 +241,14 @@ class Feed extends React.Component {
     })
   }
 
+  clearScroll() {
+    if (!this.scrollingSection) {
+      return
+    }
+
+    this.scrollingSection.scrollTop = 0
+  }
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -268,12 +277,13 @@ class Feed extends React.Component {
     this.listenToUserChange()
 
     const currentWindow = this.remote.getCurrentWindow()
-
-    if (!currentWindow) {
-      return
-    }
+    let scrollTimer
 
     currentWindow.on('show', () => {
+      // Ensure that scrolling position only gets
+      // resetted if the window was closed for 5 seconds
+      clearTimeout(scrollTimer)
+
       // When the app is hidden and the device in standby
       // mode, it might not be able to render the updates, so we
       // need to ensure that it's updated
@@ -284,10 +294,10 @@ class Feed extends React.Component {
     })
 
     currentWindow.on('hide', () => {
-      if (this.scrollingSection) {
-        this.scrollingSection.scrollTop = 0
-      }
+      // Clear scrolling position if window closed for 5 seconds
+      scrollTimer = setTimeout(this.clearScroll.bind(this), ms('5s'))
 
+      // Remove key press listeners
       document.removeEventListener('keydown', this.hideWindow.bind(this))
     })
   }
@@ -311,10 +321,7 @@ class Feed extends React.Component {
   }
 
   setScope(scope) {
-    if (this.scrollingSection) {
-      this.scrollingSection.scrollTop = 0
-    }
-
+    this.clearScroll()
     this.setState({ scope })
 
     // Hide search field when switching team scope
@@ -528,7 +535,9 @@ class Feed extends React.Component {
     return monthKeys.map(month => [
       <h1 key={scope + month}>
         {month}
-        <style jsx>{headingStyles}</style>
+        <style jsx>
+          {headingStyles}
+        </style>
       </h1>,
       eventList(month)
     ])
@@ -551,7 +560,9 @@ class Feed extends React.Component {
         <img src="/static/loading.gif" />
         <span>Loading Older Events...</span>
 
-        <style jsx>{loaderStyles}</style>
+        <style jsx>
+          {loaderStyles}
+        </style>
       </aside>
     )
   }
@@ -596,8 +607,12 @@ class Feed extends React.Component {
           />
         </div>
 
-        <style jsx>{feedStyles}</style>
-        <style jsx global>{pageStyles}</style>
+        <style jsx>
+          {feedStyles}
+        </style>
+        <style jsx global>
+          {pageStyles}
+        </style>
       </main>
     )
   }
