@@ -40,12 +40,14 @@ export default class Login extends Message {
     if (os) message += ` (${os})`
 
     if (geolocation) {
-      const city = typeof geolocation.city === 'object'
-        ? geolocation.city.names.en
-        : geolocation.city
-      const region = typeof geolocation.most_specific_subdivision === 'object'
-        ? geolocation.most_specific_subdivision.names.en
-        : geolocation.regionName
+      const city =
+        typeof geolocation.city === 'object'
+          ? geolocation.city.names.en
+          : geolocation.city
+      const region =
+        typeof geolocation.most_specific_subdivision === 'object'
+          ? geolocation.most_specific_subdivision.names.en
+          : geolocation.regionName
       if (city === region) {
         message += ` in ${city}`
       } else {
@@ -53,6 +55,10 @@ export default class Login extends Message {
       }
     }
 
-    return <p><b>You</b> {message}</p>
+    return (
+      <p>
+        <b>You</b> {message}
+      </p>
+    )
   }
 }

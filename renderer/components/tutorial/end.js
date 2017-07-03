@@ -32,16 +32,19 @@ class End extends Component {
   render() {
     return (
       <article>
-        <p><b>{`It's that simple!`}</b></p>
+        <p>
+          <b>{`It's that simple!`}</b>
+        </p>
 
         <p className="has-mini-spacing">
-          Are you ready to
-          deploy something now? If so, simply click the
-          button below to view the event feed:
+          Are you ready to deploy something now? If so, simply click the button
+          below to view the event feed:
         </p>
 
         <Button onClick={this.showApp}>Get Started</Button>
-        <style jsx>{introStyles}</style>
+        <style jsx>
+          {introStyles}
+        </style>
       </article>
     )
   }

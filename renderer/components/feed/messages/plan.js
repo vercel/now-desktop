@@ -11,8 +11,7 @@ export default class Plan extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        changed plan to{' '}
-        <b>{event.payload.plan}</b>
+        changed plan to <b>{event.payload.plan}</b>
       </p>
     )
   }

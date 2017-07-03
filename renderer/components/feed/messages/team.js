@@ -21,9 +21,7 @@ export default class Team extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        created the team
-        {' '}
-        <b>{event.payload.slug}</b>
+        created the team <b>{event.payload.slug}</b>
       </p>
     )
   }

@@ -124,7 +124,9 @@ class Avatar extends React.PureComponent {
           className={classes}
         />
 
-        <style jsx>{styles}</style>
+        <style jsx>
+          {styles}
+        </style>
       </div>
     )
   }

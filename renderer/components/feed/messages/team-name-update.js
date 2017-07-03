@@ -11,9 +11,7 @@ export default class TeamNameUpdate extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated team name to
-        {' '}
-        <b>{event.payload.name}</b>
+        updated team name to <b>{event.payload.name}</b>
       </p>
     )
   }

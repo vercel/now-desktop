@@ -11,11 +11,7 @@ export default class Cert extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        created a certificate for
-        {' '}
-        <b>
-          {event.payload.cn}
-        </b>
+        created a certificate for <b>{event.payload.cn}</b>
       </p>
     )
   }

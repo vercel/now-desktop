@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const MinimizeWindow = () => (
+const MinimizeWindow = () =>
   <svg height="10px" width="10px" viewBox="0 0 10 10" version="1.1">
     <g fill="none" fillRule="evenodd">
       <polygon points="0 0 10 0 10 10 0 10" />
@@ -12,6 +12,5 @@ const MinimizeWindow = () => (
       <rect width="10" height="1" y="4.5" fill="currentColor" />
     </g>
   </svg>
-)
 
 export default MinimizeWindow

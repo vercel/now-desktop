@@ -11,11 +11,7 @@ export default class DomainBuy extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        bought domain
-        {' '}
-        <b>{event.payload.name}</b>
-        {' '}
-        (${event.payload.price})
+        bought domain <b>{event.payload.name}</b> (${event.payload.price})
       </p>
     )
   }

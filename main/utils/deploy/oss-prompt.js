@@ -9,7 +9,8 @@ module.exports = () => {
   const response = dialog.showMessageBox({
     type: 'question',
     message: `You're on the OSS Plan`,
-    detail: 'This means that your code and logs will be made public. Do you really want to deploy?',
+    detail:
+      'This means that your code and logs will be made public. Do you really want to deploy?',
     buttons: ['Yes', 'No'],
     defaultId: 0,
     cancelId: 1,

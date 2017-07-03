@@ -13,8 +13,7 @@ export default class TeamMemberAdd extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        invited user{invitedUser.username ? '' : ' with email address'}
-        {' '}
+        invited user{invitedUser.username ? '' : ' with email address'}{' '}
         <b>{username}</b>
       </p>
     )

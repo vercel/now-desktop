@@ -111,7 +111,9 @@ class Binary extends React.PureComponent {
               <span style={{ width: `${this.state.progress}%` }} />
             </aside>}
 
-          <style jsx>{binaryStyles}</style>
+          <style jsx>
+            {binaryStyles}
+          </style>
         </article>
       )
     }
@@ -119,20 +121,23 @@ class Binary extends React.PureComponent {
     if (done) {
       return (
         <article>
-          <p><strong>Hooray! 🎉</strong></p>
+          <p>
+            <strong>Hooray! 🎉</strong>
+          </p>
           <p>
             The binary successfully landed on your device! You can now use{' '}
             <code>now</code> from the command line.
           </p>
 
           <p>
-            If you want to learn more about how to take advantage of our
-            command line interface,{' '}
-            <a onClick={this.openDocumentation}>this</a> will be
+            If you want to learn more about how to take advantage of our command
+            line interface, <a onClick={this.openDocumentation}>this</a> will be
             helpful.
           </p>
 
-          <style jsx>{binaryStyles}</style>
+          <style jsx>
+            {binaryStyles}
+          </style>
         </article>
       )
     }
@@ -140,11 +145,8 @@ class Binary extends React.PureComponent {
     return (
       <article>
         <p>
-          In addition to this app, you can also use
-          {' '}
-          <code>now</code>
-          {' '}
-          from the command line, if you{"'"}d like to.
+          In addition to this app, you can also use <code>now</code> from the
+          command line, if you{"'"}d like to.
         </p>
         <p>
           Press the button below to install it! When a new version gets
@@ -157,7 +159,9 @@ class Binary extends React.PureComponent {
           {binaryInstalled ? 'Already installed' : 'Install now'}
         </Button>
 
-        <style jsx>{binaryStyles}</style>
+        <style jsx>
+          {binaryStyles}
+        </style>
       </article>
     )
   }

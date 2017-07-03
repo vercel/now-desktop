@@ -11,12 +11,9 @@ export default class TeamMemberRollUpdate extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated{' '}
-        <b>{event.payload.updatedUser.username}</b>{`'`}s
-        roll from{' '}
-        <b>{event.payload.previousRoll}</b>
-        to{' '}
-        <b>{event.payload.roll}</b>
+        updated <b>{event.payload.updatedUser.username}</b>
+        {`'`}s roll from <b>{event.payload.previousRoll}</b>
+        to <b>{event.payload.roll}</b>
       </p>
     )
   }

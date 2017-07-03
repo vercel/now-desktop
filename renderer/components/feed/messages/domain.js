@@ -11,9 +11,7 @@ export default class Domain extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        added domain
-        {' '}
-        <b>{event.payload.name}</b>
+        added domain <b>{event.payload.name}</b>
       </p>
     )
   }

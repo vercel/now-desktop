@@ -59,11 +59,15 @@ class DropZone extends React.PureComponent {
         <section>
           <span>
             <h1>Drop to Deploy!</h1>
-            <p>Your files will be uploaded to <b>now</b>.</p>
+            <p>
+              Your files will be uploaded to <b>now</b>.
+            </p>
           </span>
         </section>
 
-        <style jsx>{styles}</style>
+        <style jsx>
+          {styles}
+        </style>
       </aside>
     )
   }

@@ -11,15 +11,9 @@ export default class CertClone extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        cloned a certificate
-        {' '}
-        <b>
-          {event.payload.src}
-        </b>
+        cloned a certificate <b>{event.payload.src}</b>
         to
-        <b>
-          {event.payload.dst}
-        </b>
+        <b>{event.payload.dst}</b>
       </p>
     )
   }

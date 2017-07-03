@@ -14,7 +14,9 @@ const Loading = ({ offline }) =>
       </p>
     </section>
 
-    <style jsx>{styles}</style>
+    <style jsx>
+      {styles}
+    </style>
   </aside>
 
 Loading.propTypes = {

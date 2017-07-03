@@ -156,10 +156,12 @@ class About extends React.PureComponent {
 
           <h1>Now</h1>
           <h2>
-            Version
-            {' '}
-            {this.state.version ? <b>{this.state.version}</b> : ''}
-            {' '}
+            Version{' '}
+            {this.state.version
+              ? <b>
+                  {this.state.version}
+                </b>
+              : ''}{' '}
             {this.state.releaseDate ? this.state.releaseDate : ''}
           </h2>
 
@@ -187,16 +189,23 @@ class About extends React.PureComponent {
               </a>
             </p>
 
-            <h1>{'3rd party software'}</h1>
+            <h1>
+              {'3rd party software'}
+            </h1>
             <Licenses />
           </article>
 
           <span className="copyright">
-            Made by <a href="https://zeit.co" onClick={this.openLink}>ZEIT</a>
+            Made by{' '}
+            <a href="https://zeit.co" onClick={this.openLink}>
+              ZEIT
+            </a>
           </span>
 
           <nav>
-            <a href="https://zeit.co/docs" onClick={this.openLink}>Docs</a>
+            <a href="https://zeit.co/docs" onClick={this.openLink}>
+              Docs
+            </a>
             <a
               href="https://github.com/zeit/now-desktop"
               onClick={this.openLink}
@@ -207,8 +216,12 @@ class About extends React.PureComponent {
           </nav>
         </section>
 
-        <style jsx>{mainStyles}</style>
-        <style jsx global>{globalStyles}</style>
+        <style jsx>
+          {mainStyles}
+        </style>
+        <style jsx global>
+          {globalStyles}
+        </style>
       </div>
     )
   }

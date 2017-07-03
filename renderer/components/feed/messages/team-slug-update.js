@@ -11,9 +11,7 @@ export default class TeamSlugUpdate extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated team url to
-        {' '}
-        <b>{event.payload.slug}</b>
+        updated team url to <b>{event.payload.slug}</b>
       </p>
     )
   }

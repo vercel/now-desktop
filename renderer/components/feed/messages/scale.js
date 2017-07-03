@@ -13,25 +13,20 @@ export default class Scale extends Message {
       return (
         <p>
           {this.getDisplayName()}
-          scaled deployment{' '}
+          scaled deployment <b>{event.payload.url}</b> to{' '}
           <b>
-            {event.payload.url}
+            {instances} instance{instances > 1 ? 's' : ''}
           </b>
-          {' '}
-          to <b>{instances} instance{instances > 1 ? 's' : ''}</b>
         </p>
       )
     }
 
     return (
       <p>
-        The deployment
-        {' '}
-        <b>{event.payload.deploymentId}</b>
-        {' '}
-        was scaled to
-        {' '}
-        <b>{instances} instance{instances > 1 ? 's' : ''}</b>
+        The deployment <b>{event.payload.deploymentId}</b> was scaled to{' '}
+        <b>
+          {instances} instance{instances > 1 ? 's' : ''}
+        </b>
       </p>
     )
   }

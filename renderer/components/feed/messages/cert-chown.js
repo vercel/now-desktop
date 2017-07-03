@@ -11,10 +11,10 @@ export default class CertChown extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        changed the ownership of cert{' '}
-        <b>{event.payload.id}</b>
-        {event.payload.oldTeam ? ` from {event.payload.oldTeam.name}` : ''}
-        {' '}to {event.payload.newTeam.name}
+        changed the ownership of cert <b>{event.payload.id}</b>
+        {event.payload.oldTeam
+          ? ` from {event.payload.oldTeam.name}`
+          : ''} to {event.payload.newTeam.name}
       </p>
     )
   }

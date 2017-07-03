@@ -11,8 +11,7 @@ export default class SecretDelete extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        removed secret
-        {' '}
+        removed secret{' '}
         <b>{event.payload.name ? event.payload.name : event.payload.uid}</b>
       </p>
     )

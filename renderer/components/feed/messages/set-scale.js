@@ -13,11 +13,8 @@ export default class Scale extends Message {
       return (
         <p>
           {this.getDisplayName()}
-          updated scale rules for{' '}
-          <b>{event.payload.url}</b>
-          {' '}
-          to{' '}
-          min: <b>{min}</b>, max: <b>{max}</b>
+          updated scale rules for <b>{event.payload.url}</b> to min:{' '}
+          <b>{min}</b>, max: <b>{max}</b>
         </p>
       )
     }
@@ -25,8 +22,7 @@ export default class Scale extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated scale rules for{' '}
-        <b>{event.payload.url}</b>
+        updated scale rules for <b>{event.payload.url}</b>
       </p>
     )
   }

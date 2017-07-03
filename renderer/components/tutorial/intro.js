@@ -119,10 +119,16 @@ class Intro extends PureComponent {
         <article>
           <p>
             Sending an email for the verification of your address
-            <span className="sending-status"><i>.</i><i>.</i><i>.</i></span>
+            <span className="sending-status">
+              <i>.</i>
+              <i>.</i>
+              <i>.</i>
+            </span>
           </p>
 
-          <style jsx>{introStyles}</style>
+          <style jsx>
+            {introStyles}
+          </style>
         </article>
       )
     }
@@ -137,7 +143,9 @@ class Intro extends PureComponent {
             <b className="security-token">{security.code}</b>
           </p>
 
-          <style jsx>{introStyles}</style>
+          <style jsx>
+            {introStyles}
+          </style>
         </article>
       )
     }
@@ -145,17 +153,25 @@ class Intro extends PureComponent {
     if (done && tested) {
       return (
         <article>
-          <p><b>{"You're already logged in!"}</b></p>
+          <p>
+            <b>
+              {"You're already logged in!"}
+            </b>
+          </p>
 
           <p className="has-mini-spacing">
-            If you want to learn again how to take advantage of
-            this application, simply click the button below:
+            If you want to learn again how to take advantage of this
+            application, simply click the button below:
           </p>
 
           <Button onClick={this.startTutorial}>Repeat Tutorial</Button>
-          <span className="sub" onClick={this.showApp}>Show Event Feed</span>
+          <span className="sub" onClick={this.showApp}>
+            Show Event Feed
+          </span>
 
-          <style jsx>{introStyles}</style>
+          <style jsx>
+            {introStyles}
+          </style>
         </article>
       )
     }
@@ -174,8 +190,12 @@ class Intro extends PureComponent {
 
           <Button onClick={this.startTutorial}>Start Tutorial</Button>
 
-          <span className="sub" onClick={this.showApp}>Skip Intro</span>
-          <style jsx>{introStyles}</style>
+          <span className="sub" onClick={this.showApp}>
+            Skip Intro
+          </span>
+          <style jsx>
+            {introStyles}
+          </style>
         </article>
       )
     }
@@ -188,7 +208,9 @@ class Intro extends PureComponent {
         </p>
         <LoginForm setIntroState={this.setState} />
 
-        <style jsx>{introStyles}</style>
+        <style jsx>
+          {introStyles}
+        </style>
       </article>
     )
   }

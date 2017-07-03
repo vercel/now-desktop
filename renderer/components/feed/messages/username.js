@@ -11,9 +11,7 @@ export default class Username extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        set username to
-        {' '}
-        <b>{event.payload.username}</b>
+        set username to <b>{event.payload.username}</b>
       </p>
     )
   }

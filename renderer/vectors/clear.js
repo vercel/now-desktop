@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const Clear = () => (
+const Clear = () =>
   <svg width="18" height="18" viewBox="0 0 18 18">
     <g
       transform="translate(1 1)"
@@ -15,6 +15,5 @@ const Clear = () => (
       </g>
     </g>
   </svg>
-)
 
 export default Clear

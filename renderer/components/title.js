@@ -92,7 +92,9 @@ class Title extends React.PureComponent {
               setSearchRef={this.props.setSearchRef || false}
             />}
 
-          <h1>{this.props.children}</h1>
+          <h1>
+            {this.props.children}
+          </h1>
 
           {this.props.light &&
             <span
@@ -110,7 +112,9 @@ class Title extends React.PureComponent {
           <p>Context updated for now CLI!</p>
         </section>
 
-        <style jsx>{styles}</style>
+        <style jsx>
+          {styles}
+        </style>
       </aside>
     )
   }

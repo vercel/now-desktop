@@ -13,16 +13,10 @@ export default class DnsAdd extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        added a DNS record for <b>{event.payload.domain}</b>:
-        {' '}
+        added a DNS record for <b>{event.payload.domain}</b>:{' '}
         <code>
           {event.payload.id || ''}
-          :
-          {' '}
-          {event.payload.name}
-          {' '}
-          {event.payload.type}
-          {' '}
+          : {event.payload.name} {event.payload.type}{' '}
           {v + (v.length < value.length ? '…' : '')}
         </code>
       </p>

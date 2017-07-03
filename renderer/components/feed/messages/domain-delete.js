@@ -11,9 +11,7 @@ export default class DomainDelete extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        removed domain
-        {' '}
-        <b>{event.payload.name}</b>
+        removed domain <b>{event.payload.name}</b>
       </p>
     )
   }

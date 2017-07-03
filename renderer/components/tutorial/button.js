@@ -42,7 +42,9 @@ class Button extends PureComponent {
     return (
       <a {...options}>
         {this.props.children}
-        <style jsx>{styles}</style>
+        <style jsx>
+          {styles}
+        </style>
       </a>
     )
   }

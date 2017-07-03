@@ -11,8 +11,7 @@ export default class SecretAdd extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        added secret
-        {' '}
+        added secret{' '}
         <b>{event.payload.name ? event.payload.name : event.payload.uid}</b>
       </p>
     )

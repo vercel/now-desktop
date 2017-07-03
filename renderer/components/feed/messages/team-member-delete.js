@@ -13,8 +13,7 @@ export default class TeamMemberDelete extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        removed user{deletedUser.username ? '' : ' with email address'}
-        {' '}
+        removed user{deletedUser.username ? '' : ' with email address'}{' '}
         <b>{username}</b>
       </p>
     )

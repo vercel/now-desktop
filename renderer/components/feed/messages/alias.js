@@ -13,20 +13,11 @@ export default class Alias extends Message {
       return (
         <p>
           {this.getDisplayName()}
-          configured
-          {' '}
-          {event.payload.ruleCount}
-          {' '}
-          alias rule
+          configured {event.payload.ruleCount} alias rule
           {event.payload.ruleCount === null || event.payload.ruleCount > 1
             ? 's'
-            : ''}
-          {' '}
-          for
-          {' '}
-          <b>
-            {event.payload.alias}
-          </b>
+            : ''}{' '}
+          for <b>{event.payload.alias}</b>
         </p>
       )
     }
@@ -34,15 +25,8 @@ export default class Alias extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        aliased
-        {' '}
-        <b>{event.payload.deploymentUrl}</b>
-        {' '}
-        to
-        {' '}
-        <b>
-          {event.payload.alias}
-        </b>
+        aliased <b>{event.payload.deploymentUrl}</b> to{' '}
+        <b>{event.payload.alias}</b>
       </p>
     )
   }

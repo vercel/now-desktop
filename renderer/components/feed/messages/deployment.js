@@ -11,12 +11,7 @@ export default class Deployment extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        deployed{' '}
-        <b>{event.payload.name}</b>
-        {' '}to{' '}
-        <b>
-          {event.payload.url}
-        </b>
+        deployed <b>{event.payload.name}</b> to <b>{event.payload.url}</b>
       </p>
     )
   }

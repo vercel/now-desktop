@@ -61,7 +61,9 @@ class Video extends Component {
           <h2>Deploy anything</h2>
           <h1>Drag And Drop any Folder or File</h1>
 
-          <style jsx>{captionStyles}</style>
+          <style jsx>
+            {captionStyles}
+          </style>
         </figcaption>
       )
     }
@@ -72,7 +74,9 @@ class Video extends Component {
           <h2>See Every Event</h2>
           <h1>Your Activity Feed</h1>
 
-          <style jsx>{captionStyles}</style>
+          <style jsx>
+            {captionStyles}
+          </style>
         </figcaption>
       )
     }
@@ -94,7 +98,9 @@ class Video extends Component {
         {this.renderCaption(name)}
 
         <video {...videoSettings} />
-        <style jsx>{coreStyles}</style>
+        <style jsx>
+          {coreStyles}
+        </style>
       </figure>
     )
   }

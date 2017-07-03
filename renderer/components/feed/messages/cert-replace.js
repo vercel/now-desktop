@@ -11,9 +11,7 @@ export default class CertReplace extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        replaced a certificate for
-        {' '}
-        <b>{event.payload.cn}</b>
+        replaced a certificate for <b>{event.payload.cn}</b>
       </p>
     )
   }

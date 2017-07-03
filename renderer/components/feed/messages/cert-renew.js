@@ -11,9 +11,7 @@ export default class CertRenew extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        renewed a certificate for
-        {' '}
-        <b>{event.payload.cn}</b>
+        renewed a certificate for <b>{event.payload.cn}</b>
       </p>
     )
   }

@@ -11,9 +11,7 @@ export default class CertDelete extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        deleted a certificate for
-        {' '}
-        <b>{event.payload.cn}</b>
+        deleted a certificate for <b>{event.payload.cn}</b>
       </p>
     )
   }

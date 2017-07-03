@@ -11,13 +11,7 @@ export default class DnsDelete extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        removed a DNS record
-        {' '}
-        {event.payload.id}
-        {' '}
-        of
-        {' '}
-        <b>{event.payload.domain}</b>
+        removed a DNS record {event.payload.id} of <b>{event.payload.domain}</b>
       </p>
     )
   }

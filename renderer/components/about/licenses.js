@@ -32,7 +32,9 @@ const Licenses = () =>
       )
     })}
 
-    <style jsx>{styles}</style>
+    <style jsx>
+      {styles}
+    </style>
   </section>
 
 export default Licenses

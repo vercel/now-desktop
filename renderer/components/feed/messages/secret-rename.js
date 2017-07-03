@@ -11,12 +11,7 @@ export default class SecretRename extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        renamed secret
-        {' '}
-        <b>{event.payload.oldName}</b>
-        {' '}
-        to
-        {' '}
+        renamed secret <b>{event.payload.oldName}</b> to{' '}
         <b>{event.payload.newName}</b>
       </p>
     )

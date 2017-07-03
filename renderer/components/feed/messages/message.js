@@ -20,7 +20,12 @@ class Message extends React.PureComponent {
       return [<b key="you">You</b>, ' ']
     }
 
-    return [<b key="username">{event.user.username}</b>, ' ']
+    return [
+      <b key="username">
+        {event.user.username}
+      </b>,
+      ' '
+    ]
   }
 }
 
