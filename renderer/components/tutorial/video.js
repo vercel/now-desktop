@@ -15,6 +15,8 @@ class Video extends Component {
 
     this.state = { playing: false }
     this.setRef = setRef.bind(this)
+
+    this.os = process.platform === 'darwin' ? 'mac' : 'windows'
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,11 +57,13 @@ class Video extends Component {
   }
 
   renderCaption(name) {
-    if (name === 'drag-and-drop') {
+    if (name === 'deploying') {
       return (
         <figcaption>
           <h2>Deploy anything</h2>
-          <h1>Drag And Drop any Folder or File</h1>
+          <h1>
+            {this.os === 'mac' ? 'Drag And Drop' : 'Select'} any Folder or File
+          </h1>
 
           <style jsx>
             {captionStyles}
@@ -68,7 +72,7 @@ class Video extends Component {
       )
     }
 
-    if (name === 'event-feed') {
+    if (name === 'feed') {
       return (
         <figcaption>
           <h2>See Every Event</h2>
@@ -88,7 +92,7 @@ class Video extends Component {
     const videoSettings = {
       preload: true,
       loop: true,
-      src: `/static/tutorial/${name}.webm`,
+      src: `/static/tutorial/${this.os}/${name}.webm`,
       ref: this.setRef,
       name: 'video'
     }
