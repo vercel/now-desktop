@@ -216,7 +216,7 @@ class EventMessage extends React.PureComponent {
       }
 
       const unit = checks[check]
-      const shortUnit = unit.charAt(0)
+      const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0)
 
       if (difference < ms(check)) {
         return parsed.diff(date, unit) + shortUnit
