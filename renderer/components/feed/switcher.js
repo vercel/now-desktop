@@ -11,6 +11,7 @@ import {
   arrayMove
 } from 'react-sortable-hoc'
 import makeUnique from 'make-unique'
+import ms from 'ms'
 
 // Styles
 import {
@@ -154,7 +155,7 @@ class Switcher extends React.Component {
         }
 
         listTimer()
-      }, 4000)
+      }, ms('16s'))
     }
 
     // Only start updating teams once they're loaded!
