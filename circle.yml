@@ -1,10 +1,13 @@
 machine:
+  environment:
+    XCODE_SCHEME: symbolicator
+    XCODE_WORKSPACE: symbolicator
+  xcode:
+    version: 8.2
   node:
     version: 6.1.0
 deployment:
   release:
     branch: master
     commands:
-      - sudo apt-get install ruby ruby-dev gcc make icnsutils graphicsmagick xz-utils
-      - gem install fpm
       - npm run dist
