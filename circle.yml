@@ -1,7 +1,4 @@
 machine:
-  environment:
-    XCODE_SCHEME: symbolicator
-    XCODE_WORKSPACE: symbolicator
   xcode:
     version: 8.2
 deployment:
