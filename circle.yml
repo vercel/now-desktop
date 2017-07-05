@@ -5,6 +5,8 @@ machine:
     XCODE_WORKSPACE: symbolicator
   xcode:
     version: 8.2
+  node:
+    version: 6.1.0
 test:
   override:
     - npm run dist
