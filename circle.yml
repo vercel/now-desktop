@@ -6,3 +6,4 @@ deployment:
     branch: master
     commands:
       - npm run dist
+      - cp dist/mac/*.zip $CIRCLE_ARTIFACTS
