@@ -1,6 +1,7 @@
 ![](https://github.com/zeit/art/blob/ae28ead3b4406195f6ec3607eccd7935d0a11c50/now-desktop/repo-banner.png)
 
-[![Build Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
+[![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
+[![Windows CI status](https://ci.appveyor.com/api/projects/status/f89ekqwtl402s614?svg=true)](https://ci.appveyor.com/project/appveyor-zeit/now-desktop)
 [![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
