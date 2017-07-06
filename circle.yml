@@ -3,6 +3,6 @@ machine:
     version: 8.2
 deployment:
   release:
-    branch: master
+    tag: /.*/
     commands:
       - npm run dist
