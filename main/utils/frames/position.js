@@ -5,44 +5,49 @@ const { platform } = require('os')
 const compare = require('just-compare')
 
 let trayBoundsCache = null
+let displayAreaCache = null
 
 module.exports = (tray, window) => {
+  // This module needs to be loaded after the app is ready
+  // I don't know why, but that's required by electron
+  const { screen } = require('electron')
+  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
+  const displayArea = display.workArea
+
   const trayBounds = tray.getBounds()
   const isWin = platform() === 'win32'
 
-  if (trayBoundsCache) {
+  if (trayBoundsCache && displayAreaCache) {
     // Compare only the object props
-    if (compare(trayBoundsCache, trayBounds)) {
+    if (
+      compare(trayBoundsCache, trayBounds) &&
+      compare(displayAreaCache, displayArea)
+    ) {
       return
     }
   }
 
-  // Cache the tray position
+  // Cache the tray and display positions
   trayBoundsCache = trayBounds
+  displayAreaCache = displayArea
 
-  // This module needs to be loaded after the app is ready
-  // I don't know why, but that's required by electron
-  const { screen } = require('electron')
   const windowSize = window.getSize()
 
   let horizontalPosition
   let verticalPosition
 
-  if (!isWin) {
-    const trayCenter = trayBounds.x + trayBounds.width / 2
-
-    horizontalPosition = trayCenter - windowSize[0] / 2
-    verticalPosition = trayBounds.height + 6
-  }
-
-  // Find the current display
-  const display = screen.getDisplayMatching(trayBounds)
-  const displayArea = display.workAreaSize
-
   if (isWin) {
-    horizontalPosition = displayArea.width - windowSize[0]
-    verticalPosition = displayArea.height - windowSize[1]
+    horizontalPosition = displayArea.x + displayArea.width - windowSize[0]
+    verticalPosition = displayArea.y + displayArea.height - windowSize[1]
   } else {
+    const trayCenter = trayBounds.x + trayBounds.width / 2
+    horizontalPosition = trayCenter - windowSize[0] / 2
+
+    // The macOS implementation of Electron.Tray ceils trayBounds.y to zero
+    // making it unreliable for vertically positioning the window.
+    // Use the display's work area instead.
+    verticalPosition = displayArea.y + 5
+
     const left = horizontalPosition + windowSize[0]
     const maxLeft = displayArea.width - 18
 
