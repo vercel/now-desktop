@@ -103,6 +103,7 @@ class Feed extends React.Component {
       }
 
       // It's important that this is being `await`ed
+      // eslint-disable-next-line no-await-in-loop
       await this.loadEvents(team.id)
     }
   }
