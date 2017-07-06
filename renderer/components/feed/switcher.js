@@ -574,6 +574,7 @@ class Switcher extends React.Component {
   }
 
   renderItem() {
+    // eslint-disable-next-line new-cap
     return SortableElement(({ team }) => {
       const isActive = this.state.scope === team.id ? 'active' : ''
       const isUser = !team.id.includes('team')
@@ -613,6 +614,7 @@ class Switcher extends React.Component {
   renderList() {
     const teams = this.renderTeams()
 
+    // eslint-disable-next-line new-cap
     return SortableContainer(() =>
       <ul>
         {teams}
