@@ -9,6 +9,8 @@ For more details about Now and why you should use it, head to [this page](https:
 
 ## Usage
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/zeit/now-desktop.svg)](https://greenkeeper.io/)
+
 You can download the latest release [here](https://zeit.co/download).
 
 If you're using [Homebrew Cask](https://caskroom.github.io), you can simply install it by running these commands:
