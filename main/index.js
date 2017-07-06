@@ -242,14 +242,18 @@ app.on('ready', async () => {
     return app.exit()
   }
 
+  const { wasOpenedAtLogin } = app.getLoginItemSettings()
+
   if (firstRun()) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    windows.tutorial.once('ready-to-show', toggleActivity)
+    if (!wasOpenedAtLogin) {
+      windows.tutorial.once('ready-to-show', toggleActivity)
+    }
   } else {
     const mainWindow = windows.main
 
-    if (!mainWindow.isVisible()) {
+    if (!mainWindow.isVisible() && !wasOpenedAtLogin) {
       mainWindow.once('ready-to-show', toggleActivity)
     }
   }
