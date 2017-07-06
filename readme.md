@@ -11,7 +11,7 @@ For more details about Now and why you should use it, head to [this page](https:
 
 You can download the latest release [here](https://zeit.co/download).
 
-If you're using [Homebrew Cask](https://caskroom.github.io), you can simply install it by running these commands:
+If you're using [Homebrew Cask](https://caskroom.github.io), you can install it by running these commands:
 
 ```bash
 brew update
