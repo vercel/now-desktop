@@ -155,7 +155,7 @@ class Switcher extends React.Component {
         }
 
         listTimer()
-      }, ms('16s'))
+      }, ms('4s'))
     }
 
     // Only start updating teams once they're loaded!
@@ -352,6 +352,20 @@ class Switcher extends React.Component {
 
   async loadTeams() {
     if (!this.remote) {
+      return
+    }
+
+    const currentWindow = this.remote.getCurrentWindow()
+
+    // If the window isn't visible, don't pull the teams
+    // Ensure to always load the first chunk
+    if (!currentWindow.isVisible() && this.state.initialized) {
+      if (this.props.setTeams) {
+        // When passing `null`, the feed will only
+        // update the events, not the teams
+        await this.props.setTeams(null)
+      }
+
       return
     }
 
