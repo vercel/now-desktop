@@ -119,7 +119,7 @@
     "devtron": "1.4.0",
     "electron": "1.7.1",
     "electron-builder": "19.13.0",
-    "electron-builder-squirrel-windows": "19.12.0",
+    "electron-builder-squirrel-windows": "19.14.0",
     "eslint-config-prettier": "2.3.0",
     "eslint-plugin-react": "7.1.0",
     "html-to-react": "1.2.11",
