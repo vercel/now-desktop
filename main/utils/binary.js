@@ -2,6 +2,7 @@
 const path = require('path')
 const { spawnSync } = require('child_process')
 const { homedir } = require('os')
+const { createGunzip } = require('zlib')
 
 // Packages
 const { ipcMain } = require('electron')
@@ -305,7 +306,8 @@ exports.download = async (url, binaryName, onUpdate) => {
   const binaryDownload = await fetch(url, {
     headers: {
       'user-agent': userAgent
-    }
+    },
+    compress: false
   })
 
   const { body } = binaryDownload
@@ -343,8 +345,14 @@ exports.download = async (url, binaryName, onUpdate) => {
 
   const destination = path.join(tempDir.path, binaryName)
   const writeStream = fs.createWriteStream(destination)
+  const encoding = binaryDownload.headers.get('content-encoding')
 
-  await pipe(body, writeStream)
+  if (encoding === 'gzip') {
+    const gunzip = createGunzip()
+    await pipe(body, gunzip, writeStream)
+  } else {
+    await pipe(body, writeStream)
+  }
 
   return {
     path: path.join(tempDir.path, binaryName),
