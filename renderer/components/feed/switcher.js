@@ -55,6 +55,7 @@ class Switcher extends React.Component {
     this.openMenu = this.openMenu.bind(this)
     this.onSortEnd = this.onSortEnd.bind(this)
     this.onSortStart = this.onSortStart.bind(this)
+    this.allowDrag = this.allowDrag.bind(this)
 
     // Don't update state when dragging teams
     this.moving = false
@@ -639,6 +640,14 @@ class Switcher extends React.Component {
     )
   }
 
+  allowDrag(event) {
+    if (process.platform === 'win32') {
+      return !event.ctrlKey
+    }
+
+    return !event.metaKey
+  }
+
   render() {
     const List = this.renderList()
     const delay = this.state.teams.length
@@ -651,7 +660,7 @@ class Switcher extends React.Component {
                 <List
                   axis="x"
                   lockAxis="x"
-                  shouldCancelStart={e => !e.metaKey}
+                  shouldCancelStart={this.allowDrag}
                   onSortEnd={this.onSortEnd}
                   onSortStart={this.onSortStart}
                   helperClass="switcher-helper"
