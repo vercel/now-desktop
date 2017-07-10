@@ -156,6 +156,9 @@ const moveApp = async () => {
   }
 }
 
+// Chrome Command Line Switches
+app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
 app.on('ready', async () => {
   // Offer to move app to Applications directory
   await moveApp()
