@@ -8,6 +8,7 @@ const { getConfig } = require('./utils/config')
 
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
+  const { openAtLogin } = app.getLoginItemSettings()
 
   return Menu.buildFromTemplate([
     {
@@ -76,6 +77,24 @@ exports.innerMenu = async function(app, tray, windows) {
       click() {
         shell.openExternal('https://zeit.co/docs')
       }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Options',
+      submenu: [
+        {
+          label: 'Open at Login',
+          type: 'checkbox',
+          checked: openAtLogin,
+          click() {
+            app.setLoginItemSettings({
+              openAtLogin: !openAtLogin
+            })
+          }
+        }
+      ]
     },
     {
       type: 'separator'
