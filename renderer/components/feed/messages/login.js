@@ -36,6 +36,7 @@ export default class Login extends Message {
     }
 
     let message = 'logged in'
+
     if (from) message += ` from ${from}`
     if (os) message += ` (${os})`
 
@@ -48,6 +49,16 @@ export default class Login extends Message {
         typeof geolocation.most_specific_subdivision === 'object'
           ? geolocation.most_specific_subdivision.names.en
           : geolocation.regionName
+
+      // Only output location if both city and region are specified
+      if (!city || !region) {
+        return (
+          <p>
+            <b>You</b> {message}
+          </p>
+        )
+      }
+
       if (city === region) {
         message += ` in ${city}`
       } else {
