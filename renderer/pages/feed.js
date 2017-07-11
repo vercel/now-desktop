@@ -204,6 +204,11 @@ class Feed extends React.Component {
       events[scope] = data.events
     }
 
+    // Reset the "you've reached end of list" indicator
+    if (until) {
+      teams[relatedCacheIndex].allCached = false
+    }
+
     this.setState({ events, teams })
   }
 
