@@ -1,9 +1,8 @@
 // Native
 const path = require('path')
-const { platform } = require('os')
 
 // Packages
-const { BrowserWindow } = require('electron')
+const electron = require('electron')
 const isDev = require('electron-is-dev')
 const { resolve } = require('app-root-path')
 const debug = require('electron-debug')
@@ -14,9 +13,10 @@ const positionWindow = require('./position')
 
 // Ensure that people can open the developer tools
 // even in production
-debug({
-  enabled: true
-})
+debug({ enabled: true })
+
+// Check if Windows
+const isWinOS = process.platform === 'win32'
 
 const windowURL = page => {
   if (isDev) {
@@ -27,7 +27,7 @@ const windowURL = page => {
 }
 
 exports.tutorialWindow = tray => {
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 650,
     height: 430,
     title: 'Welcome to Now',
@@ -73,7 +73,7 @@ exports.tutorialWindow = tray => {
 }
 
 exports.aboutWindow = tray => {
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 360,
     height: 408,
     title: 'About Now',
@@ -101,11 +101,11 @@ exports.aboutWindow = tray => {
 exports.mainWindow = tray => {
   let windowHeight = 380
 
-  if (platform() === 'win32') {
+  if (isWinOS) {
     windowHeight -= 12
   }
 
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 330,
     height: windowHeight,
     title: 'Now',
@@ -136,7 +136,27 @@ exports.mainWindow = tray => {
       return
     }
 
-    win.hide()
+    if (!isWinOS) {
+      win.close()
+      return
+    }
+
+    const { screen } = electron
+    const cursor = screen.getCursorScreenPoint()
+    const trayBounds = global.tray.getBounds()
+
+    const xAfter = cursor.x <= trayBounds.x + trayBounds.width
+    const x = cursor.x >= trayBounds.x && xAfter
+    const yAfter = trayBounds.y + trayBounds.height
+    const y = cursor.y >= trayBounds.y && cursor.y <= yAfter
+
+    // Don't close the window on click on the tray icon
+    // Because that will already toogle the window
+    if (x && y) {
+      return
+    }
+
+    win.close()
   })
 
   return win
