@@ -16,7 +16,7 @@ const positionWindow = require('./position')
 debug({ enabled: true })
 
 // Check if Windows
-const isWin = process.platform === 'win32'
+const isWinOS = process.platform === 'win32'
 
 const windowURL = page => {
   if (isDev) {
@@ -101,7 +101,7 @@ exports.aboutWindow = tray => {
 exports.mainWindow = tray => {
   let windowHeight = 380
 
-  if (isWin) {
+  if (isWinOS) {
     windowHeight -= 12
   }
 
@@ -136,7 +136,7 @@ exports.mainWindow = tray => {
       return
     }
 
-    if (!isWin) {
+    if (!isWinOS) {
       win.close()
       return
     }
