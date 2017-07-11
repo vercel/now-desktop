@@ -1,6 +1,5 @@
 // Native
 const path = require('path')
-const { platform } = require('os')
 
 // Packages
 const electron = require('electron')
@@ -15,6 +14,9 @@ const positionWindow = require('./position')
 // Ensure that people can open the developer tools
 // even in production
 debug({ enabled: true })
+
+// Check if Windows
+const isWin = process.platform === 'win32'
 
 const windowURL = page => {
   if (isDev) {
@@ -99,7 +101,7 @@ exports.aboutWindow = tray => {
 exports.mainWindow = tray => {
   let windowHeight = 380
 
-  if (platform() === 'win32') {
+  if (isWin) {
     windowHeight -= 12
   }
 
@@ -131,6 +133,11 @@ exports.mainWindow = tray => {
   // Otherwise, we won't be able to debug the renderer
   win.on('blur', () => {
     if (win.webContents.isDevToolsOpened()) {
+      return
+    }
+
+    if (!isWin) {
+      win.close()
       return
     }
 
