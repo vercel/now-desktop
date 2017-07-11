@@ -13,6 +13,7 @@ const isDev = require('electron-is-dev')
 // Ours
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
+const { saveConfig } = require('./utils/config')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-desktop-releases.zeit.sh/update/' + platform
@@ -142,6 +143,15 @@ const startAppUpdates = () => {
         return
       }
 
+      // Don't open the main window after re-opening
+      // the app for this update
+      saveConfig({
+        desktop: {
+          updated: true
+        }
+      })
+
+      // Then restart the application
       autoUpdater.quitAndInstall()
       app.quit()
     }, ms('2s'))
