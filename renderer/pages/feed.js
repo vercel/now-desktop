@@ -165,6 +165,9 @@ class Feed extends React.Component {
 
     if (!hasEvents && events[scope]) {
       if (until) {
+        teams[relatedCacheIndex].allCached = true
+        this.setState({ teams })
+
         this.loading.delete(scope)
       }
 
@@ -199,6 +202,11 @@ class Feed extends React.Component {
       events[scope] = until ? unique : unique.slice(0, 100)
     } else {
       events[scope] = data.events
+    }
+
+    // Reset the "you've reached end of list" indicator
+    if (until) {
+      teams[relatedCacheIndex].allCached = false
     }
 
     this.setState({ events, teams })
@@ -451,14 +459,9 @@ class Feed extends React.Component {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      retry(
-        () => {
-          this.loadEvents(scope, lastEvent.created)
-        },
-        {
-          retries: 500
-        }
-      )
+      retry(() => this.loadEvents(scope, lastEvent.created), {
+        retries: 500
+      })
     }
   }
 
@@ -554,6 +557,21 @@ class Feed extends React.Component {
 
     if (!scopedEvents || scopedEvents.length < 30) {
       return
+    }
+
+    const teams = this.state.teams
+    const relatedTeam = teams.find(item => item.id === scope)
+
+    if (relatedTeam.allCached) {
+      return (
+        <aside ref={this.setReference} name="loadingIndicator">
+          <span>{`That's it. No events left to show!`}</span>
+
+          <style jsx>
+            {loaderStyles}
+          </style>
+        </aside>
+      )
     }
 
     return (
