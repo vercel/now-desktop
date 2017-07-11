@@ -10,14 +10,8 @@ module.exports = (event, window, tray) => {
     event.preventDefault()
   }
 
-  let checkFocus = true
-
-  if (isWin && isMain) {
-    checkFocus = false
-  }
-
   // If window open and not focused, bring it to focus
-  if (checkFocus && isVisible && !window.isFocused()) {
+  if (!isWin && isVisible && !window.isFocused()) {
     window.focus()
     return
   }
