@@ -123,15 +123,7 @@ const fileDropped = async (event, files) => {
   await deploy(files[0])
 }
 
-const moveApp = async () => {
-  let config
-
-  try {
-    config = await getConfig(true)
-  } catch (err) {
-    config = {}
-  }
-
+const moveApp = async config => {
   const noMove = config.desktop && config.desktop.noMoveWanted
 
   if (noMove || isDev) {
@@ -160,8 +152,16 @@ const moveApp = async () => {
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
 app.on('ready', async () => {
+  let config
+
+  try {
+    config = await getConfig(true)
+  } catch (err) {
+    config = {}
+  }
+
   // Offer to move app to Applications directory
-  await moveApp()
+  await moveApp(config)
 
   const onlineStatusWindow = new electron.BrowserWindow({
     width: 0,
@@ -246,19 +246,30 @@ app.on('ready', async () => {
   }
 
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
+  const afterUpdate = config.desktop && config.desktop.updated
 
   if (firstRun()) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    if (!wasOpenedAtLogin) {
+    if (!wasOpenedAtLogin && !afterUpdate) {
       windows.tutorial.once('ready-to-show', toggleActivity)
     }
   } else {
     const mainWindow = windows.main
 
-    if (!mainWindow.isVisible() && !wasOpenedAtLogin) {
+    if (!mainWindow.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
       mainWindow.once('ready-to-show', toggleActivity)
     }
+  }
+
+  if (afterUpdate) {
+    // The next time the application starts, make sure
+    // to open the main window again
+    saveConfig({
+      desktop: {
+        updated: null
+      }
+    })
   }
 
   // When quitting the app, force close the tutorial and about windows
