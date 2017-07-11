@@ -138,10 +138,10 @@ exports.mainWindow = tray => {
     const cursor = screen.getCursorScreenPoint()
     const trayBounds = global.tray.getBounds()
 
-    const x =
-      cursor.x >= trayBounds.x && cursor.x <= trayBounds.x + trayBounds.width
-    const y =
-      cursor.y >= trayBounds.y && cursor.y <= trayBounds.y + trayBounds.height
+    const xAfter = cursor.x <= trayBounds.x + trayBounds.width
+    const x = cursor.x >= trayBounds.x && xAfter
+    const yAfter = trayBounds.y + trayBounds.height
+    const y = cursor.y >= trayBounds.y && cursor.y <= yAfter
 
     // Don't close the window on click on the tray icon
     // Because that will already toogle the window
