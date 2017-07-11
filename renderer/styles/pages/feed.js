@@ -72,10 +72,10 @@ export const loaderStyles = `
     text-align: center;
     background: #F5F5F5;
     border-top: 1px solid #fff;
-    padding: 12px 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 42px;
   }
 
   img {
