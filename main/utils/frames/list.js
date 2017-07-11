@@ -3,7 +3,7 @@ const path = require('path')
 const { platform } = require('os')
 
 // Packages
-const { BrowserWindow } = require('electron')
+const electron = require('electron')
 const isDev = require('electron-is-dev')
 const { resolve } = require('app-root-path')
 const debug = require('electron-debug')
@@ -14,9 +14,7 @@ const positionWindow = require('./position')
 
 // Ensure that people can open the developer tools
 // even in production
-debug({
-  enabled: true
-})
+debug({ enabled: true })
 
 const windowURL = page => {
   if (isDev) {
@@ -27,7 +25,7 @@ const windowURL = page => {
 }
 
 exports.tutorialWindow = tray => {
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 650,
     height: 430,
     title: 'Welcome to Now',
@@ -73,7 +71,7 @@ exports.tutorialWindow = tray => {
 }
 
 exports.aboutWindow = tray => {
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 360,
     height: 408,
     title: 'About Now',
@@ -105,7 +103,7 @@ exports.mainWindow = tray => {
     windowHeight -= 12
   }
 
-  const win = new BrowserWindow({
+  const win = new electron.BrowserWindow({
     width: 330,
     height: windowHeight,
     title: 'Now',
@@ -136,7 +134,22 @@ exports.mainWindow = tray => {
       return
     }
 
-    win.hide()
+    const { screen } = electron
+    const cursor = screen.getCursorScreenPoint()
+    const trayBounds = global.tray.getBounds()
+
+    const x =
+      cursor.x >= trayBounds.x && cursor.x <= trayBounds.x + trayBounds.width
+    const y =
+      cursor.y >= trayBounds.y && cursor.y <= trayBounds.y + trayBounds.height
+
+    // Don't close the window on click on the tray icon
+    // Because that will already toogle the window
+    if (x && y) {
+      return
+    }
+
+    win.close()
   })
 
   return win

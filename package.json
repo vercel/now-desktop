@@ -63,7 +63,10 @@
     "env": [
       "browser",
       "node"
-    ]
+    ],
+    "rules": {
+      "linebreak-style": 0
+    }
   },
   "license": "MIT",
   "dependencies": {
