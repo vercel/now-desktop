@@ -26,5 +26,11 @@
   ],
   "cache": [
     "node_modules"
+  ],
+  "artifacts": [
+    {
+      "path": "dist/win/*",
+      "name": "output"
+    }
   ]
 }
