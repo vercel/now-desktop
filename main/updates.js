@@ -132,7 +132,7 @@ const startAppUpdates = () => {
   }
 
   // Check for updates every 15 minutes
-  // We won't to this an launch because it might
+  // We won't do this an launch because it might
   // trigger an error loop, since the app is
   // able to quit and install by itself
   setInterval(checkForUpdates, ms('15m'))
