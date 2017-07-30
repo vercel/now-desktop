@@ -8,7 +8,7 @@ const ignore = require('ignore')
 const _glob = require('glob')
 const { stat, lstat, readdir, readFile } = require('fs-extra')
 
-// Ours
+// Utilities
 const IGNORED = require('./ignored')
 
 const glob = async function(pattern, options) {

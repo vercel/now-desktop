@@ -10,10 +10,11 @@ const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
-// Ours
+// Utilities
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { saveConfig } = require('./utils/config')
+const handleException = require('./utils/exception')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-desktop-releases.zeit.sh/update/' + platform
@@ -115,7 +116,8 @@ const startBinaryUpdates = () => {
 }
 
 const startAppUpdates = () => {
-  autoUpdater.on('error', console.error)
+  // Report auto update errors to Slack
+  autoUpdater.on('error', error => handleException(error, false))
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
@@ -129,20 +131,14 @@ const startAppUpdates = () => {
     autoUpdater.checkForUpdates()
   }
 
-  // Check for app update after startup
-  setTimeout(checkForUpdates, ms('10s'))
-
-  // And then every 5 minutes
-  setInterval(checkForUpdates, ms('5m'))
+  // Check for updates every 15 minutes
+  // We won't do this an launch because it might
+  // trigger an error loop, since the app is
+  // able to quit and install by itself
+  setInterval(checkForUpdates, ms('15m'))
 
   autoUpdater.on('update-downloaded', () => {
-    process.env.UPDATE_STATUS = 'downloaded'
-
     setInterval(() => {
-      if (process.env.BUSYNESS !== 'ready') {
-        return
-      }
-
       // Don't open the main window after re-opening
       // the app for this update
       saveConfig({

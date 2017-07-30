@@ -1,7 +1,7 @@
 // Packages
 const { Menu, shell } = require('electron')
 
-// Ours
+// Utilities
 const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig } = require('./utils/config')
