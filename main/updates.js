@@ -131,8 +131,8 @@ const startAppUpdates = () => {
     autoUpdater.checkForUpdates()
   }
 
-  // And then every 5 minutes
-  setInterval(checkForUpdates, ms('5m'))
+  // And then every 15 minutes
+  setInterval(checkForUpdates, ms('15m'))
 
   autoUpdater.on('update-downloaded', () => {
     setInterval(() => {
