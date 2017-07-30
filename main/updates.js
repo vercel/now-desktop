@@ -149,6 +149,7 @@ const startAppUpdates = () => {
 
       // Then restart the application
       autoUpdater.quitAndInstall()
+      app.quit()
     }, ms('2s'))
   })
 
