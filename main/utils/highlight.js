@@ -49,9 +49,6 @@ module.exports = (win, tray) => {
         return
       }
 
-      // Record busyness for auto updater
-      process.env.BUSYNESS = highlighted ? 'window-open' : 'ready'
-
       // Highlight the tray or don't
       tray.setHighlightMode(highlighted ? 'always' : 'selection')
     })
