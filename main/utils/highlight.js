@@ -1,3 +1,6 @@
+// Packages
+const { app } = require('electron')
+
 const states = {
   hide: false,
   show: true,
@@ -41,10 +44,6 @@ module.exports = (win, tray) => {
     const highlighted = states[state]
 
     win.on(state, () => {
-      if (process.env.FORCE_CLOSE) {
-        return
-      }
-
       // Don't toggle highlighting if one window is still open
       if (windowLeft(win)) {
         return
@@ -58,12 +57,12 @@ module.exports = (win, tray) => {
     })
   }
 
-  win.on('close', event => {
-    if (process.env.FORCE_CLOSE) {
-      return
-    }
+  app.on('before-quit', () => {
+    win.destroy()
+  })
 
-    win.hide()
+  win.on('close', event => {
     event.preventDefault()
+    win.hide()
   })
 }

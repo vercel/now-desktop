@@ -272,11 +272,6 @@ app.on('ready', async () => {
     })
   }
 
-  // When quitting the app, force close the tutorial and about windows
-  app.on('before-quit', () => {
-    process.env.FORCE_CLOSE = true
-  })
-
   // Define major event listeners for tray
   tray.on('drop-files', fileDropped)
   tray.on('click', toggleActivity)
