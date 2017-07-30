@@ -10,7 +10,7 @@ const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
-// Ours
+// Utilities
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { saveConfig } = require('./utils/config')

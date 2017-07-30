@@ -1,3 +1,4 @@
+// Utilities
 const positionWindow = require('./position')
 
 module.exports = (event, window, tray) => {
