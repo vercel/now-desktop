@@ -139,10 +139,6 @@ const startAppUpdates = () => {
     process.env.UPDATE_STATUS = 'downloaded'
 
     setInterval(() => {
-      if (process.env.BUSYNESS !== 'ready') {
-        return
-      }
-
       // Don't open the main window after re-opening
       // the app for this update
       saveConfig({

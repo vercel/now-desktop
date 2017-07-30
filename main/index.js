@@ -83,10 +83,6 @@ if (!isDev && firstRun()) {
 // Within the bundled app, the path would otherwise be different
 fixPath()
 
-// Keep track of the app's busyness for telling
-// the autoupdater if it can restart the application
-process.env.BUSYNESS = 'ready'
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()

@@ -433,7 +433,6 @@ module.exports = async dir => {
     throw new Error("Path doesn't exist!")
   }
 
-  process.env.BUSYNESS = 'deploying'
   const loadingPlan = getPlan()
 
   let deploymentType
