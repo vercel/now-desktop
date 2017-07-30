@@ -14,6 +14,7 @@ const isDev = require('electron-is-dev')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { saveConfig } = require('./utils/config')
+const handleException = require('./utils/exception')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-desktop-releases.zeit.sh/update/' + platform
@@ -115,7 +116,8 @@ const startBinaryUpdates = () => {
 }
 
 const startAppUpdates = () => {
-  autoUpdater.on('error', console.error)
+  // Report auto update errors to Slack
+  autoUpdater.on('error', error => handleException(error, false))
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
