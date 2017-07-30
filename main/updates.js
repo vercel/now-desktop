@@ -136,19 +136,17 @@ const startAppUpdates = () => {
   setInterval(checkForUpdates, ms('5m'))
 
   autoUpdater.on('update-downloaded', () => {
-    setInterval(() => {
-      // Don't open the main window after re-opening
-      // the app for this update
-      saveConfig({
-        desktop: {
-          updated: true
-        }
-      })
+    // Don't open the main window after re-opening
+    // the app for this update
+    saveConfig({
+      desktop: {
+        updated: true
+      }
+    })
 
-      // Then restart the application
-      autoUpdater.quitAndInstall()
-      app.quit()
-    }, ms('2s'))
+    // Then restart the application
+    autoUpdater.quitAndInstall()
+    app.quit()
   })
 
   autoUpdater.on('checking-for-update', () => {
