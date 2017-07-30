@@ -135,10 +135,12 @@ const startAppUpdates = () => {
   // And then every 5 minutes
   setInterval(checkForUpdates, ms('5m'))
 
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-downloaded', async () => {
     // Don't open the main window after re-opening
-    // the app for this update
-    saveConfig({
+    // the app for this update. The `await` prefix is
+    // important, because we need to save to config
+    // before the app quits
+    await saveConfig({
       desktop: {
         updated: true
       }
