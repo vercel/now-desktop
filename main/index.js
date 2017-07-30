@@ -184,13 +184,13 @@ app.on('ready', async () => {
   try {
     const iconName = process.platform === 'win32' ? 'iconWhite' : 'iconTemplate'
     tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`))
-
-    // Opening the context menu after login should work
-    global.tray = tray
   } catch (err) {
-    showError('Could not spawn tray item', err)
+    handleException(err)
     return
   }
+
+  // Opening the context menu after login should work
+  global.tray = tray
 
   // Ensure that `next` works with `electron`
   await prepareNext('./renderer')
