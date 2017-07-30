@@ -131,9 +131,6 @@ const startAppUpdates = () => {
     autoUpdater.checkForUpdates()
   }
 
-  // Check for app update after startup
-  setTimeout(checkForUpdates, ms('10s'))
-
   // And then every 5 minutes
   setInterval(checkForUpdates, ms('5m'))
 
