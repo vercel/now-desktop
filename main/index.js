@@ -83,10 +83,6 @@ if (!isDev && firstRun()) {
 // Within the bundled app, the path would otherwise be different
 fixPath()
 
-// Keep track of the app's busyness for telling
-// the autoupdater if it can restart the application
-process.env.BUSYNESS = 'ready'
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -271,11 +267,6 @@ app.on('ready', async () => {
       }
     })
   }
-
-  // When quitting the app, force close the tutorial and about windows
-  app.on('before-quit', () => {
-    process.env.FORCE_CLOSE = true
-  })
 
   // Define major event listeners for tray
   tray.on('drop-files', fileDropped)
