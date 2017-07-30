@@ -136,8 +136,6 @@ const startAppUpdates = () => {
   setInterval(checkForUpdates, ms('5m'))
 
   autoUpdater.on('update-downloaded', () => {
-    process.env.UPDATE_STATUS = 'downloaded'
-
     setInterval(() => {
       // Don't open the main window after re-opening
       // the app for this update
