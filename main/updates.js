@@ -11,10 +11,11 @@ const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
 // Utilities
+const { version } = require('../package')
 const handleException = require('./utils/exception')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
-const { saveConfig } = require('./utils/config')
+const { getConfig, saveConfig } = require('./utils/config')
 
 const platform = process.platform === 'darwin' ? 'osx' : process.platform
 const feedURL = 'https://now-desktop-releases.zeit.sh/update/' + platform
@@ -124,7 +125,39 @@ const checkForUpdates = () => {
   autoUpdater.checkForUpdates()
 }
 
-const startAppUpdates = () => {
+const deleteUpdateConfig = () =>
+  saveConfig({
+    desktop: {
+      updatedFrom: null
+    }
+  })
+
+const startAppUpdates = async mainWindow => {
+  let config
+
+  try {
+    config = await getConfig(true)
+  } catch (err) {
+    config = {}
+  }
+
+  const updatedFrom = config.desktop && config.desktop.updatedFrom
+  const appVersion = isDev ? version : app.getVersion()
+
+  // Ensure that update state gets refreshed after relaunch
+  deleteUpdateConfig()
+
+  // If the current app version matches the old
+  // app version, it's an indicator that installation
+  // of the update failed
+  if (updatedFrom && updatedFrom === appVersion) {
+    console.error('An app update failed to install.')
+
+    // Show a UI banner, allowing the user to retry
+    mainWindow.webContents.send('update-failed')
+    return
+  }
+
   autoUpdater.on('error', error => {
     // Report errors to Slack
     handleException(error, false)
@@ -144,10 +177,14 @@ const startAppUpdates = () => {
     // Don't open the main window after re-opening
     // the app for this update. The `await` prefix is
     // important, because we need to save to config
-    // before the app quits
+    // before the app quits.
+
+    // Here, we also ensure that failed update
+    // installations result in a UI change that lets
+    // the user retry manually.
     await saveConfig({
       desktop: {
-        updated: true
+        updateFrom: appVersion
       }
     })
 
@@ -170,7 +207,7 @@ const startAppUpdates = () => {
   })
 }
 
-module.exports = () => {
+module.exports = mainWindow => {
   if (process.platform === 'linux') {
     return
   }
@@ -178,6 +215,6 @@ module.exports = () => {
   startBinaryUpdates()
 
   if (!isDev) {
-    startAppUpdates()
+    startAppUpdates(mainWindow)
   }
 }
