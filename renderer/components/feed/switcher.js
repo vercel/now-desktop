@@ -686,7 +686,8 @@ class Switcher extends React.Component {
         {updateFailed &&
           <span className="update-failed">
             <p>
-              The app failed to update! <a onClick={this.retryUpdate}>Retry?</a>
+              The app failed to update! –{' '}
+              <a onClick={this.retryUpdate}>Retry?</a>
             </p>
             <Clear onClick={this.closeUpdateMessage} color="#fff" />
           </span>}
