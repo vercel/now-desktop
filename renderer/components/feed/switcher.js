@@ -26,6 +26,7 @@ import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
 // Components
+import Clear from '../../vectors/clear'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
@@ -58,6 +59,7 @@ class Switcher extends React.Component {
     this.onSortStart = this.onSortStart.bind(this)
     this.allowDrag = this.allowDrag.bind(this)
     this.retryUpdate = this.retryUpdate.bind(this)
+    this.closeUpdateMessage = this.closeUpdateMessage.bind(this)
 
     // Don't update state when dragging teams
     this.moving = false
@@ -668,6 +670,12 @@ class Switcher extends React.Component {
     app.exit(0)
   }
 
+  closeUpdateMessage() {
+    this.setState({
+      updateFailed: false
+    })
+  }
+
   render() {
     const List = this.renderList()
     const { online, updateFailed, teams } = this.state
@@ -677,7 +685,10 @@ class Switcher extends React.Component {
       <div>
         {updateFailed &&
           <span className="update-failed">
-            The app failed to update! <a onClick={this.retryUpdate}>Retry?</a>
+            <p>
+              The app failed to update! <a onClick={this.retryUpdate}>Retry?</a>
+            </p>
+            <Clear onClick={this.closeUpdateMessage} color="#fff" />
           </span>}
         <aside>
           {online

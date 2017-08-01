@@ -158,9 +158,16 @@ export const wrapStyle = `
     color: #fff;
     cursor: default;
     padding: 8px 10px;
-    font-size: 13px;
+    font-size: 12px;
     display: block;
     user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .update-failed p {
+    margin: 0;
   }
 
   .update-failed a {
