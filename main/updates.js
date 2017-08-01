@@ -115,27 +115,30 @@ const startBinaryUpdates = () => {
   binaryUpdateTimer(ms('2s'))
 }
 
+const checkForUpdates = () => {
+  if (process.env.CONNECTION === 'offline') {
+    setTimeout(checkForUpdates, ms('10s'))
+    return
+  }
+
+  autoUpdater.checkForUpdates()
+}
+
 const startAppUpdates = () => {
-  // Report errors to Slack
-  autoUpdater.on('error', error => handleException(error, false))
+  autoUpdater.on('error', error => {
+    // Report errors to Slack
+    handleException(error, false)
+
+    // Then check again for update after 15 minutes
+    setTimeout(checkForUpdates, ms('15m'))
+  })
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
   } catch (err) {}
 
-  const checkForUpdates = () => {
-    if (process.env.CONNECTION === 'offline') {
-      return
-    }
-
-    autoUpdater.checkForUpdates()
-  }
-
   // Check for app update after startup
   setTimeout(checkForUpdates, ms('10s'))
-
-  // And then every 5 minutes
-  setInterval(checkForUpdates, ms('5m'))
 
   autoUpdater.on('update-downloaded', async () => {
     // Don't open the main window after re-opening
@@ -162,7 +165,8 @@ const startAppUpdates = () => {
   })
 
   autoUpdater.on('update-not-available', () => {
-    console.log('No updates found for the app')
+    console.log('No updates found. Checking again in 5 minutes...')
+    setTimeout(checkForUpdates, ms('5m'))
   })
 }
 
