@@ -11,6 +11,7 @@ const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
 // Ours
+const handleException = require('./utils/exception')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { saveConfig } = require('./utils/config')
@@ -115,7 +116,8 @@ const startBinaryUpdates = () => {
 }
 
 const startAppUpdates = () => {
-  autoUpdater.on('error', console.error)
+  // Report errors to Slack
+  autoUpdater.on('error', error => handleException(error, false))
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())

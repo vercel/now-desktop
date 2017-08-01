@@ -9,7 +9,7 @@ const fetch = require('node-fetch')
 // Utilities
 const userAgent = require('./user-agent')
 
-module.exports = async error => {
+module.exports = async (error, relaunch = true) => {
   // Make the error sendable using GET
   const errorParts = serializeError(error)
 
@@ -32,6 +32,8 @@ module.exports = async error => {
 
   // Restart the app, so that it doesn't continue
   // running in a broken state
-  app.relaunch()
-  app.exit(0)
+  if (relaunch) {
+    app.relaunch()
+    app.exit(0)
+  }
 }
