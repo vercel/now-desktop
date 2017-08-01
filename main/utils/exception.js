@@ -10,8 +10,16 @@ const fetch = require('node-fetch')
 const userAgent = require('./user-agent')
 
 module.exports = async (error, relaunch = true) => {
-  // Make the error sendable using GET
-  const errorParts = serializeError(error)
+  let errorParts = {}
+
+  if (typeof error === 'string') {
+    errorParts.name = 'Error'
+    errorParts.message = 'An error occured'
+    errorParts.stack = error
+  } else {
+    // Make the error sendable using GET
+    errorParts = serializeError(error)
+  }
 
   // Prepare the request query
   const query = queryString.stringify({
