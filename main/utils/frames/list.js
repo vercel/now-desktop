@@ -123,10 +123,6 @@ exports.mainWindow = tray => {
     }
   })
 
-  setTimeout(() => {
-    win.webContents.send('update-failed')
-  }, 10000)
-
   positionWindow(tray, win)
 
   win.loadURL(windowURL('feed'))
