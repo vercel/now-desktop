@@ -118,7 +118,8 @@ const startBinaryUpdates = () => {
 
 const checkForUpdates = () => {
   if (process.env.CONNECTION === 'offline') {
-    setTimeout(checkForUpdates, ms('10s'))
+    // Try again after half an hour
+    setTimeout(checkForUpdates, ms('30m'))
     return
   }
 
