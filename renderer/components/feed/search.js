@@ -149,7 +149,7 @@ class Search extends React.PureComponent {
           />
 
           <b onClick={this.hide}>
-            <Clear />
+            <Clear color="#4e4e4e" />
           </b>
         </div>
 

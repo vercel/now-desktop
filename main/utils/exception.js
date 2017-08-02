@@ -9,9 +9,17 @@ const fetch = require('node-fetch')
 // Utilities
 const userAgent = require('./user-agent')
 
-module.exports = async error => {
-  // Make the error sendable using GET
-  const errorParts = serializeError(error)
+module.exports = async (error, relaunch = true) => {
+  let errorParts = {}
+
+  if (typeof error === 'string') {
+    errorParts.name = 'Error'
+    errorParts.message = 'An error occured'
+    errorParts.stack = error
+  } else {
+    // Make the error sendable using GET
+    errorParts = serializeError(error)
+  }
 
   // Prepare the request query
   const query = queryString.stringify({
@@ -32,6 +40,8 @@ module.exports = async error => {
 
   // Restart the app, so that it doesn't continue
   // running in a broken state
-  app.relaunch()
-  app.exit(0)
+  if (relaunch) {
+    app.relaunch()
+    app.exit(0)
+  }
 }

@@ -26,6 +26,7 @@ import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 
 // Components
+import Clear from '../../vectors/clear'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
@@ -36,6 +37,7 @@ class Switcher extends React.Component {
     this.state = {
       teams: [],
       scope: null,
+      updateFailed: false,
       online: true,
       initialized: false
     }
@@ -56,6 +58,8 @@ class Switcher extends React.Component {
     this.onSortEnd = this.onSortEnd.bind(this)
     this.onSortStart = this.onSortStart.bind(this)
     this.allowDrag = this.allowDrag.bind(this)
+    this.retryUpdate = this.retryUpdate.bind(this)
+    this.closeUpdateMessage = this.closeUpdateMessage.bind(this)
 
     // Don't update state when dragging teams
     this.moving = false
@@ -129,6 +133,12 @@ class Switcher extends React.Component {
   }
 
   async componentDidMount() {
+    // Show a UI banner if the installation
+    // of an update failed
+    this.ipcRenderer.on('update-failed', () => {
+      this.setState({ updateFailed: true })
+    })
+
     const listTimer = () => {
       setTimeout(async () => {
         if (!this.state.online) {
@@ -648,53 +658,87 @@ class Switcher extends React.Component {
     return !event.metaKey
   }
 
+  retryUpdate() {
+    if (!this.remote) {
+      return
+    }
+
+    const { app } = this.remote
+
+    // Restart the application
+    app.relaunch()
+    app.exit(0)
+  }
+
+  closeUpdateMessage() {
+    this.setState({
+      updateFailed: false
+    })
+  }
+
   render() {
     const List = this.renderList()
-    const delay = this.state.teams.length
+    const { online, updateFailed, teams } = this.state
+    const delay = teams.length
 
     return (
-      <aside>
-        {this.state.online
-          ? <div className="list-container" ref={this.setReference} name="list">
-              <div className="list-scroll">
-                <List
-                  axis="x"
-                  lockAxis="x"
-                  shouldCancelStart={this.allowDrag}
-                  onSortEnd={this.onSortEnd}
-                  onSortStart={this.onSortStart}
-                  helperClass="switcher-helper"
-                  lockToContainerEdges={true}
-                  lockOffset="0%"
-                />
-                <CreateTeam delay={delay} />
+      <div>
+        {updateFailed &&
+          <span className="update-failed">
+            <p>
+              The app failed to update! &mdash;{' '}
+              <a onClick={this.retryUpdate}>Retry?</a>
+            </p>
+            <Clear onClick={this.closeUpdateMessage} color="#fff" />
+          </span>}
+        <aside>
+          {online
+            ? <div
+                className="list-container"
+                ref={this.setReference}
+                name="list"
+              >
+                <div className="list-scroll">
+                  <List
+                    axis="x"
+                    lockAxis="x"
+                    shouldCancelStart={this.allowDrag}
+                    onSortEnd={this.onSortEnd}
+                    onSortStart={this.onSortStart}
+                    helperClass="switcher-helper"
+                    lockToContainerEdges={true}
+                    lockOffset="0%"
+                  />
+                  <CreateTeam delay={delay} />
+                </div>
+
+                <span className="shadow" onClick={this.scrollToEnd} />
               </div>
+            : <p className="offline">
+                {"You're offline!"}
+              </p>}
 
-              <span className="shadow" onClick={this.scrollToEnd} />
-            </div>
-          : <p className="offline">
-              {"You're offline!"}
-            </p>}
-
-        <a
-          className="toggle-menu"
-          onClick={this.openMenu}
-          onContextMenu={this.openMenu}
-          ref={this.setReference}
-          name="menu"
-        >
-          <i />
-          <i />
-          <i />
-        </a>
+          <a
+            className="toggle-menu"
+            onClick={this.openMenu}
+            onContextMenu={this.openMenu}
+            ref={this.setReference}
+            name="menu"
+          >
+            <i />
+            <i />
+            <i />
+          </a>
+        </aside>
 
         <style jsx>
           {wrapStyle}
         </style>
+
         <style jsx global>
           {helperStyle}
         </style>
-      </aside>
+      </div>
     )
   }
 }

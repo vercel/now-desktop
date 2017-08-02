@@ -152,4 +152,29 @@ export const wrapStyle = `
     font-size: 12px;
     color: #4e4e4e;
   }
+
+  .update-failed {
+    background: #ff586c;
+    color: #fff;
+    cursor: default;
+    padding: 8px 10px;
+    font-size: 12px;
+    display: block;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .update-failed p {
+    margin: 0;
+  }
+
+  .update-failed a {
+    font-weight: 700;
+  }
+
+  .update-failed + aside {
+    border-top: 0;
+  }
 `

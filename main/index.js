@@ -173,9 +173,6 @@ app.on('ready', async () => {
     process.env.CONNECTION = status
   })
 
-  // Provide application and the CLI with automatic updates
-  autoUpdater()
-
   // DO NOT create the tray icon BEFORE the login status has been checked!
   // Otherwise, the user will start clicking...
   // ...the icon and the app wouldn't know what to do
@@ -204,6 +201,9 @@ app.on('ready', async () => {
     tutorial: tutorialWindow(tray),
     about: aboutWindow(tray)
   }
+
+  // Provide application and the CLI with automatic updates
+  autoUpdater(windows.main)
 
   // Make the window instances accessible from everywhere
   global.windows = windows
@@ -242,7 +242,7 @@ app.on('ready', async () => {
   }
 
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
-  const afterUpdate = config.desktop && config.desktop.updated
+  const afterUpdate = config.desktop && config.desktop.updatedFrom
 
   if (firstRun()) {
     // Show the tutorial as soon as the content has finished rendering
@@ -256,16 +256,6 @@ app.on('ready', async () => {
     if (!mainWindow.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
       mainWindow.once('ready-to-show', toggleActivity)
     }
-  }
-
-  if (afterUpdate) {
-    // The next time the application starts, make sure
-    // to open the main window again
-    saveConfig({
-      desktop: {
-        updated: null
-      }
-    })
   }
 
   // Define major event listeners for tray
