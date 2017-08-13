@@ -324,9 +324,7 @@ class Switcher extends React.Component {
       const button = new TouchBar.TouchBarButton({
         label: team.name,
         backgroundColor,
-        click: () => {
-          this.changeScope(team, true, true)
-        }
+        click: () => this.changeScope(team, true, true)
       })
 
       buttons.push(button)
