@@ -308,6 +308,33 @@ class Switcher extends React.Component {
     return order
   }
 
+  updateTouchBar() {
+    if (!this.remote) {
+      return
+    }
+
+    const { getCurrentWindow, TouchBar } = this.remote
+    const currentWindow = getCurrentWindow()
+    const buttons = []
+
+    for (const team of this.state.teams) {
+      const active = team.id === this.state.scope
+      const backgroundColor = active ? '#508DF3' : null
+
+      buttons.push(
+        new TouchBar.TouchBarButton({
+          label: team.name,
+          backgroundColor,
+          click: () => {
+            this.changeScope(team, true, true)
+          }
+        })
+      )
+    }
+
+    currentWindow.setTouchBar(new TouchBar(buttons))
+  }
+
   async applyTeamOrder(list, order) {
     const newList = []
 
@@ -427,12 +454,21 @@ class Switcher extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    const { teams, scope } = this.state
+
+    const teamsChanged = !compare(teams, prevState.teams)
+    const scopeChanged = !compare(scope, prevState.scope)
+
+    if (teamsChanged || scopeChanged) {
+      this.updateTouchBar()
+    }
+
     if (this.state.initialized) {
       return
     }
 
-    const teamsCount = this.state.teams.length
+    const teamsCount = teams.length
 
     if (teamsCount === 0) {
       return
