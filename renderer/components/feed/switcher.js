@@ -319,7 +319,7 @@ class Switcher extends React.Component {
 
     for (const team of this.state.teams) {
       const active = team.id === this.state.scope
-      const backgroundColor = active ? '#508DF3' : null
+      const backgroundColor = active ? '#3782D1' : null
 
       const button = new TouchBar.TouchBarButton({
         label: team.name,
