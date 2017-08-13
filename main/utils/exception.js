@@ -9,7 +9,11 @@ const fetch = require('node-fetch')
 // Utilities
 const userAgent = require('./user-agent')
 
-const ignored = ['request timed out', 'SSL error has occurred']
+const ignored = [
+  'request timed out',
+  'SSL error has occurred',
+  'read-only volume'
+]
 
 module.exports = async (error, relaunch = true) => {
   let errorParts = {}
