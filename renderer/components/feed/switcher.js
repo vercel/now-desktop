@@ -321,15 +321,15 @@ class Switcher extends React.Component {
       const active = team.id === this.state.scope
       const backgroundColor = active ? '#508DF3' : null
 
-      buttons.push(
-        new TouchBar.TouchBarButton({
-          label: team.name,
-          backgroundColor,
-          click: () => {
-            this.changeScope(team, true, true)
-          }
-        })
-      )
+      const button = new TouchBar.TouchBarButton({
+        label: team.name,
+        backgroundColor,
+        click: () => {
+          this.changeScope(team, true, true)
+        }
+      })
+
+      buttons.push(button)
     }
 
     currentWindow.setTouchBar(new TouchBar(buttons))
