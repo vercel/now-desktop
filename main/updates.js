@@ -185,7 +185,7 @@ const startAppUpdates = async mainWindow => {
     // the user retry manually.
     await saveConfig({
       desktop: {
-        updateFrom: appVersion
+        updatedFrom: appVersion
       }
     })
 
