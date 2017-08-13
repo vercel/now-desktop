@@ -9,6 +9,8 @@ const fetch = require('node-fetch')
 // Utilities
 const userAgent = require('./user-agent')
 
+const ignored = ['request timed out', 'SSL error has occurred']
+
 module.exports = async (error, relaunch = true) => {
   let errorParts = {}
 
@@ -19,6 +21,13 @@ module.exports = async (error, relaunch = true) => {
   } else {
     // Make the error sendable using GET
     errorParts = serializeError(error)
+  }
+
+  for (const toIgnore of ignored) {
+    // Certain errors should not lead to any actions
+    if (errorParts.stack.includes(toIgnore)) {
+      return
+    }
   }
 
   // Prepare the request query
