@@ -19,6 +19,11 @@
   },
   "build": {
     "appId": "co.zeit.now",
+    "files": [
+      "**/*",
+      "!renderer",
+      "renderer/out"
+    ],
     "win": {
       "target": [
         "squirrel"
