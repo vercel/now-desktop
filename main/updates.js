@@ -12,7 +12,6 @@ const isDev = require('electron-is-dev')
 
 // Utilities
 const { version } = require('../package')
-const handleException = require('./utils/exception')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
@@ -160,8 +159,10 @@ const startAppUpdates = async mainWindow => {
   }
 
   autoUpdater.on('error', error => {
-    // Report errors to Slack
-    handleException(error, false)
+    // Report errors to console. We can't report
+    // to Slack and restart here, because it will
+    // cause the app to never start again
+    console.error(error)
 
     // Then check again for update after 15 minutes
     setTimeout(checkForUpdates, ms('15m'))
