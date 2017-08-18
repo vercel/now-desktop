@@ -5,15 +5,10 @@ const path = require('path')
 const electron = require('electron')
 const isDev = require('electron-is-dev')
 const { resolve } = require('app-root-path')
-const debug = require('electron-debug')
 
 // Utilities
 const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
-
-// Ensure that people can open the developer tools
-// even in production
-debug({ enabled: true })
 
 // Check if Windows
 const isWinOS = process.platform === 'win32'

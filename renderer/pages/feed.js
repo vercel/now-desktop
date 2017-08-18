@@ -14,6 +14,7 @@ import strip from 'strip'
 import parseHTML from 'html-to-react'
 import retry from 'async-retry'
 import ms from 'ms'
+import isDev from 'electron-is-dev'
 
 // Components
 import Title from '../components/title'
@@ -212,7 +213,15 @@ class Feed extends React.Component {
     this.setState({ events, teams })
   }
 
-  hideWindow(event) {
+  onKeyDown(event) {
+    const currentWindow = this.remote.getCurrentWindow()
+    const { keyCode, metaKey, altKey } = event
+
+    // Allow developers to inspect the app in production
+    if (keyCode === 73 && metaKey && altKey && !isDev) {
+      currentWindow.webContents.openDevTools()
+    }
+
     if (event.keyCode !== 27) {
       return
     }
@@ -224,7 +233,6 @@ class Feed extends React.Component {
       return
     }
 
-    const currentWindow = this.remote.getCurrentWindow()
     currentWindow.hide()
   }
 
@@ -299,7 +307,7 @@ class Feed extends React.Component {
       this.forceUpdate()
 
       // And then allow hiding the windows using the keyboard
-      document.addEventListener('keydown', this.hideWindow.bind(this))
+      document.addEventListener('keydown', this.onKeyDown.bind(this))
     })
 
     currentWindow.on('hide', () => {
@@ -307,7 +315,7 @@ class Feed extends React.Component {
       scrollTimer = setTimeout(this.clearScroll.bind(this), ms('5s'))
 
       // Remove key press listeners
-      document.removeEventListener('keydown', this.hideWindow.bind(this))
+      document.removeEventListener('keydown', this.onKeyDown.bind(this))
     })
   }
 
