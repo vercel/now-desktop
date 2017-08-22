@@ -29,6 +29,7 @@ import messageComponents from '../components/feed/messages'
 // Utilities
 import loadData from '../utils/data/load'
 import { API_EVENTS } from '../utils/data/endpoints'
+import eventSortedOut from '../utils/filter-event'
 
 // Styles
 import {
@@ -66,6 +67,7 @@ class Feed extends React.Component {
     this.setScope = this.setScope.bind(this)
     this.setOnlineState = this.setOnlineState.bind(this)
     this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
+    this.setTypeFilter = this.setTypeFilter.bind(this)
 
     // Ensure that we're not loading events again
     this.loading = new Set()
@@ -380,7 +382,8 @@ class Feed extends React.Component {
   }
 
   filterEvents(list, scopedTeam) {
-    const filtering = Boolean(this.state.eventFilter)
+    const { eventFilter, typeFilter, currentUser } = this.state
+    const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
 
     let keywords = null
@@ -401,6 +404,10 @@ class Feed extends React.Component {
       }
 
       item.message = <MessageComponent {...args} />
+
+      if (eventSortedOut(typeFilter, item, currentUser)) {
+        return false
+      }
 
       if (filtering) {
         let markup = renderToStaticMarkup(item.message)
@@ -616,6 +623,7 @@ class Feed extends React.Component {
             name="title"
             searchShown={Boolean(activeScope)}
             isUser={isUser}
+            setTypeFilter={this.setTypeFilter}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>

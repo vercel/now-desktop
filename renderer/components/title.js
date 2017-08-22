@@ -85,8 +85,6 @@ class Title extends React.PureComponent {
       setTypeFilter(type)
     }
 
-    console.log(type)
-
     this.setState({ filteredType: type })
   }
 
