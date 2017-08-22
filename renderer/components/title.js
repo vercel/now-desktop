@@ -119,7 +119,7 @@ class Title extends React.PureComponent {
 
         <section className="update-message">
           <Done />
-          <p>Context updated for now CLI!</p>
+          <p>Context updated for Now CLI!</p>
         </section>
 
         <style jsx>
