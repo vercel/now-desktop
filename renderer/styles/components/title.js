@@ -39,11 +39,11 @@ export default `
     font-weight: 600;
   }
 
+  .light .filter,
   .light .deploy {
     position: absolute;
     height: 36px;
     width: 36px;
-    right: 0;
     top: 0;
     display: flex;
     justify-content: center;
@@ -52,12 +52,21 @@ export default `
     transition: opacity .2s ease;
   }
 
+  .light .filter:hover,
   .light .deploy:hover {
     opacity: 1;
   }
 
+  .light .deploy {
+    right: 0;
+  }
+
   .light .deploy.hidden {
     opacity: 0;
+  }
+
+  .light .filter {
+    right: 36px;
   }
 
   .windows {

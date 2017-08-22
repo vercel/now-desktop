@@ -13,6 +13,7 @@ import styles from '../styles/components/title'
 // Components
 import Done from '../vectors/done'
 import Deploy from '../vectors/deploy'
+import Filter from '../vectors/filter'
 import Search from './feed/search'
 
 class Title extends React.PureComponent {
@@ -95,6 +96,11 @@ class Title extends React.PureComponent {
           <h1>
             {this.props.children}
           </h1>
+
+          {this.props.light &&
+            <span className="filter">
+              <Filter />
+            </span>}
 
           {this.props.light &&
             <span
