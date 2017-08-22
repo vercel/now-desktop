@@ -113,6 +113,7 @@ class Title extends React.PureComponent {
           </h1>
 
           {this.props.light &&
+            this.props.searchShown &&
             <span className="toggle-filter" onClick={this.toggleFilter}>
               <Filter />
             </span>}
