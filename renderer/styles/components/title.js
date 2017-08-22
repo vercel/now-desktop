@@ -58,7 +58,8 @@ export default `
   }
 
   .light .toggle-filter:hover,
-  .light .deploy:hover {
+  .light .deploy:hover,
+  .filter-visible .toggle-filter {
     opacity: 1;
   }
 
@@ -135,6 +136,7 @@ export default `
     flex: 1;
     text-align: center;
     padding: 3px 0;
+    cursor: default;
   }
 
   .filter a:nth-child(1) {
