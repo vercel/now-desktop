@@ -78,6 +78,18 @@ class Title extends React.PureComponent {
     }, 2000)
   }
 
+  updateTypeFilter(type) {
+    const { setTypeFilter } = this.props
+
+    if (setTypeFilter) {
+      setTypeFilter(type)
+    }
+
+    console.log(type)
+
+    this.setState({ filteredType: type })
+  }
+
   renderTypeFilter() {
     const types = ['Me', 'Team', 'System']
     const { isUser } = this.props
@@ -103,7 +115,11 @@ class Title extends React.PureComponent {
             }
 
             return (
-              <a className={classes.join(' ')} key={item}>
+              <a
+                className={classes.join(' ')}
+                key={item}
+                onClick={this.updateTypeFilter.bind(this, handle)}
+              >
                 {item}
               </a>
             )

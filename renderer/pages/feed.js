@@ -49,7 +49,8 @@ class Feed extends React.Component {
       currentUser: null,
       teams: [],
       eventFilter: null,
-      online: true
+      online: true,
+      typeFilter: 'team'
     }
 
     this.remote = electron.remote || false
@@ -320,21 +321,19 @@ class Feed extends React.Component {
   }
 
   setOnlineState() {
-    this.setState({
-      online: navigator.onLine
-    })
+    this.setState({ online: navigator.onLine })
   }
 
   showDropZone() {
-    this.setState({
-      dropZone: true
-    })
+    this.setState({ dropZone: true })
   }
 
   hideDropZone() {
-    this.setState({
-      dropZone: false
-    })
+    this.setState({ dropZone: false })
+  }
+
+  setTypeFilter(type) {
+    this.setState({ typeFilter: type })
   }
 
   setScope(scope) {
