@@ -382,7 +382,8 @@ class Feed extends React.Component {
   }
 
   filterEvents(list, scopedTeam) {
-    const { eventFilter, typeFilter, currentUser } = this.state
+    let { eventFilter, typeFilter, currentUser } = this.state
+
     const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
 
@@ -404,6 +405,10 @@ class Feed extends React.Component {
       }
 
       item.message = <MessageComponent {...args} />
+
+      if (typeFilter === 'team' && !item.user) {
+        typeFilter = 'me'
+      }
 
       if (eventSortedOut(typeFilter, item, currentUser)) {
         return false

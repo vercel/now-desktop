@@ -5,7 +5,7 @@ const getEventGroup = (item, currentUser) => {
     return 'system'
   }
 
-  if (currentUser.uid === item.user.uid) {
+  if (!item.user || currentUser.uid === item.user.uid) {
     return 'me'
   }
 
