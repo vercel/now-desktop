@@ -136,7 +136,9 @@ class Title extends React.PureComponent {
 
         <section className="filter">
           <nav>
-            <a href="#">Me</a>
+            <a href="#" className="active">
+              Me
+            </a>
             <a href="#">Team</a>
             <a href="#">System</a>
           </nav>

@@ -139,6 +139,10 @@ export default `
     cursor: default;
   }
 
+  .filter a.active {
+    color: #000;
+  }
+
   .filter a:nth-child(1) {
     border-right: 1px solid #EAEAEA;
   }
