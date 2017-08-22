@@ -80,15 +80,25 @@ class Title extends React.PureComponent {
 
   renderTypeFilter() {
     const types = ['Me', 'Team', 'System']
+    const { isUser } = this.props
+    const { filteredType } = this.state
+
+    if (isUser) {
+      types.splice(1, 1)
+    }
 
     return (
       <section className="filter">
         <nav>
-          {types.map(item => {
+          {types.map((item, index) => {
             const classes = []
             const handle = item.toLowerCase()
 
-            if (this.state.filteredType === handle) {
+            if (filteredType === handle) {
+              classes.push('active')
+            }
+
+            if (isUser && filteredType === 'team' && index === 0) {
               classes.push('active')
             }
 
@@ -183,7 +193,8 @@ Title.propTypes = {
   setFilter: PropTypes.func,
   setSearchRef: PropTypes.func,
   searchShown: PropTypes.bool,
-  setTypeFilter: PropTypes.func
+  setTypeFilter: PropTypes.func,
+  isUser: PropTypes.bool
 }
 
 export default Title

@@ -595,7 +595,14 @@ class Feed extends React.Component {
   }
 
   render() {
+    let isUser = false
+
     const activeScope = this.detectScope('id', this.state.scope)
+    const { currentUser } = this.state
+
+    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
+      isUser = true
+    }
 
     return (
       <main>
@@ -609,6 +616,7 @@ class Feed extends React.Component {
             light
             name="title"
             searchShown={Boolean(activeScope)}
+            isUser={isUser}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
