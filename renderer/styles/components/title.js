@@ -31,6 +31,7 @@ export default `
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     flex-shrink: 0;
+    display: block;
   }
 
   .light h1 {
@@ -73,7 +74,7 @@ export default `
     border-radius: 0;
   }
 
-  section {
+  .update-message {
     opacity: 0;
     transition: opacity .8s ease;
     position: absolute;
@@ -87,18 +88,28 @@ export default `
     display: flex;
     padding-left: 17px;
     pointer-events: none;
+    height: 35px;
   }
 
-  section p {
+  .update-message p {
     margin-left: 12px;
   }
 
-  .scope-updated section {
+  .scope-updated .update-message {
     opacity: 1;
   }
 
   div {
     transition: opacity .5s ease;
+  }
+
+  .light div {
+    height: 36px;
+    width: 100vw;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .scope-updated div {

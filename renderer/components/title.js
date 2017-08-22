@@ -20,7 +20,11 @@ class Title extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = { updateMessage: false }
+    this.state = {
+      updateMessage: false,
+      typeFilter: false
+    }
+
     this.setReference = setRef.bind(this)
 
     this.selectToDeploy = this.selectToDeploy.bind(this)
@@ -113,7 +117,7 @@ class Title extends React.PureComponent {
             </span>}
         </div>
 
-        <section>
+        <section className="update-message">
           <Done />
           <p>Context updated for now CLI!</p>
         </section>
