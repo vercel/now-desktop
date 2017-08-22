@@ -22,7 +22,8 @@ class Title extends React.PureComponent {
 
     this.state = {
       updateMessage: false,
-      typeFilter: false
+      typeFilter: false,
+      filteredType: 'team'
     }
 
     this.setReference = setRef.bind(this)
@@ -75,6 +76,35 @@ class Title extends React.PureComponent {
         updateMessage: false
       })
     }, 2000)
+  }
+
+  renderTypeFilter() {
+    const types = ['Me', 'Team', 'System']
+
+    return (
+      <section className="filter">
+        <nav>
+          {types.map(item => {
+            const classes = []
+            const handle = item.toLowerCase()
+
+            if (this.state.filteredType === handle) {
+              classes.push('active')
+            }
+
+            return (
+              <a className={classes.join(' ')} key={item}>
+                {item}
+              </a>
+            )
+          })}
+        </nav>
+
+        <style jsx>
+          {styles}
+        </style>
+      </section>
+    )
   }
 
   render() {
@@ -134,15 +164,7 @@ class Title extends React.PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        <section className="filter">
-          <nav>
-            <a href="#" className="active">
-              Me
-            </a>
-            <a href="#">Team</a>
-            <a href="#">System</a>
-          </nav>
-        </section>
+        {this.renderTypeFilter()}
 
         <style jsx>
           {styles}
@@ -160,7 +182,8 @@ Title.propTypes = {
   light: PropTypes.bool,
   setFilter: PropTypes.func,
   setSearchRef: PropTypes.func,
-  searchShown: PropTypes.bool
+  searchShown: PropTypes.bool,
+  setTypeFilter: PropTypes.func
 }
 
 export default Title
