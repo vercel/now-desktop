@@ -30,6 +30,7 @@ class Title extends React.PureComponent {
     this.selectToDeploy = this.selectToDeploy.bind(this)
     this.hideDeployIcon = this.hideDeployIcon.bind(this)
     this.showDeployIcon = this.showDeployIcon.bind(this)
+    this.toggleFilter = this.toggleFilter.bind(this)
   }
 
   componentDidMount() {
@@ -52,6 +53,12 @@ class Title extends React.PureComponent {
 
   showDeployIcon() {
     this.deployIcon.classList.remove('hidden')
+  }
+
+  toggleFilter() {
+    this.setState({
+      typeFilter: !this.state.typeFilter
+    })
   }
 
   scopeUpdated() {
@@ -85,6 +92,10 @@ class Title extends React.PureComponent {
       classes.push('scope-updated')
     }
 
+    if (this.state.typeFilter) {
+      classes.push('filter-visible')
+    }
+
     return (
       <aside className={classes.join(' ')}>
         <div>
@@ -102,7 +113,7 @@ class Title extends React.PureComponent {
           </h1>
 
           {this.props.light &&
-            <span className="filter">
+            <span className="toggle-filter" onClick={this.toggleFilter}>
               <Filter />
             </span>}
 
@@ -120,6 +131,14 @@ class Title extends React.PureComponent {
         <section className="update-message">
           <Done />
           <p>Context updated for Now CLI!</p>
+        </section>
+
+        <section className="filter">
+          <nav>
+            <a href="#">Me</a>
+            <a href="#">Team</a>
+            <a href="#">System</a>
+          </nav>
         </section>
 
         <style jsx>

@@ -14,6 +14,10 @@ export default `
     cursor: default;
   }
 
+  aside.filter-visible {
+    height: auto;
+  }
+
   h1 {
     margin: 0;
     color: #000000;
@@ -40,7 +44,7 @@ export default `
     font-weight: 600;
   }
 
-  .light .filter,
+  .light .toggle-filter,
   .light .deploy {
     position: absolute;
     height: 36px;
@@ -53,7 +57,7 @@ export default `
     transition: opacity .2s ease;
   }
 
-  .light .filter:hover,
+  .light .toggle-filter:hover,
   .light .deploy:hover {
     opacity: 1;
   }
@@ -66,7 +70,7 @@ export default `
     opacity: 0;
   }
 
-  .light .filter {
+  .light .toggle-filter {
     right: 36px;
   }
 
@@ -114,5 +118,42 @@ export default `
 
   .scope-updated div {
     opacity: 0;
+  }
+
+  .filter {
+    display: none;
+    justify-content: center;
+    padding-bottom: 16px;
+    padding-top: 5px;
+  }
+
+  .filter a {
+    color: #999999;
+    text-decoration: none;
+    font-size: 11px;
+    display: block;
+    flex: 1;
+    text-align: center;
+    padding: 3px 0;
+  }
+
+  .filter a:nth-child(1) {
+    border-right: 1px solid #EAEAEA;
+  }
+
+  .filter a:nth-child(3) {
+    border-left: 1px solid #EAEAEA;
+  }
+
+  .filter nav {
+    border: 1px solid #EAEAEA;
+    display: flex;
+    border-radius: 3px;
+    width: 190px;
+    justify-content: space-between;
+  }
+
+  .filter-visible .filter {
+    display: flex;
   }
 `
