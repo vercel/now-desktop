@@ -6,7 +6,6 @@ export default `
     bottom: 0;
     display: flex;
     width: 100%;
-    z-index: -200;
   }
 
   span {

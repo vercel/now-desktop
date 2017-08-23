@@ -14,6 +14,10 @@ export default `
     cursor: default;
   }
 
+  aside.filter-visible {
+    height: auto;
+  }
+
   h1 {
     margin: 0;
     color: #000000;
@@ -31,6 +35,7 @@ export default `
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     flex-shrink: 0;
+    display: block;
   }
 
   .light h1 {
@@ -39,21 +44,32 @@ export default `
     font-weight: 600;
   }
 
+  .light .toggle-filter,
   .light .deploy {
     position: absolute;
     height: 36px;
     width: 36px;
-    right: 0;
     top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: .5;
     transition: opacity .2s ease;
   }
 
-  .light .deploy:hover {
+  .light .toggle-filter {
+    opacity: 0.35;
+    right: 36px;
+  }
+
+  .light .toggle-filter:hover,
+  .light .deploy:hover,
+  .light.filter-visible .toggle-filter {
     opacity: 1;
+  }
+
+  .light .deploy {
+    opacity: .5;
+    right: 0;
   }
 
   .light .deploy.hidden {
@@ -64,7 +80,7 @@ export default `
     border-radius: 0;
   }
 
-  section {
+  .update-message {
     opacity: 0;
     transition: opacity .8s ease;
     position: absolute;
@@ -78,13 +94,14 @@ export default `
     display: flex;
     padding-left: 17px;
     pointer-events: none;
+    height: 35px;
   }
 
-  section p {
+  .update-message p {
     margin-left: 12px;
   }
 
-  .scope-updated section {
+  .scope-updated .update-message {
     opacity: 1;
   }
 
@@ -92,7 +109,58 @@ export default `
     transition: opacity .5s ease;
   }
 
+  .light div {
+    height: 36px;
+    width: 100vw;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .scope-updated div {
     opacity: 0;
+  }
+
+  .filter {
+    display: none;
+    justify-content: center;
+    padding-bottom: 16px;
+    padding-top: 5px;
+  }
+
+  .filter a {
+    color: #999999;
+    text-decoration: none;
+    font-size: 11px;
+    display: block;
+    flex: 1;
+    text-align: center;
+    padding: 3px 0;
+    cursor: default;
+  }
+
+  .filter a.active {
+    color: #000;
+  }
+
+  .filter a:nth-child(1) {
+    border-right: 1px solid #EAEAEA;
+  }
+
+  .filter a:nth-child(3) {
+    border-left: 1px solid #EAEAEA;
+  }
+
+  .filter nav {
+    border: 1px solid #EAEAEA;
+    display: flex;
+    border-radius: 3px;
+    width: 190px;
+    justify-content: space-between;
+  }
+
+  .filter-visible .filter {
+    display: flex;
   }
 `

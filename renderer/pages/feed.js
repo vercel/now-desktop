@@ -29,6 +29,7 @@ import messageComponents from '../components/feed/messages'
 // Utilities
 import loadData from '../utils/data/load'
 import { API_EVENTS } from '../utils/data/endpoints'
+import eventSortedOut from '../utils/filter-event'
 
 // Styles
 import {
@@ -49,7 +50,8 @@ class Feed extends React.Component {
       currentUser: null,
       teams: [],
       eventFilter: null,
-      online: true
+      online: true,
+      typeFilter: 'team'
     }
 
     this.remote = electron.remote || false
@@ -65,6 +67,7 @@ class Feed extends React.Component {
     this.setScope = this.setScope.bind(this)
     this.setOnlineState = this.setOnlineState.bind(this)
     this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
+    this.setTypeFilter = this.setTypeFilter.bind(this)
 
     // Ensure that we're not loading events again
     this.loading = new Set()
@@ -205,9 +208,11 @@ class Feed extends React.Component {
       events[scope] = data.events
     }
 
-    // Reset the "you've reached end of list" indicator
     if (until) {
+      // Reset the "you've reached end of list" indicator
       teams[relatedCacheIndex].allCached = false
+    } else if (events[scope].length < 30) {
+      teams[relatedCacheIndex].allCached = true
     }
 
     this.setState({ events, teams })
@@ -320,21 +325,19 @@ class Feed extends React.Component {
   }
 
   setOnlineState() {
-    this.setState({
-      online: navigator.onLine
-    })
+    this.setState({ online: navigator.onLine })
   }
 
   showDropZone() {
-    this.setState({
-      dropZone: true
-    })
+    this.setState({ dropZone: true })
   }
 
   hideDropZone() {
-    this.setState({
-      dropZone: false
-    })
+    this.setState({ dropZone: false })
+  }
+
+  setTypeFilter(type) {
+    this.setState({ typeFilter: type })
   }
 
   setScope(scope) {
@@ -380,8 +383,14 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list, scopedTeam) {
-    const filtering = Boolean(this.state.eventFilter)
+  filterEvents(list, scopedTeam, customTypeFilter) {
+    let { eventFilter, typeFilter, currentUser } = this.state
+
+    if (customTypeFilter) {
+      typeFilter = customTypeFilter
+    }
+
+    const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
 
     let keywords = null
@@ -393,6 +402,18 @@ class Feed extends React.Component {
     }
 
     const events = list.map(item => {
+      if (typeFilter === 'team' && !item.user) {
+        typeFilter = 'me'
+      }
+
+      if (eventSortedOut(typeFilter, item, currentUser)) {
+        return false
+      }
+
+      if (customTypeFilter) {
+        return item
+      }
+
       const MessageComponent = messageComponents.get(item.type)
 
       const args = {
@@ -473,6 +494,34 @@ class Feed extends React.Component {
     }
   }
 
+  eventsAreEnough(team) {
+    const { teams, events } = this.state
+    const relatedTeam = teams.find(item => item.id === team)
+    const scopedEvents = events[team]
+
+    if (relatedTeam.allCached) {
+      return
+    }
+
+    const groups = ['me', 'team', 'system']
+
+    for (const group of groups) {
+      const { length } = this.filterEvents(scopedEvents, relatedTeam, group)
+
+      if (length > 30) {
+        continue
+      }
+
+      const { created } = scopedEvents[scopedEvents.length - 1]
+
+      retry(() => this.loadEvents(team, created), {
+        minTimeout: ms('5s')
+      })
+
+      return
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const newEvents = this.state.events
     const oldEvents = prevState.events
@@ -482,7 +531,11 @@ class Feed extends React.Component {
         continue
       }
 
-      if (newEvents[team] !== oldEvents[team] && this.loading.has(team)) {
+      if (newEvents[team] !== oldEvents[team]) {
+        // Check if enough events exist for
+        // every event group
+        this.eventsAreEnough(team)
+
         // Allow infinite scroll to trigger a new
         // data download again
         this.loading.delete(team)
@@ -595,7 +648,14 @@ class Feed extends React.Component {
   }
 
   render() {
+    let isUser = false
+
     const activeScope = this.detectScope('id', this.state.scope)
+    const { currentUser } = this.state
+
+    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
+      isUser = true
+    }
 
     return (
       <main>
@@ -609,6 +669,8 @@ class Feed extends React.Component {
             light
             name="title"
             searchShown={Boolean(activeScope)}
+            isUser={isUser}
+            setTypeFilter={this.setTypeFilter}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
