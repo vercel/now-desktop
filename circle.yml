@@ -3,6 +3,12 @@ machine:
     version: 8.2
 
 deployment:
+  artifacts:
+    branch: /.*/
+    owner: zeit
+    commands:
+      - npm run dist -- -p 'never'
+      - cp dist/*.zip $CIRCLE_ARTIFACTS
   release:
     tag: /.*/
     commands:
