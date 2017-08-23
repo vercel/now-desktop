@@ -6,6 +6,9 @@ import { bool } from 'prop-types'
 // Styles
 import styles from '../../styles/components/feed/none'
 
+// Vectors
+import FilterIcon from '../../vectors/filter'
+
 const openDocs = event => {
   event.preventDefault()
   const remote = electron.remote || false
@@ -18,7 +21,13 @@ const openDocs = event => {
 const NoEvents = ({ filtered }) =>
   <div>
     {filtered
-      ? <h1>No Events Found!</h1>
+      ? [
+          <h1 key="heading">No Events Found!</h1>,
+          <p key="description">
+            You can pick a different category of events using the{' '}
+            <FilterIcon background="#F5F5F5" /> filter on the top.
+          </p>
+        ]
       : [
           <h1 key="heading">No Activity to Show!</h1>,
           <p key="description">
