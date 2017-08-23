@@ -56,9 +56,14 @@ export default `
     transition: opacity .2s ease;
   }
 
+  .light .toggle-filter {
+    opacity: 0.35;
+    right: 36px;
+  }
+
   .light .toggle-filter:hover,
   .light .deploy:hover,
-  .filter-visible .toggle-filter {
+  .light.filter-visible .toggle-filter {
     opacity: 1;
   }
 
@@ -69,11 +74,6 @@ export default `
 
   .light .deploy.hidden {
     opacity: 0;
-  }
-
-  .light .toggle-filter {
-    opacity: 0.35;
-    right: 36px;
   }
 
   .windows {
