@@ -79,6 +79,10 @@ class Title extends React.PureComponent {
   }
 
   updateTypeFilter(type) {
+    if (type === this.state.filteredType) {
+      return
+    }
+
     const { setTypeFilter } = this.props
 
     if (setTypeFilter) {
