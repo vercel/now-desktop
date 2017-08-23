@@ -510,7 +510,7 @@ class Feed extends React.Component {
 
       // Ensure that always at least 10 events
       // are cached for each event group
-      if (length > 10) {
+      if (length >= 10) {
         continue
       }
 
