@@ -516,9 +516,11 @@ class Feed extends React.Component {
 
       const { created } = scopedEvents[scopedEvents.length - 1]
 
-      retry(() => this.loadEvents(team, created), {
-        minTimeout: ms('5s')
-      })
+      try {
+        this.loadEvents(team, created)
+      } catch (err) {
+        setTimeout(() => this.eventsAreEnough(team), ms('2s'))
+      }
 
       return
     }
