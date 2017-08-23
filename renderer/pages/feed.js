@@ -508,7 +508,7 @@ class Feed extends React.Component {
     for (const group of groups) {
       const { length } = this.filterEvents(scopedEvents, relatedTeam, group)
 
-      if (length > 30) {
+      if (length > 10) {
         continue
       }
 
