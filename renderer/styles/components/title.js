@@ -53,7 +53,6 @@ export default `
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: .5;
     transition: opacity .2s ease;
   }
 
@@ -64,6 +63,7 @@ export default `
   }
 
   .light .deploy {
+    opacity: .5;
     right: 0;
   }
 
@@ -72,6 +72,7 @@ export default `
   }
 
   .light .toggle-filter {
+    opacity: 0.35;
     right: 36px;
   }
 
