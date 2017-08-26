@@ -82,7 +82,7 @@ export default `
 
   .update-message {
     opacity: 0;
-    transition: opacity .8s ease;
+    transition: opacity .5s ease;
     position: absolute;
     left: 0;
     top: 0;
