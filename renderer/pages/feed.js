@@ -325,7 +325,10 @@ class Feed extends React.Component {
       teams[relatedCacheIndex].allCached[scope] = true
     }
 
-    this.setState({ events, teams })
+    this.setState({
+      events,
+      teams: JSON.parse(JSON.stringify(teams))
+    })
   }
 
   onKeyDown(event) {
@@ -572,7 +575,6 @@ class Feed extends React.Component {
 
     // Check if we're already pulling data
     if (this.loading.has(scope)) {
-      console.log(`${scope} is still loading`)
       return
     }
 
@@ -592,18 +594,18 @@ class Feed extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const newEvents = this.state.events
-    const oldEvents = prevState.events
+    const newTeams = this.state.teams
+    const oldTeams = prevState.teams
 
-    for (const team in newEvents) {
-      if (!{}.hasOwnProperty.call(newEvents, team)) {
+    for (const team of newTeams) {
+      const index = newTeams.indexOf(team)
+
+      if (!oldTeams[index]) {
         continue
       }
 
-      if (newEvents[team] !== oldEvents[team]) {
-        // Allow infinite scroll to trigger a new
-        // data download again
-        this.loading.delete(team)
+      if (team !== oldTeams[index]) {
+        this.loading.delete(team.id)
       }
     }
   }
