@@ -14,6 +14,7 @@ import parseHTML from 'html-to-react'
 import retry from 'async-retry'
 import ms from 'ms'
 import isDev from 'electron-is-dev'
+import makeUnique from 'make-unique'
 
 // Components
 import Title from '../components/title'
@@ -92,7 +93,11 @@ class Feed extends React.Component {
       focusedIndex = teams.indexOf(focusedTeam)
 
       // It's important that this is being `await`ed
-      await this.cacheEvents(focusedTeam.id)
+      try {
+        await this.cacheEvents(focusedTeam.id)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     // Update the feed of events for each team
@@ -108,8 +113,12 @@ class Feed extends React.Component {
       }
 
       // It's important that this is being `await`ed
-      // eslint-disable-next-line no-await-in-loop
-      await this.cacheEvents(team.id)
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await this.cacheEvents(team.id)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
@@ -143,18 +152,30 @@ class Feed extends React.Component {
     return events
   }
 
-  async cacheEvents(scope) {
+  async cacheEvents(scope, until) {
     const types = this.eventTypes
-    const { teams, currentUser } = this.state
+    const { teams, currentUser, typeFilter } = this.state
+
+    if (until) {
+      this.loading.add(scope)
+    }
+
     const relatedCache = teams.find(item => item.id === scope)
     const isTeam = Boolean(relatedCache.slug)
+    const lastUpdate = relatedCache.lastUpdate
 
     // Can't be a `Set` because we need to pick per index
     // down in the code later
-    const groups = ['me', 'team', 'system']
+    let groups = ['me', 'team', 'system']
 
     if (!isTeam) {
       groups.splice(1, 1)
+    }
+
+    // When scrolling down, only update the
+    // current group of events
+    if (until) {
+      groups = [typeFilter]
     }
 
     const loaders = new Set()
@@ -165,6 +186,16 @@ class Feed extends React.Component {
 
       const query = {
         types: types[type]
+      }
+
+      if (until) {
+        query.until = until
+      } else if (lastUpdate && lastUpdate[group]) {
+        // Ensure that we only load events that were created
+        // after the most recent one, so that we don't get the most
+        // recent one included
+        const startDate = Date.parse(lastUpdate[group]) + 1
+        query.since = new Date(startDate).toISOString()
       }
 
       if (isTeam) {
@@ -183,134 +214,88 @@ class Feed extends React.Component {
     try {
       results = await Promise.all(loaders)
     } catch (err) {
+      if (until) {
+        this.loading.delete(scope)
+      }
+
       return
     }
 
     const newEvents = {}
     const events = Object.assign({}, this.state.events)
+    const relatedCacheIndex = teams.indexOf(relatedCache)
 
     for (const result of results) {
       const index = results.indexOf(result)
       const group = groups[index]
+      const hasEvents = result.length > 0
 
       newEvents[group] = result
-    }
 
-    events[scope] = newEvents
+      if (!hasEvents && events[scope][group]) {
+        if (until) {
+          teams[relatedCacheIndex].allCached = true
+          this.setState({ teams })
 
-    this.setState({
-      events
-    })
-  }
+          this.loading.delete(scope)
+        }
 
-  /* A
-  async cacheEvents(scope, until) {
-    if (!this.remote) {
-      return
-    }
-
-    if (until) {
-      this.loading.add(scope)
-    }
-
-    const teams = this.state.teams
-    const relatedCache = teams.find(item => item.id === scope)
-    const lastUpdate = relatedCache.lastUpdate
-    const relatedCacheIndex = teams.indexOf(relatedCache)
-
-    const query = {
-      limit: 30
-    }
-
-    // Check if it's a team or a user
-    if (relatedCache.slug) {
-      query.teamId = scope
-    }
-
-    if (until) {
-      query.until = until
-    } else if (typeof relatedCache !== 'undefined' && lastUpdate) {
-      // Ensure that we only load events that were created
-      // after the most recent one, so that we don't get the most
-      // recent one included
-      const startDate = Date.parse(lastUpdate) + 1
-      query.since = new Date(startDate).toISOString()
-    }
-
-    const params = queryString.stringify(query)
-    let data
-
-    try {
-      data = await loadData(`${API_EVENTS}?${params}`)
-    } catch (err) {}
-
-    if (!data || !data.events) {
-      if (until) {
-        this.loading.delete(scope)
+        return
       }
 
-      return
-    }
+      let newLastUpdate
 
-    const hasEvents = data.events.length > 0
-
-    // Copying this object is important, because we need
-    // to get rif of possible circular references
-    const events = Object.assign({}, this.state.events)
-    const scopedEvents = events[scope]
-
-    if (!hasEvents && events[scope]) {
-      if (until) {
-        teams[relatedCacheIndex].allCached = true
-        this.setState({ teams })
-
-        this.loading.delete(scope)
-      }
-
-      return
-    }
-
-    let newLastUpdate
-
-    if (hasEvents) {
-      newLastUpdate = data.events[0].created
-    } else {
-      newLastUpdate = new Date().toISOString()
-    }
-
-    teams[relatedCacheIndex].lastUpdate = newLastUpdate
-
-    if (hasEvents && scopedEvents) {
-      let merged
-
-      // When using infinite scrolling, we need to
-      // add the events to the end, otherwise before
-      if (until) {
-        merged = scopedEvents.concat(data.events)
+      if (hasEvents) {
+        newLastUpdate = result[0].created
       } else {
-        merged = data.events.concat(scopedEvents)
+        newLastUpdate = new Date().toISOString()
       }
 
-      const unique = makeUnique(merged, (a, b) => a.id === b.id)
+      if (!teams[relatedCacheIndex].lastUpdate) {
+        teams[relatedCacheIndex].lastUpdate = {}
+      }
 
-      // Ensure that never more than 100 events are cached
-      // But only if infinite scrolling isn't being used
-      events[scope] = until ? unique : unique.slice(0, 100)
-    } else {
-      events[scope] = data.events
+      teams[relatedCacheIndex].lastUpdate[group] = newLastUpdate
+
+      const scopedEvents = events[scope]
+      let groupedEvents
+
+      if (scopedEvents) {
+        groupedEvents = scopedEvents[group]
+      } else {
+        events[scope] = {}
+      }
+
+      if (hasEvents && scopedEvents && groupedEvents) {
+        let merged
+
+        // When using infinite scrolling, we need to
+        // add the events to the end, otherwise before
+        if (until) {
+          merged = groupedEvents.concat(result)
+        } else {
+          merged = result.concat(groupedEvents)
+        }
+
+        const unique = makeUnique(merged, (a, b) => a.id === b.id)
+
+        // Ensure that never more than 50 events are cached
+        // But only if infinite scrolling isn't being used
+        events[scope][group] = until ? unique : unique.slice(0, 50)
+      } else {
+        events[scope][group] = result
+      }
     }
 
     if (until) {
       // Reset the "you've reached end of list" indicator
-      teams[relatedCacheIndex].allCached = false
+      teams[relatedCacheIndex].allCached[scope] = false
     } else if (events[scope].length < 30) {
-      teams[relatedCacheIndex].allCached = true
+      teams[relatedCacheIndex].allCached[scope] = true
     }
 
     this.setState({ events, teams })
   }
-
-  */
 
   onKeyDown(event) {
     const currentWindow = this.remote.getCurrentWindow()
