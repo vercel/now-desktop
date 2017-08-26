@@ -6,7 +6,6 @@ import os from 'os'
 import electron from 'electron'
 import React from 'react'
 import moment from 'moment'
-import makeUnique from 'make-unique'
 import compare from 'just-compare'
 import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -71,6 +70,9 @@ class Feed extends React.Component {
 
     // Ensure that we're not loading events again
     this.loading = new Set()
+
+    // Generate event types once in the beginning
+    this.eventTypes = this.getEventTypes()
   }
 
   async updateEvents() {
@@ -91,7 +93,7 @@ class Feed extends React.Component {
       focusedIndex = teams.indexOf(focusedTeam)
 
       // It's important that this is being `await`ed
-      await this.loadEvents(focusedTeam.id)
+      await this.cacheEvents(focusedTeam.id)
     }
 
     // Update the feed of events for each team
@@ -108,11 +110,102 @@ class Feed extends React.Component {
 
       // It's important that this is being `await`ed
       // eslint-disable-next-line no-await-in-loop
-      await this.loadEvents(team.id)
+      await this.cacheEvents(team.id)
     }
   }
 
-  async loadEvents(scope, until) {
+  getEventTypes() {
+    const auto = new Set([
+      'scale-auto',
+      'deployment-freeze',
+      'deployment-unfreeze'
+    ])
+
+    const all = new Set(messageComponents.keys())
+    const manual = [...all].filter(t => !auto.has(t))
+
+    return {
+      auto,
+      manual: new Set(manual)
+    }
+  }
+
+  async loadEvents(customParams) {
+    const defaults = { limit: 30 }
+    const query = Object.assign(defaults, customParams)
+
+    if (query.types) {
+      query.types = Array.from(query.types).join(',')
+    }
+
+    const params = queryString.stringify(query)
+    const { events } = await loadData(`${API_EVENTS}?${params}`)
+
+    return events
+  }
+
+  async cacheEvents(scope) {
+    const types = this.eventTypes
+    const { teams, currentUser } = this.state
+    const relatedCache = teams.find(item => item.id === scope)
+    const isTeam = Boolean(relatedCache.slug)
+
+    // Can't be a `Set` because we need to pick per index
+    // down in the code later
+    const groups = ['me', 'team', 'system']
+
+    if (!isTeam) {
+      groups.splice(1, 1)
+    }
+
+    const loaders = new Set()
+
+    for (const group of groups) {
+      const isSystem = group === 'system'
+      const type = isSystem ? 'auto' : 'manual'
+
+      const query = {
+        types: types[type]
+      }
+
+      if (isTeam) {
+        query.teamId = scope
+
+        if (group === 'me') {
+          query.userId = currentUser.uid
+        }
+      }
+
+      loaders.add(this.loadEvents(query))
+    }
+
+    let results
+
+    try {
+      results = await Promise.all(loaders)
+    } catch (err) {
+      return
+    }
+
+    const newEvents = {}
+    const events = Object.assign({}, this.state.events)
+
+    for (const result of results) {
+      const index = results.indexOf(result)
+      const group = groups[index]
+
+      newEvents[group] = result
+    }
+
+    events[scope] = newEvents
+
+    this.setState({
+      events
+    })
+  }
+
+  /* A
+  async cacheEvents(scope, until) {
     if (!this.remote) {
       return
     }
@@ -217,6 +310,8 @@ class Feed extends React.Component {
 
     this.setState({ events, teams })
   }
+
+  */
 
   onKeyDown(event) {
     const currentWindow = this.remote.getCurrentWindow()
@@ -488,7 +583,7 @@ class Feed extends React.Component {
       const scopedEvents = this.state.events[scope]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      retry(() => this.loadEvents(scope, lastEvent.created), {
+      retry(() => this.cacheEvents(scope, lastEvent.created), {
         retries: 500
       })
     }
@@ -517,7 +612,7 @@ class Feed extends React.Component {
       const { created } = scopedEvents[scopedEvents.length - 1]
 
       try {
-        this.loadEvents(team, created)
+        this.cacheEvents(team, created)
       } catch (err) {
         setTimeout(() => this.eventsAreEnough(team), ms('2s'))
       }
