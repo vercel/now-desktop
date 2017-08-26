@@ -1,6 +1,6 @@
 // Packages
 import React from 'react'
-import { object, bool, number } from 'prop-types'
+import { object, bool, number, string } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/avatar'
@@ -121,7 +121,8 @@ Avatar.propTypes = {
   event: object,
   isUser: bool,
   scale: bool,
-  delay: number
+  delay: number,
+  group: string
 }
 
 export default Avatar
