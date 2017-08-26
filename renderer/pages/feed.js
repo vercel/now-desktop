@@ -208,7 +208,7 @@ class Feed extends React.Component {
     const lastUpdate = relatedCache.lastUpdate
     const isTeam = Boolean(relatedCache.slug)
 
-    const groups = this.getGroups()
+    const groups = this.getGroups(isTeam)
     const loaders = new Set()
 
     for (const group of groups) {
