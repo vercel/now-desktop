@@ -264,7 +264,7 @@ class Feed extends React.Component {
 
       if (!hasEvents && events[scope][group]) {
         if (until) {
-          teams[relatedCacheIndex].allCached[scope] = true
+          teams[relatedCacheIndex].allCached[group] = true
           this.setState({ teams })
 
           this.loading.delete(scope)
@@ -315,13 +315,6 @@ class Feed extends React.Component {
       } else {
         events[scope][group] = result
       }
-    }
-
-    if (until) {
-      // Reset the "you've reached end of list" indicator
-      teams[relatedCacheIndex].allCached[scope] = false
-    } else if (events[scope].length < 30) {
-      teams[relatedCacheIndex].allCached[scope] = true
     }
 
     this.setState({
