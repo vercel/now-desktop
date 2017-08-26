@@ -28,7 +28,6 @@ import messageComponents from '../components/feed/messages'
 // Utilities
 import loadData from '../utils/data/load'
 import { API_EVENTS } from '../utils/data/endpoints'
-import eventSortedOut from '../utils/filter-event'
 
 // Styles
 import {
@@ -478,12 +477,8 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list, scopedTeam, customTypeFilter) {
-    let { eventFilter, typeFilter, currentUser } = this.state
-
-    if (customTypeFilter) {
-      typeFilter = customTypeFilter
-    }
+  filterEvents(list, scopedTeam, isUser) {
+    let { eventFilter, typeFilter } = this.state
 
     const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
@@ -496,19 +491,13 @@ class Feed extends React.Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
-    const events = list.map(item => {
-      if (typeFilter === 'team' && !item.user) {
-        typeFilter = 'me'
-      }
+    // If type filter "Team" was chosen, it means
+    // we need to load "Me"
+    if (isUser && typeFilter === 'team') {
+      typeFilter = 'me'
+    }
 
-      if (eventSortedOut(typeFilter, item, currentUser)) {
-        return false
-      }
-
-      if (customTypeFilter) {
-        return item
-      }
-
+    const events = list[typeFilter].map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
       const args = {
@@ -589,38 +578,6 @@ class Feed extends React.Component {
     }
   }
 
-  eventsAreEnough(team) {
-    const { teams, events } = this.state
-    const relatedTeam = teams.find(item => item.id === team)
-    const scopedEvents = events[team]
-
-    if (relatedTeam.allCached) {
-      return
-    }
-
-    const groups = ['me', 'team', 'system']
-
-    for (const group of groups) {
-      const { length } = this.filterEvents(scopedEvents, relatedTeam, group)
-
-      // Ensure that always at least 10 events
-      // are cached for each event group
-      if (length >= 10) {
-        continue
-      }
-
-      const { created } = scopedEvents[scopedEvents.length - 1]
-
-      try {
-        this.cacheEvents(team, created)
-      } catch (err) {
-        setTimeout(() => this.eventsAreEnough(team), ms('2s'))
-      }
-
-      return
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
     const newEvents = this.state.events
     const oldEvents = prevState.events
@@ -631,10 +588,6 @@ class Feed extends React.Component {
       }
 
       if (newEvents[team] !== oldEvents[team]) {
-        // Check if enough events exist for
-        // every event group
-        this.eventsAreEnough(team)
-
         // Allow infinite scroll to trigger a new
         // data download again
         this.loading.delete(team)
@@ -642,19 +595,19 @@ class Feed extends React.Component {
     }
   }
 
-  renderEvents(scopedTeam) {
+  renderEvents(team, isUser) {
     if (!this.state.online) {
       return <Loading offline />
     }
 
     const scope = this.state.scope
-    const scopedEvents = this.state.events[scope]
+    const events = this.state.events[scope]
 
-    if (!scopedEvents) {
+    if (!events) {
       return <Loading />
     }
 
-    const filteredEvents = this.filterEvents(scopedEvents, scopedTeam)
+    const filteredEvents = this.filterEvents(events, team, isUser)
 
     if (filteredEvents.length === 0) {
       return <NoEvents filtered />
@@ -678,7 +631,7 @@ class Feed extends React.Component {
         const args = {
           content: item,
           currentUser: this.state.currentUser,
-          team: scopedTeam,
+          team,
           setScopeWithSlug: this.setScopeWithSlug,
           message: item.message
         }
@@ -781,7 +734,7 @@ class Feed extends React.Component {
             onScroll={this.scrolled}
             name="scrollingSection"
           >
-            {this.renderEvents(activeScope)}
+            {this.renderEvents(activeScope, isUser)}
             {this.loadingOlder()}
           </section>
 
