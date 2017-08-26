@@ -75,6 +75,31 @@ class Feed extends React.Component {
     this.eventTypes = this.getEventTypes()
   }
 
+  getCurrentGroup() {
+    let { typeFilter } = this.state
+
+    if (this.isUser() && typeFilter === 'team') {
+      typeFilter = 'me'
+    }
+
+    return typeFilter
+  }
+
+  isUser(activeScope) {
+    let isUser = false
+    const { currentUser } = this.state
+
+    if (!activeScope) {
+      activeScope = this.detectScope('id', this.state.scope)
+    }
+
+    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
+      isUser = true
+    }
+
+    return isUser
+  }
+
   async updateEvents() {
     const teams = this.state.teams
 
@@ -154,7 +179,7 @@ class Feed extends React.Component {
 
   async cacheEvents(scope, until) {
     const types = this.eventTypes
-    const { teams, currentUser, typeFilter } = this.state
+    const { teams, currentUser } = this.state
 
     if (until) {
       this.loading.add(scope)
@@ -175,7 +200,8 @@ class Feed extends React.Component {
     // When scrolling down, only update the
     // current group of events
     if (until) {
-      groups = [typeFilter]
+      const currentGroup = this.getCurrentGroup()
+      groups = [currentGroup]
     }
 
     const loaders = new Set()
@@ -225,6 +251,10 @@ class Feed extends React.Component {
     const events = Object.assign({}, this.state.events)
     const relatedCacheIndex = teams.indexOf(relatedCache)
 
+    if (!teams[relatedCacheIndex].allCached) {
+      teams[relatedCacheIndex].allCached = {}
+    }
+
     for (const result of results) {
       const index = results.indexOf(result)
       const group = groups[index]
@@ -234,7 +264,8 @@ class Feed extends React.Component {
 
       if (!hasEvents && events[scope][group]) {
         if (until) {
-          teams[relatedCacheIndex].allCached = true
+          console.log('lel')
+          teams[relatedCacheIndex].allCached[scope] = true
           this.setState({ teams })
 
           this.loading.delete(scope)
@@ -462,11 +493,12 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list, scopedTeam, isUser) {
-    let { eventFilter, typeFilter } = this.state
+  filterEvents(list, scopedTeam) {
+    const { eventFilter } = this.state
 
     const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
+    const group = this.getCurrentGroup()
 
     let keywords = null
 
@@ -476,13 +508,7 @@ class Feed extends React.Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
-    // If type filter "Team" was chosen, it means
-    // we need to load "Me"
-    if (isUser && typeFilter === 'team') {
-      typeFilter = 'me'
-    }
-
-    const events = list[typeFilter].map(item => {
+    const events = list[group].map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
       const args = {
@@ -542,19 +568,21 @@ class Feed extends React.Component {
       return
     }
 
-    const scope = this.state.scope
+    const { scope, events } = this.state
 
     // Check if we're already pulling data
     if (this.loading.has(scope)) {
+      console.log(`${scope} is still loading`)
       return
     }
 
     const section = event.target
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
+    const group = this.getCurrentGroup()
 
     if (distance < offset + 300) {
-      const scopedEvents = this.state.events[scope]
+      const scopedEvents = events[scope][group]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
       retry(() => this.cacheEvents(scope, lastEvent.created), {
@@ -580,7 +608,7 @@ class Feed extends React.Component {
     }
   }
 
-  renderEvents(team, isUser) {
+  renderEvents(team) {
     if (!this.state.online) {
       return <Loading offline />
     }
@@ -592,7 +620,7 @@ class Feed extends React.Component {
       return <Loading />
     }
 
-    const filteredEvents = this.filterEvents(events, team, isUser)
+    const filteredEvents = this.filterEvents(events, team)
 
     if (filteredEvents.length === 0) {
       return <NoEvents filtered />
@@ -651,16 +679,17 @@ class Feed extends React.Component {
     }
 
     const scope = this.state.scope
-    const scopedEvents = this.state.events[scope]
+    const events = this.state.events[scope]
+    const group = this.getCurrentGroup()
 
-    if (!scopedEvents || scopedEvents.length < 30) {
+    if (!events || !events[group] || events[group].length < 30) {
       return
     }
 
     const teams = this.state.teams
     const relatedTeam = teams.find(item => item.id === scope)
 
-    if (relatedTeam.allCached) {
+    if (relatedTeam.allCached && relatedTeam.allCached[group]) {
       return (
         <aside ref={this.setReference} name="loadingIndicator">
           <span>{`That's it. No events left to show!`}</span>
@@ -685,14 +714,8 @@ class Feed extends React.Component {
   }
 
   render() {
-    let isUser = false
-
     const activeScope = this.detectScope('id', this.state.scope)
-    const { currentUser } = this.state
-
-    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
-      isUser = true
-    }
+    const isUser = this.isUser(activeScope)
 
     return (
       <main>
@@ -719,7 +742,7 @@ class Feed extends React.Component {
             onScroll={this.scrolled}
             name="scrollingSection"
           >
-            {this.renderEvents(activeScope, isUser)}
+            {this.renderEvents(activeScope)}
             {this.loadingOlder()}
           </section>
 
