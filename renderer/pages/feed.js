@@ -6,7 +6,6 @@ import os from 'os'
 import electron from 'electron'
 import React from 'react'
 import moment from 'moment'
-import makeUnique from 'make-unique'
 import compare from 'just-compare'
 import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -15,6 +14,7 @@ import parseHTML from 'html-to-react'
 import retry from 'async-retry'
 import ms from 'ms'
 import isDev from 'electron-is-dev'
+import makeUnique from 'make-unique'
 
 // Components
 import Title from '../components/title'
@@ -29,7 +29,6 @@ import messageComponents from '../components/feed/messages'
 // Utilities
 import loadData from '../utils/data/load'
 import { API_EVENTS } from '../utils/data/endpoints'
-import eventSortedOut from '../utils/filter-event'
 
 // Styles
 import {
@@ -71,6 +70,34 @@ class Feed extends React.Component {
 
     // Ensure that we're not loading events again
     this.loading = new Set()
+
+    // Generate event types once in the beginning
+    this.eventTypes = this.getEventTypes()
+  }
+
+  getCurrentGroup() {
+    let { typeFilter } = this.state
+
+    if (this.isUser() && typeFilter === 'team') {
+      typeFilter = 'me'
+    }
+
+    return typeFilter
+  }
+
+  isUser(activeScope) {
+    let isUser = false
+    const { currentUser } = this.state
+
+    if (!activeScope) {
+      activeScope = this.detectScope('id', this.state.scope)
+    }
+
+    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
+      isUser = true
+    }
+
+    return isUser
   }
 
   async updateEvents() {
@@ -91,7 +118,11 @@ class Feed extends React.Component {
       focusedIndex = teams.indexOf(focusedTeam)
 
       // It's important that this is being `await`ed
-      await this.loadEvents(focusedTeam.id)
+      try {
+        await this.cacheEvents(focusedTeam.id)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     // Update the feed of events for each team
@@ -107,52 +138,113 @@ class Feed extends React.Component {
       }
 
       // It's important that this is being `await`ed
-      // eslint-disable-next-line no-await-in-loop
-      await this.loadEvents(team.id)
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await this.cacheEvents(team.id)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
-  async loadEvents(scope, until) {
-    if (!this.remote) {
-      return
+  getEventTypes() {
+    const auto = new Set([
+      'scale-auto',
+      'deployment-freeze',
+      'deployment-unfreeze'
+    ])
+
+    const all = new Set(messageComponents.keys())
+    const manual = [...all].filter(t => !auto.has(t))
+
+    return {
+      auto,
+      manual: new Set(manual)
     }
+  }
+
+  async loadEvents(customParams) {
+    const defaults = { limit: 30 }
+    const query = Object.assign(defaults, customParams)
+
+    if (query.types) {
+      query.types = Array.from(query.types).join(',')
+    }
+
+    const params = queryString.stringify(query)
+    const { events } = await loadData(`${API_EVENTS}?${params}`)
+
+    return events
+  }
+
+  getGroups(isTeam, until) {
+    // Can't be a `Set` because we need to pick per index
+    // down in the code later
+    let groups = ['me', 'team', 'system']
+
+    if (!isTeam) {
+      groups.splice(1, 1)
+    }
+
+    // When scrolling down, only update the
+    // current group of events
+    if (until) {
+      const currentGroup = this.getCurrentGroup()
+      groups = [currentGroup]
+    }
+
+    return groups
+  }
+
+  async cacheEvents(scope, until) {
+    const types = this.eventTypes
+    const { teams, currentUser } = this.state
 
     if (until) {
       this.loading.add(scope)
     }
 
-    const teams = this.state.teams
     const relatedCache = teams.find(item => item.id === scope)
     const lastUpdate = relatedCache.lastUpdate
-    const relatedCacheIndex = teams.indexOf(relatedCache)
+    const isTeam = Boolean(relatedCache.slug)
 
-    const query = {
-      limit: 30
+    const groups = this.getGroups(isTeam)
+    const loaders = new Set()
+
+    for (const group of groups) {
+      const isSystem = group === 'system'
+      const type = isSystem ? 'auto' : 'manual'
+
+      const query = {
+        types: types[type]
+      }
+
+      if (until) {
+        query.until = until
+      } else if (lastUpdate && lastUpdate[group]) {
+        // Ensure that we only load events that were created
+        // after the most recent one, so that we don't get the most
+        // recent one included
+        const startDate = Date.parse(lastUpdate[group]) + 1
+        query.since = new Date(startDate).toISOString()
+      }
+
+      if (isTeam) {
+        query.teamId = scope
+
+        if (group === 'me') {
+          query.userId = currentUser.uid
+        }
+      }
+
+      loaders.add(this.loadEvents(query))
     }
 
-    // Check if it's a team or a user
-    if (relatedCache.slug) {
-      query.teamId = scope
-    }
-
-    if (until) {
-      query.until = until
-    } else if (typeof relatedCache !== 'undefined' && lastUpdate) {
-      // Ensure that we only load events that were created
-      // after the most recent one, so that we don't get the most
-      // recent one included
-      const startDate = Date.parse(lastUpdate) + 1
-      query.since = new Date(startDate).toISOString()
-    }
-
-    const params = queryString.stringify(query)
-    let data
+    let results
 
     try {
-      data = await loadData(`${API_EVENTS}?${params}`)
-    } catch (err) {}
-
-    if (!data || !data.events) {
+      results = await Promise.all(loaders)
+    } catch (err) {
       if (until) {
         this.loading.delete(scope)
       }
@@ -160,62 +252,80 @@ class Feed extends React.Component {
       return
     }
 
-    const hasEvents = data.events.length > 0
-
-    // Copying this object is important, because we need
-    // to get rif of possible circular references
+    const newEvents = {}
     const events = Object.assign({}, this.state.events)
-    const scopedEvents = events[scope]
+    const relatedCacheIndex = teams.indexOf(relatedCache)
 
-    if (!hasEvents && events[scope]) {
-      if (until) {
-        teams[relatedCacheIndex].allCached = true
-        this.setState({ teams })
+    if (!teams[relatedCacheIndex].allCached) {
+      teams[relatedCacheIndex].allCached = {}
+    }
 
-        this.loading.delete(scope)
+    for (const result of results) {
+      const index = results.indexOf(result)
+      const group = groups[index]
+      const hasEvents = result.length > 0
+
+      newEvents[group] = result
+
+      if (!hasEvents && events[scope][group]) {
+        if (until) {
+          teams[relatedCacheIndex].allCached[group] = true
+          this.setState({ teams })
+
+          this.loading.delete(scope)
+        }
+
+        return
       }
 
-      return
-    }
+      let newLastUpdate
 
-    let newLastUpdate
-
-    if (hasEvents) {
-      newLastUpdate = data.events[0].created
-    } else {
-      newLastUpdate = new Date().toISOString()
-    }
-
-    teams[relatedCacheIndex].lastUpdate = newLastUpdate
-
-    if (hasEvents && scopedEvents) {
-      let merged
-
-      // When using infinite scrolling, we need to
-      // add the events to the end, otherwise before
-      if (until) {
-        merged = scopedEvents.concat(data.events)
+      if (hasEvents) {
+        newLastUpdate = result[0].created
       } else {
-        merged = data.events.concat(scopedEvents)
+        newLastUpdate = new Date().toISOString()
       }
 
-      const unique = makeUnique(merged, (a, b) => a.id === b.id)
+      if (!teams[relatedCacheIndex].lastUpdate) {
+        teams[relatedCacheIndex].lastUpdate = {}
+      }
 
-      // Ensure that never more than 100 events are cached
-      // But only if infinite scrolling isn't being used
-      events[scope] = until ? unique : unique.slice(0, 100)
-    } else {
-      events[scope] = data.events
+      teams[relatedCacheIndex].lastUpdate[group] = newLastUpdate
+
+      const scopedEvents = events[scope]
+      let groupedEvents
+
+      if (scopedEvents) {
+        groupedEvents = scopedEvents[group]
+      } else {
+        events[scope] = {}
+      }
+
+      if (hasEvents && scopedEvents && groupedEvents) {
+        let merged
+
+        // When using infinite scrolling, we need to
+        // add the events to the end, otherwise before
+        if (until) {
+          merged = groupedEvents.concat(result)
+        } else {
+          merged = result.concat(groupedEvents)
+        }
+
+        const unique = makeUnique(merged, (a, b) => a.id === b.id)
+
+        // Ensure that never more than 50 events are cached
+        // But only if infinite scrolling isn't being used
+        events[scope][group] = until ? unique : unique.slice(0, 50)
+      } else {
+        events[scope][group] = result
+      }
     }
 
-    if (until) {
-      // Reset the "you've reached end of list" indicator
-      teams[relatedCacheIndex].allCached = false
-    } else if (events[scope].length < 30) {
-      teams[relatedCacheIndex].allCached = true
-    }
-
-    this.setState({ events, teams })
+    this.setState({
+      events,
+      teams: JSON.parse(JSON.stringify(teams))
+    })
   }
 
   onKeyDown(event) {
@@ -383,13 +493,8 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list, scopedTeam, customTypeFilter) {
-    let { eventFilter, typeFilter, currentUser } = this.state
-
-    if (customTypeFilter) {
-      typeFilter = customTypeFilter
-    }
-
+  filterEvents(list, scopedTeam, group) {
+    const { eventFilter } = this.state
     const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
 
@@ -401,19 +506,7 @@ class Feed extends React.Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
-    const events = list.map(item => {
-      if (typeFilter === 'team' && !item.user) {
-        typeFilter = 'me'
-      }
-
-      if (eventSortedOut(typeFilter, item, currentUser)) {
-        return false
-      }
-
-      if (customTypeFilter) {
-        return item
-      }
-
+    const events = list[group].map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
       const args = {
@@ -473,7 +566,7 @@ class Feed extends React.Component {
       return
     }
 
-    const scope = this.state.scope
+    const { scope, events } = this.state
 
     // Check if we're already pulling data
     if (this.loading.has(scope)) {
@@ -483,83 +576,49 @@ class Feed extends React.Component {
     const section = event.target
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
+    const group = this.getCurrentGroup()
 
     if (distance < offset + 300) {
-      const scopedEvents = this.state.events[scope]
+      const scopedEvents = events[scope][group]
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
-      retry(() => this.loadEvents(scope, lastEvent.created), {
+      retry(() => this.cacheEvents(scope, lastEvent.created), {
         retries: 500
       })
     }
   }
 
-  eventsAreEnough(team) {
-    const { teams, events } = this.state
-    const relatedTeam = teams.find(item => item.id === team)
-    const scopedEvents = events[team]
-
-    if (relatedTeam.allCached) {
-      return
-    }
-
-    const groups = ['me', 'team', 'system']
-
-    for (const group of groups) {
-      const { length } = this.filterEvents(scopedEvents, relatedTeam, group)
-
-      // Ensure that always at least 10 events
-      // are cached for each event group
-      if (length >= 10) {
-        continue
-      }
-
-      const { created } = scopedEvents[scopedEvents.length - 1]
-
-      try {
-        this.loadEvents(team, created)
-      } catch (err) {
-        setTimeout(() => this.eventsAreEnough(team), ms('2s'))
-      }
-
-      return
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
-    const newEvents = this.state.events
-    const oldEvents = prevState.events
+    const newTeams = this.state.teams
+    const oldTeams = prevState.teams
 
-    for (const team in newEvents) {
-      if (!{}.hasOwnProperty.call(newEvents, team)) {
+    for (const team of newTeams) {
+      const index = newTeams.indexOf(team)
+
+      if (!oldTeams[index]) {
         continue
       }
 
-      if (newEvents[team] !== oldEvents[team]) {
-        // Check if enough events exist for
-        // every event group
-        this.eventsAreEnough(team)
-
-        // Allow infinite scroll to trigger a new
-        // data download again
-        this.loading.delete(team)
+      if (team !== oldTeams[index]) {
+        this.loading.delete(team.id)
       }
     }
   }
 
-  renderEvents(scopedTeam) {
+  renderEvents(team) {
     if (!this.state.online) {
       return <Loading offline />
     }
 
     const scope = this.state.scope
-    const scopedEvents = this.state.events[scope]
+    const events = this.state.events[scope]
 
-    if (!scopedEvents) {
+    if (!events) {
       return <Loading />
     }
 
-    const filteredEvents = this.filterEvents(scopedEvents, scopedTeam)
+    const group = this.getCurrentGroup()
+    const filteredEvents = this.filterEvents(events, team, group)
 
     if (filteredEvents.length === 0) {
       return <NoEvents filtered />
@@ -579,16 +638,17 @@ class Feed extends React.Component {
     }
 
     const eventList = month => {
-      return months[month].map(item => {
+      return months[month].map(content => {
         const args = {
-          content: item,
+          content,
           currentUser: this.state.currentUser,
-          team: scopedTeam,
+          team,
           setScopeWithSlug: this.setScopeWithSlug,
-          message: item.message
+          message: content.message,
+          group
         }
 
-        return <EventMessage {...args} key={item.id} />
+        return <EventMessage {...args} key={content.id} />
       })
     }
 
@@ -618,16 +678,17 @@ class Feed extends React.Component {
     }
 
     const scope = this.state.scope
-    const scopedEvents = this.state.events[scope]
+    const events = this.state.events[scope]
+    const group = this.getCurrentGroup()
 
-    if (!scopedEvents || scopedEvents.length < 30) {
+    if (!events || !events[group] || events[group].length < 30) {
       return
     }
 
     const teams = this.state.teams
     const relatedTeam = teams.find(item => item.id === scope)
 
-    if (relatedTeam.allCached) {
+    if (relatedTeam.allCached && relatedTeam.allCached[group]) {
       return (
         <aside ref={this.setReference} name="loadingIndicator">
           <span>{`That's it. No events left to show!`}</span>
@@ -652,14 +713,8 @@ class Feed extends React.Component {
   }
 
   render() {
-    let isUser = false
-
     const activeScope = this.detectScope('id', this.state.scope)
-    const { currentUser } = this.state
-
-    if (currentUser && activeScope && activeScope.id === currentUser.uid) {
-      isUser = true
-    }
+    const isUser = this.isUser(activeScope)
 
     return (
       <main>
