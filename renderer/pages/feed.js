@@ -177,18 +177,7 @@ class Feed extends React.Component {
     return events
   }
 
-  async cacheEvents(scope, until) {
-    const types = this.eventTypes
-    const { teams, currentUser } = this.state
-
-    if (until) {
-      this.loading.add(scope)
-    }
-
-    const relatedCache = teams.find(item => item.id === scope)
-    const isTeam = Boolean(relatedCache.slug)
-    const lastUpdate = relatedCache.lastUpdate
-
+  getGroups(isTeam, until) {
     // Can't be a `Set` because we need to pick per index
     // down in the code later
     let groups = ['me', 'team', 'system']
@@ -204,6 +193,22 @@ class Feed extends React.Component {
       groups = [currentGroup]
     }
 
+    return groups
+  }
+
+  async cacheEvents(scope, until) {
+    const types = this.eventTypes
+    const { teams, currentUser } = this.state
+
+    if (until) {
+      this.loading.add(scope)
+    }
+
+    const relatedCache = teams.find(item => item.id === scope)
+    const lastUpdate = relatedCache.lastUpdate
+    const isTeam = Boolean(relatedCache.slug)
+
+    const groups = this.getGroups()
     const loaders = new Set()
 
     for (const group of groups) {
