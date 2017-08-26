@@ -4,7 +4,7 @@ import qs from 'querystring'
 // Packages
 import electron from 'electron'
 import React from 'react'
-import { object, func } from 'prop-types'
+import { object, func, string } from 'prop-types'
 import moment from 'moment'
 import dotProp from 'dot-prop'
 import ms from 'ms'
@@ -227,8 +227,7 @@ class EventMessage extends React.PureComponent {
   }
 
   render() {
-    const info = this.props.content
-    const Message = this.props.message
+    const { message, content, team, group } = this.props
 
     return (
       <figure
@@ -236,12 +235,12 @@ class EventMessage extends React.PureComponent {
         onClick={this.click}
         onContextMenu={this.rightClick}
       >
-        <Avatar event={info} team={this.props.team} />
+        <Avatar event={content} team={team} group={group} />
 
         <figcaption>
-          {Message}
+          {message}
           <span>
-            {this.parseDate(info.created)}
+            {this.parseDate(content.created)}
           </span>
         </figcaption>
 
@@ -261,7 +260,8 @@ EventMessage.propTypes = {
   currentUser: object,
   team: object,
   setScopeWithSlug: func,
-  message: object
+  message: object,
+  group: string
 }
 
 export default EventMessage

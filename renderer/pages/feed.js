@@ -488,12 +488,10 @@ class Feed extends React.Component {
     this.setState({ eventFilter })
   }
 
-  filterEvents(list, scopedTeam) {
+  filterEvents(list, scopedTeam, group) {
     const { eventFilter } = this.state
-
     const filtering = Boolean(eventFilter)
     const HTML = parseHTML.Parser
-    const group = this.getCurrentGroup()
 
     let keywords = null
 
@@ -614,7 +612,8 @@ class Feed extends React.Component {
       return <Loading />
     }
 
-    const filteredEvents = this.filterEvents(events, team)
+    const group = this.getCurrentGroup()
+    const filteredEvents = this.filterEvents(events, team, group)
 
     if (filteredEvents.length === 0) {
       return <NoEvents filtered />
@@ -634,16 +633,17 @@ class Feed extends React.Component {
     }
 
     const eventList = month => {
-      return months[month].map(item => {
+      return months[month].map(content => {
         const args = {
-          content: item,
+          content,
           currentUser: this.state.currentUser,
           team,
           setScopeWithSlug: this.setScopeWithSlug,
-          message: item.message
+          message: content.message,
+          group
         }
 
-        return <EventMessage {...args} key={item.id} />
+        return <EventMessage {...args} key={content.id} />
       })
     }
 

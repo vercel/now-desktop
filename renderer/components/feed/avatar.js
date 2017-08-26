@@ -31,32 +31,16 @@ class Avatar extends React.PureComponent {
     }
   }
 
-  isGeistEvent() {
-    const { event } = this.props
-
-    if (!event) {
-      return false
-    }
-
-    const valid = ['deployment-unfreeze', 'deployment-freeze', 'scale-auto']
-
-    if (valid.includes(event.type)) {
-      return true
-    }
-
-    return false
-  }
-
   async setURL() {
-    if (this.isGeistEvent()) {
+    const { event, team, isUser, group } = this.props
+
+    if (group && group === 'system') {
       this.setState({
         url: `/static/zeit-logo.png`
       })
 
       return
     }
-
-    const { event, team, isUser } = this.props
 
     let validUser = event || isUser
     let id
