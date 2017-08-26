@@ -264,7 +264,6 @@ class Feed extends React.Component {
 
       if (!hasEvents && events[scope][group]) {
         if (until) {
-          console.log('lel')
           teams[relatedCacheIndex].allCached[scope] = true
           this.setState({ teams })
 
