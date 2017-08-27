@@ -322,12 +322,15 @@ class Feed extends React.Component {
       }
     }
 
-    this.setState({
-      events,
-      teams
-    }, () => {
-      this.loading.delete(scope)
-    })
+    this.setState(
+      {
+        events,
+        teams
+      },
+      () => {
+        this.loading.delete(scope)
+      }
+    )
   }
 
   onKeyDown(event) {
