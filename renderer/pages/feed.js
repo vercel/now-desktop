@@ -76,32 +76,31 @@ class Feed extends React.Component {
   }
 
   getCurrentGroup() {
-    let { typeFilter } = this.state
+    const { typeFilter } = this.state
 
     if (this.isUser() && typeFilter === 'team') {
-      typeFilter = 'me'
+      return 'me'
     }
 
     return typeFilter
   }
 
   isUser(activeScope) {
-    let isUser = false
-    const { currentUser } = this.state
+    const { currentUser, scope } = this.state
 
     if (!activeScope) {
-      activeScope = this.detectScope('id', this.state.scope)
+      activeScope = this.detectScope('id', scope)
     }
 
     if (currentUser && activeScope && activeScope.id === currentUser.uid) {
-      isUser = true
+      return true
     }
 
-    return isUser
+    return false
   }
 
   async updateEvents() {
-    const teams = this.state.teams
+    const { teams, scope } = this.state
 
     if (!teams || Object.keys(teams).length === 0) {
       return
@@ -110,7 +109,7 @@ class Feed extends React.Component {
     let focusedIndex
 
     // Load the focused team first
-    if (this.state.scope) {
+    if (scope) {
       const focusedTeam = teams.find(team => {
         return team.id === this.state.scope
       })
@@ -270,9 +269,10 @@ class Feed extends React.Component {
       if (!hasEvents && events[scope][group]) {
         if (until) {
           teams[relatedCacheIndex].allCached[group] = true
-          this.setState({ teams })
 
-          this.loading.delete(scope)
+          this.setState({ teams }, () => {
+            this.loading.delete(scope)
+          })
         }
 
         return
@@ -322,7 +322,12 @@ class Feed extends React.Component {
       }
     }
 
-    this.setState({ events, teams })
+    this.setState({
+      events,
+      teams
+    }, () => {
+      this.loading.delete(scope)
+    })
   }
 
   onKeyDown(event) {
@@ -480,10 +485,15 @@ class Feed extends React.Component {
       team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
-    this.setState({ teams })
+    return new Promise(resolve =>
+      this.setState({ teams }, async () => {
+        await retry(() => this.updateEvents(), {
+          retries: 500
+        })
 
-    // It's important that this is being `await`ed
-    await this.updateEvents()
+        resolve()
+      })
+    )
   }
 
   setFilter(eventFilter) {
@@ -582,23 +592,6 @@ class Feed extends React.Component {
       retry(() => this.cacheEvents(scope, lastEvent.created), {
         retries: 500
       })
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const newTeams = this.state.teams
-    const oldTeams = prevState.teams
-
-    for (const team of newTeams) {
-      const index = newTeams.indexOf(team)
-
-      if (!oldTeams[index]) {
-        continue
-      }
-
-      if (team !== oldTeams[index]) {
-        this.loading.delete(team.id)
-      }
     }
   }
 
