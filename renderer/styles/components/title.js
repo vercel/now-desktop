@@ -136,7 +136,7 @@ export default `
     display: block;
     flex: 1;
     text-align: center;
-    padding: 3px 0;
+    padding: 3px 0 4px 0;
     cursor: default;
   }
 
