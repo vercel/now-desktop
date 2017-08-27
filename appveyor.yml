@@ -24,9 +24,6 @@
   "after_test": [
     "npm run dist"
   ],
-  "cache": [
-    "node_modules"
-  ],
   "artifacts": [
     {
       "path": "dist/win/*",
