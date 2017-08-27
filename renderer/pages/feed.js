@@ -466,8 +466,11 @@ class Feed extends React.Component {
   }
 
   setScopeWithSlug(slug) {
-    const { id } = this.detectScope('slug', slug)
-    this.setScope(id)
+    const detected = this.detectScope('slug', slug)
+
+    if (detected) {
+      this.setScope(detected.id)
+    }
   }
 
   detectScope(property, value) {
