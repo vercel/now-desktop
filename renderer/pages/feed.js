@@ -606,22 +606,23 @@ class Feed extends React.Component {
   }
 
   renderEvents(team) {
-    if (!this.state.online) {
+    const { scope, events, online, eventFilter } = this.state
+
+    if (!online) {
       return <Loading offline />
     }
 
-    const scope = this.state.scope
-    const events = this.state.events[scope]
+    const scopedEvents = events[scope]
 
-    if (!events) {
+    if (!scopedEvents) {
       return <Loading />
     }
 
     const group = this.getCurrentGroup()
-    const filteredEvents = this.filterEvents(events, team, group)
+    const filteredEvents = this.filterEvents(scopedEvents, team, group)
 
     if (filteredEvents.length === 0) {
-      return <NoEvents filtered />
+      return <NoEvents filtered={Boolean(eventFilter)} />
     }
 
     const months = {}
