@@ -100,7 +100,7 @@ class Feed extends React.Component {
   }
 
   async updateEvents() {
-    const teams = this.state.teams
+    const { teams, scope } = this.state
 
     if (!teams || Object.keys(teams).length === 0) {
       return
@@ -109,7 +109,7 @@ class Feed extends React.Component {
     let focusedIndex
 
     // Load the focused team first
-    if (this.state.scope) {
+    if (scope) {
       const focusedTeam = teams.find(team => {
         return team.id === this.state.scope
       })
