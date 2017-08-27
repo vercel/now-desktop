@@ -86,18 +86,17 @@ class Feed extends React.Component {
   }
 
   isUser(activeScope) {
-    let isUser = false
-    const { currentUser } = this.state
+    const { currentUser, scope } = this.state
 
     if (!activeScope) {
-      activeScope = this.detectScope('id', this.state.scope)
+      activeScope = this.detectScope('id', scope)
     }
 
     if (currentUser && activeScope && activeScope.id === currentUser.uid) {
-      isUser = true
+      return true
     }
 
-    return isUser
+    return false
   }
 
   async updateEvents() {
