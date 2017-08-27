@@ -97,7 +97,7 @@
     "path-exists": "3.0.0",
     "promisepipe": "2.0.0",
     "react-input-autosize": "1.1.4",
-    "react-slick": "0.14.11",
+    "react-slick": "0.15.0",
     "resumer": "0.0.0",
     "semver": "5.4.1",
     "serialize-error": "2.1.0",
@@ -112,7 +112,6 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
-    "devtron": "1.4.0",
     "electron": "1.7.5",
     "electron-builder": "19.24.1",
     "electron-builder-squirrel-windows": "19.25.0",
