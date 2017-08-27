@@ -652,16 +652,10 @@ class Feed extends React.Component {
       })
     }
 
-    const monthKeys = Object.keys(months)
-
-    if (monthKeys.length === 0) {
-      return <NoEvents />
-    }
-
     // We can't just use `month` as the ID for each heading,
     // because they would glitch around in that case (as
     // the month is the same across scopes)
-    return monthKeys.map(month => [
+    return Object.keys(months).map(month => [
       <h1 key={scope + month}>
         {month}
         <style jsx>
