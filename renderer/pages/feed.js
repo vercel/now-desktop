@@ -269,9 +269,10 @@ class Feed extends React.Component {
       if (!hasEvents && events[scope][group]) {
         if (until) {
           teams[relatedCacheIndex].allCached[group] = true
-          this.setState({ teams })
 
-          this.loading.delete(scope)
+          this.setState({ teams }, () => {
+            this.loading.delete(scope)
+          })
         }
 
         return
@@ -321,10 +322,15 @@ class Feed extends React.Component {
       }
     }
 
-    this.setState({
-      events,
-      teams: JSON.parse(JSON.stringify(teams))
-    })
+    this.setState(
+      {
+        events,
+        teams: JSON.parse(JSON.stringify(teams))
+      },
+      () => {
+        this.loading.delete(scope)
+      }
+    )
   }
 
   onKeyDown(event) {
@@ -482,10 +488,15 @@ class Feed extends React.Component {
       team.lastUpdate = relatedCache ? relatedCache.lastUpdate : null
     }
 
-    this.setState({ teams })
+    return new Promise(resolve =>
+      this.setState({ teams }, async () => {
+        await retry(() => this.updateEvents(), {
+          retries: 500
+        })
 
-    // It's important that this is being `await`ed
-    await this.updateEvents()
+        resolve()
+      })
+    )
   }
 
   setFilter(eventFilter) {
@@ -584,23 +595,6 @@ class Feed extends React.Component {
       retry(() => this.cacheEvents(scope, lastEvent.created), {
         retries: 500
       })
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const newTeams = this.state.teams
-    const oldTeams = prevState.teams
-
-    for (const team of newTeams) {
-      const index = newTeams.indexOf(team)
-
-      if (!oldTeams[index]) {
-        continue
-      }
-
-      if (team !== oldTeams[index]) {
-        this.loading.delete(team.id)
-      }
     }
   }
 
