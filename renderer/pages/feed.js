@@ -76,10 +76,10 @@ class Feed extends React.Component {
   }
 
   getCurrentGroup() {
-    let { typeFilter } = this.state
+    const { typeFilter } = this.state
 
     if (this.isUser() && typeFilter === 'team') {
-      typeFilter = 'me'
+      return 'me'
     }
 
     return typeFilter
