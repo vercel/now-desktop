@@ -4,7 +4,7 @@ machine:
 
 deployment:
   artifacts:
-    branch: /.*/
+    branch: /^(?!master$).*$/
     owner: zeit
     commands:
       - npm run dist -- -p 'never'
