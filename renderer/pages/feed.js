@@ -322,10 +322,7 @@ class Feed extends React.Component {
       }
     }
 
-    this.setState({
-      events,
-      teams: JSON.parse(JSON.stringify(teams))
-    })
+    this.setState({ events, teams })
   }
 
   onKeyDown(event) {
