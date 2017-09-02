@@ -241,16 +241,31 @@ class LoginForm extends PureComponent {
     const user = userData.user
 
     try {
-      await saveConfig({
-        user: {
-          uid: user.uid,
-          username: user.username,
-          email: user.email
+      await saveConfig(
+        {
+          user: {
+            uid: user.uid,
+            username: user.username,
+            email: user.email
+          }
         },
-        token: finalToken
-      })
+        'config'
+      )
     } catch (err) {
-      error('Could not save config', err)
+      error('Could not save main config', err)
+      return
+    }
+
+    try {
+      await saveConfig(
+        {
+          provider: 'sh',
+          token: finalToken
+        },
+        'auth'
+      )
+    } catch (err) {
+      error('Could not save auth config', err)
       return
     }
 

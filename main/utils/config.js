@@ -96,36 +96,53 @@ exports.removeConfig = async () => {
   await fs.remove(paths.old)
 }
 
-exports.saveConfig = async data => {
+exports.saveConfig = async (data, type) => {
+  const isNew = await hasNewConfig()
+  const destination = isNew ? paths[type] : paths.old
+
   let currentContent = {}
 
   try {
-    currentContent = await fs.readJSON(paths.old)
+    currentContent = await fs.readJSON(destination)
   } catch (err) {}
 
-  // Merge new data with the existing
-  currentContent = deepExtend(currentContent, data)
+  if (type === 'config') {
+    data = { sh: data }
 
-  // Remove all the data that should be removed (like `null` props)
-  currentContent = groom(currentContent)
+    // Merge new data with the existing
+    currentContent = deepExtend(currentContent, data)
 
-  // And ensure that empty objects are also gone
-  for (const newProp in data) {
-    if (!{}.hasOwnProperty.call(data, newProp)) {
-      continue
+    // Remove all the data that should be removed (like `null` props)
+    currentContent = groom(currentContent)
+
+    // And ensure that empty objects are also gone
+    for (const newProp in data) {
+      if (!{}.hasOwnProperty.call(data, newProp)) {
+        continue
+      }
+
+      const propContent = currentContent[newProp]
+      const isObject = typeof propContent === 'object'
+
+      // Ensure that there are no empty objects inside the config
+      if (isObject && Object.keys(propContent).length === 0) {
+        delete currentContent[newProp]
+      }
+    }
+  } else if (type === 'auth') {
+    if (!currentContent.credentials) {
+      currentContent.credentials = []
     }
 
-    const propContent = currentContent[newProp]
-    const isObject = typeof propContent === 'object'
+    const { credentials } = currentContent
+    const related = credentials.find(item => item.provider === 'sh')
+    const index = related ? credentials.indexOf(related) : 0
 
-    // Ensure that there are no empty objects inside the config
-    if (isObject && Object.keys(propContent).length === 0) {
-      delete currentContent[newProp]
-    }
+    credentials[index] = Object.assign(related || {}, data)
   }
 
   // Update config file
-  await fs.writeJSON(paths.old, currentContent, {
+  await fs.writeJSON(destination, currentContent, {
     spaces: 2
   })
 }

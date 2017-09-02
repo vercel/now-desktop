@@ -126,11 +126,14 @@ const checkForUpdates = () => {
 }
 
 const deleteUpdateConfig = () =>
-  saveConfig({
-    desktop: {
-      updatedFrom: null
-    }
-  })
+  saveConfig(
+    {
+      desktop: {
+        updatedFrom: null
+      }
+    },
+    'config'
+  )
 
 const startAppUpdates = async mainWindow => {
   let config
@@ -184,11 +187,14 @@ const startAppUpdates = async mainWindow => {
     // Here, we also ensure that failed update
     // installations result in a UI change that lets
     // the user retry manually.
-    await saveConfig({
-      desktop: {
-        updatedFrom: appVersion
-      }
-    })
+    await saveConfig(
+      {
+        desktop: {
+          updatedFrom: appVersion
+        }
+      },
+      'config'
+    )
 
     // Then restart the application
     autoUpdater.quitAndInstall()

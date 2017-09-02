@@ -284,7 +284,7 @@ class Switcher extends React.Component {
     this.savingConfig = true
 
     // Then update the config file
-    await saveConfig(newConfig)
+    await saveConfig(newConfig, 'config')
   }
 
   async getTeamOrder() {
