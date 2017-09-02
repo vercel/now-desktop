@@ -136,11 +136,14 @@ const moveApp = async config => {
   }
 
   if (!moved) {
-    await saveConfig({
-      desktop: {
-        noMoveWanted: true
-      }
-    })
+    await saveConfig(
+      {
+        desktop: {
+          noMoveWanted: true
+        }
+      },
+      'config'
+    )
   }
 }
 

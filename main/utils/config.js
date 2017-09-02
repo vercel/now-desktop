@@ -9,17 +9,46 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
-const file = path.join(homedir(), '.now.json')
-const exists = () => pathExists(file)
+const paths = {
+  auth: '.now/auth.json',
+  config: '.now/config.json',
+  old: '.now.json'
+}
+
+for (const file in paths) {
+  if (!{}.hasOwnProperty.call(paths, file)) {
+    continue
+  }
+
+  paths[file] = path.join(homedir(), paths[file])
+}
 
 let configWatcher = null
 
-exports.getConfig = async noCheck => {
-  if (!await exists()) {
-    throw new Error("Could retrieve config file, it doesn't exist")
+const hasNewConfig = async () => {
+  if (!await pathExists(paths.auth)) {
+    return false
   }
 
-  const content = await fs.readJSON(file)
+  if (!await pathExists(paths.config)) {
+    return false
+  }
+
+  return true
+}
+
+exports.getConfig = async noCheck => {
+  let content = {}
+
+  if (await hasNewConfig()) {
+    const { credentials } = await fs.readJSON(paths.auth)
+    const { token } = credentials.find(item => item.provider === 'sh')
+    const { sh } = await fs.readJSON(paths.config)
+
+    Object.assign(content, sh, { token })
+  } else {
+    content = await fs.readJSON(paths.old)
+  }
 
   if (!noCheck && !content.token) {
     throw new Error('No token contained inside config file')
@@ -41,39 +70,88 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
-  await fs.remove(file)
+  if (await hasNewConfig()) {
+    const configContent = await fs.readJSON(paths.config)
+    delete configContent.sh
+
+    await fs.writeJSON(paths.config, configContent, {
+      spaces: 2
+    })
+
+    const authContent = await fs.readJSON(paths.auth)
+    const { credentials } = authContent
+    const related = credentials.find(item => item.provider === 'sh')
+    const index = credentials.indexOf(related)
+
+    credentials.splice(index, 1)
+    authContent.credentials = credentials
+
+    await fs.writeJSON(paths.auth, authContent, {
+      spaces: 2
+    })
+
+    return
+  }
+
+  await fs.remove(paths.old)
 }
 
-exports.saveConfig = async data => {
+exports.saveConfig = async (data, type) => {
+  let isNew = await hasNewConfig()
+
+  // Ensure that we're writing to the new config
+  // destination, if no config exists yet
+  if (!isNew && !await pathExists(paths.old)) {
+    isNew = true
+  }
+
+  const destination = isNew ? paths[type] : paths.old
   let currentContent = {}
 
   try {
-    currentContent = await fs.readJSON(file)
+    currentContent = await fs.readJSON(destination)
   } catch (err) {}
 
-  // Merge new data with the existing
-  currentContent = deepExtend(currentContent, data)
+  if (type === 'config') {
+    data = { sh: data }
 
-  // Remove all the data that should be removed (like `null` props)
-  currentContent = groom(currentContent)
+    // Merge new data with the existing
+    currentContent = deepExtend(currentContent, data)
 
-  // And ensure that empty objects are also gone
-  for (const newProp in data) {
-    if (!{}.hasOwnProperty.call(data, newProp)) {
-      continue
+    // Remove all the data that should be removed (like `null` props)
+    currentContent = groom(currentContent)
+
+    // And ensure that empty objects are also gone
+    for (const newProp in data) {
+      if (!{}.hasOwnProperty.call(data, newProp)) {
+        continue
+      }
+
+      const propContent = currentContent[newProp]
+      const isObject = typeof propContent === 'object'
+
+      // Ensure that there are no empty objects inside the config
+      if (isObject && Object.keys(propContent).length === 0) {
+        delete currentContent[newProp]
+      }
+    }
+  } else if (type === 'auth') {
+    if (!currentContent.credentials) {
+      currentContent.credentials = []
     }
 
-    const propContent = currentContent[newProp]
-    const isObject = typeof propContent === 'object'
+    const { credentials } = currentContent
+    const related = credentials.find(item => item.provider === 'sh')
+    const index = related ? credentials.indexOf(related) : 0
 
-    // Ensure that there are no empty objects inside the config
-    if (isObject && Object.keys(propContent).length === 0) {
-      delete currentContent[newProp]
-    }
+    credentials[index] = Object.assign(related || {}, data)
   }
 
+  // Create all the directories
+  await fs.ensureFile(destination)
+
   // Update config file
-  await fs.writeJSON(file, currentContent, {
+  await fs.writeJSON(destination, currentContent, {
     spaces: 2
   })
 }
@@ -101,7 +179,11 @@ const configChanged = async logout => {
 }
 
 exports.watchConfig = async () => {
-  if (!await exists()) {
+  let toWatch = [paths.old]
+
+  if (await hasNewConfig()) {
+    toWatch = [paths.auth, paths.config]
+  } else if (!await pathExists(paths.old)) {
     return
   }
 
@@ -110,9 +192,9 @@ exports.watchConfig = async () => {
 
   // Start watching the config file and
   // inform the renderer about changes inside it
-  configWatcher = watch(file)
+  configWatcher = watch(toWatch)
   configWatcher.on('change', () => configChanged(logout))
 
-  // Log out when config file is removed
+  // Log out when a config file is removed
   configWatcher.on('unlink', logout)
 }
