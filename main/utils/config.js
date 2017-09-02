@@ -9,17 +9,34 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
-const file = path.join(homedir(), '.now.json')
-const exists = () => pathExists(file)
+const paths = {
+  auth: '.now/auth.json',
+  config: '.now/config.json',
+  old: '.now.json'
+}
+
+for (const file in paths) {
+  if (!{}.hasOwnProperty.call(paths, file)) {
+    continue
+  }
+
+  paths[file] = path.join(homedir(), paths[file])
+}
 
 let configWatcher = null
 
 exports.getConfig = async noCheck => {
-  if (!await exists()) {
-    throw new Error("Could retrieve config file, it doesn't exist")
-  }
+  let content = {}
 
-  const content = await fs.readJSON(file)
+  if ((await pathExists(paths.auth)) && (await pathExists(paths.config))) {
+    const { credentials } = await fs.readJSON(paths.auth)
+    const { token } = credentials.find(item => item.provider === 'sh')
+    const { sh } = await fs.readJSON(paths.config)
+
+    Object.assign(content, sh, { token })
+  } else {
+    content = await fs.readJSON(paths.old)
+  }
 
   if (!noCheck && !content.token) {
     throw new Error('No token contained inside config file')
@@ -41,14 +58,14 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
-  await fs.remove(file)
+  await fs.remove(paths.old)
 }
 
 exports.saveConfig = async data => {
   let currentContent = {}
 
   try {
-    currentContent = await fs.readJSON(file)
+    currentContent = await fs.readJSON(paths.old)
   } catch (err) {}
 
   // Merge new data with the existing
@@ -73,7 +90,7 @@ exports.saveConfig = async data => {
   }
 
   // Update config file
-  await fs.writeJSON(file, currentContent, {
+  await fs.writeJSON(paths.old, currentContent, {
     spaces: 2
   })
 }
@@ -101,7 +118,7 @@ const configChanged = async logout => {
 }
 
 exports.watchConfig = async () => {
-  if (!await exists()) {
+  if (!await pathExists(paths.old)) {
     return
   }
 
@@ -110,7 +127,7 @@ exports.watchConfig = async () => {
 
   // Start watching the config file and
   // inform the renderer about changes inside it
-  configWatcher = watch(file)
+  configWatcher = watch(paths.old)
   configWatcher.on('change', () => configChanged(logout))
 
   // Log out when config file is removed
