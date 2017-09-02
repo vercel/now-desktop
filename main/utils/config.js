@@ -70,6 +70,29 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
+  if (await hasNewConfig()) {
+    const configContent = await fs.readJSON(paths.config)
+    delete configContent.sh
+
+    await fs.writeJSON(paths.config, configContent, {
+      spaces: 2
+    })
+
+    const authContent = await fs.readJSON(paths.auth)
+    const { credentials } = authContent
+    const related = credentials.find(item => item.provider === 'sh')
+    const index = credentials.indexOf(related)
+
+    credentials.splice(index, 1)
+    authContent.credentials = credentials
+
+    await fs.writeJSON(paths.auth, authContent, {
+      spaces: 2
+    })
+
+    return
+  }
+
   await fs.remove(paths.old)
 }
 
