@@ -113,7 +113,10 @@ exports.saveConfig = async (data, type) => {
   } catch (err) {}
 
   if (type === 'config') {
-    data = { sh: data }
+    // Only create a sub prop for the new config
+    if (isNew) {
+      data = { sh: data }
+    }
 
     // Merge new data with the existing
     currentContent = deepExtend(currentContent, data)
