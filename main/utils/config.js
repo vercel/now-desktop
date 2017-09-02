@@ -97,9 +97,15 @@ exports.removeConfig = async () => {
 }
 
 exports.saveConfig = async (data, type) => {
-  const isNew = await hasNewConfig()
-  const destination = isNew ? paths[type] : paths.old
+  let isNew = await hasNewConfig()
 
+  // Ensure that we're writing to the new config
+  // destination, if no config exists yet
+  if (!isNew && !await pathExists(paths.old)) {
+    isNew = true
+  }
+
+  const destination = isNew ? paths[type] : paths.old
   let currentContent = {}
 
   try {
