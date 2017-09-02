@@ -25,10 +25,22 @@ for (const file in paths) {
 
 let configWatcher = null
 
+const hasNewConfig = async () => {
+  if (!await pathExists(paths.auth)) {
+    return false
+  }
+
+  if (!await pathExists(paths.config)) {
+    return false
+  }
+
+  return true
+}
+
 exports.getConfig = async noCheck => {
   let content = {}
 
-  if ((await pathExists(paths.auth)) && (await pathExists(paths.config))) {
+  if (await hasNewConfig()) {
     const { credentials } = await fs.readJSON(paths.auth)
     const { token } = credentials.find(item => item.provider === 'sh')
     const { sh } = await fs.readJSON(paths.config)
