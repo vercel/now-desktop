@@ -147,6 +147,9 @@ exports.saveConfig = async (data, type) => {
     credentials[index] = Object.assign(related || {}, data)
   }
 
+  // Create all the directories
+  await fs.ensureFile(destination)
+
   // Update config file
   await fs.writeJSON(destination, currentContent, {
     spaces: 2
