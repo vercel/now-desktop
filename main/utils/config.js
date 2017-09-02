@@ -153,7 +153,11 @@ const configChanged = async logout => {
 }
 
 exports.watchConfig = async () => {
-  if (!await pathExists(paths.old)) {
+  let toWatch = [paths.old]
+
+  if (await hasNewConfig()) {
+    toWatch = [paths.auth, paths.config]
+  } else if (!await pathExists(paths.old)) {
     return
   }
 
@@ -162,7 +166,7 @@ exports.watchConfig = async () => {
 
   // Start watching the config file and
   // inform the renderer about changes inside it
-  configWatcher = watch(paths.old)
+  configWatcher = watch(toWatch)
   configWatcher.on('change', () => configChanged(logout))
 
   // Log out when config file is removed
