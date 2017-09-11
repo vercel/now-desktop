@@ -9,6 +9,9 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
+// Utilities
+const notify = require('../notify')
+
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json',
@@ -209,5 +212,14 @@ exports.watchConfig = async () => {
   configWatcher.on('change', () => configChanged(logout))
 
   // Log out when a config file is removed
-  configWatcher.on('unlink', logout)
+  configWatcher.on('unlink', () => {
+    // But before doing so, post a notification
+    notify({
+      title: 'Logged Out',
+      body:
+        'You were logged out from Now Desktop because you logged out from Now CLI.'
+    })
+
+    logout()
+  })
 }
