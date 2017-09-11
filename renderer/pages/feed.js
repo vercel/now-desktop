@@ -457,7 +457,16 @@ class Feed extends React.Component {
 
   setScope(scope) {
     this.clearScroll()
-    this.setState({ scope })
+
+    // Update the scope
+    this.setState({ scope }, () => {
+      if (this.state.teams.length === 0) {
+        return
+      }
+
+      // And then pull events for it
+      this.cacheEvents(scope)
+    })
 
     // Hide search field when switching team scope
     if (this.searchField) {
