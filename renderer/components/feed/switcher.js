@@ -177,7 +177,9 @@ class Switcher extends React.Component {
       return
     }
 
-    this.loadTeams().then(listTimer).catch(listTimer)
+    this.loadTeams(true)
+      .then(listTimer)
+      .catch(listTimer)
 
     // Check the config for `currentTeam`
     await this.checkCurrentTeam()
@@ -386,7 +388,7 @@ class Switcher extends React.Component {
     return this.applyTeamOrder(copy, order)
   }
 
-  async loadTeams() {
+  async loadTeams(firstLoad) {
     if (!this.remote) {
       return
     }
@@ -399,7 +401,7 @@ class Switcher extends React.Component {
       if (this.props.setTeams) {
         // When passing `null`, the feed will only
         // update the events, not the teams
-        await this.props.setTeams(null)
+        await this.props.setTeams(null, firstLoad)
       }
 
       return
@@ -428,7 +430,7 @@ class Switcher extends React.Component {
     if (this.props.setTeams) {
       // When passing `null`, the feed will only
       // update the events, not the teams
-      await this.props.setTeams(updated || null)
+      await this.props.setTeams(updated || null, firstLoad)
     }
   }
 
@@ -654,9 +656,7 @@ class Switcher extends React.Component {
             delay={index}
           />
 
-          <style jsx>
-            {itemStyle}
-          </style>
+          <style jsx>{itemStyle}</style>
         </li>
       )
     })
@@ -665,23 +665,21 @@ class Switcher extends React.Component {
   renderTeams() {
     const Item = this.renderItem()
 
-    return this.state.teams.map((team, index) =>
+    return this.state.teams.map((team, index) => (
       <Item key={team.id} index={index} team={team} />
-    )
+    ))
   }
 
   renderList() {
     const teams = this.renderTeams()
 
     // eslint-disable-next-line new-cap
-    return SortableContainer(() =>
+    return SortableContainer(() => (
       <ul>
         {teams}
-        <style jsx>
-          {listStyle}
-        </style>
+        <style jsx>{listStyle}</style>
       </ul>
-    )
+    ))
   }
 
   allowDrag(event) {
@@ -717,40 +715,37 @@ class Switcher extends React.Component {
 
     return (
       <div>
-        {updateFailed &&
+        {updateFailed && (
           <span className="update-failed">
             <p>
               The app failed to update! &mdash;{' '}
               <a onClick={this.retryUpdate}>Retry?</a>
             </p>
             <Clear onClick={this.closeUpdateMessage} color="#fff" />
-          </span>}
+          </span>
+        )}
         <aside>
-          {online
-            ? <div
-                className="list-container"
-                ref={this.setReference}
-                name="list"
-              >
-                <div className="list-scroll">
-                  <List
-                    axis="x"
-                    lockAxis="x"
-                    shouldCancelStart={this.allowDrag}
-                    onSortEnd={this.onSortEnd}
-                    onSortStart={this.onSortStart}
-                    helperClass="switcher-helper"
-                    lockToContainerEdges={true}
-                    lockOffset="0%"
-                  />
-                  <CreateTeam delay={delay} />
-                </div>
-
-                <span className="shadow" onClick={this.scrollToEnd} />
+          {online ? (
+            <div className="list-container" ref={this.setReference} name="list">
+              <div className="list-scroll">
+                <List
+                  axis="x"
+                  lockAxis="x"
+                  shouldCancelStart={this.allowDrag}
+                  onSortEnd={this.onSortEnd}
+                  onSortStart={this.onSortStart}
+                  helperClass="switcher-helper"
+                  lockToContainerEdges={true}
+                  lockOffset="0%"
+                />
+                <CreateTeam delay={delay} />
               </div>
-            : <p className="offline">
-                {"You're offline!"}
-              </p>}
+
+              <span className="shadow" onClick={this.scrollToEnd} />
+            </div>
+          ) : (
+            <p className="offline">{"You're offline!"}</p>
+          )}
 
           <a
             className="toggle-menu"
@@ -765,9 +760,7 @@ class Switcher extends React.Component {
           </a>
         </aside>
 
-        <style jsx>
-          {wrapStyle}
-        </style>
+        <style jsx>{wrapStyle}</style>
 
         <style jsx global>
           {helperStyle}

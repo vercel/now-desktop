@@ -99,29 +99,29 @@ class Feed extends React.Component {
     return false
   }
 
-  async updateEvents() {
+  async updateEvents(firstLoad) {
     const { teams, scope } = this.state
 
-    if (!teams || Object.keys(teams).length === 0) {
+    if (!teams || Object.keys(teams).length === 0 || !scope) {
       return
     }
 
-    let focusedIndex
-
     // Load the focused team first
-    if (scope) {
-      const focusedTeam = teams.find(team => {
-        return team.id === this.state.scope
-      })
+    const focusedTeam = teams.find(team => {
+      return team.id === this.state.scope
+    })
 
-      focusedIndex = teams.indexOf(focusedTeam)
+    const focusedIndex = teams.indexOf(focusedTeam)
 
-      // It's important that this is being `await`ed
-      try {
-        await this.cacheEvents(focusedTeam.id)
-      } catch (err) {
-        console.log(err)
-      }
+    // It's important that this is being `await`ed
+    try {
+      await this.cacheEvents(focusedTeam.id)
+    } catch (err) {
+      console.log(err)
+    }
+
+    if (!firstLoad) {
+      return
     }
 
     // Update the feed of events for each team
@@ -477,12 +477,12 @@ class Feed extends React.Component {
     return this.state.teams.find(team => team[property] === value)
   }
 
-  async setTeams(teams) {
+  async setTeams(teams, firstLoad) {
     if (!teams) {
       // If the teams didn't change, only the events
       // should be updated.
       // It's important that this is being `await`ed
-      await this.updateEvents()
+      await this.updateEvents(firstLoad)
       return
     }
 
@@ -493,7 +493,7 @@ class Feed extends React.Component {
 
     return new Promise(resolve =>
       this.setState({ teams }, async () => {
-        await retry(() => this.updateEvents(), {
+        await retry(() => this.updateEvents(firstLoad), {
           retries: 500
         })
 
@@ -655,9 +655,7 @@ class Feed extends React.Component {
     return Object.keys(months).map(month => [
       <h1 key={scope + month}>
         {month}
-        <style jsx>
-          {headingStyles}
-        </style>
+        <style jsx>{headingStyles}</style>
       </h1>,
       eventList(month)
     ])
@@ -684,9 +682,7 @@ class Feed extends React.Component {
         <aside ref={this.setReference} name="loadingIndicator">
           <span>{`That's it. No events left to show!`}</span>
 
-          <style jsx>
-            {loaderStyles}
-          </style>
+          <style jsx>{loaderStyles}</style>
         </aside>
       )
     }
@@ -696,9 +692,7 @@ class Feed extends React.Component {
         <img src="/static/loading.gif" />
         <span>Loading Older Events...</span>
 
-        <style jsx>
-          {loaderStyles}
-        </style>
+        <style jsx>{loaderStyles}</style>
       </aside>
     )
   }
@@ -746,9 +740,7 @@ class Feed extends React.Component {
           />
         </div>
 
-        <style jsx>
-          {feedStyles}
-        </style>
+        <style jsx>{feedStyles}</style>
         <style jsx global>
           {pageStyles}
         </style>
