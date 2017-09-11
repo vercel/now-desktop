@@ -1,59 +1,40 @@
 // Packages
-const { app, BrowserWindow } = require('electron')
-const { resolve: resolvePath } = require('app-root-path')
+const { shell, Notification } = require('electron')
+const { resolve } = require('app-root-path')
 
-let win
+const icon = resolve('./main/static/icons/windows.ico')
 
-// The hack of all hacks
-// electron doesn't have a built in notification thing,
-// so we launch a window on which we can use the
-// HTML5 `Notification` API :'(
-
-let buffer = []
-const icon = resolvePath('./main/static/icons/windows.ico')
-
-const notify = details => {
-  // On Windows we use the balloon API instead of HTML5's Notification API
-  // because the latter doesn't show the app icon/name
-  // Also, on Window 7 the Notification API is not available
-  if (process.platform === 'win32') {
-    global.tray.displayBalloon({
-      icon,
-      title: details.title,
-      content: details.body
-    })
-
-    return
+module.exports = ({ title, body, url, actions }) => {
+  const specs = {
+    title,
+    body,
+    icon
   }
 
-  const { title, body, url } = details
+  if (actions) {
+    specs.actions = []
+
+    for (const action of actions) {
+      specs.actions.push({
+        type: 'button',
+        text: action.label
+      })
+    }
+  }
+
+  const notification = new Notification(specs)
+
+  if (url) {
+    notification.on('click', () => shell.openExternal(url))
+  }
+
+  if (actions) {
+    // This only happens for signed apps
+    notification.on('action', (event, index) => {
+      actions[index].callback()
+    })
+  }
+
+  notification.show()
   console.log(`[Notification] ${title}: ${body}`)
-
-  if (win) {
-    win.webContents.send('notification', {
-      title,
-      body,
-      url
-    })
-  } else {
-    buffer.push([title, body, url])
-  }
 }
-
-app.on('ready', () => {
-  const win_ = new BrowserWindow({
-    show: false
-  })
-
-  const url = 'file://' + resolvePath('./main/static/pages/notify.html')
-  win_.loadURL(url)
-
-  win_.webContents.on('dom-ready', () => {
-    win = win_
-
-    buffer.forEach(([details]) => notify(details))
-    buffer = null
-  })
-})
-
-module.exports = notify
