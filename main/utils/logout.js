@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 
 // Utilities
 const { error: showError } = require('../dialogs')
+const notify = require('../notify')
 const { removeConfig, getConfig } = require('./config')
 const userAgent = require('./user-agent')
 
@@ -61,7 +62,7 @@ const revokeToken = async (token, tokenId) => {
   }
 }
 
-module.exports = async () => {
+module.exports = async reason => {
   const offline = process.env.CONNECTION === 'offline'
   const windows = global.windows
 
@@ -98,15 +99,46 @@ module.exports = async () => {
     showError("Couldn't remove config while logging out", err)
   }
 
-  if (windows && windows.tutorial) {
-    const tutorialWindow = windows.tutorial
+  const tutorialWindow = windows.tutorial
 
-    // Prepare the tutorial by reloading its contents
-    tutorialWindow.reload()
+  // Prepare the tutorial by reloading its contents
+  tutorialWindow.reload()
 
-    // Once the content has loaded again, show it
-    tutorialWindow.once('ready-to-show', () => tutorialWindow.show())
-  }
+  // Once the content has loaded again, show it
+  tutorialWindow.once('ready-to-show', () => {
+    if (reason) {
+      let body
+
+      // This can be extended later
+      switch (reason) {
+        case 'config-removed':
+          body =
+            'You were logged out from Now Desktop because you logged out from Now CLI.'
+          break
+        default:
+          body = false
+      }
+
+      if (body) {
+        notify({
+          title: 'Logged Out',
+          body,
+          actions: [
+            {
+              label: 'Log In',
+              callback() {
+                tutorialWindow.show()
+              }
+            }
+          ]
+        })
+
+        return
+      }
+    }
+
+    tutorialWindow.show()
+  })
 
   if (!userDetails) {
     return

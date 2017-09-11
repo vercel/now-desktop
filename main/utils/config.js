@@ -209,5 +209,5 @@ exports.watchConfig = async () => {
   configWatcher.on('change', () => configChanged(logout))
 
   // Log out when a config file is removed
-  configWatcher.on('unlink', logout)
+  configWatcher.on('unlink', () => logout('config-removed'))
 }
