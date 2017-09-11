@@ -118,6 +118,11 @@ exports.saveConfig = async (data, type) => {
       data = { sh: data }
     }
 
+    if (!currentContent._) {
+      currentContent._ =
+        'This is your Now config file. See `now config help`. More: https://git.io/v5ECz'
+    }
+
     // Merge new data with the existing
     currentContent = deepExtend(currentContent, data)
 
@@ -139,6 +144,11 @@ exports.saveConfig = async (data, type) => {
       }
     }
   } else if (type === 'auth') {
+    if (!currentContent._) {
+      currentContent._ =
+        "This is your Now credentials file. DON'T SHARE! More: https://git.io/v5ECz"
+    }
+
     if (!currentContent.credentials) {
       currentContent.credentials = []
     }
