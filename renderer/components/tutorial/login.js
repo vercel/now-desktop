@@ -66,7 +66,7 @@ class LoginForm extends PureComponent {
 
     const body = JSON.stringify({
       email,
-      tokenName: 'Now on ' + host
+      tokenName: 'Now Desktop on ' + host
     })
 
     const apiURL = `${url}/now/registration`
