@@ -16,25 +16,21 @@ const loadLicenses = () => {
   return getLicenses(remote.process.mainModule)
 }
 
-const Licenses = () =>
+const Licenses = () => (
   <section>
     {loadLicenses().map((item, index) => {
       return (
-        item.name.includes('now-desktop') ||
-        <details key={index}>
-          <summary>
-            {item.name}
-          </summary>
-          <p>
-            {item.license}
-          </p>
-        </details>
+        item.name.includes('now-desktop') || (
+          <details key={index}>
+            <summary>{item.name}</summary>
+            <p>{item.license}</p>
+          </details>
+        )
       )
     })}
 
-    <style jsx>
-      {styles}
-    </style>
+    <style jsx>{styles}</style>
   </section>
+)
 
 export default Licenses

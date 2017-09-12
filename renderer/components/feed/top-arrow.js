@@ -105,9 +105,7 @@ class TopArrow extends React.PureComponent {
       >
         <Caret />
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </span>
     )
   }

@@ -143,12 +143,13 @@ class About extends React.PureComponent {
   render() {
     return (
       <div>
-        {this.isWindows &&
+        {this.isWindows && (
           <div className="window-controls">
             <span onClick={this.handleCloseClick}>
               <CloseWindowSVG />
             </span>
-          </div>}
+          </div>
+        )}
         <section className="wrapper">
           <span className="window-title">About</span>
 
@@ -156,12 +157,7 @@ class About extends React.PureComponent {
 
           <h1>Now</h1>
           <h2>
-            Version{' '}
-            {this.state.version
-              ? <b>
-                  {this.state.version}
-                </b>
-              : ''}{' '}
+            Version {this.state.version ? <b>{this.state.version}</b> : ''}{' '}
             {this.state.releaseDate ? this.state.releaseDate : ''}
           </h2>
 
@@ -189,9 +185,7 @@ class About extends React.PureComponent {
               </a>
             </p>
 
-            <h1>
-              {'3rd party software'}
-            </h1>
+            <h1>{'3rd party software'}</h1>
             <Licenses />
           </article>
 
@@ -216,9 +210,7 @@ class About extends React.PureComponent {
           </nav>
         </section>
 
-        <style jsx>
-          {mainStyles}
-        </style>
+        <style jsx>{mainStyles}</style>
         <style jsx global>
           {globalStyles}
         </style>

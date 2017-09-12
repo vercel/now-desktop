@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const Done = () =>
+const Done = () => (
   <svg
     width="12"
     height="9"
@@ -18,5 +18,6 @@ const Done = () =>
       <path d="M1.5 4.5l2.82842712 2.82842712M10.156854 1.5L4.49999975 7.15685425" />
     </g>
   </svg>
+)
 
 export default Done

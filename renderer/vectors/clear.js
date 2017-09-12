@@ -2,7 +2,7 @@
 import React from 'react'
 import { string, func } from 'prop-types'
 
-const Clear = ({ color, onClick }) =>
+const Clear = ({ color, onClick }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" onClick={onClick}>
     <g
       transform="translate(1 1)"
@@ -16,6 +16,7 @@ const Clear = ({ color, onClick }) =>
       </g>
     </g>
   </svg>
+)
 
 Clear.propTypes = {
   color: string,

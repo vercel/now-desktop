@@ -61,9 +61,7 @@ class CreateTeam extends React.PureComponent {
         <i />
         <i />
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </a>
     )
   }

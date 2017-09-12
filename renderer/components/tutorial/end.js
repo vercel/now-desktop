@@ -42,9 +42,7 @@ class End extends Component {
         </p>
 
         <Button onClick={this.showApp}>Get Started</Button>
-        <style jsx>
-          {introStyles}
-        </style>
+        <style jsx>{introStyles}</style>
       </article>
     )
   }

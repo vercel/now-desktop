@@ -355,7 +355,9 @@ class Now extends EventEmitter {
                 console.time(`> [debug] /sync #${attempt} ${names.join(' ')}`)
               }
 
-              const stream = resumer().queue(data).end()
+              const stream = resumer()
+                .queue(data)
+                .end()
               const res = await this._fetch('/now/sync', {
                 method: 'POST',
                 headers: {
