@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const Arrow = () =>
+const Arrow = () => (
   <svg width="10px" height="21px" viewBox="0 0 34 72" version="1.1">
     <g id="Page-1" stroke="none" strokeWidth="1" fill="#000" fillRule="evenodd">
       <path
@@ -10,5 +10,6 @@ const Arrow = () =>
       />
     </g>
   </svg>
+)
 
 export default Arrow

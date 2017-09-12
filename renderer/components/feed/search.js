@@ -153,9 +153,7 @@ class Search extends React.PureComponent {
           </b>
         </div>
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </aside>
     )
   }

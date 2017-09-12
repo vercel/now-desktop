@@ -14,9 +14,11 @@ export default class Alias extends Message {
         <p>
           {this.getDisplayName()}
           configured {event.payload.ruleCount} alias rule
-          {event.payload.ruleCount === null || event.payload.ruleCount > 1
-            ? 's'
-            : ''}{' '}
+          {event.payload.ruleCount === null || event.payload.ruleCount > 1 ? (
+            's'
+          ) : (
+            ''
+          )}{' '}
           for <b>{event.payload.alias}</b>
         </p>
       )

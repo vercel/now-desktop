@@ -239,14 +239,10 @@ class EventMessage extends React.PureComponent {
 
         <figcaption>
           {message}
-          <span>
-            {this.parseDate(content.created)}
-          </span>
+          <span>{this.parseDate(content.created)}</span>
         </figcaption>
 
-        <style jsx>
-          {localStyles}
-        </style>
+        <style jsx>{localStyles}</style>
         <style jsx global>
           {globalStyles}
         </style>

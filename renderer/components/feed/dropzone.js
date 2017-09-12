@@ -65,9 +65,7 @@ class DropZone extends React.PureComponent {
           </span>
         </section>
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </aside>
     )
   }

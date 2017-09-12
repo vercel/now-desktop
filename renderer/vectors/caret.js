@@ -1,7 +1,7 @@
 // Packages
 import React from 'react'
 
-const Caret = () =>
+const Caret = () => (
   <svg
     width="28"
     height="13"
@@ -14,5 +14,6 @@ const Caret = () =>
       fillRule="evenodd"
     />
   </svg>
+)
 
 export default Caret

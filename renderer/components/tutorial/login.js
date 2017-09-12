@@ -58,7 +58,10 @@ class LoginForm extends PureComponent {
   async getVerificationData(url, email, remote) {
     const os = remote.require('os')
     const hyphens = new RegExp('-', 'g')
-    const host = os.hostname().replace(hyphens, ' ').replace('.local', '')
+    const host = os
+      .hostname()
+      .replace(hyphens, ' ')
+      .replace('.local', '')
     const userAgent = remote.require('./utils/user-agent')
 
     const body = JSON.stringify({

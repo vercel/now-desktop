@@ -126,9 +126,7 @@ class Intro extends PureComponent {
             </span>
           </p>
 
-          <style jsx>
-            {introStyles}
-          </style>
+          <style jsx>{introStyles}</style>
         </article>
       )
     }
@@ -143,9 +141,7 @@ class Intro extends PureComponent {
             <b className="security-token">{security.code}</b>
           </p>
 
-          <style jsx>
-            {introStyles}
-          </style>
+          <style jsx>{introStyles}</style>
         </article>
       )
     }
@@ -154,9 +150,7 @@ class Intro extends PureComponent {
       return (
         <article>
           <p>
-            <b>
-              {"You're already logged in!"}
-            </b>
+            <b>{"You're already logged in!"}</b>
           </p>
 
           <p className="has-mini-spacing">
@@ -169,9 +163,7 @@ class Intro extends PureComponent {
             Show Event Feed
           </span>
 
-          <style jsx>
-            {introStyles}
-          </style>
+          <style jsx>{introStyles}</style>
         </article>
       )
     }
@@ -193,9 +185,7 @@ class Intro extends PureComponent {
           <span className="sub" onClick={this.showApp}>
             Skip Intro
           </span>
-          <style jsx>
-            {introStyles}
-          </style>
+          <style jsx>{introStyles}</style>
         </article>
       )
     }
@@ -208,9 +198,7 @@ class Intro extends PureComponent {
         </p>
         <LoginForm setIntroState={this.setState} />
 
-        <style jsx>
-          {introStyles}
-        </style>
+        <style jsx>{introStyles}</style>
       </article>
     )
   }

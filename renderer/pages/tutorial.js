@@ -160,7 +160,7 @@ class Sections extends React.PureComponent {
 
     return (
       <div>
-        {this.isWindows &&
+        {this.isWindows && (
           <div className="window-controls">
             <span onClick={this.handleMinimizeClick}>
               <MinimizeSVG />
@@ -169,7 +169,8 @@ class Sections extends React.PureComponent {
             <span onClick={this.handleCloseClick}>
               <CloseSVG />
             </span>
-          </div>}
+          </div>
+        )}
         <Slider {...sliderSettings} ref={this.setReference} name="slider">
           <section>
             <Intro {...introSettings} />
@@ -196,25 +197,22 @@ class Sections extends React.PureComponent {
           </section>
         </Slider>
 
-        <style jsx>
-          {controlStyle}
-        </style>
+        <style jsx>{controlStyle}</style>
       </div>
     )
   }
 }
 
-const Tutorial = () =>
+const Tutorial = () => (
   <main>
     <Title>Welcome to Now</Title>
     <Sections />
 
-    <style jsx>
-      {wrapStyle}
-    </style>
+    <style jsx>{wrapStyle}</style>
     <style jsx global>
       {sliderStyle}
     </style>
   </main>
+)
 
 export default Tutorial

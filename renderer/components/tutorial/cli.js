@@ -106,14 +106,13 @@ class Binary extends React.PureComponent {
             }
           </p>
 
-          {this.state.progress !== false &&
+          {this.state.progress !== false && (
             <aside className="progress">
               <span style={{ width: `${this.state.progress}%` }} />
-            </aside>}
+            </aside>
+          )}
 
-          <style jsx>
-            {binaryStyles}
-          </style>
+          <style jsx>{binaryStyles}</style>
         </article>
       )
     }
@@ -135,9 +134,7 @@ class Binary extends React.PureComponent {
             helpful.
           </p>
 
-          <style jsx>
-            {binaryStyles}
-          </style>
+          <style jsx>{binaryStyles}</style>
         </article>
       )
     }
@@ -159,9 +156,7 @@ class Binary extends React.PureComponent {
           {binaryInstalled ? 'Already installed' : 'Install now'}
         </Button>
 
-        <style jsx>
-          {binaryStyles}
-        </style>
+        <style jsx>{binaryStyles}</style>
       </article>
     )
   }

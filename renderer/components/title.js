@@ -128,9 +128,7 @@ class Title extends React.PureComponent {
           })}
         </nav>
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </section>
     )
   }
@@ -158,25 +156,25 @@ class Title extends React.PureComponent {
       <aside className={classes.join(' ')}>
         <div>
           {this.props.light &&
-            this.props.searchShown &&
+          this.props.searchShown && (
             <Search
               hideDeployIcon={this.hideDeployIcon}
               showDeployIcon={this.showDeployIcon}
               setFeedFilter={this.props.setFilter || false}
               setSearchRef={this.props.setSearchRef || false}
-            />}
+            />
+          )}
 
-          <h1>
-            {this.props.children}
-          </h1>
+          <h1>{this.props.children}</h1>
 
           {this.props.light &&
-            this.props.searchShown &&
+          this.props.searchShown && (
             <span className="toggle-filter" onClick={this.toggleFilter}>
               <Filter />
-            </span>}
+            </span>
+          )}
 
-          {this.props.light &&
+          {this.props.light && (
             <span
               className="deploy"
               onClick={this.selectToDeploy}
@@ -184,7 +182,8 @@ class Title extends React.PureComponent {
               name="deployIcon"
             >
               <Deploy />
-            </span>}
+            </span>
+          )}
         </div>
 
         <section className="update-message">
@@ -194,9 +193,7 @@ class Title extends React.PureComponent {
 
         {this.renderTypeFilter()}
 
-        <style jsx>
-          {styles}
-        </style>
+        <style jsx>{styles}</style>
       </aside>
     )
   }
