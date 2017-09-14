@@ -113,7 +113,7 @@ module.exports = async reason => {
       switch (reason) {
         case 'config-removed':
           body =
-            'You were logged out from Now Desktop because you logged out from Now CLI.'
+            'You were logged out because you logged out from Now CLI. Click here to log back in!'
           break
         default:
           body = false
@@ -123,14 +123,9 @@ module.exports = async reason => {
         notify({
           title: 'Logged Out',
           body,
-          actions: [
-            {
-              label: 'Log In',
-              callback() {
-                tutorialWindow.show()
-              }
-            }
-          ]
+          onClick() {
+            tutorialWindow.show()
+          }
         })
 
         return

@@ -184,7 +184,7 @@ const configChanged = async logout => {
   try {
     content = await exports.getConfig()
   } catch (err) {
-    logout()
+    logout('config-removed')
     return
   }
 
