@@ -4,34 +4,22 @@ const { resolve } = require('app-root-path')
 
 const icon = resolve('./main/static/icons/windows.ico')
 
-module.exports = ({ title, body, url, actions }) => {
+module.exports = ({ title, body, url, onClick }) => {
   const specs = {
     title,
     body,
     icon
   }
 
-  if (actions) {
-    specs.actions = []
-
-    for (const action of actions) {
-      specs.actions.push({
-        type: 'button',
-        text: action.label
-      })
-    }
-  }
-
   const notification = new Notification(specs)
 
-  if (url) {
-    notification.on('click', () => shell.openExternal(url))
-  }
+  if (url || onClick) {
+    notification.on('click', () => {
+      if (onClick) {
+        return onClick()
+      }
 
-  if (actions) {
-    // This only happens for signed apps
-    notification.on('action', (event, index) => {
-      actions[index].callback()
+      shell.openExternal(url)
     })
   }
 
