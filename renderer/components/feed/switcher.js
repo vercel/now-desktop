@@ -359,7 +359,7 @@ class Switcher extends React.Component {
   }
 
   merge(first, second) {
-    const merged = first.concat(second)
+    const merged = first.concat(second).filter(Boolean)
     return makeUnique(merged, (a, b) => a.id === b.id)
   }
 
