@@ -82,10 +82,10 @@ exports.innerMenu = async function(app, tray, windows) {
       type: 'separator'
     },
     {
-      label: 'Options',
+      label: 'Preferences',
       submenu: [
         {
-          label: 'Open at Login',
+          label: 'Launch at Login',
           type: 'checkbox',
           checked: openAtLogin,
           click() {
@@ -100,9 +100,8 @@ exports.innerMenu = async function(app, tray, windows) {
       type: 'separator'
     },
     {
-      label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
-      click: app.quit,
-      role: 'quit'
+      role: 'quit',
+      accelerator: 'Cmd+Q'
     }
   ])
 }
@@ -119,8 +118,8 @@ exports.outerMenu = (app, windows) => {
       type: 'separator'
     },
     {
-      label: process.platform === 'darwin' ? `Quit ${app.getName()}` : 'Quit',
-      role: 'quit'
+      role: 'quit',
+      accelerator: 'Cmd+Q'
     }
   ])
 }
