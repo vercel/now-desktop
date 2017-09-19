@@ -8,7 +8,8 @@ module.exports = ({ title, body, url, onClick }) => {
   const specs = {
     title,
     body,
-    icon
+    icon,
+    silent: true
   }
 
   const notification = new Notification(specs)
