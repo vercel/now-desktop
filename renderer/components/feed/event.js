@@ -72,7 +72,8 @@ class EventMessage extends React.PureComponent {
 
     notify({
       title: 'Copied to Clipboard',
-      body: `Your clipboard now contains the selected ${type}.`
+      body: `Your clipboard now contains the selected ${type}.`,
+      silent: true
     })
   }
 
