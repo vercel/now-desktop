@@ -4,12 +4,12 @@ const { resolve } = require('app-root-path')
 
 const icon = resolve('./main/static/icons/windows.ico')
 
-module.exports = ({ title, body, url, onClick, silent = false }) => {
+module.exports = ({ title, body, url, onClick }) => {
   const specs = {
     title,
     body,
     icon,
-    silent
+    silent: true
   }
 
   const notification = new Notification(specs)

@@ -62,19 +62,12 @@ class EventMessage extends React.PureComponent {
     })
   }
 
-  copyToClipboard(text, type) {
+  copyToClipboard(text) {
     if (!this.remote) {
       return
     }
 
-    const notify = this.remote.require('./notify')
     this.remote.clipboard.writeText(text)
-
-    notify({
-      title: 'Copied to Clipboard',
-      body: `Your clipboard now contains the selected ${type}.`,
-      silent: true
-    })
   }
 
   getID() {

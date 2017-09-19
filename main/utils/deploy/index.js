@@ -447,8 +447,7 @@ module.exports = async dir => {
 
   notify({
     title: 'Deploying...',
-    body: 'Uploading the files and creating the deployment.',
-    silent: true
+    body: 'Uploading the files and creating the deployment.'
   })
 
   // Somehow, the error dialogs need to be loaded later
@@ -499,8 +498,7 @@ module.exports = async dir => {
 
       notify({
         title: 'Aborted Deployment',
-        body: 'Because you chose not to continue it.',
-        silent: true
+        body: 'Because you chose not to continue it.'
       })
 
       return
@@ -519,8 +517,7 @@ module.exports = async dir => {
   notify({
     title: 'Copied URL to Clipboard!',
     body: 'Opening the deployment in your browser...',
-    url,
-    silent: true
+    url
   })
 
   if (now.syncAmount) {
