@@ -8,11 +8,12 @@ import parseUA from '../../../utils/user-agent'
 import Message from './message'
 
 const osNames = {
-  darwin: 'Mac OS',
+  darwin: 'macOS',
   win32: 'Windows',
   linux: 'Linux',
   freebsd: 'FreeBSD',
-  sunos: 'SunOS'
+  sunos: 'SunOS',
+  'Mac OS': 'macOS'
 }
 
 export default class Login extends Message {
@@ -28,17 +29,21 @@ export default class Login extends Message {
     if (userAgent) {
       from = userAgent.browser
         ? userAgent.browser.name
-        : userAgent.program ? 'CLI' : null
+        : userAgent.program ? 'Now CLI' : null
       os = osNames[userAgent.os.name] || userAgent.os.name
     } else {
       from = payload.env
       os = payload.os
     }
 
+    if (userAgent.ua.includes('Electron/')) {
+      from = 'Now Desktop'
+    }
+
     let message = 'logged in'
 
     if (from) message += ` from ${from}`
-    if (os) message += ` (${os})`
+    if (os) message += ` on ${os}`
 
     if (geolocation) {
       const city =
