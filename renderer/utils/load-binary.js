@@ -98,7 +98,7 @@ export default async function() {
   })
 
   notify({
-    title: 'Finished Installing now CLI',
+    title: 'Finished Installing Now CLI',
     body: 'You can now use `now` from the command line.'
   })
 
