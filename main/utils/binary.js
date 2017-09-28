@@ -230,7 +230,7 @@ exports.handleExisting = async next => {
 exports.getBinarySuffix = () => (process.platform === 'win32' ? '.exe' : '')
 
 exports.getURL = async () => {
-  const url = 'https://now-cli-latest.zeit.sh'
+  const url = 'https://now-cli-releases.zeit.sh'
   const response = await fetch(url, {
     headers: {
       'user-agent': userAgent
@@ -241,13 +241,13 @@ exports.getURL = async () => {
     throw new Error('Binary response not okay')
   }
 
-  const responseParsed = await response.json()
+  const { stable } = await response.json()
 
-  if (!responseParsed.assets || responseParsed.assets.length < 1) {
+  if (!stable || !stable.assets || stable.assets.length < 1) {
     throw new Error('Not able to get URL of latest binary')
   }
 
-  const forPlatform = responseParsed.assets.find(
+  const forPlatform = stable.assets.find(
     asset => asset.platform === platformName()
   )
 
@@ -263,7 +263,7 @@ exports.getURL = async () => {
 
   return {
     url: downloadURL,
-    version: responseParsed.tag,
+    version: stable.tag,
     binaryName: forPlatform.name
   }
 }
