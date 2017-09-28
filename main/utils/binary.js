@@ -243,8 +243,6 @@ exports.getURL = async () => {
 
   const { stable } = await response.json()
 
-  console.log(stable)
-
   if (!stable || !stable.assets || stable.assets.length < 1) {
     throw new Error('Not able to get URL of latest binary')
   }
