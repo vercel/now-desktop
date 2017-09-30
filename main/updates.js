@@ -17,7 +17,6 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const { platform } = process
-const feedURL = `https://now-desktop-releases.zeit.sh/update/${platform}`
 
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
@@ -170,6 +169,10 @@ const startAppUpdates = async mainWindow => {
     // Then check again for update after 15 minutes
     setTimeout(checkForUpdates, ms('15m'))
   })
+
+  const isCanary = config.desktop && config.desktop.canary
+  const channel = isCanary ? 'releases-canary' : 'releases'
+  const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
