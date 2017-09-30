@@ -16,8 +16,6 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
-const { platform } = process
-
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
@@ -170,6 +168,7 @@ const startAppUpdates = async mainWindow => {
     setTimeout(checkForUpdates, ms('15m'))
   })
 
+  const { platform } = process
   const isCanary = config.desktop && config.desktop.canary
   const channel = isCanary ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
