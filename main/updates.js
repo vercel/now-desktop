@@ -9,12 +9,19 @@ const trimWhitespace = require('trim')
 const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
+const { watch } = require('chokidar')
+const pathExists = require('path-exists')
 
 // Utilities
 const { version } = require('../package')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
-const { getConfig, saveConfig } = require('./utils/config')
+const {
+  getConfig,
+  saveConfig,
+  configPaths,
+  hasNewConfig
+} = require('./utils/config')
 
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
@@ -132,6 +139,38 @@ const deleteUpdateConfig = () =>
     'config'
   )
 
+const setUpdateURL = async config => {
+  if (typeof config !== 'object') {
+    try {
+      config = await getConfig(true)
+    } catch (err) {
+      config = {}
+    }
+  }
+
+  const { platform } = process
+  const { canary } = config
+
+  const channel = canary ? 'releases-canary' : 'releases'
+  const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
+
+  try {
+    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
+  } catch (err) {}
+}
+
+const watchConfig = async () => {
+  let toWatch = [configPaths.old]
+
+  if (await hasNewConfig()) {
+    toWatch = [configPaths.auth, configPaths.config]
+  } else if (!await pathExists(configPaths.old)) {
+    return
+  }
+
+  watch(toWatch).on('change', setUpdateURL)
+}
+
 const startAppUpdates = async mainWindow => {
   let config
 
@@ -145,7 +184,7 @@ const startAppUpdates = async mainWindow => {
   const appVersion = isDev ? version : app.getVersion()
 
   // Ensure that update state gets refreshed after relaunch
-  deleteUpdateConfig()
+  await deleteUpdateConfig()
 
   // If the current app version matches the old
   // app version, it's an indicator that installation
@@ -168,15 +207,11 @@ const startAppUpdates = async mainWindow => {
     setTimeout(checkForUpdates, ms('15m'))
   })
 
-  const { platform } = process
-  const { canary } = config
+  // Ensure we're pulling from the correct channel
+  await setUpdateURL(config)
 
-  const channel = canary ? 'releases-canary' : 'releases'
-  const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
-
-  try {
-    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
-  } catch (err) {}
+  // Listen to config for channel change
+  await watchConfig()
 
   // Check for app update after startup
   setTimeout(checkForUpdates, ms('10s'))
