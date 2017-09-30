@@ -101,7 +101,13 @@ exports.innerMenu = async function(app, tray, windows) {
           checked: isCanary,
           click() {
             const canary = isCanary ? null : true
-            saveConfig({ desktop: { canary } }, 'config')
+
+            saveConfig(
+              {
+                desktop: { canary }
+              },
+              'config'
+            )
           }
         }
       ]
