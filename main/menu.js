@@ -9,7 +9,7 @@ const { getConfig, saveConfig } = require('./utils/config')
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
-  const isCanary = config.desktop && config.desktop.canary
+  const isCanary = config.canary
 
   return Menu.buildFromTemplate([
     {
@@ -100,11 +100,9 @@ exports.innerMenu = async function(app, tray, windows) {
           type: 'checkbox',
           checked: isCanary,
           click() {
-            const canary = isCanary ? null : true
-
             saveConfig(
               {
-                desktop: { canary }
+                canary: isCanary ? null : true
               },
               'config'
             )

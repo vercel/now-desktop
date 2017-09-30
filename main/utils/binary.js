@@ -146,7 +146,7 @@ const canaryCheck = async () => {
     config = {}
   }
 
-  return config.desktop && config.desktop.canary
+  return config.canary
 }
 
 exports.installedWithNPM = async () => {

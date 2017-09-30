@@ -169,8 +169,9 @@ const startAppUpdates = async mainWindow => {
   })
 
   const { platform } = process
-  const isCanary = config.desktop && config.desktop.canary
-  const channel = isCanary ? 'releases-canary' : 'releases'
+  const { canary } = config
+
+  const channel = canary ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
   try {
