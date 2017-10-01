@@ -9,19 +9,12 @@ const trimWhitespace = require('trim')
 const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
-const { watch } = require('chokidar')
-const pathExists = require('path-exists')
 
 // Utilities
 const { version } = require('../package')
 const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
-const {
-  getConfig,
-  saveConfig,
-  configPaths,
-  hasNewConfig
-} = require('./utils/config')
+const { getConfig, saveConfig } = require('./utils/config')
 
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
@@ -119,34 +112,12 @@ const startBinaryUpdates = () => {
   binaryUpdateTimer(ms('2s'))
 }
 
-const checkForUpdates = () => {
-  if (process.env.CONNECTION === 'offline') {
-    // Try again after half an hour
-    setTimeout(checkForUpdates, ms('30m'))
-    return
-  }
+const setUpdateURL = async () => {
+  let config = {}
 
-  autoUpdater.checkForUpdates()
-}
-
-const deleteUpdateConfig = () =>
-  saveConfig(
-    {
-      desktop: {
-        updatedFrom: null
-      }
-    },
-    'config'
-  )
-
-const setUpdateURL = async config => {
-  if (typeof config !== 'object') {
-    try {
-      config = await getConfig(true)
-    } catch (err) {
-      config = {}
-    }
-  }
+  try {
+    config = await getConfig(true)
+  } catch (err) {}
 
   const { platform } = process
   const { canary } = config
@@ -159,17 +130,29 @@ const setUpdateURL = async config => {
   } catch (err) {}
 }
 
-const watchConfig = async () => {
-  let toWatch = [configPaths.old]
-
-  if (await hasNewConfig()) {
-    toWatch = [configPaths.auth, configPaths.config]
-  } else if (!await pathExists(configPaths.old)) {
+const checkForUpdates = async () => {
+  if (process.env.CONNECTION === 'offline') {
+    // Try again after half an hour
+    setTimeout(checkForUpdates, ms('30m'))
     return
   }
 
-  watch(toWatch).on('change', setUpdateURL)
+  // Ensure we're pulling from the correct channel
+  await setUpdateURL()
+
+  // Then ask the server for updates
+  autoUpdater.checkForUpdates()
 }
+
+const deleteUpdateConfig = () =>
+  saveConfig(
+    {
+      desktop: {
+        updatedFrom: null
+      }
+    },
+    'config'
+  )
 
 const startAppUpdates = async mainWindow => {
   let config
@@ -206,12 +189,6 @@ const startAppUpdates = async mainWindow => {
     // Then check again for update after 15 minutes
     setTimeout(checkForUpdates, ms('15m'))
   })
-
-  // Ensure we're pulling from the correct channel
-  await setUpdateURL(config)
-
-  // Listen to config for channel change
-  await watchConfig()
 
   // Check for app update after startup
   setTimeout(checkForUpdates, ms('10s'))

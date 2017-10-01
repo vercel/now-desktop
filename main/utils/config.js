@@ -25,7 +25,7 @@ for (const file in paths) {
 
 let configWatcher = null
 
-exports.hasNewConfig = async () => {
+const hasNewConfig = async () => {
   if (!await pathExists(paths.auth)) {
     return false
   }
@@ -37,12 +37,10 @@ exports.hasNewConfig = async () => {
   return true
 }
 
-exports.configPaths = paths
-
 exports.getConfig = async noCheck => {
   let content = {}
 
-  if (await exports.hasNewConfig()) {
+  if (await hasNewConfig()) {
     const { credentials } = await fs.readJSON(paths.auth)
     const { token } = credentials.find(item => item.provider === 'sh')
     const { sh } = await fs.readJSON(paths.config)
@@ -72,7 +70,7 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
-  if (await exports.hasNewConfig()) {
+  if (await hasNewConfig()) {
     const configContent = await fs.readJSON(paths.config)
     delete configContent.sh
 
@@ -99,7 +97,7 @@ exports.removeConfig = async () => {
 }
 
 exports.saveConfig = async (data, type) => {
-  let isNew = await exports.hasNewConfig()
+  let isNew = await hasNewConfig()
 
   // Ensure that we're writing to the new config
   // destination, if no config exists yet
@@ -196,7 +194,7 @@ const configChanged = async logout => {
 exports.watchConfig = async () => {
   let toWatch = [paths.old]
 
-  if (await exports.hasNewConfig()) {
+  if (await hasNewConfig()) {
     toWatch = [paths.auth, paths.config]
   } else if (!await pathExists(paths.old)) {
     return
