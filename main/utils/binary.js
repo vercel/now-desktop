@@ -21,6 +21,7 @@ const pipe = require('promisepipe')
 // Utilities
 const { runAsRoot } = require('../dialogs')
 const userAgent = require('./user-agent')
+const { getConfig } = require('./config')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -136,6 +137,18 @@ const platformName = () => {
   return name
 }
 
+const canaryCheck = async () => {
+  let config
+
+  try {
+    config = await getConfig(true)
+  } catch (err) {
+    config = {}
+  }
+
+  return config.canary
+}
+
 exports.installedWithNPM = async () => {
   let packages
 
@@ -241,13 +254,15 @@ exports.getURL = async () => {
     throw new Error('Binary response not okay')
   }
 
-  const { stable } = await response.json()
+  const isCanary = await canaryCheck()
+  const releases = await response.json()
+  const release = isCanary ? releases.canary : releases.stable
 
-  if (!stable || !stable.assets || stable.assets.length < 1) {
+  if (!release || !release.assets || release.assets.length < 1) {
     throw new Error('Not able to get URL of latest binary')
   }
 
-  const forPlatform = stable.assets.find(
+  const forPlatform = release.assets.find(
     asset => asset.platform === platformName()
   )
 
@@ -263,7 +278,7 @@ exports.getURL = async () => {
 
   return {
     url: downloadURL,
-    version: stable.tag,
+    version: release.tag,
     binaryName: forPlatform.name
   }
 }

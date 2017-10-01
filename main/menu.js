@@ -4,11 +4,12 @@ const { Menu, shell } = require('electron')
 // Utilities
 const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
-const { getConfig } = require('./utils/config')
+const { getConfig, saveConfig } = require('./utils/config')
 
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
+  const isCanary = config.canary
 
   return Menu.buildFromTemplate([
     {
@@ -92,6 +93,19 @@ exports.innerMenu = async function(app, tray, windows) {
             app.setLoginItemSettings({
               openAtLogin: !openAtLogin
             })
+          }
+        },
+        {
+          label: 'Canary Updates',
+          type: 'checkbox',
+          checked: isCanary,
+          click() {
+            saveConfig(
+              {
+                canary: isCanary ? null : true
+              },
+              'config'
+            )
           }
         }
       ]

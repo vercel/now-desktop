@@ -16,9 +16,6 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
-const { platform } = process
-const feedURL = `https://now-desktop-releases.zeit.sh/update/${platform}`
-
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
@@ -115,13 +112,35 @@ const startBinaryUpdates = () => {
   binaryUpdateTimer(ms('2s'))
 }
 
-const checkForUpdates = () => {
+const setUpdateURL = async () => {
+  let config = {}
+
+  try {
+    config = await getConfig(true)
+  } catch (err) {}
+
+  const { platform } = process
+  const { canary } = config
+
+  const channel = canary ? 'releases-canary' : 'releases'
+  const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
+
+  try {
+    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
+  } catch (err) {}
+}
+
+const checkForUpdates = async () => {
   if (process.env.CONNECTION === 'offline') {
     // Try again after half an hour
     setTimeout(checkForUpdates, ms('30m'))
     return
   }
 
+  // Ensure we're pulling from the correct channel
+  await setUpdateURL()
+
+  // Then ask the server for updates
   autoUpdater.checkForUpdates()
 }
 
@@ -148,7 +167,7 @@ const startAppUpdates = async mainWindow => {
   const appVersion = isDev ? version : app.getVersion()
 
   // Ensure that update state gets refreshed after relaunch
-  deleteUpdateConfig()
+  await deleteUpdateConfig()
 
   // If the current app version matches the old
   // app version, it's an indicator that installation
@@ -170,10 +189,6 @@ const startAppUpdates = async mainWindow => {
     // Then check again for update after 15 minutes
     setTimeout(checkForUpdates, ms('15m'))
   })
-
-  try {
-    autoUpdater.setFeedURL(feedURL + '/' + app.getVersion())
-  } catch (err) {}
 
   // Check for app update after startup
   setTimeout(checkForUpdates, ms('10s'))
