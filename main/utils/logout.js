@@ -7,7 +7,7 @@ const notify = require('../notify')
 const { removeConfig, getConfig } = require('./config')
 const userAgent = require('./user-agent')
 
-const endpoint = 'https://zeit.co/api/www/user/tokens/'
+const endpoint = 'https://zeit.co/api/user/tokens/'
 
 const requestHeaders = token => ({
   headers: {
