@@ -146,7 +146,8 @@ const canaryCheck = async () => {
     config = {}
   }
 
-  return config.canary
+  const { updateChannel } = config
+  return updateChannel && updateChannel === 'canary'
 }
 
 exports.installedWithNPM = async () => {
@@ -255,6 +256,7 @@ exports.getURL = async () => {
   }
 
   const isCanary = await canaryCheck()
+  console.log(isCanary)
   const releases = await response.json()
   const release = isCanary ? releases.canary : releases.stable
 
