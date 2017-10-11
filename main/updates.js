@@ -120,9 +120,10 @@ const setUpdateURL = async () => {
   } catch (err) {}
 
   const { platform } = process
-  const { canary } = config
+  const { updateChannel } = config
 
-  const channel = canary ? 'releases-canary' : 'releases'
+  const isCanary = updateChannel && updateChannel === 'canary'
+  const channel = isCanary ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
   try {
