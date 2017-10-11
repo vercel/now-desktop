@@ -43,7 +43,12 @@ exports.getConfig = async noCheck => {
   if (await hasNewConfig()) {
     const { credentials } = await fs.readJSON(paths.auth)
     const { token } = credentials.find(item => item.provider === 'sh')
-    const { sh } = await fs.readJSON(paths.config)
+    const { sh, updateChannel } = await fs.readJSON(paths.config)
+    const isCanary = updateChannel && updateChannel === 'canary'
+
+    if (sh.canary || isCanary) {
+      content.updateChannel = 'canary'
+    }
 
     Object.assign(content, sh, { token })
   } else {
@@ -115,12 +120,19 @@ exports.saveConfig = async (data, type) => {
   if (type === 'config') {
     // Only create a sub prop for the new config
     if (isNew) {
+      const { updateChannel } = data
       data = { sh: data }
+
+      if (updateChannel) {
+        data.updateChannel = updateChannel
+        delete data.sh.updateChannel
+      }
     }
 
     if (!currentContent._) {
       currentContent._ =
         'This is your Now config file. See `now config help`. More: https://git.io/v5ECz'
+      currentContent.updateChannel = 'stable'
     }
 
     // Merge new data with the existing

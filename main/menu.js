@@ -9,7 +9,8 @@ const { getConfig, saveConfig } = require('./utils/config')
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
-  const isCanary = config.canary
+  const { updateChannel } = config
+  const isCanary = updateChannel && updateChannel === 'canary'
 
   return Menu.buildFromTemplate([
     {
@@ -102,7 +103,7 @@ exports.innerMenu = async function(app, tray, windows) {
           click() {
             saveConfig(
               {
-                canary: isCanary ? null : true
+                updateChannel: isCanary ? 'stable' : 'canary'
               },
               'config'
             )
