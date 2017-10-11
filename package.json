@@ -91,7 +91,7 @@
     "load-licenses": "1.0.1",
     "make-unique": "1.0.4",
     "mkdirp": "0.5.1",
-    "moment": "2.18.1",
+    "moment": "2.19.1",
     "ms": "2.0.0",
     "node-fetch": "1.7.3",
     "path-exists": "3.0.0",
@@ -112,9 +112,9 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
-    "electron": "1.7.8",
-    "electron-builder": "19.35.1",
-    "electron-builder-squirrel-windows": "19.35.1",
+    "electron": "1.7.9",
+    "electron-builder": "19.36.0",
+    "electron-builder-squirrel-windows": "19.36.0",
     "eslint-config-prettier": "2.6.0",
     "eslint-plugin-react": "7.4.0",
     "html-to-react": "1.3.1",
