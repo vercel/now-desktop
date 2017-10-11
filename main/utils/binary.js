@@ -256,7 +256,6 @@ exports.getURL = async () => {
   }
 
   const isCanary = await canaryCheck()
-  console.log(isCanary)
   const releases = await response.json()
   const release = isCanary ? releases.canary : releases.stable
 
