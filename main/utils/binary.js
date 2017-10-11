@@ -146,7 +146,8 @@ const canaryCheck = async () => {
     config = {}
   }
 
-  return config.canary
+  const { updateChannel } = config
+  return updateChannel && updateChannel === 'canary'
 }
 
 exports.installedWithNPM = async () => {
