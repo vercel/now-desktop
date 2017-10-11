@@ -139,7 +139,12 @@ class Switcher extends React.Component {
       this.setState({ updateFailed: true })
     })
 
+    const { getCurrentWindow } = this.remote
+    const { isVisible } = getCurrentWindow()
+
     const listTimer = () => {
+      const time = isVisible() ? '5s' : '60s'
+
       setTimeout(async () => {
         if (!this.state.online) {
           listTimer()
@@ -166,7 +171,7 @@ class Switcher extends React.Component {
         }
 
         listTimer()
-      }, ms('10s'))
+      }, ms(time))
     }
 
     // Only start updating teams once they're loaded!
