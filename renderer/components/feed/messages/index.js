@@ -1,6 +1,7 @@
 import Alias from './alias'
 import AliasChown from './alias-chown'
 import AliasDelete from './alias-delete'
+import Avatar from './avatar'
 import Cert from './cert'
 import CertChown from './cert-chown'
 import CertClone from './cert-clone'
@@ -28,6 +29,7 @@ import SecretAdd from './secret-add'
 import SecretDelete from './secret-delete'
 import SecretRename from './secret-rename'
 import Team from './team'
+import TeamAvatarUpdate from './team-avatar-update'
 import TeamMemberAdd from './team-member-add'
 import TeamMemberDelete from './team-member-delete'
 import TeamMemberRollUpdate from './team-member-roll-update'
@@ -39,6 +41,7 @@ export default new Map([
   ['alias', Alias],
   ['alias-chown', AliasChown],
   ['alias-delete', AliasDelete],
+  ['avatar', Avatar],
   ['cert', Cert],
   ['cert-chown', CertChown],
   ['cert-clone', CertClone],
@@ -66,6 +69,7 @@ export default new Map([
   ['secret-delete', SecretDelete],
   ['secret-rename', SecretRename],
   ['team', Team],
+  ['team-avatar-update', TeamAvatarUpdate],
   ['team-member-add', TeamMemberAdd],
   ['team-member-delete', TeamMemberDelete],
   ['team-member-roll-update', TeamMemberRollUpdate],
