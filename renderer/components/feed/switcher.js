@@ -659,6 +659,7 @@ class Switcher extends React.Component {
             isUser={isUser}
             scale={shouldScale}
             delay={index}
+            hash={team.avatar}
           />
 
           <style jsx>{itemStyle}</style>
