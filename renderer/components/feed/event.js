@@ -222,6 +222,7 @@ class EventMessage extends React.PureComponent {
 
   render() {
     const { message, content, team, group } = this.props
+    const avatarHash = content.user && content.user.avatar
 
     return (
       <figure
@@ -229,7 +230,7 @@ class EventMessage extends React.PureComponent {
         onClick={this.click}
         onContextMenu={this.rightClick}
       >
-        <Avatar event={content} team={team} group={group} />
+        <Avatar event={content} team={team} group={group} hash={avatarHash} />
 
         <figcaption>
           {message}

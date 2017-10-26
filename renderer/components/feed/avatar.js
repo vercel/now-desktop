@@ -32,7 +32,7 @@ class Avatar extends React.PureComponent {
   }
 
   async setURL() {
-    const { event, team, isUser, group } = this.props
+    const { event, team, isUser, group, hash } = this.props
 
     if (group && group === 'system') {
       this.setState({
@@ -55,8 +55,13 @@ class Avatar extends React.PureComponent {
       id = team.id
     }
 
-    const imageID = validUser ? id : `?teamId=${team.id}`
-    const separator = validUser ? '?' : '&'
+    let imageID = validUser ? id : `?teamId=${team.id}`
+    let separator = validUser ? '?' : '&'
+
+    if (hash) {
+      imageID = hash
+      separator = '?'
+    }
 
     this.setState({
       url: `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
@@ -120,7 +125,8 @@ Avatar.propTypes = {
   isUser: bool,
   scale: bool,
   delay: number,
-  group: string
+  group: string,
+  hash: string
 }
 
 export default Avatar
