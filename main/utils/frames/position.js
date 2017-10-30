@@ -48,6 +48,9 @@ module.exports = (tray, window) => {
     // Use the display's work area instead.
     verticalPosition = displayArea.y + 5
 
+    if (screen.getMenuBarHeight() === 0) {
+      verticalPosition += 22
+    }
     const left = horizontalPosition + windowSize[0]
     const maxLeft = displayArea.width - 18
 
