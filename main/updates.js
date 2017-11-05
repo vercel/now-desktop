@@ -17,15 +17,7 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const checkIfCanary = async () => {
-  let config
-
-  try {
-    config = await getConfig(true)
-  } catch (err) {
-    throw new Error(`The config file couldn't be read`)
-  }
-
-  const { updateChannel } = config
+  const { updateChannel } = await getConfig(true)
   return updateChannel && updateChannel === 'canary'
 }
 
