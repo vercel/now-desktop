@@ -17,12 +17,15 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const checkIfCanary = async () => {
-  let updateChannel
+  let config
 
   try {
-    ;({ updateChannel } = await getConfig(true))
-  } catch (err) {}
+    config = await getConfig(true)
+  } catch (err) {
+    throw new Error(`The config file couldn't be read`)
+  }
 
+  const { updateChannel } = config
   return updateChannel && updateChannel === 'canary'
 }
 
@@ -155,7 +158,12 @@ const checkForUpdates = async () => {
   }
 
   // Ensure we're pulling from the correct channel
-  await setUpdateURL()
+  try {
+    await setUpdateURL()
+  } catch (err) {
+    // Retry later if setting the update URL failed
+    return
+  }
 
   // Then ask the server for updates
   autoUpdater.checkForUpdates()
