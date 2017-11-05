@@ -21,6 +21,11 @@ const isCanary = async () => {
   return updateChannel && updateChannel === 'canary'
 }
 
+// If the local version was found, it will be
+// return as a `String`. If it was found but is meant
+// to be leading to a downgrade, it will
+// return `null`. In all other cases, an error
+// will be thrown leading to a retry.
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
@@ -44,7 +49,7 @@ const localBinaryVersion = async () => {
 
   if (output.includes('canary') && !await isCanary()) {
     console.log('Downgrading binary from canary to stable channel...')
-    return false
+    return null
   }
 
   if (semVer.valid(output)) {
