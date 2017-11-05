@@ -16,6 +16,16 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
+const isCanary = async () => {
+  const { updateChannel } = await getConfig(true)
+  return updateChannel && updateChannel === 'canary'
+}
+
+// If the local version was found, it will be
+// return as a `String`. If it was found but is meant
+// to be leading to a downgrade, it will
+// return `null`. In all other cases, an error
+// will be thrown leading to a retry.
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
@@ -28,6 +38,19 @@ const localBinaryVersion = async () => {
 
   // Make version tag parsable
   const output = trimWhitespace(cmd.stdout.toString())
+
+  // Later in the code, we force an update if getting
+  // the latest local version results in `false` or fails
+  // so we can use this opportunity in the statement below
+  // and trigger that.
+
+  // The result will be a downgrade to the latest stable
+  // release when the setting "Canary Updates" gets disabled.
+
+  if (output.includes('canary') && !await isCanary()) {
+    console.log('Downgrading binary from canary to stable channel...')
+    return null
+  }
 
   if (semVer.valid(output)) {
     return output
@@ -113,17 +136,9 @@ const startBinaryUpdates = () => {
 }
 
 const setUpdateURL = async () => {
-  let config = {}
-
-  try {
-    config = await getConfig(true)
-  } catch (err) {}
-
   const { platform } = process
-  const { updateChannel } = config
 
-  const isCanary = updateChannel && updateChannel === 'canary'
-  const channel = isCanary ? 'releases-canary' : 'releases'
+  const channel = (await isCanary()) ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
   try {
@@ -139,7 +154,12 @@ const checkForUpdates = async () => {
   }
 
   // Ensure we're pulling from the correct channel
-  await setUpdateURL()
+  try {
+    await setUpdateURL()
+  } catch (err) {
+    // Retry later if setting the update URL failed
+    return
+  }
 
   // Then ask the server for updates
   autoUpdater.checkForUpdates()
