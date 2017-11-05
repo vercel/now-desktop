@@ -16,6 +16,16 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
+const checkIfCanary = async () => {
+  let updateChannel
+
+  try {
+    ;({ updateChannel } = await getConfig(true))
+  } catch (err) {}
+
+  return updateChannel && updateChannel === 'canary'
+}
+
 const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
@@ -28,6 +38,19 @@ const localBinaryVersion = async () => {
 
   // Make version tag parsable
   const output = trimWhitespace(cmd.stdout.toString())
+
+  // Later in the code, we force an update if getting
+  // the latest local version results in `false` or fails
+  // so we can use this opportunity in the statement below
+  // and and trigger that.
+
+  // The result will be a downgrade to the latest stable
+  // version when the setting "Canary Updates" gets disabled.
+
+  if (output.includes('canary') && !await checkIfCanary()) {
+    console.log('Downgrading binary from canary to stable channel...')
+    return false
+  }
 
   if (semVer.valid(output)) {
     return output
@@ -113,16 +136,9 @@ const startBinaryUpdates = () => {
 }
 
 const setUpdateURL = async () => {
-  let config = {}
-
-  try {
-    config = await getConfig(true)
-  } catch (err) {}
-
   const { platform } = process
-  const { updateChannel } = config
 
-  const isCanary = updateChannel && updateChannel === 'canary'
+  const isCanary = await checkIfCanary()
   const channel = isCanary ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
