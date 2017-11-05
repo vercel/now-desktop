@@ -42,7 +42,7 @@ const localBinaryVersion = async () => {
   // Later in the code, we force an update if getting
   // the latest local version results in `false` or fails
   // so we can use this opportunity in the statement below
-  // and and trigger that.
+  // and trigger that.
 
   // The result will be a downgrade to the latest stable
   // version when the setting "Canary Updates" gets disabled.
