@@ -16,7 +16,7 @@ const notify = require('./notify')
 const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
-const checkIfCanary = async () => {
+const isCanary = async () => {
   const { updateChannel } = await getConfig(true)
   return updateChannel && updateChannel === 'canary'
 }
@@ -42,7 +42,7 @@ const localBinaryVersion = async () => {
   // The result will be a downgrade to the latest stable
   // release when the setting "Canary Updates" gets disabled.
 
-  if (output.includes('canary') && !await checkIfCanary()) {
+  if (output.includes('canary') && !await isCanary()) {
     console.log('Downgrading binary from canary to stable channel...')
     return false
   }
@@ -133,8 +133,7 @@ const startBinaryUpdates = () => {
 const setUpdateURL = async () => {
   const { platform } = process
 
-  const isCanary = await checkIfCanary()
-  const channel = isCanary ? 'releases-canary' : 'releases'
+  const channel = (await isCanary()) ? 'releases-canary' : 'releases'
   const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`
 
   try {
