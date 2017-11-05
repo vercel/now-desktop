@@ -45,7 +45,7 @@ const localBinaryVersion = async () => {
   // and trigger that.
 
   // The result will be a downgrade to the latest stable
-  // version when the setting "Canary Updates" gets disabled.
+  // release when the setting "Canary Updates" gets disabled.
 
   if (output.includes('canary') && !await checkIfCanary()) {
     console.log('Downgrading binary from canary to stable channel...')
