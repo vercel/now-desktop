@@ -300,20 +300,19 @@ class Now extends EventEmitter {
   }
 
   async remove(deploymentId, { hard }) {
-    const data = { deploymentId, hard }
+    const url = `/now/deployments/${deploymentId}?hard=${hard ? '1' : '0'}`
 
     await this.retry(async bail => {
       if (this._debug) {
-        console.time('> [debug] /remove')
+        console.time(`> [debug] DELETE ${url}`)
       }
 
-      const res = await this._fetch('/now/remove', {
-        method: 'DELETE',
-        body: data
+      const res = await this._fetch(url, {
+        method: 'DELETE'
       })
 
       if (this._debug) {
-        console.timeEnd('> [debug] /remove')
+        console.timeEnd(`> [debug] DELETE ${url}`)
       }
 
       // No retry on 4xx
@@ -358,20 +357,13 @@ class Now extends EventEmitter {
               const stream = resumer()
                 .queue(data)
                 .end()
-              const res = await this._fetch('/now/sync', {
+
+              const res = await this._fetch('/v2/now/files', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/octet-stream',
                   'Content-Length': data.length,
-                  'x-now-deployment-id': this._id,
-                  'x-now-sha': sha,
-                  'x-now-file': names
-                    .map(name => {
-                      return this._isFile
-                        ? basename(this._path)
-                        : toRelative(encodeURIComponent(name), this._path)
-                    })
-                    .join(','),
+                  'x-now-digest': sha,
                   'x-now-size': data.length
                 },
                 body: stream
