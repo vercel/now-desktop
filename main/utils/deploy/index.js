@@ -135,7 +135,7 @@ class Now extends EventEmitter {
 
     const deployment = await this.retry(async bail => {
       if (this._debug) {
-        console.time('> [debug] /now/create')
+        console.time('> [debug] v2/now/deployments')
       }
 
       // Flatten the array to contain files to sync where each nested input
@@ -169,7 +169,7 @@ class Now extends EventEmitter {
         )
       )
 
-      const res = await this._fetch('/now/create', {
+      const res = await this._fetch('/v2/now/deployments', {
         method: 'POST',
         body: {
           env,
@@ -186,7 +186,7 @@ class Now extends EventEmitter {
       })
 
       if (this._debug) {
-        console.timeEnd('> [debug] /now/create')
+        console.timeEnd('> [debug] v2/now/deployments')
       }
 
       // No retry on 4xx
@@ -203,6 +203,12 @@ class Now extends EventEmitter {
         err.status = res.status
         err.retryAfter = 'never'
         return bail(err)
+      } else if (
+        res.status === 400 &&
+        body.error &&
+        body.error.code === 'missing_files'
+      ) {
+        return body
       } else if (res.status >= 400 && res.status < 500) {
         const err = new Error(body.error.message)
         err.userError = true
@@ -241,6 +247,13 @@ class Now extends EventEmitter {
       }
     }
 
+    if (deployment.error && deployment.error.code === 'missing_files') {
+      this._missing = deployment.error.missing || []
+      this._fileCount = files.length
+
+      return null
+    }
+
     if (!quiet && type === 'npm' && deployment.nodeVersion) {
       if (engines && engines.node) {
         if (missingVersion) {
@@ -258,7 +271,7 @@ class Now extends EventEmitter {
     this._id = deployment.deploymentId
     this._name = pkgDetails.name || name
     this._host = deployment.url
-    this._missing = deployment.missing || []
+    this._missing = []
 
     return this._url
   }
@@ -351,7 +364,9 @@ class Now extends EventEmitter {
               const { data, names } = file
 
               if (this._debug) {
-                console.time(`> [debug] /sync #${attempt} ${names.join(' ')}`)
+                console.time(
+                  `> [debug] v2/now/files #${attempt} ${names.join(' ')}`
+                )
               }
 
               const stream = resumer()
@@ -371,7 +386,7 @@ class Now extends EventEmitter {
 
               if (this._debug) {
                 console.timeEnd(
-                  `> [debug] /sync #${attempt} ${names.join(' ')}`
+                  `> [debug] v2/now/files #${attempt} ${names.join(' ')}`
                 )
               }
 
@@ -472,10 +487,6 @@ module.exports = async dir => {
     return
   }
 
-  function ready() {
-    now.close()
-  }
-
   let plan
 
   try {
@@ -521,9 +532,9 @@ module.exports = async dir => {
       )
     })
 
-    now.on('complete', ready)
+    now.on('complete', now.close)
   } else {
-    ready()
+    now.close()
   }
 }
 
