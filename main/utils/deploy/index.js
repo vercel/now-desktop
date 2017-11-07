@@ -501,60 +501,63 @@ module.exports = async dir => {
     currentTeam: config.currentTeam || false
   })
 
-  let notified = false
+  await retry(
+    async () => {
+      let notified = false
 
-  try {
-    do {
-      await now.create(
-        dir,
-        await readMetaData(dir, {
-          deploymentType
-        })
-      )
+      do {
+        await now.create(
+          dir,
+          await readMetaData(dir, {
+            deploymentType
+          })
+        )
 
-      const { url } = now
+        const { url } = now
 
-      if (url && !notified) {
-        // Open the URL in the default browser
-        shell.openExternal(url)
+        if (url && !notified) {
+          // Open the URL in the default browser
+          shell.openExternal(url)
 
-        // Copy deployment URL to clipboard
-        clipboard.writeText(url)
+          // Copy deployment URL to clipboard
+          clipboard.writeText(url)
 
-        // Let the user know
-        notify({
-          title: 'Copied URL to Clipboard!',
-          body: 'Opening the deployment in your browser...',
-          url
-        })
-
-        // Ensure that the notification only
-        // gets triggered once
-        notified = true
-
-        // See if the user is on the OSS plan
-        // without blocking the upload
-        checkForOSS(loadingPlan, now)
-      }
-
-      if (now.syncFileCount > 0) {
-        await new Promise(resolve => {
-          now.upload()
-
-          now.on('upload', ({ names, data }) => {
-            console.log(
-              `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
-            )
+          // Let the user know
+          notify({
+            title: 'Copied URL to Clipboard!',
+            body: 'Opening the deployment in your browser...',
+            url
           })
 
-          now.on('complete', resolve)
-          now.on('error', showError)
-        })
-      }
-    } while (now.syncFileCount > 0)
-  } catch (err) {
-    showError(err)
-  }
+          // Ensure that the notification only
+          // gets triggered once
+          notified = true
+
+          // See if the user is on the OSS plan
+          // without blocking the upload
+          checkForOSS(loadingPlan, now)
+        }
+
+        if (now.syncFileCount > 0) {
+          await new Promise(resolve => {
+            now.upload()
+
+            now.on('upload', ({ names, data }) => {
+              console.log(
+                `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
+              )
+            })
+
+            now.on('complete', resolve)
+            now.on('error', showError)
+          })
+        }
+      } while (now.syncFileCount > 0)
+    },
+    {
+      retries: 5
+    }
+  )
 }
 
 function hasNpmStart(pkg) {
