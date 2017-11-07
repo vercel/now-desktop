@@ -21,6 +21,7 @@ const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const ua = require('../user-agent')
+const showError = require('../exception')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -36,8 +37,6 @@ const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
-
-let showError = () => {}
 
 class Now extends EventEmitter {
   constructor({
@@ -135,7 +134,7 @@ class Now extends EventEmitter {
 
     const deployment = await this.retry(async bail => {
       if (this._debug) {
-        console.time('> [debug] /now/create')
+        console.time('> [debug] v2/now/deployments')
       }
 
       // Flatten the array to contain files to sync where each nested input
@@ -169,7 +168,7 @@ class Now extends EventEmitter {
         )
       )
 
-      const res = await this._fetch('/now/create', {
+      const res = await this._fetch('/v2/now/deployments', {
         method: 'POST',
         body: {
           env,
@@ -186,7 +185,7 @@ class Now extends EventEmitter {
       })
 
       if (this._debug) {
-        console.timeEnd('> [debug] /now/create')
+        console.timeEnd('> [debug] v2/now/deployments')
       }
 
       // No retry on 4xx
@@ -203,6 +202,12 @@ class Now extends EventEmitter {
         err.status = res.status
         err.retryAfter = 'never'
         return bail(err)
+      } else if (
+        res.status === 400 &&
+        body.error &&
+        body.error.code === 'missing_files'
+      ) {
+        return body
       } else if (res.status >= 400 && res.status < 500) {
         const err = new Error(body.error.message)
         err.userError = true
@@ -241,6 +246,13 @@ class Now extends EventEmitter {
       }
     }
 
+    if (deployment.error && deployment.error.code === 'missing_files') {
+      this._missing = deployment.error.missing || []
+      this._fileCount = files.length
+
+      return null
+    }
+
     if (!quiet && type === 'npm' && deployment.nodeVersion) {
       if (engines && engines.node) {
         if (missingVersion) {
@@ -258,7 +270,7 @@ class Now extends EventEmitter {
     this._id = deployment.deploymentId
     this._name = pkgDetails.name || name
     this._host = deployment.url
-    this._missing = deployment.missing || []
+    this._missing = []
 
     return this._url
   }
@@ -268,6 +280,10 @@ class Now extends EventEmitter {
   }
 
   get url() {
+    if (!this._host) {
+      return null
+    }
+
     return `https://${this._host}`
   }
 
@@ -282,6 +298,10 @@ class Now extends EventEmitter {
         .reduce((a, b) => a + b, 0)
     }
     return this._syncAmount
+  }
+
+  get syncFileCount() {
+    return this._missing.length
   }
 
   _fetch(_url, opts = {}) {
@@ -300,20 +320,19 @@ class Now extends EventEmitter {
   }
 
   async remove(deploymentId, { hard }) {
-    const data = { deploymentId, hard }
+    const url = `/now/deployments/${deploymentId}?hard=${hard ? '1' : '0'}`
 
     await this.retry(async bail => {
       if (this._debug) {
-        console.time('> [debug] /remove')
+        console.time(`> [debug] DELETE ${url}`)
       }
 
-      const res = await this._fetch('/now/remove', {
-        method: 'DELETE',
-        body: data
+      const res = await this._fetch(url, {
+        method: 'DELETE'
       })
 
       if (this._debug) {
-        console.timeEnd('> [debug] /remove')
+        console.timeEnd(`> [debug] DELETE ${url}`)
       }
 
       // No retry on 4xx
@@ -352,26 +371,21 @@ class Now extends EventEmitter {
               const { data, names } = file
 
               if (this._debug) {
-                console.time(`> [debug] /sync #${attempt} ${names.join(' ')}`)
+                console.time(
+                  `> [debug] v2/now/files #${attempt} ${names.join(' ')}`
+                )
               }
 
               const stream = resumer()
                 .queue(data)
                 .end()
-              const res = await this._fetch('/now/sync', {
+
+              const res = await this._fetch('/v2/now/files', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/octet-stream',
                   'Content-Length': data.length,
-                  'x-now-deployment-id': this._id,
-                  'x-now-sha': sha,
-                  'x-now-file': names
-                    .map(name => {
-                      return this._isFile
-                        ? basename(this._path)
-                        : toRelative(encodeURIComponent(name), this._path)
-                    })
-                    .join(','),
+                  'x-now-digest': sha,
                   'x-now-size': data.length
                 },
                 body: stream
@@ -379,7 +393,7 @@ class Now extends EventEmitter {
 
               if (this._debug) {
                 console.timeEnd(
-                  `> [debug] /sync #${attempt} ${names.join(' ')}`
+                  `> [debug] v2/now/files #${attempt} ${names.join(' ')}`
                 )
               }
 
@@ -430,6 +444,27 @@ class Now extends EventEmitter {
   }
 }
 
+const checkForOSS = async (loadingPlan, now) => {
+  let plan
+
+  try {
+    plan = await loadingPlan
+  } catch (err) {}
+
+  if (plan && plan.id && plan.id === 'oss') {
+    const shouldDeploy = await ossPrompt()
+
+    if (!shouldDeploy) {
+      await now.remove(now.id, { hard: true })
+
+      notify({
+        title: 'Aborted Deployment',
+        body: 'Because you chose not to continue it.'
+      })
+    }
+  }
+}
+
 module.exports = async dir => {
   if (!await pathExists(dir)) {
     throw new Error("Path doesn't exist!")
@@ -450,11 +485,6 @@ module.exports = async dir => {
     body: 'Uploading the files and creating the deployment.'
   })
 
-  // Somehow, the error dialogs need to be loaded later
-  // Otherwise the loaded util file will just return nothing
-  const dialogs = require('../../dialogs')
-  showError = dialogs.error
-
   let config
 
   try {
@@ -471,67 +501,59 @@ module.exports = async dir => {
     currentTeam: config.currentTeam || false
   })
 
-  now.on('error', err => showError(err.message))
+  let notified = false
 
   try {
-    await now.create(dir, await readMetaData(dir, { deploymentType }))
-  } catch (err) {
-    showError(err.message)
-    return
-  }
-
-  function ready() {
-    now.close()
-  }
-
-  let plan
-
-  try {
-    plan = await loadingPlan
-  } catch (err) {}
-
-  if (plan && plan.id && plan.id === 'oss') {
-    const shouldDeploy = await ossPrompt()
-
-    if (!shouldDeploy) {
-      await now.remove(now.id, { hard: true })
-
-      notify({
-        title: 'Aborted Deployment',
-        body: 'Because you chose not to continue it.'
-      })
-
-      return
-    }
-  }
-
-  const { url } = now
-
-  // Open the URL in the default browser
-  shell.openExternal(url)
-
-  // Copy deployment URL to clipboard
-  clipboard.writeText(url)
-
-  // Let the user know
-  notify({
-    title: 'Copied URL to Clipboard!',
-    body: 'Opening the deployment in your browser...',
-    url
-  })
-
-  if (now.syncAmount) {
-    now.upload()
-
-    now.on('upload', ({ names, data }) => {
-      console.log(
-        `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
+    do {
+      await now.create(
+        dir,
+        await readMetaData(dir, {
+          deploymentType
+        })
       )
-    })
 
-    now.on('complete', ready)
-  } else {
-    ready()
+      const { url } = now
+
+      if (url && !notified) {
+        // Open the URL in the default browser
+        shell.openExternal(url)
+
+        // Copy deployment URL to clipboard
+        clipboard.writeText(url)
+
+        // Let the user know
+        notify({
+          title: 'Copied URL to Clipboard!',
+          body: 'Opening the deployment in your browser...',
+          url
+        })
+
+        // Ensure that the notification only
+        // gets triggered once
+        notified = true
+
+        // See if the user is on the OSS plan
+        // without blocking the upload
+        checkForOSS(loadingPlan, now)
+      }
+
+      if (now.syncFileCount > 0) {
+        await new Promise(resolve => {
+          now.upload()
+
+          now.on('upload', ({ names, data }) => {
+            console.log(
+              `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
+            )
+          })
+
+          now.on('complete', resolve)
+          now.on('error', showError)
+        })
+      }
+    } while (now.syncFileCount > 0)
+  } catch (err) {
+    showError(err)
   }
 }
 
