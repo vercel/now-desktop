@@ -5,6 +5,7 @@ const queryString = require('querystring')
 const { app } = require('electron')
 const serializeError = require('serialize-error')
 const fetch = require('node-fetch')
+const isDev = require('electron-is-dev')
 
 // Utilities
 const userAgent = require('./user-agent')
@@ -20,6 +21,9 @@ module.exports = async error => {
     // Make the error sendable using GET
     errorParts = serializeError(error)
   }
+
+  // Log the error to the console
+  console.error(errorParts)
 
   // Prepare the request query
   const query = queryString.stringify({
@@ -40,6 +44,9 @@ module.exports = async error => {
 
   // Restart the app, so that it doesn't continue
   // running in a broken state
-  app.relaunch()
+  if (!isDev) {
+    app.relaunch()
+  }
+
   app.exit(0)
 }

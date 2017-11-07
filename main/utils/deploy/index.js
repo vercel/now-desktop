@@ -21,6 +21,7 @@ const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const ua = require('../user-agent')
+const showError = require('../exception')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -36,8 +37,6 @@ const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
-
-let showError = () => {}
 
 class Now extends EventEmitter {
   constructor({
@@ -457,11 +456,6 @@ module.exports = async dir => {
     body: 'Uploading the files and creating the deployment.'
   })
 
-  // Somehow, the error dialogs need to be loaded later
-  // Otherwise the loaded util file will just return nothing
-  const dialogs = require('../../dialogs')
-  showError = dialogs.error
-
   let config
 
   try {
@@ -543,7 +537,7 @@ module.exports = async dir => {
       })
     } while (now.syncAmount > 0)
   } catch (err) {
-    showError(err.message)
+    showError(err)
   }
 }
 
