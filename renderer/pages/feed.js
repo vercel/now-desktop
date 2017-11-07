@@ -266,7 +266,7 @@ class Feed extends React.Component {
 
       newEvents[group] = result
 
-      if (!hasEvents && events[scope][group]) {
+      if (!hasEvents && events[scope] && events[scope][group]) {
         if (until) {
           teams[relatedCacheIndex].allCached[group] = true
 
@@ -295,7 +295,7 @@ class Feed extends React.Component {
       const scopedEvents = events[scope]
       let groupedEvents
 
-      if (scopedEvents) {
+      if (scopedEvents && scopedEvents[group]) {
         groupedEvents = scopedEvents[group]
       } else {
         events[scope] = {}
@@ -528,6 +528,12 @@ class Feed extends React.Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g)
     }
 
+    // If the event group doesn't exist, we don't need
+    // to try rendering into it
+    if (!list[group]) {
+      return []
+    }
+
     const events = list[group].map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
@@ -580,6 +586,7 @@ class Feed extends React.Component {
       return item
     })
 
+    // Filter out falsy events
     return events.filter(item => item)
   }
 
@@ -599,6 +606,10 @@ class Feed extends React.Component {
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight
     const distance = section.scrollHeight - section.scrollTop
     const group = this.getCurrentGroup()
+
+    if (!events || !events[scope] || !events[scope][group]) {
+      return
+    }
 
     if (distance < offset + 300) {
       const scopedEvents = events[scope][group]
