@@ -295,7 +295,7 @@ class Feed extends React.Component {
       const scopedEvents = events[scope]
       let groupedEvents
 
-      if (scopedEvents && scopedEvents[group]) {
+      if (scopedEvents) {
         groupedEvents = scopedEvents[group]
       } else {
         events[scope] = {}
