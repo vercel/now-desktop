@@ -478,63 +478,72 @@ module.exports = async dir => {
     currentTeam: config.currentTeam || false
   })
 
-  now.on('error', err => showError(err.message))
+  let notified = false
 
   try {
-    await now.create(dir, await readMetaData(dir, { deploymentType }))
+    do {
+      await now.create(
+        dir,
+        await readMetaData(dir, {
+          deploymentType
+        })
+      )
+
+      const { url } = now
+
+      if (!notified && url) {
+        // Open the URL in the default browser
+        shell.openExternal(url)
+
+        // Copy deployment URL to clipboard
+        clipboard.writeText(url)
+
+        // Let the user know
+        notify({
+          title: 'Copied URL to Clipboard!',
+          body: 'Opening the deployment in your browser...',
+          url
+        })
+
+        // Make sure that the notifcation doesn't get
+        // triggered again
+        notified = true
+
+        let plan
+
+        try {
+          plan = await loadingPlan
+        } catch (err) {}
+
+        if (plan && plan.id && plan.id === 'oss') {
+          const shouldDeploy = await ossPrompt()
+
+          if (!shouldDeploy) {
+            await now.remove(now.id, { hard: true })
+
+            notify({
+              title: 'Aborted Deployment',
+              body: 'Because you chose not to continue it.'
+            })
+
+            return
+          }
+        }
+      }
+
+      now.on('error', err => showError(err.message))
+      now.on('complete', now.close)
+
+      now.upload()
+
+      now.on('upload', ({ names, data }) => {
+        console.log(
+          `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
+        )
+      })
+    } while (now.syncAmount > 0)
   } catch (err) {
     showError(err.message)
-    return
-  }
-
-  let plan
-
-  try {
-    plan = await loadingPlan
-  } catch (err) {}
-
-  if (plan && plan.id && plan.id === 'oss') {
-    const shouldDeploy = await ossPrompt()
-
-    if (!shouldDeploy) {
-      await now.remove(now.id, { hard: true })
-
-      notify({
-        title: 'Aborted Deployment',
-        body: 'Because you chose not to continue it.'
-      })
-
-      return
-    }
-  }
-
-  const { url } = now
-
-  // Open the URL in the default browser
-  shell.openExternal(url)
-
-  // Copy deployment URL to clipboard
-  clipboard.writeText(url)
-
-  // Let the user know
-  notify({
-    title: 'Copied URL to Clipboard!',
-    body: 'Opening the deployment in your browser...',
-    url
-  })
-
-  if (now.syncAmount) {
-    now.upload()
-
-    now.on('upload', ({ names, data }) => {
-      console.log(
-        `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
-      )
-    })
-
-    now.on('complete', now.close)
-  } else {
-    now.close()
   }
 }
 

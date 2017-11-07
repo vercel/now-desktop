@@ -59,7 +59,9 @@
       "node"
     ],
     "rules": {
-      "linebreak-style": 0
+      "linebreak-style": 0,
+      "no-await-in-loop": 0,
+      "max-depth": 0
     }
   },
   "license": "MIT",
