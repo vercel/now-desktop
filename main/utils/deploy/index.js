@@ -525,15 +525,17 @@ module.exports = async dir => {
         }
       }
 
-      now.on('error', err => showError(err.message))
-      now.on('complete', now.close)
+      await new Promise(resolve => {
+        now.upload()
 
-      now.upload()
+        now.on('upload', ({ names, data }) => {
+          console.log(
+            `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
+          )
+        })
 
-      now.on('upload', ({ names, data }) => {
-        console.log(
-          `> [debug] Uploaded: ${names.join(' ')} (${bytes(data.length)})`
-        )
+        now.on('complete', resolve)
+        now.on('error', showError)
       })
     } while (now.syncAmount > 0)
   } catch (err) {
