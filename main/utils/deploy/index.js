@@ -280,6 +280,10 @@ class Now extends EventEmitter {
   }
 
   get url() {
+    if (!this._host) {
+      return null
+    }
+
     return `https://${this._host}`
   }
 
@@ -440,6 +444,27 @@ class Now extends EventEmitter {
   }
 }
 
+const checkForOSS = async (loadingPlan, now) => {
+  let plan
+
+  try {
+    plan = await loadingPlan
+  } catch (err) {}
+
+  if (plan && plan.id && plan.id === 'oss') {
+    const shouldDeploy = await ossPrompt()
+
+    if (!shouldDeploy) {
+      await now.remove(now.id, { hard: true })
+
+      notify({
+        title: 'Aborted Deployment',
+        body: 'Because you chose not to continue it.'
+      })
+    }
+  }
+}
+
 module.exports = async dir => {
   if (!await pathExists(dir)) {
     throw new Error("Path doesn't exist!")
@@ -476,6 +501,8 @@ module.exports = async dir => {
     currentTeam: config.currentTeam || false
   })
 
+  let notified = false
+
   try {
     do {
       await now.create(
@@ -484,6 +511,31 @@ module.exports = async dir => {
           deploymentType
         })
       )
+
+      const { url } = now
+
+      if (url && !notified) {
+        // Open the URL in the default browser
+        shell.openExternal(url)
+
+        // Copy deployment URL to clipboard
+        clipboard.writeText(url)
+
+        // Let the user know
+        notify({
+          title: 'Copied URL to Clipboard!',
+          body: 'Opening the deployment in your browser...',
+          url
+        })
+
+        // Ensure that the notification only
+        // gets triggered once
+        notified = true
+
+        // See if the user is on the OSS plan
+        // without blocking the upload
+        checkForOSS(loadingPlan, now)
+      }
 
       if (now.syncFileCount > 0) {
         await new Promise(resolve => {
@@ -502,41 +554,6 @@ module.exports = async dir => {
     } while (now.syncFileCount > 0)
   } catch (err) {
     showError(err)
-    return
-  }
-
-  const { url } = now
-
-  // Open the URL in the default browser
-  shell.openExternal(url)
-
-  // Copy deployment URL to clipboard
-  clipboard.writeText(url)
-
-  // Let the user know
-  notify({
-    title: 'Copied URL to Clipboard!',
-    body: 'Opening the deployment in your browser...',
-    url
-  })
-
-  let plan
-
-  try {
-    plan = await loadingPlan
-  } catch (err) {}
-
-  if (plan && plan.id && plan.id === 'oss') {
-    const shouldDeploy = await ossPrompt()
-
-    if (!shouldDeploy) {
-      await now.remove(now.id, { hard: true })
-
-      notify({
-        title: 'Aborted Deployment',
-        body: 'Because you chose not to continue it.'
-      })
-    }
   }
 }
 
