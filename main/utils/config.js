@@ -147,8 +147,6 @@ exports.saveConfig = async (data, type) => {
       currentContent.updateChannel = 'stable'
     }
 
-    console.log(data)
-
     // Merge new data with the existing
     currentContent = deepExtend(currentContent, data)
 
