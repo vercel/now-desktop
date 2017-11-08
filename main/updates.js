@@ -123,6 +123,21 @@ const updateBinary = async () => {
 const startBinaryUpdates = () => {
   const binaryUpdateTimer = time =>
     setTimeout(async () => {
+      let config = {}
+
+      try {
+        config = await getConfig(true)
+      } catch (err) {}
+
+      // This needs to be explicit
+      if (config.desktop && config.desktop.updateCLI === false) {
+        console.log(`Skipping binary updates because they're disabled...`)
+
+        // Try again in 5 minutes
+        binaryUpdateTimer(ms('5m'))
+        return
+      }
+
       try {
         await updateBinary()
         binaryUpdateTimer(ms('10m'))
