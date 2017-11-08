@@ -40,10 +40,11 @@ class DropZone extends React.PureComponent {
       return
     }
 
-    const item = event.dataTransfer.files[0].path
+    const { files } = event.dataTransfer
+    const list = [...files].map(file => file.path)
 
-    // Shoot it into the cloud
-    this.deploy(item)
+    // Shoot them into the cloud
+    this.deploy(list)
 
     // And prevent the window from loading the file inside it
     event.preventDefault()

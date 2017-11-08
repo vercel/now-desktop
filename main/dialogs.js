@@ -6,16 +6,6 @@ const { resolve: resolvePath } = require('app-root-path')
 // Utilities
 const deploy = require('./utils/deploy')
 
-const showDialog = details => {
-  const filePath = dialog.showOpenDialog(details)
-
-  if (filePath) {
-    return filePath[0]
-  }
-
-  return false
-}
-
 exports.runAsRoot = (command, why) => {
   const answer = dialog.showMessageBox({
     type: 'question',
@@ -60,19 +50,21 @@ exports.error = (detail, trace, win) => {
 }
 
 exports.deploy = async () => {
-  const info = {
+  const details = {
     title: 'Select a file or directory to deploy',
-    properties: ['openDirectory', 'openFile'],
+    properties: ['openDirectory', 'openFile', 'multiSelections'],
     buttonLabel: 'Deploy'
   }
 
-  const path = showDialog(info)
+  const paths = dialog.showOpenDialog(details)
 
-  if (path) {
-    try {
-      await deploy(path)
-    } catch (err) {
-      exports.error('Not able to deploy', err)
-    }
+  if (!paths) {
+    return
+  }
+
+  try {
+    await deploy(paths)
+  } catch (err) {
+    exports.error('Not able to deploy', err)
   }
 }
