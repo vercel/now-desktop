@@ -43,11 +43,15 @@ exports.getConfig = async noCheck => {
   if (await hasNewConfig()) {
     const { credentials } = await fs.readJSON(paths.auth)
     const { token } = credentials.find(item => item.provider === 'sh')
-    const { sh, updateChannel } = await fs.readJSON(paths.config)
+    const { sh, updateChannel, desktop } = await fs.readJSON(paths.config)
     const isCanary = updateChannel && updateChannel === 'canary'
 
     if (sh.canary || isCanary) {
       content.updateChannel = 'canary'
+    }
+
+    if (desktop) {
+      content.desktop = desktop
     }
 
     Object.assign(content, sh, { token })
@@ -120,12 +124,20 @@ exports.saveConfig = async (data, type) => {
   if (type === 'config') {
     // Only create a sub prop for the new config
     if (isNew) {
-      const { updateChannel } = data
+      // These are top-level properties
+      const { updateChannel, desktop } = data
+
+      // Inject the content
       data = { sh: data }
 
       if (updateChannel) {
         data.updateChannel = updateChannel
         delete data.sh.updateChannel
+      }
+
+      if (desktop) {
+        data.desktop = desktop
+        delete data.sh.desktop
       }
     }
 
@@ -134,6 +146,8 @@ exports.saveConfig = async (data, type) => {
         'This is your Now config file. See `now config help`. More: https://git.io/v5ECz'
       currentContent.updateChannel = 'stable'
     }
+
+    console.log(data)
 
     // Merge new data with the existing
     currentContent = deepExtend(currentContent, data)
