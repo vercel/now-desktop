@@ -495,11 +495,12 @@ const mergeFiles = async paths => {
 
 module.exports = async paths => {
   const loadingPlan = getPlan()
+  const multiple = paths.length > 1
 
   let path = paths
   let deploymentType
 
-  if (paths.length > 1) {
+  if (multiple) {
     path = await mergeFiles(paths)
   }
 
@@ -531,18 +532,20 @@ module.exports = async paths => {
     currentTeam: config.currentTeam || false
   })
 
+  const metaData = await readMetaData(path, {
+    deploymentType
+  })
+
+  if (multiple) {
+    metaData.name = 'files'
+  }
+
   await retry(
     async () => {
       let notified = false
 
       do {
-        await now.create(
-          path,
-          await readMetaData(path, {
-            deploymentType
-          })
-        )
-
+        await now.create(path, metaData)
         const { url } = now
 
         if (url && !notified) {
