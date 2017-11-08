@@ -9,8 +9,16 @@ const { getConfig, saveConfig } = require('./utils/config')
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
-  const { updateChannel } = config
+  const { updateChannel, desktop } = config
   const isCanary = updateChannel && updateChannel === 'canary'
+
+  let updateCLI = true
+
+  // This check needs to be explicit (updates should be
+  // enabled by default if the config property is not set)
+  if (desktop && desktop.updateCLI === false) {
+    updateCLI = false
+  }
 
   return Menu.buildFromTemplate([
     {
@@ -97,13 +105,31 @@ exports.innerMenu = async function(app, tray, windows) {
           }
         },
         {
-          label: 'Canary Updates',
+          type: 'separator'
+        },
+        {
+          label: 'Canary Releases',
           type: 'checkbox',
           checked: isCanary,
           click() {
             saveConfig(
               {
                 updateChannel: isCanary ? 'stable' : 'canary'
+              },
+              'config'
+            )
+          }
+        },
+        {
+          label: 'Auto-Update Now CLI',
+          type: 'checkbox',
+          checked: updateCLI,
+          click() {
+            saveConfig(
+              {
+                desktop: {
+                  updateCLI: !updateCLI
+                }
               },
               'config'
             )
