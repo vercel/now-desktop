@@ -1,5 +1,5 @@
 // Native
-const { basename } = require('path')
+const { basename, join } = require('path')
 const { homedir } = require('os')
 const qs = require('querystring')
 
@@ -11,10 +11,10 @@ const splitArray = require('split-array')
 const resumer = require('resumer')
 const retry = require('async-retry')
 const { parse: parseIni } = require('ini')
-const { readFile, stat, lstat } = require('fs-extra')
+const { readFile, stat, lstat, copy } = require('fs-extra')
 const bytes = require('bytes')
 const determineType = require('deployment-type')
-const pathExists = require('path-exists')
+const tmp = require('tmp-promise')
 
 // Utilites
 const notify = require('../../notify')
@@ -465,16 +465,41 @@ const checkForOSS = async (loadingPlan, now) => {
   }
 }
 
-module.exports = async dir => {
-  if (!await pathExists(dir)) {
-    throw new Error("Path doesn't exist!")
-  }
+const mergeFiles = async paths => {
+  const { name: tmpDir, removeCallback: cleanup } = tmp.dirSync({
+    unsafeCleanup: true
+  })
 
+  const movers = paths.map(path => {
+    const target = join(tmpDir, basename(path))
+    return copy(path, target)
+  })
+
+  // Wait until all files and directories
+  // are copied to the cache
+  await Promise.all(movers)
+
+  // Then hand it back for deployment
+  return {
+    path: tmpDir,
+    cleanup
+  }
+}
+
+module.exports = async paths => {
   const loadingPlan = getPlan()
+  const multiple = paths.length > 1
+
+  let cleanup
+  let path = paths
   let deploymentType
 
+  if (multiple) {
+    ;({ path, cleanup } = await mergeFiles(paths))
+  }
+
   try {
-    deploymentType = await determineType(dir)
+    deploymentType = await determineType(path)
   } catch (err) {
     showError('Not able to determine deployment type', err)
     return
@@ -501,18 +526,20 @@ module.exports = async dir => {
     currentTeam: config.currentTeam || false
   })
 
+  const metaData = await readMetaData(path, {
+    deploymentType
+  })
+
+  if (multiple) {
+    metaData.name = 'files'
+  }
+
   await retry(
     async () => {
       let notified = false
 
       do {
-        await now.create(
-          dir,
-          await readMetaData(dir, {
-            deploymentType
-          })
-        )
-
+        await now.create(path, metaData)
         const { url } = now
 
         if (url && !notified) {
@@ -558,6 +585,12 @@ module.exports = async dir => {
       retries: 5
     }
   )
+
+  // Ensure to remove the temporary directory
+  if (cleanup) {
+    cleanup()
+    console.log('> Cleaned up deployment cache')
+  }
 }
 
 function hasNpmStart(pkg) {
