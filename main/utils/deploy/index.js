@@ -465,20 +465,10 @@ const checkForOSS = async (loadingPlan, now) => {
   }
 }
 
-const getTempDir = () =>
-  new Promise((resolve, reject) => {
-    tmp.dir({ tries: 5 }, (err, path) => {
-      if (err) {
-        reject(err)
-        return
-      }
-
-      resolve(path)
-    })
-  })
-
 const mergeFiles = async paths => {
-  const tmpDir = await getTempDir()
+  const { name: tmpDir, removeCallback: cleanup } = tmp.dirSync({
+    unsafeCleanup: true
+  })
 
   const movers = paths.map(path => {
     const target = join(tmpDir, basename(path))
@@ -490,18 +480,22 @@ const mergeFiles = async paths => {
   await Promise.all(movers)
 
   // Then hand it back for deployment
-  return tmpDir
+  return {
+    path: tmpDir,
+    cleanup
+  }
 }
 
 module.exports = async paths => {
   const loadingPlan = getPlan()
   const multiple = paths.length > 1
 
+  let cleanup
   let path = paths
   let deploymentType
 
   if (multiple) {
-    path = await mergeFiles(paths)
+    ;({ path, cleanup } = await mergeFiles(paths))
   }
 
   try {
@@ -591,6 +585,12 @@ module.exports = async paths => {
       retries: 5
     }
   )
+
+  // Ensure to remove the temporary directory
+  if (cleanup) {
+    cleanup()
+    console.log('> Cleaned up deployment cache')
+  }
 }
 
 function hasNpmStart(pkg) {
