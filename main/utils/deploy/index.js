@@ -1,5 +1,5 @@
 // Native
-const { basename } = require('path')
+const { basename, join } = require('path')
 const { homedir } = require('os')
 const qs = require('querystring')
 
@@ -11,10 +11,10 @@ const splitArray = require('split-array')
 const resumer = require('resumer')
 const retry = require('async-retry')
 const { parse: parseIni } = require('ini')
-const { readFile, stat, lstat } = require('fs-extra')
+const { readFile, stat, lstat, copy } = require('fs-extra')
 const bytes = require('bytes')
 const determineType = require('deployment-type')
-const pathExists = require('path-exists')
+const tmp = require('tmp-promise')
 
 // Utilites
 const notify = require('../../notify')
@@ -465,16 +465,46 @@ const checkForOSS = async (loadingPlan, now) => {
   }
 }
 
-module.exports = async dir => {
-  if (!await pathExists(dir)) {
-    throw new Error("Path doesn't exist!")
-  }
+const getTempDir = () =>
+  new Promise((resolve, reject) => {
+    tmp.dir({ tries: 5 }, (err, path) => {
+      if (err) {
+        reject(err)
+        return
+      }
 
+      resolve(path)
+    })
+  })
+
+const mergeFiles = async paths => {
+  const tmpDir = await getTempDir()
+
+  const movers = paths.map(path => {
+    const target = join(tmpDir, basename(path))
+    return copy(path, target)
+  })
+
+  // Wait until all files and directories
+  // are copied to the cache
+  await Promise.all(movers)
+
+  // Then hand it back for deployment
+  return tmpDir
+}
+
+module.exports = async paths => {
   const loadingPlan = getPlan()
+
+  let path = paths
   let deploymentType
 
+  if (paths.length > 1) {
+    path = await mergeFiles(paths)
+  }
+
   try {
-    deploymentType = await determineType(dir)
+    deploymentType = await determineType(path)
   } catch (err) {
     showError('Not able to determine deployment type', err)
     return
@@ -507,8 +537,8 @@ module.exports = async dir => {
 
       do {
         await now.create(
-          dir,
-          await readMetaData(dir, {
+          path,
+          await readMetaData(path, {
             deploymentType
           })
         )
