@@ -97,7 +97,7 @@ const contextMenu = async windows => {
   return innerMenu(app, tray, windows)
 }
 
-const fileDropped = async (event, files) => {
+const filesDropped = async (event, files) => {
   event.preventDefault()
 
   if (process.env.CONNECTION === 'offline') {
@@ -109,14 +109,7 @@ const fileDropped = async (event, files) => {
     return
   }
 
-  if (files.length > 1) {
-    showError(
-      "It's not yet possible to share multiple files/directories at once."
-    )
-    return
-  }
-
-  await deploy(files[0])
+  await deploy(files)
 }
 
 const moveApp = async config => {
@@ -262,7 +255,7 @@ app.on('ready', async () => {
   }
 
   // Define major event listeners for tray
-  tray.on('drop-files', fileDropped)
+  tray.on('drop-files', filesDropped)
   tray.on('click', toggleActivity)
   tray.on('double-click', toggleActivity)
 
