@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   article {
     width: 415px;
     font-size: 14px;
@@ -19,15 +21,15 @@ export default `
 
   a {
     text-decoration: none;
-    color: #067DF7;
+    color: #067df7;
   }
 
   a:hover {
-    border-bottom: 1px solid #067DF7;
+    border-bottom: 1px solid #067df7;
   }
 
   .progress {
-    background: #CCC;
+    background: #ccc;
     height: 20px;
     width: 250px;
     overflow: hidden;

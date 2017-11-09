@@ -1,14 +1,11 @@
-export const mainStyles = `
+import css from 'styled-jsx/css'
+
+export const mainStyles = css`
   div {
-    background: #ECECEC;
+    background: #ececec;
     height: 100vh;
-    font-family: -apple-system,
-      BlinkMacSystemFont,
-      Segoe UI,
-      Roboto,
-      Oxygen,
-      Helvetica Neue,
-      sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Helvetica Neue, sans-serif;
     -webkit-font-smoothing: antialiased;
     -webkit-app-region: drag;
   }
@@ -27,7 +24,7 @@ export const mainStyles = `
   }
 
   .window-controls span {
-    opacity: .5;
+    opacity: 0.5;
     font-size: 0;
     display: block;
     -webkit-app-region: no-drag;
@@ -52,7 +49,8 @@ export const mainStyles = `
     width: 100px;
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     margin: 0;
     cursor: default;
     user-select: none;
@@ -89,8 +87,8 @@ export const mainStyles = `
 
   article {
     background: #fff;
-    border-top: 1px solid #BFBFBF;
-    border-bottom: 1px solid #BFBFBF;
+    border-top: 1px solid #bfbfbf;
+    border-bottom: 1px solid #bfbfbf;
     height: 135px;
     text-align: left;
     padding: 15px;
@@ -101,7 +99,8 @@ export const mainStyles = `
     margin-top: 20px;
   }
 
-  article h1, article p {
+  article h1,
+  article p {
     color: #707070;
     font-size: 11px;
   }
@@ -183,12 +182,12 @@ export const mainStyles = `
   }
 `
 
-export const globalStyles = `
+export const globalStyles = css`
   body {
     margin: 0;
   }
 
   ::selection {
-    background: #A7D8FF;
+    background: #a7d8ff;
   }
 `

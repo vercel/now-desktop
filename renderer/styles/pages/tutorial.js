@@ -1,19 +1,16 @@
-export const sliderStyle = `
+import css from 'styled-jsx/css'
+
+export const sliderStyle = css`
   body {
     margin: 0;
-    font-family: -apple-system,
-      BlinkMacSystemFont,
-      Segoe UI,
-      Roboto,
-      Oxygen,
-      Helvetica Neue,
-      sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Helvetica Neue, sans-serif;
     -webkit-font-smoothing: antialiased;
     -webkit-app-region: drag;
   }
 
   ::selection {
-    background: #A7D8FF;
+    background: #a7d8ff;
   }
 
   .slick-slider {
@@ -38,7 +35,8 @@ export const sliderStyle = `
     outline: none;
   }
 
-  .slick-slider .slick-track, .slick-slider .slick-list {
+  .slick-slider .slick-track,
+  .slick-slider .slick-list {
     transform: translate3d(0, 0, 0);
   }
 
@@ -49,7 +47,8 @@ export const sliderStyle = `
     display: block;
   }
 
-  .slick-track:before, .slick-track:after {
+  .slick-track:before,
+  .slick-track:after {
     display: table;
     content: '';
   }
@@ -123,7 +122,7 @@ export const sliderStyle = `
     align-items: center;
     background: linear-gradient(to left, #fff, transparent);
     opacity: 0;
-    transition: opacity .3s ease;
+    transition: opacity 0.3s ease;
     -webkit-app-region: no-drag;
   }
 
@@ -132,7 +131,7 @@ export const sliderStyle = `
   }
 
   .slick-arrow:not(.slick-disabled) {
-    opacity: .2 !important;
+    opacity: 0.2 !important;
   }
 
   .slick-arrow:not(.slick-disabled):hover {
@@ -173,24 +172,25 @@ export const sliderStyle = `
     display: block;
     height: 10px;
     width: 10px;
-    background: #CCCCCC;
+    background: #cccccc;
     border: 0;
     text-indent: -999px;
     border-radius: 100%;
     padding: 0;
-    transition: background .4s;
+    transition: background 0.4s;
   }
 
   .slick-dots li button:focus {
     outline: 0;
   }
 
-  .slick-dots li button:hover, .slick-dots li.slick-active button {
+  .slick-dots li button:hover,
+  .slick-dots li.slick-active button {
     background: #000;
   }
 `
 
-export const wrapStyle = `
+export const wrapStyle = css`
   main {
     color: #000;
     background: #fff;
@@ -199,7 +199,7 @@ export const wrapStyle = `
   }
 `
 
-export const controlStyle = `
+export const controlStyle = css`
   .window-controls {
     display: flex;
     justify-content: flex-end;
@@ -214,7 +214,7 @@ export const controlStyle = `
   }
 
   .window-controls span {
-    opacity: .5;
+    opacity: 0.5;
     font-size: 0;
     display: block;
     -webkit-app-region: no-drag;

@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   aside {
     height: 38px;
     display: flex;
@@ -28,7 +30,7 @@ export default `
 
   .light {
     height: 35px;
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid #d6d6d6;
     background: #fff;
     position: relative;
     overflow: hidden;
@@ -53,7 +55,7 @@ export default `
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity .2s ease;
+    transition: opacity 0.2s ease;
   }
 
   .light .toggle-filter {
@@ -68,7 +70,7 @@ export default `
   }
 
   .light .deploy {
-    opacity: .5;
+    opacity: 0.5;
     right: 0;
   }
 
@@ -82,7 +84,7 @@ export default `
 
   .update-message {
     opacity: 0;
-    transition: opacity .5s ease;
+    transition: opacity 0.5s ease;
     position: absolute;
     left: 0;
     top: 0;
@@ -106,7 +108,7 @@ export default `
   }
 
   div {
-    transition: opacity .5s ease;
+    transition: opacity 0.5s ease;
   }
 
   .light div {
@@ -145,15 +147,15 @@ export default `
   }
 
   .filter a:nth-child(1) {
-    border-right: 1px solid #EAEAEA;
+    border-right: 1px solid #eaeaea;
   }
 
   .filter a:nth-child(3) {
-    border-left: 1px solid #EAEAEA;
+    border-left: 1px solid #eaeaea;
   }
 
   .filter nav {
-    border: 1px solid #EAEAEA;
+    border: 1px solid #eaeaea;
     display: flex;
     border-radius: 3px;
     width: 190px;

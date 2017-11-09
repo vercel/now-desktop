@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   article {
     display: flex;
     align-items: center;
@@ -40,17 +42,17 @@ export default `
   }
 
   .sending-status i:nth-child(3) {
-    animation-delay: .2s;
+    animation-delay: 0.2s;
   }
 
   .sending-status i:nth-child(4) {
-    animation-delay: .4s;
+    animation-delay: 0.4s;
   }
 
   .security-token {
     display: block;
     margin-top: 35px;
-    background: #CCCCCC;
+    background: #cccccc;
     color: #000;
     border-radius: 3px;
     font-weight: normal;
@@ -66,7 +68,7 @@ export default `
     letter-spacing: 1px;
     text-transform: uppercase;
     font-weight: 500;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     position: absolute;
     bottom: 0;
     -webkit-app-region: no-drag;
@@ -87,7 +89,7 @@ export default `
     }
 
     100% {
-      opacity: .2;
+      opacity: 0.2;
     }
   }
 `

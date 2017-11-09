@@ -1,4 +1,6 @@
-export const localStyles = `
+import css from 'styled-jsx/css'
+
+export const localStyles = css`
   figure {
     margin: 0;
     display: flex;
@@ -6,11 +8,11 @@ export const localStyles = `
   }
 
   figure:hover {
-    background: #F5F5F5;
+    background: #f5f5f5;
   }
 
   figure figcaption {
-    border-top: 1px solid #F5F5F5;
+    border-top: 1px solid #f5f5f5;
     padding: 10px 10px 10px 0;
     box-sizing: border-box;
     display: flex;
@@ -30,12 +32,12 @@ export const localStyles = `
 
   figure figcaption span {
     font-size: 10px;
-    color: #9B9B9B;
+    color: #9b9b9b;
     flex-shrink: 0;
   }
 `
 
-export const globalStyles = `
+export const globalStyles = css`
   h1 + .event figcaption {
     border-top: 0 !important;
   }
@@ -56,11 +58,7 @@ export const globalStyles = `
   }
 
   .event p code {
-    font-family: Menlo,
-      Monaco,
-      Lucida Console,
-      Liberation Mono,
-      serif;
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
     background: #f5f5f5;
     padding: 2px 5px;
     border-radius: 3px;

@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   details {
     margin-bottom: 10px;
   }
@@ -11,7 +13,7 @@ export default `
   summary {
     color: #707070;
     font-size: 12px;
-    transition: color .2s ease;
+    transition: color 0.2s ease;
     display: inline-block;
     cursor: default;
   }

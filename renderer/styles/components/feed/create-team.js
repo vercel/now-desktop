@@ -1,15 +1,17 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   a {
     height: 23px;
     width: 23px;
     border-radius: 100%;
     box-sizing: border-box;
-    border: 1px solid #E8E8E8;
+    border: 1px solid #e8e8e8;
     position: relative;
     flex-shrink: 0;
     margin: 0 20px 0 10px;
     display: block;
-    transition: border .2s, transform 0.6s;
+    transition: border 0.2s, transform 0.6s;
     transform: scale(0);
   }
 
@@ -23,7 +25,7 @@ export default `
 
   a i {
     display: block;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     display: flex;
     justify-content: center;
     align-items: center;
