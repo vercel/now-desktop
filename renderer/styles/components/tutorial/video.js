@@ -1,4 +1,6 @@
-export const coreStyles = `
+import css from 'styled-jsx/css'
+
+export const coreStyles = css`
   figure {
     display: flex;
     flex-direction: column;
@@ -12,7 +14,7 @@ export const coreStyles = `
 
   figure:after {
     content: '';
-    background: #EAEAEA;
+    background: #eaeaea;
     height: 1px;
     width: 100%;
     display: block;
@@ -23,7 +25,7 @@ export const coreStyles = `
   }
 `
 
-export const captionStyles = `
+export const captionStyles = css`
   figcaption {
     text-align: center;
     margin-bottom: 20px;
@@ -38,7 +40,7 @@ export const captionStyles = `
 
   h2 {
     font-size: 12px;
-    color: #067DF7;
+    color: #067df7;
     text-transform: uppercase;
     font-weight: normal;
     margin: 0;

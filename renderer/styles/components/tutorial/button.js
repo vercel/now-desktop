@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   a {
     font-weight: 700;
     text-transform: uppercase;
@@ -8,7 +10,7 @@ export default `
     color: #fff;
     font-size: 12px;
     padding: 9px 28px;
-    transition: color .2s ease, background .2s ease;
+    transition: color 0.2s ease, background 0.2s ease;
     cursor: default;
     display: inline-block;
     line-height: normal;
@@ -25,7 +27,7 @@ export default `
   a.disabled {
     background: transparent;
     cursor: default;
-    color: #CCCCCC;
+    color: #cccccc;
     border-color: currentColor;
   }
 `

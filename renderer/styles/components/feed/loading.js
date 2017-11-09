@@ -1,10 +1,12 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   aside {
     display: flex;
     width: 100%;
     height: 100%;
     position: absolute;
-    background: #F5F5F5;
+    background: #f5f5f5;
     align-items: center;
     justify-content: center;
     flex-direction: column;

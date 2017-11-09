@@ -1,14 +1,18 @@
-export const pageStyles = `
+import css from 'styled-jsx/css'
+
+export const pageStyles = css`
   body {
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Helvetica Neue, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Helvetica Neue, sans-serif;
     -webkit-font-smoothing: antialiased;
     margin: 0;
     overflow: hidden;
   }
 `
 
-export const feedStyles = `
-  main, div {
+export const feedStyles = css`
+  main,
+  div {
     display: flex;
     flex-direction: column;
   }
@@ -43,9 +47,9 @@ export const feedStyles = `
   }
 `
 
-export const headingStyles = `
+export const headingStyles = css`
   h1 {
-    background: #F5F5F5;
+    background: #f5f5f5;
     font-size: 10px;
     height: 23px;
     line-height: 23px;
@@ -65,12 +69,12 @@ export const headingStyles = `
   }
 `
 
-export const loaderStyles = `
+export const loaderStyles = css`
   aside {
     font-size: 12px;
     color: #666666;
     text-align: center;
-    background: #F5F5F5;
+    background: #f5f5f5;
     border-top: 1px solid #fff;
     display: flex;
     justify-content: center;

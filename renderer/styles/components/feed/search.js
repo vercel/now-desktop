@@ -1,4 +1,6 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   aside {
     position: absolute;
     top: 0;
@@ -15,9 +17,9 @@ export default `
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: .5;
+    opacity: 0.5;
     flex-shrink: 0;
-    transition: opacity .2s ease;
+    transition: opacity 0.2s ease;
   }
 
   span:hover {
@@ -46,7 +48,7 @@ export default `
     background: #fff;
     visibility: hidden;
     opacity: 0;
-    transition: opacity .2s ease;
+    transition: opacity 0.2s ease;
   }
 
   b {
@@ -56,8 +58,8 @@ export default `
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    opacity: .5;
-    transition: opacity .2s ease;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
   }
 
   b:hover {

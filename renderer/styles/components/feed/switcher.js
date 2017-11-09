@@ -1,4 +1,6 @@
-export const listStyle = `
+import css from 'styled-jsx/css'
+
+export const listStyle = css`
   ul {
     margin: 0;
     list-style: none;
@@ -17,13 +19,13 @@ export const listStyle = `
   that's a renderer-bug in chromium
 */
 
-export const itemStyle = `
+export const itemStyle = css`
   li {
     width: 23px;
     height: 23px;
     border-radius: 100%;
     margin-right: 10px;
-    opacity: .3;
+    opacity: 0.3;
     transition-duraction: 300ms;
   }
 
@@ -37,7 +39,7 @@ export const itemStyle = `
   }
 `
 
-export const helperStyle = `
+export const helperStyle = css`
   .switcher-helper {
     position: relative;
     opacity: 1 !important;
@@ -49,7 +51,7 @@ export const helperStyle = `
     position: absolute;
     top: 0;
     left: 0;
-    animation: scale .4s forwards;
+    animation: scale 0.4s forwards;
   }
 
   body.is-moving {
@@ -67,7 +69,7 @@ export const helperStyle = `
   }
 `
 
-export const wrapStyle = `
+export const wrapStyle = css`
   aside {
     height: 40px;
     bottom: 0;
@@ -75,7 +77,7 @@ export const wrapStyle = `
     right: 0;
     flex-shrink: 0;
     flex-grow: 0;
-    border-top: 1px solid #D6D6D6;
+    border-top: 1px solid #d6d6d6;
     display: flex;
     background: #fff;
     user-select: none;
@@ -100,8 +102,8 @@ export const wrapStyle = `
     height: 1px;
     background: #4e4e4e;
     display: block;
-    opacity: .5;
-    transition: opacity .2s ease;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
   }
 
   aside .toggle-menu i:nth-child(2) {

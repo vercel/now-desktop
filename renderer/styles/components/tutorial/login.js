@@ -1,14 +1,16 @@
-export default `
+import css from 'styled-jsx/css'
+
+export default css`
   .login input {
     border: 0;
     outline: 0;
     padding: 0;
     background: transparent;
-    color: #9B9B9B;
+    color: #9b9b9b;
     height: 32px;
     line-height: 32px;
     text-align: left;
-    transition: border, background, color .1s ease-in;
+    transition: border, background, color 0.1s ease-in;
     max-width: 380px;
     z-index: 300;
     position: relative;
@@ -27,7 +29,7 @@ export default `
   .login {
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-bottom-color: #EAEAEA;
+    border-bottom-color: #eaeaea;
     min-width: 300px;
     text-align: center;
     margin-top: 25px;
@@ -87,15 +89,23 @@ export default `
   }
 
   @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate3d(0, 0, 0);
     }
 
-    10%, 30%, 50%, 70%, 90% {
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
       transform: translate3d(-10px, 0, 0);
     }
 
-    20%, 40%, 60%, 80% {
+    20%,
+    40%,
+    60%,
+    80% {
       transform: translate3d(10px, 0, 0);
     }
   }
