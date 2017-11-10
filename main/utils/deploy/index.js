@@ -241,7 +241,9 @@ class Now extends EventEmitter {
 
       if (sizeExceeded) {
         showError(
-          `${sizeExceeded} of the files exceeded the limit for your plan. Please upgrade`
+          `${
+            sizeExceeded
+          } of the files exceeded the limit for your plan. Please upgrade`
         )
       }
     }
@@ -259,7 +261,9 @@ class Now extends EventEmitter {
           console.log(`> Using Node.js ${deployment.nodeVersion} (default)`)
         } else {
           console.log(
-            `> Using Node.js ${deployment.nodeVersion} (requested: ${`\`${engines.node}\``})`
+            `> Using Node.js ${deployment.nodeVersion} (requested: ${`\`${
+              engines.node
+            }\``})`
           )
         }
       } else {
@@ -491,7 +495,7 @@ module.exports = async paths => {
   const multiple = paths.length > 1
 
   let cleanup
-  let path = paths
+  let path = paths[0]
   let deploymentType
 
   if (multiple) {
