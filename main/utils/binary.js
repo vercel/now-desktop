@@ -17,11 +17,13 @@ const { exec } = require('child-process-promise')
 const semVer = require('semver')
 const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
+const exists = require('path-exists')
 
 // Utilities
 const { runAsRoot } = require('../dialogs')
+const notify = require('../notify')
 const userAgent = require('./user-agent')
-const { getConfig } = require('./config')
+const { saveConfig, getConfig } = require('./config')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -150,7 +152,18 @@ const canaryCheck = async () => {
   return updateChannel && updateChannel === 'canary'
 }
 
-exports.installedWithNPM = async () => {
+const disableUpdateCLI = async () => {
+  await saveConfig(
+    {
+      desktop: {
+        updateCLI: false
+      }
+    },
+    'config'
+  )
+}
+
+const installedWithNPM = async () => {
   let packages
 
   try {
@@ -164,7 +177,7 @@ exports.installedWithNPM = async () => {
     return false
   }
 
-  const related = packages.find(item => item.name === 'noddw')
+  const related = packages.find(item => item.name === 'now')
 
   if (!related || related.linked === true) {
     return false
@@ -176,6 +189,15 @@ exports.installedWithNPM = async () => {
 
   return false
 }
+
+const notifySuccessfulInstall = () => {
+  notify({
+    title: 'Finished Installing Now CLI',
+    body: 'You can now use `now` from the command line.'
+  })
+}
+
+const getBinarySuffix = () => (process.platform === 'win32' ? '.exe' : '')
 
 // Returns the path in which the `now` binary should be saved
 exports.getDirectory = () => {
@@ -200,7 +222,7 @@ exports.getDirectory = () => {
 
 exports.getFile = () => {
   const destDirectory = exports.getDirectory()
-  const suffix = exports.getBinarySuffix()
+  const suffix = getBinarySuffix()
 
   return path.join(destDirectory, 'now' + suffix)
 }
@@ -240,8 +262,6 @@ exports.handleExisting = async next => {
   await setPermissions()
   await ensurePath()
 }
-
-exports.getBinarySuffix = () => (process.platform === 'win32' ? '.exe' : '')
 
 exports.getURL = async () => {
   const url = 'https://now-cli-releases.zeit.sh'
@@ -305,7 +325,7 @@ exports.testBinary = async which => {
   throw new Error(`The downloaded binary doesn't work`)
 }
 
-exports.download = async (url, binaryName, onUpdate) => {
+exports.download = async (url, binaryName) => {
   const tempDir = await tmp.dir({
     unsafeCleanup: true
   })
@@ -328,37 +348,6 @@ exports.download = async (url, binaryName, onUpdate) => {
 
   const { body } = binaryDownload
 
-  if (onUpdate) {
-    let bytes = 0
-    let bytesLoaded = 0
-    let percentage
-
-    if (binaryDownload && binaryDownload.headers) {
-      bytes = binaryDownload.headers.get('content-length')
-    } else {
-      throw new Error('Not able to get binary size')
-    }
-
-    body.on('data', chunk => {
-      if (!bytes) {
-        return
-      }
-
-      bytesLoaded += chunk.length
-      const newPercentage = parseInt(bytesLoaded / bytes * 100, 10)
-
-      if (newPercentage === percentage) {
-        return
-      }
-
-      // Cache the progess percentage
-      percentage = newPercentage
-
-      // Update the progress bar
-      onUpdate(percentage)
-    })
-  }
-
   const destination = path.join(tempDir.path, binaryName)
   const writeStream = fs.createWriteStream(destination)
   const encoding = binaryDownload.headers.get('content-encoding')
@@ -374,4 +363,92 @@ exports.download = async (url, binaryName, onUpdate) => {
     path: path.join(tempDir.path, binaryName),
     cleanup: tempDir.cleanup
   }
+}
+
+exports.installBundleTemp = async () => {
+  const downloadURL = await exports.getURL()
+
+  let tempLocation
+
+  try {
+    tempLocation = await exports.download(
+      downloadURL.url,
+      downloadURL.binaryName
+    )
+  } catch (err) {
+    if (err instanceof Error && err.name && err.name === 'offline') {
+      throw new Error(err.message)
+    }
+    throw new Error('Could not download binary')
+  }
+
+  ipcMain.once('complete-installation', async (e, checked) => {
+    if (tempLocation) {
+      if (checked) {
+        try {
+          await exports.testBinary(tempLocation.path)
+        } catch (err) {
+          await tempLocation.cleanup()
+          throw err
+        }
+
+        try {
+          await exports.handleExisting(tempLocation.path)
+        } catch (err) {
+          throw new Error('Not able to move binary')
+        }
+
+        notifySuccessfulInstall()
+
+        tempLocation.cleanup()
+      } else {
+        await disableUpdateCLI()
+        tempLocation.cleanup()
+      }
+    }
+  })
+}
+
+exports.isInstalled = async () => {
+  const fullPath = exports.getFile()
+  const isInstalled = (await exists(fullPath)) || (await installedWithNPM())
+  return isInstalled
+}
+
+exports.install = async () => {
+  if (await exports.isInstalled()) {
+    return
+  }
+  const downloadURL = await exports.getURL()
+
+  let tempLocation
+
+  try {
+    tempLocation = await exports.download(
+      downloadURL.url,
+      downloadURL.binaryName
+    )
+  } catch (err) {
+    if (err instanceof Error && err.name && err.name === 'offline') {
+      throw new Error(err.message)
+    }
+    throw new Error('Could not download binary')
+  }
+
+  try {
+    await exports.testBinary(tempLocation.path)
+  } catch (err) {
+    await tempLocation.cleanup()
+    throw err
+  }
+
+  try {
+    await exports.handleExisting(tempLocation.path)
+  } catch (err) {
+    throw new Error('Not able to move binary')
+  }
+
+  notifySuccessfulInstall()
+
+  tempLocation.cleanup()
 }

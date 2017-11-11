@@ -5,6 +5,7 @@ const { Menu, shell } = require('electron')
 const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig, saveConfig } = require('./utils/config')
+const binaryUtils = require('./utils/binary')
 
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
@@ -125,6 +126,9 @@ exports.innerMenu = async function(app, tray, windows) {
           type: 'checkbox',
           checked: updateCLI,
           click() {
+            if (updateCLI === false) {
+              binaryUtils.install()
+            }
             saveConfig(
               {
                 desktop: {

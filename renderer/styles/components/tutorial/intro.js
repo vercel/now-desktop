@@ -20,7 +20,7 @@ export default css`
   }
 
   p.has-spacing {
-    margin-top: 75px;
+    margin-top: 45px;
   }
 
   p.has-tiny-spacing {
@@ -29,6 +29,17 @@ export default css`
 
   p.has-mini-spacing {
     margin-top: 15px;
+  }
+
+  code {
+    border-radius: 3px;
+    font-weight: 600;
+    color: #d761e7;
+  }
+
+  .permission {
+    color: #999999;
+    font-size: 12px;
   }
 
   .sending-status i {

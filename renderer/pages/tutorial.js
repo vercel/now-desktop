@@ -13,7 +13,6 @@ import CloseSVG from '../vectors/close-window'
 
 // Components
 import Title from '../components/title'
-import CLI from '../components/tutorial/cli'
 import Intro from '../components/tutorial/intro'
 import SliderArrow from '../components/tutorial/arrow'
 import Video from '../components/tutorial/video'
@@ -175,21 +174,16 @@ class Sections extends React.PureComponent {
           <section>
             <Intro {...introSettings} />
           </section>
-
-          <section>
-            <CLI />
-          </section>
-
           <section>
             <Video
               name="deploying"
               slider={this.slider}
-              playing={index === 2}
+              playing={index === 1}
             />
           </section>
 
           <section>
-            <Video name="feed" slider={this.slider} playing={index === 3} />
+            <Video name="feed" slider={this.slider} playing={index === 2} />
           </section>
 
           <section>

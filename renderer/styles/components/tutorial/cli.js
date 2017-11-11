@@ -1,45 +1,27 @@
 import css from 'styled-jsx/css'
 
 export default css`
-  article {
-    width: 415px;
+  p {
     font-size: 14px;
+    margin: 0;
+    line-height: 24px;
+    max-width: 420px;
     text-align: center;
-    line-height: 22px;
-  }
-
-  article p {
     cursor: default;
   }
 
+  p.has-tiny-spacing {
+    margin-top: 55px;
+  }
+
   code {
-    background: #eaeaea;
-    padding: 1px 7px;
     border-radius: 3px;
     font-weight: 600;
+    color: #d761e7;
   }
 
-  a {
-    text-decoration: none;
-    color: #067df7;
-  }
-
-  a:hover {
-    border-bottom: 1px solid #067df7;
-  }
-
-  .progress {
-    background: #ccc;
-    height: 20px;
-    width: 250px;
-    overflow: hidden;
-    margin: 40px auto 0 auto;
-    border-radius: 3px;
-  }
-
-  .progress span {
-    display: block;
-    background: #000;
-    height: inherit;
+  .permission {
+    color: #999999;
+    font-size: 12px;
   }
 `
