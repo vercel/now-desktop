@@ -198,6 +198,10 @@ const configChanged = async logout => {
     return
   }
 
+  if (!configWatcher) {
+    return
+  }
+
   // We use the global `windows` list so that we can
   // call this method from the renderer without having to pass
   // the windows
