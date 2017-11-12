@@ -194,11 +194,7 @@ exports.saveConfig = async (data, type) => {
 }
 
 const configChanged = async logout => {
-  if (!global.windows) {
-    return
-  }
-
-  if (!configWatcher) {
+  if (!global.windows || !configWatcher) {
     return
   }
 
