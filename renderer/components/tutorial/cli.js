@@ -9,11 +9,16 @@ const Binary = props => (
   <div>
     <p className="has-tiny-spacing">
       <input
+        id="cli"
         type="checkbox"
         checked={props.checked}
-        className="checkbox"
+        className="black-checkbox"
         onChange={props.onCheckboxChange}
-      />Install command-line <code>`now`</code> client and{' '}
+      />
+      <label htmlFor="cli">
+        {' '}
+        Install command-line <code>`now`</code> client and{' '}
+      </label>
       <strong>keep it up-to-date</strong>
     </p>
 
