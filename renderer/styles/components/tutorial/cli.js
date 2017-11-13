@@ -20,11 +20,17 @@ export default css`
     color: #d761e7;
   }
 
+  .cli-wrapper {
+    position: absolute;
+    bottom: 0;
+  }
+
   .black-checkbox[type='checkbox']:not(:checked),
   .black-checkbox[type='checkbox']:checked {
     position: absolute;
     left: -9999px;
   }
+
   .black-checkbox[type='checkbox']:not(:checked) + label,
   .black-checkbox[type='checkbox']:checked + label {
     position: relative;
@@ -38,25 +44,27 @@ export default css`
     box-shadow: none;
     border-color: #bbb;
     position: absolute;
+    bottom: 0;
     left: 0;
-    top: 0;
-    width: 1.25em;
-    height: 1.25em;
+    width: 1em;
+    height: 1em;
     background: #000;
-    border-radius: 4px;
+    border-radius: 3px;
   }
 
   .black-checkbox[type='checkbox']:not(:checked) + label:after,
   .black-checkbox[type='checkbox']:checked + label:after {
-    content: '✔';
+    content: '✓';
     position: absolute;
-    top: 0.1em;
-    left: 0.13em;
-    font-size: 1.1em;
-    line-height: 1;
-    background: #000;
+    font-size: 1em;
     color: #fff;
-    transition: all 0.2s;
+    line-height: 1;
+    bottom: 0;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    background: #000;
+    border-radius: 3px;
   }
 
   .black-checkbox[type='checkbox']:not(:checked) + label:after {

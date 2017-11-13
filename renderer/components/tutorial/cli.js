@@ -6,7 +6,7 @@ import { bool, func } from 'prop-types'
 import binaryStyles from '../../styles/components/tutorial/cli'
 
 const Binary = props => (
-  <div>
+  <div className="cli-wrapper">
     <p className="has-tiny-spacing">
       <input
         id="cli"

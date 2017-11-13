@@ -6,7 +6,7 @@ export default css`
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 300px;
+    height: 350px;
     position: relative;
   }
 
