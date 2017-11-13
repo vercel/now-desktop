@@ -1,45 +1,83 @@
 import css from 'styled-jsx/css'
 
 export default css`
-  article {
-    width: 415px;
+  p {
     font-size: 14px;
+    margin: 0;
+    line-height: 24px;
+    max-width: 420px;
     text-align: center;
-    line-height: 22px;
-  }
-
-  article p {
     cursor: default;
   }
 
+  p.has-tiny-spacing {
+    margin-top: 55px;
+  }
+
   code {
-    background: #eaeaea;
-    padding: 1px 7px;
     border-radius: 3px;
     font-weight: 600;
+    color: #d761e7;
   }
 
-  a {
-    text-decoration: none;
-    color: #067df7;
+  .cli-wrapper {
+    position: absolute;
+    bottom: 0;
   }
 
-  a:hover {
-    border-bottom: 1px solid #067df7;
+  .black-checkbox[type='checkbox']:not(:checked),
+  .black-checkbox[type='checkbox']:checked {
+    position: absolute;
+    left: -9999px;
   }
 
-  .progress {
-    background: #ccc;
-    height: 20px;
-    width: 250px;
-    overflow: hidden;
-    margin: 40px auto 0 auto;
+  .black-checkbox[type='checkbox']:not(:checked) + label,
+  .black-checkbox[type='checkbox']:checked + label {
+    position: relative;
+    padding-left: 1.8em;
+    cursor: pointer;
+  }
+
+  .black-checkbox[type='checkbox']:not(:checked) + label:before,
+  .black-checkbox[type='checkbox']:checked + label:before {
+    content: '';
+    box-shadow: none;
+    border-color: #bbb;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    background: #000;
     border-radius: 3px;
   }
 
-  .progress span {
-    display: block;
+  .black-checkbox[type='checkbox']:not(:checked) + label:after,
+  .black-checkbox[type='checkbox']:checked + label:after {
+    content: '✓';
+    position: absolute;
+    font-size: 1em;
+    color: #fff;
+    line-height: 1;
+    bottom: 0;
+    left: 0;
+    width: 1em;
+    height: 1em;
     background: #000;
-    height: inherit;
+    border-radius: 3px;
+  }
+
+  .black-checkbox[type='checkbox']:not(:checked) + label:after {
+    opacity: 0;
+    transform: scale(0);
+  }
+  .black-checkbox[type='checkbox']:checked + label:after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .permission {
+    color: #999999;
+    font-size: 12px;
   }
 `
