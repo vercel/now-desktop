@@ -217,7 +217,7 @@ class Intro extends PureComponent {
     }
 
     return (
-      <article>
+      <article className="intro-content">
         <Logo />
         <p className="has-spacing">
           To start using the app, simply enter your email address below:

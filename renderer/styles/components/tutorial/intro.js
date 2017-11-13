@@ -6,8 +6,12 @@ export default css`
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 350px;
+    height: 300px;
     position: relative;
+  }
+
+  article.intro-content {
+    height: 350px;
   }
 
   p {
@@ -20,6 +24,10 @@ export default css`
   }
 
   p.has-spacing {
+    margin-top: 75px;
+  }
+
+  article.intro-content p.has-spacing {
     margin-top: 45px;
   }
 
