@@ -367,7 +367,6 @@ exports.download = async (url, binaryName) => {
 
 exports.installBundleTemp = async () => {
   const downloadURL = await exports.getURL()
-
   let tempLocation
 
   try {
@@ -412,6 +411,7 @@ exports.installBundleTemp = async () => {
 exports.isInstalled = async () => {
   const fullPath = exports.getFile()
   const isInstalled = (await exists(fullPath)) || (await installedWithNPM())
+
   return isInstalled
 }
 
@@ -419,8 +419,8 @@ exports.install = async () => {
   if (await exports.isInstalled()) {
     return
   }
-  const downloadURL = await exports.getURL()
 
+  const downloadURL = await exports.getURL()
   let tempLocation
 
   try {
@@ -449,6 +449,5 @@ exports.install = async () => {
   }
 
   notifySuccessfulInstall()
-
   tempLocation.cleanup()
 }

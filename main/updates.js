@@ -153,6 +153,7 @@ const startBinaryUpdates = () => {
         } else {
           await binaryUtils.installBundleTemp()
         }
+
         binaryUpdateTimer(ms('1m'))
       } catch (err) {
         console.log(err)
