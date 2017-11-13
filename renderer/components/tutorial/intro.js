@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import React, { PureComponent } from 'react'
-import { func, bool } from 'prop-types'
+import { func } from 'prop-types'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -9,6 +9,7 @@ import introStyles from '../../styles/components/tutorial/intro'
 // Components
 import Logo from '../../vectors/logo'
 import LoginForm from './login'
+import CLI from './cli'
 import Button from './button'
 
 class Intro extends PureComponent {
@@ -19,7 +20,8 @@ class Intro extends PureComponent {
       sendingMail: false,
       security: null,
       done: false,
-      tested: false
+      tested: false,
+      checked: true
     }
 
     this.initialState = Object.assign({}, this.state)
@@ -28,6 +30,19 @@ class Intro extends PureComponent {
     this.setState = this.setState.bind(this)
     this.showApp = this.showApp.bind(this)
     this.startTutorial = this.moveSlider.bind(this, 1)
+    this.ipcRenderer = electron.ipcRenderer || false
+    this.onCheckboxChange = this.onCheckboxChange.bind(this)
+  }
+
+  async binaryInstalled() {
+    if (!this.remote) {
+      return
+    }
+
+    const binaryUtils = this.remote.require('./utils/binary')
+
+    const isInstalled = await binaryUtils.isInstalled()
+    return isInstalled
   }
 
   async loggedIn() {
@@ -44,6 +59,12 @@ class Intro extends PureComponent {
     }
 
     return true
+  }
+
+  onCheckboxChange(event) {
+    this.setState({
+      checked: event.target.checked
+    })
   }
 
   showApp(event) {
@@ -101,10 +122,15 @@ class Intro extends PureComponent {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (!prevState.done && this.state.done) {
       if (!this.props.setLoggedIn) {
         return
+      }
+
+      if (!await this.binaryInstalled()) {
+        // Complete the installation
+        this.ipcRenderer.send('complete-installation', this.state.checked)
       }
 
       this.props.setLoggedIn(true)
@@ -191,13 +217,16 @@ class Intro extends PureComponent {
     }
 
     return (
-      <article>
+      <article className="intro-content">
         <Logo />
         <p className="has-spacing">
           To start using the app, simply enter your email address below:
         </p>
         <LoginForm setIntroState={this.setState} />
-
+        <CLI
+          checked={this.state.checked}
+          onCheckboxChange={this.onCheckboxChange}
+        />
         <style jsx>{introStyles}</style>
       </article>
     )
@@ -206,8 +235,7 @@ class Intro extends PureComponent {
 
 Intro.propTypes = {
   setLoggedIn: func,
-  moveSlider: func,
-  binaryInstalled: bool
+  moveSlider: func
 }
 
 export default Intro

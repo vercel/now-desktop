@@ -10,6 +10,10 @@ export default css`
     position: relative;
   }
 
+  article.intro-content {
+    height: 350px;
+  }
+
   p {
     font-size: 14px;
     margin: 0;
@@ -23,12 +27,27 @@ export default css`
     margin-top: 75px;
   }
 
+  article.intro-content p.has-spacing {
+    margin-top: 45px;
+  }
+
   p.has-tiny-spacing {
     margin-top: 55px;
   }
 
   p.has-mini-spacing {
     margin-top: 15px;
+  }
+
+  code {
+    border-radius: 3px;
+    font-weight: 600;
+    color: #d761e7;
+  }
+
+  .permission {
+    color: #999999;
+    font-size: 12px;
   }
 
   .sending-status i {
