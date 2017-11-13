@@ -16,14 +16,12 @@ const Binary = props => (
         onChange={props.onCheckboxChange}
       />
       <label htmlFor="cli">
-        {' '}
-        Install command-line <code>`now`</code> client and{' '}
+        {` Install Now's command-line interface and keep it up-to-date`}
       </label>
-      <strong>keep it up-to-date</strong>
     </p>
 
     <p className="permission">
-      This might need additional administrator permissions.
+      This might require additional administrator permissions
     </p>
     <style jsx>{binaryStyles}</style>
   </div>
