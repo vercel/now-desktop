@@ -5,7 +5,6 @@ const fixPath = require('fix-path')
 const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
-const { moveToApplications } = require('electron-lets-move')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
@@ -15,7 +14,7 @@ const deploy = require('./utils/deploy')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
-const { getConfig, saveConfig, watchConfig } = require('./utils/config')
+const { getConfig, watchConfig } = require('./utils/config')
 const handleException = require('./utils/exception')
 
 // Immediately quit the app if squirrel is launching it
@@ -112,34 +111,6 @@ const filesDropped = async (event, files) => {
   await deploy(files)
 }
 
-const moveApp = async config => {
-  const noMove = config.desktop && config.desktop.noMoveWanted
-
-  if (noMove || isDev) {
-    return
-  }
-
-  let moved
-
-  try {
-    moved = await moveToApplications()
-  } catch (err) {
-    showError(err)
-    return
-  }
-
-  if (!moved) {
-    await saveConfig(
-      {
-        desktop: {
-          noMoveWanted: true
-        }
-      },
-      'config'
-    )
-  }
-}
-
 // Chrome Command Line Switches
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
@@ -151,9 +122,6 @@ app.on('ready', async () => {
   } catch (err) {
     config = {}
   }
-
-  // Offer to move app to Applications directory
-  await moveApp(config)
 
   const onlineStatusWindow = new electron.BrowserWindow({
     width: 0,
