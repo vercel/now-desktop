@@ -41,12 +41,21 @@ exports.getConfig = async noCheck => {
   let content = {}
 
   if (await hasNewConfig()) {
-    const { credentials } = await fs.readJSON(paths.auth)
-    const { token } = credentials.find(item => item.provider === 'sh')
+    const authContent = await fs.readJSON(paths.auth)
+    let token
+
+    if (authContent && authContent.credentials) {
+      const shAuth = authContent.credentials.find(i => i.provider === 'sh')
+
+      if (shAuth) {
+        ;({ token } = shAuth)
+      }
+    }
+
     const { sh, updateChannel, desktop } = await fs.readJSON(paths.config)
     const isCanary = updateChannel && updateChannel === 'canary'
 
-    if (sh.canary || isCanary) {
+    if (isCanary) {
       content.updateChannel = 'canary'
     }
 
@@ -54,7 +63,7 @@ exports.getConfig = async noCheck => {
       content.desktop = desktop
     }
 
-    Object.assign(content, sh, { token })
+    Object.assign(content, sh || {}, token ? { token } : {})
   } else {
     content = await fs.readJSON(paths.old)
   }
