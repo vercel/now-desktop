@@ -86,7 +86,7 @@ class Video extends Component {
     const { name } = this.props
 
     const videoSettings = {
-      preload: true,
+      preload: 'true',
       loop: true,
       src: `/static/tutorial/${this.os}/${name}.webm`,
       ref: this.setRef,
