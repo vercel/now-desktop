@@ -48,27 +48,31 @@ export default css`
     box-shadow: none;
     border-color: #bbb;
     position: absolute;
-    top: 2px;
+    top: 3px;
     left: 0;
-    width: 1em;
-    height: 1em;
-    background: #000;
+    width: 12px;
+    height: 12px;
+    background: #fff;
     border-radius: 3px;
+    box-sizing: border-box;
+    border: 1px solid #979797;
   }
 
   .black-checkbox[type='checkbox']:not(:checked) + label:after,
   .black-checkbox[type='checkbox']:checked + label:after {
     content: '✓';
     position: absolute;
-    font-size: 1em;
+    font-size: 17px;
     color: #fff;
-    line-height: 1;
-    top: 2px;
+    line-height: 10px;
+    top: 3px;
     left: 0;
-    width: 1em;
-    height: 1em;
+    width: 12px;
+    height: 12px;
     background: #000;
     border-radius: 3px;
+    padding-left: 1px;
+    box-sizing: border-box;
   }
 
   .black-checkbox[type='checkbox']:not(:checked) + label:after {
