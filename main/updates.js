@@ -150,6 +150,8 @@ const startBinaryUpdates = () => {
       try {
         if (update) {
           await updateBinary()
+        } else if (config.desktop && config.desktop.updateCLI === true) {
+          await binaryUtils.install()
         } else {
           await binaryUtils.installBundleTemp()
         }
