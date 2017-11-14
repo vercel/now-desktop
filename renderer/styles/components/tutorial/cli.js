@@ -28,7 +28,11 @@ export default css`
   .black-checkbox[type='checkbox']:not(:checked),
   .black-checkbox[type='checkbox']:checked {
     position: absolute;
-    left: -9999px;
+    opacity: 0;
+  }
+
+  .black-checkbox[type='checkbox']:checked {
+    color: red;
   }
 
   .black-checkbox[type='checkbox']:not(:checked) + label,
@@ -44,7 +48,7 @@ export default css`
     box-shadow: none;
     border-color: #bbb;
     position: absolute;
-    bottom: 0;
+    top: 2px;
     left: 0;
     width: 1em;
     height: 1em;
@@ -59,7 +63,7 @@ export default css`
     font-size: 1em;
     color: #fff;
     line-height: 1;
-    bottom: 0;
+    top: 2px;
     left: 0;
     width: 1em;
     height: 1em;
