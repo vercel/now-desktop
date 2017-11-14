@@ -369,18 +369,6 @@ exports.installBundleTemp = async () => {
   const downloadURL = await exports.getURL()
   let tempLocation
 
-  try {
-    tempLocation = await exports.download(
-      downloadURL.url,
-      downloadURL.binaryName
-    )
-  } catch (err) {
-    if (err instanceof Error && err.name && err.name === 'offline') {
-      throw new Error(err.message)
-    }
-    throw new Error('Could not download binary')
-  }
-
   ipcMain.once('complete-installation', async (e, checked) => {
     if (tempLocation) {
       if (checked) {
@@ -404,8 +392,25 @@ exports.installBundleTemp = async () => {
         await disableUpdateCLI()
         tempLocation.cleanup()
       }
+    } else if (checked) {
+      // This is needed if the download took time and the event was triggered before download could complete.
+      await exports.install()
+    } else {
+      await disableUpdateCLI()
     }
   })
+
+  try {
+    tempLocation = await exports.download(
+      downloadURL.url,
+      downloadURL.binaryName
+    )
+  } catch (err) {
+    if (err instanceof Error && err.name && err.name === 'offline') {
+      throw new Error(err.message)
+    }
+    throw new Error('Could not download binary')
+  }
 }
 
 exports.isInstalled = async () => {
