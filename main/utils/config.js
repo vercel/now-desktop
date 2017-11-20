@@ -27,6 +27,7 @@ for (const file in paths) {
 }
 
 let configWatcher = null
+let oldToken = null
 
 const hasNewConfig = async () => {
   if (!await pathExists(paths.auth)) {
@@ -40,8 +41,9 @@ const hasNewConfig = async () => {
   return true
 }
 
-exports.getConfig = async noCheck => {
+exports.getConfig = async () => {
   let content = {}
+  let tokenChanged = false
 
   if (await hasNewConfig()) {
     const authContent = await fs.readJSON(paths.auth)
@@ -71,13 +73,18 @@ exports.getConfig = async noCheck => {
     content = await fs.readJSON(paths.old)
   }
 
-  if (!noCheck && !content.token) {
-    throw new Error('No token contained inside config file')
+  if (!content.token) {
+    throw new Error('No user token defined')
+  }
+
+  if (oldToken && content.token && oldToken !== content.token) {
+    tokenChanged = true
   }
 
   if (
-    (!noCheck && !content.user) ||
-    (!noCheck && content.user && Object.keys(content.user).length === 0)
+    tokenChanged ||
+    !content.user ||
+    (content.user && Object.keys(content.user).length === 0)
   ) {
     console.log('Re-fetching user information')
 
@@ -95,11 +102,9 @@ exports.getConfig = async noCheck => {
 
     // Let the developer know
     console.log('Done refetching it!')
-
-    // Once that's done, pull the fresh config again
-    return exports.getConfig(noCheck)
   }
 
+  oldToken = content.token
   return content
 }
 
