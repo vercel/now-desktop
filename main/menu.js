@@ -129,6 +129,7 @@ exports.innerMenu = async function(app, tray, windows) {
             if (updateCLI === false) {
               binaryUtils.install()
             }
+
             saveConfig(
               {
                 desktop: {
