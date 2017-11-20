@@ -2,6 +2,7 @@
 import electron from 'electron'
 import React, { PureComponent } from 'react'
 import { func } from 'prop-types'
+import retry from 'async-retry'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -100,7 +101,7 @@ class Intro extends PureComponent {
     // Cache binary so that we can move it into
     // the right place if the user decides to install the CLI
     if (!await isInstalled()) {
-      installBundleTemp()
+      retry(installBundleTemp)
     }
 
     // Ensure that intro shows a different message
