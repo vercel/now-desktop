@@ -74,10 +74,11 @@ exports.getConfig = async () => {
   }
 
   if (!content.token) {
+    oldToken = null
     throw new Error('No user token defined')
   }
 
-  if (oldToken && content.token && oldToken !== content.token) {
+  if (oldToken && oldToken !== content.token) {
     tokenChanged = true
   }
 
