@@ -138,28 +138,12 @@ const startBinaryUpdates = () => {
         return
       }
 
-      let failureRetryTime = '1m'
-      let update = true
-
-      // If file doesn't exist make a fresh install
-      if (!await binaryUtils.isInstalled()) {
-        failureRetryTime = '30s'
-        update = false
-      }
-
       try {
-        if (update) {
-          await updateBinary()
-        } else if (config.desktop && config.desktop.updateCLI === true) {
-          await binaryUtils.install()
-        } else {
-          await binaryUtils.installBundleTemp()
-        }
-
-        binaryUpdateTimer(ms('1m'))
+        await updateBinary()
+        binaryUpdateTimer(ms('10m'))
       } catch (err) {
         console.log(err)
-        binaryUpdateTimer(ms(failureRetryTime))
+        binaryUpdateTimer(ms('1m'))
       }
     }, time)
 
