@@ -75,7 +75,10 @@ exports.getConfig = async noCheck => {
     throw new Error('No token contained inside config file')
   }
 
-  if ((!noCheck && !content.user) || Object.keys(content.user).length === 0) {
+  if (
+    (!noCheck && !content.user) ||
+    (!noCheck && content.user && Object.keys(content.user).length === 0)
+  ) {
     console.log('Re-fetching user information')
 
     // Re-fetch the user information from our API
