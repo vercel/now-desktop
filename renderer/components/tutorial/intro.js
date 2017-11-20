@@ -34,17 +34,6 @@ class Intro extends PureComponent {
     this.onCheckboxChange = this.onCheckboxChange.bind(this)
   }
 
-  async binaryInstalled() {
-    if (!this.remote) {
-      return
-    }
-
-    const binaryUtils = this.remote.require('./utils/binary')
-
-    const isInstalled = await binaryUtils.isInstalled()
-    return isInstalled
-  }
-
   async loggedIn() {
     if (!this.remote) {
       return
@@ -99,12 +88,20 @@ class Intro extends PureComponent {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (!this.remote) {
       return
     }
 
+    const { isInstalled, installBundleTemp } = this.remote.require(
+      './utils/binary'
+    )
     const currentWindow = this.remote.getCurrentWindow()
+
+    if (!await isInstalled()) {
+      console.log('test')
+      installBundleTemp()
+    }
 
     // Ensure that intro shows a different message
     // after the window was closed and re-opened after
@@ -123,16 +120,12 @@ class Intro extends PureComponent {
   }
 
   async componentDidUpdate(prevProps, prevState) {
+    if (!this.props.setLoggedIn) {
+      return
+    }
+
     if (!prevState.done && this.state.done) {
-      if (!this.props.setLoggedIn) {
-        return
-      }
-
-      if (!await this.binaryInstalled()) {
-        // Complete the installation
-        this.ipcRenderer.send('complete-installation', this.state.checked)
-      }
-
+      this.ipcRenderer.send('complete-installation', this.state.checked)
       this.props.setLoggedIn(true)
     }
   }
