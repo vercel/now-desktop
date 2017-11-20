@@ -17,7 +17,7 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const isCanary = async () => {
-  const { updateChannel } = await getConfig(true)
+  const { updateChannel } = await getConfig()
   return updateChannel && updateChannel === 'canary'
 }
 
@@ -126,7 +126,7 @@ const startBinaryUpdates = () => {
       let config = {}
 
       try {
-        config = await getConfig(true)
+        config = await getConfig()
       } catch (err) {}
 
       // This needs to be explicit
@@ -194,7 +194,7 @@ const startAppUpdates = async mainWindow => {
   let config
 
   try {
-    config = await getConfig(true)
+    config = await getConfig()
   } catch (err) {
     config = {}
   }
