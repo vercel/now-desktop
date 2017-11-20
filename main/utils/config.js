@@ -27,6 +27,7 @@ for (const file in paths) {
 }
 
 let configWatcher = null
+let oldToken = null
 
 const hasNewConfig = async () => {
   if (!await pathExists(paths.auth)) {
@@ -201,7 +202,7 @@ exports.saveConfig = async (data, type) => {
   })
 }
 
-const configChanged = async logout => {
+const configChanged = async (file, logout) => {
   if (!global.windows || !configWatcher) {
     return
   }
@@ -210,6 +211,7 @@ const configChanged = async logout => {
   // call this method from the renderer without having to pass
   // the windows
   const mainWindow = global.windows.main
+  const name = path.basename(file)
 
   let content
 
@@ -219,6 +221,13 @@ const configChanged = async logout => {
     logout('config-removed')
     return
   }
+
+  if (name === 'auth.json' && oldToken !== content.token) {
+    content.user = false
+    console.log('Token has changed')
+  }
+
+  oldToken = content.token
 
   if (
     !content.user ||
@@ -261,7 +270,7 @@ exports.watchConfig = async () => {
   // Start watching the config file and
   // inform the renderer about changes inside it
   configWatcher = watch(toWatch)
-  configWatcher.on('change', () => configChanged(logout))
+  configWatcher.on('change', file => configChanged(file, logout))
 
   // Log out when a config file is removed
   configWatcher.on('unlink', () => logout('config-removed'))
