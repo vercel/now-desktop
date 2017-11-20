@@ -93,13 +93,13 @@ class Intro extends PureComponent {
       return
     }
 
-    const { isInstalled, installBundleTemp } = this.remote.require(
-      './utils/binary'
-    )
+    const { require: load } = this.remote
+    const { isInstalled, installBundleTemp } = load('./utils/binary')
     const currentWindow = this.remote.getCurrentWindow()
 
+    // Cache binary so that we can move it into
+    // the right place if the user decides to install the CLI
     if (!await isInstalled()) {
-      console.log('test')
       installBundleTemp()
     }
 
