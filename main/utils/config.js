@@ -27,7 +27,6 @@ for (const file in paths) {
 }
 
 let configWatcher = null
-let oldToken = null
 
 const hasNewConfig = async () => {
   if (!await pathExists(paths.auth)) {
@@ -43,7 +42,6 @@ const hasNewConfig = async () => {
 
 exports.getConfig = async () => {
   let content = {}
-  let tokenChanged = false
 
   if (await hasNewConfig()) {
     const authContent = await fs.readJSON(paths.auth)
@@ -74,38 +72,9 @@ exports.getConfig = async () => {
   }
 
   if (!content.token) {
-    oldToken = null
     throw new Error('No user token defined')
   }
 
-  if (oldToken && oldToken !== content.token) {
-    tokenChanged = true
-  }
-
-  if (
-    tokenChanged ||
-    !content.user ||
-    (content.user && Object.keys(content.user).length === 0)
-  ) {
-    console.log('Re-fetching user information')
-
-    // Re-fetch the user information from our API
-    const { user } = await loadData('/api/www/user', content.token)
-
-    content.user = {
-      uid: user.uid,
-      username: user.username,
-      email: user.email
-    }
-
-    // Update the config file
-    await exports.saveConfig({ user: content.user }, 'config')
-
-    // Let the developer know
-    console.log('Done refetching it!')
-  }
-
-  oldToken = content.token
   return content
 }
 
@@ -248,6 +217,29 @@ const configChanged = async logout => {
     content = await exports.getConfig()
   } catch (err) {
     logout('config-removed')
+    return
+  }
+
+  if (
+    !content.user ||
+    (content.user && Object.keys(content.user).length === 0)
+  ) {
+    console.log('Re-fetching user information')
+
+    // Re-fetch the user information from our API
+    const { user } = await loadData('/api/www/user', content.token)
+
+    content.user = {
+      uid: user.uid,
+      username: user.username,
+      email: user.email
+    }
+
+    // Update the config file
+    await exports.saveConfig({ user: content.user }, 'config')
+
+    // Let the developer know
+    console.log('Done refetching it!')
     return
   }
 
