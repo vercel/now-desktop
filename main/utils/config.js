@@ -9,6 +9,9 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
+// Utilities
+const loadData = require('./data/load')
+
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json',
@@ -72,8 +75,26 @@ exports.getConfig = async noCheck => {
     throw new Error('No token contained inside config file')
   }
 
-  if (!noCheck && !content.user) {
-    throw new Error('No user contained inside config file')
+  if ((!noCheck && !content.user) || Object.keys(content.user).length === 0) {
+    console.log('Re-fetching user information')
+
+    // Re-fetch the user information from our API
+    const { user } = await loadData('/api/www/user', content.token)
+
+    content.user = {
+      uid: user.uid,
+      username: user.username,
+      email: user.email
+    }
+
+    // Update the config file
+    await exports.saveConfig({ user: content.user }, 'config')
+
+    // Let the developer know
+    console.log('Done refetching it!')
+
+    // Once that's done, pull the fresh config again
+    return exports.getConfig(noCheck)
   }
 
   return content
