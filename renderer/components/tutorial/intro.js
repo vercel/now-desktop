@@ -2,6 +2,7 @@
 import electron from 'electron'
 import React, { PureComponent } from 'react'
 import { func } from 'prop-types'
+import retry from 'async-retry'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -32,17 +33,6 @@ class Intro extends PureComponent {
     this.startTutorial = this.moveSlider.bind(this, 1)
     this.ipcRenderer = electron.ipcRenderer || false
     this.onCheckboxChange = this.onCheckboxChange.bind(this)
-  }
-
-  async binaryInstalled() {
-    if (!this.remote) {
-      return
-    }
-
-    const binaryUtils = this.remote.require('./utils/binary')
-
-    const isInstalled = await binaryUtils.isInstalled()
-    return isInstalled
   }
 
   async loggedIn() {
@@ -99,12 +89,20 @@ class Intro extends PureComponent {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (!this.remote) {
       return
     }
 
+    const { require: load } = this.remote
+    const { isInstalled, installBundleTemp } = load('./utils/binary')
     const currentWindow = this.remote.getCurrentWindow()
+
+    // Cache binary so that we can move it into
+    // the right place if the user decides to install the CLI
+    if (!await isInstalled()) {
+      retry(installBundleTemp)
+    }
 
     // Ensure that intro shows a different message
     // after the window was closed and re-opened after
@@ -123,16 +121,17 @@ class Intro extends PureComponent {
   }
 
   async componentDidUpdate(prevProps, prevState) {
+    if (!this.props.setLoggedIn) {
+      return
+    }
+
     if (!prevState.done && this.state.done) {
-      if (!this.props.setLoggedIn) {
-        return
-      }
+      // This event will simply land in the void if the
+      // binary is already installed
+      this.ipcRenderer.send('complete-installation', this.state.checked)
 
-      if (!await this.binaryInstalled()) {
-        // Complete the installation
-        this.ipcRenderer.send('complete-installation', this.state.checked)
-      }
-
+      // Let the parent components know that the user
+      // is now logged in
       this.props.setLoggedIn(true)
     }
   }
