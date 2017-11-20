@@ -125,7 +125,12 @@ class Intro extends PureComponent {
     }
 
     if (!prevState.done && this.state.done) {
+      // This event will simply land in the void if the
+      // binary is already installed
       this.ipcRenderer.send('complete-installation', this.state.checked)
+
+      // Let the parent components know that the user
+      // is now logged in
       this.props.setLoggedIn(true)
     }
   }
