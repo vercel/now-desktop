@@ -115,7 +115,7 @@
   },
   "devDependencies": {
     "electron": "1.7.9",
-    "electron-builder": "19.45.5",
+    "electron-builder": "19.46.0",
     "electron-builder-squirrel-windows": "19.46.0",
     "eslint-config-prettier": "2.8.0",
     "eslint-plugin-react": "7.5.1",
