@@ -1,7 +1,7 @@
 {
   "name": "now-desktop",
   "productName": "Now",
-  "description": "Realtime global deployments",
+  "description": "Create deployments right from the tray menu",
   "version": "3.7.4",
   "author": {
     "name": "Zeit, Inc.",
