@@ -36,7 +36,7 @@ class Avatar extends React.PureComponent {
 
     if (group && group === 'system') {
       this.setState({
-        url: `/static/zeit-logo.png`
+        url: `/static/geist.png`
       })
 
       return
