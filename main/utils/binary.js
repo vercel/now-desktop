@@ -9,7 +9,6 @@ const { ipcMain } = require('electron')
 const fetch = require('node-fetch')
 const tmp = require('tmp-promise')
 const fs = require('fs-extra')
-const which = require('which-promise')
 const { sync: mkdir } = require('mkdirp')
 const Registry = require('winreg')
 const globalPackages = require('global-packages')
@@ -89,32 +88,12 @@ const ensurePath = async () => {
   )
 }
 
-const setPermissions = async of => {
-  let nodePath
+// Change the permissions of the `now` binary, so
+// that the user can execute it
+const setPermissions = async target => {
+  const nowPath = target || exports.getFile()
+  const sudoCommand = `chmod 0755 ${nowPath}`
 
-  try {
-    nodePath = await which('node')
-  } catch (err) {}
-
-  const nowPath = of || exports.getFile()
-
-  if (nodePath) {
-    // Get permissions = require(node binary
-    const nodeStats = await fs.stat(nodePath)
-
-    if (nodeStats.mode) {
-      // And copy them over to ours
-      await fs.chmod(nowPath, nodeStats.mode)
-    }
-
-    const nowStats = await fs.stat(nowPath)
-
-    if (nowStats.mode === nodeStats.mode) {
-      return
-    }
-  }
-
-  const sudoCommand = `chmod +x ${nowPath}`
   return runAsRoot(
     sudoCommand,
     'It needs to set the correct permissions on the downloaded CLI.'
