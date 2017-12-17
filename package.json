@@ -110,7 +110,6 @@
     "tmp-promise": "1.0.4",
     "trim": "0.0.1",
     "ua-parser-js": "0.7.17",
-    "which-promise": "1.0.0",
     "winreg": "1.2.4"
   },
   "devDependencies": {
