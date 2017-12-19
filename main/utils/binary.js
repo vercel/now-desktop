@@ -217,7 +217,7 @@ exports.getFile = () => {
 
 exports.handleExisting = async next => {
   const destFile = exports.getFile()
-  const parent = path.basename(destFile)
+  const parent = path.dirname(destFile)
   const isWin = process.platform === 'win32'
 
   const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
@@ -240,8 +240,11 @@ exports.handleExisting = async next => {
   }
 
   try {
-    await fs.copy(next, destFile)
+    // We don't use the programmatic Node API here
+    // because we want to allow the `-p` flag.
+    await exec(copyCommand)
   } catch (err) {
+    console.log(err)
     await runAsRoot(copyCommand, why)
   }
 
