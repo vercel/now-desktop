@@ -244,7 +244,6 @@ exports.handleExisting = async next => {
     // because we want to allow the `-p` flag.
     await exec(copyCommand)
   } catch (err) {
-    console.log(err)
     await runAsRoot(copyCommand, why)
   }
 
