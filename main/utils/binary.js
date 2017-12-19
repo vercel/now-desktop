@@ -97,6 +97,17 @@ const setPermissions = async target => {
 
   const nowPath = target || exports.getFile()
   const mode = '0755'
+  const stat = await fs.stat(nowPath)
+  const current = '0' + (stat.mode & 511).toString(8)
+
+  // If the existing mode matches the one we
+  // want to set, we don't need to do anything.
+
+  // This is very important, because it avoids
+  // multiple dialog prompts.
+  if (current === mode) {
+    return
+  }
 
   try {
     await fs.chmod(nowPath, mode)
