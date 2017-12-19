@@ -101,7 +101,7 @@ const setPermissions = async target => {
   try {
     await fs.chmod(nowPath, mode)
   } catch (err) {
-    const command = `chmod -p ${mode} ${nowPath}`
+    const command = `chmod ${mode} ${nowPath}`
     const why = 'It needs to make Now CLI executable.'
 
     // Then move the new binary into position
@@ -223,7 +223,7 @@ exports.handleExisting = async next => {
     // permissions. If it doesn't work, ask for password.
     await fs.copy(next, destFile)
   } catch (err) {
-    const copyPrefix = process.platform === 'win32' ? 'copy /b/v/y' : 'cp'
+    const copyPrefix = process.platform === 'win32' ? 'copy /b/v/y' : 'cp -p'
     const copyCommand = `${copyPrefix} ${next} ${destFile}`
     const why = 'It needs to move the downloaded CLI into its place.'
 
