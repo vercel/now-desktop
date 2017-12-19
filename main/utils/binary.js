@@ -354,6 +354,7 @@ exports.installBundleTemp = async () => {
         try {
           await exports.handleExisting(tempLocation.path)
         } catch (err) {
+          console.error(err)
           throw new Error('Not able to move binary')
         }
 
@@ -421,6 +422,7 @@ exports.install = async () => {
   try {
     await exports.handleExisting(tempLocation.path)
   } catch (err) {
+    console.error(err)
     throw new Error('Not able to move binary')
   }
 
