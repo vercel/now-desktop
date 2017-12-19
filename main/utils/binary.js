@@ -91,13 +91,22 @@ const ensurePath = async () => {
 // Change the permissions of the `now` binary, so
 // that the user can execute it
 const setPermissions = async target => {
-  const nowPath = target || exports.getFile()
-  const sudoCommand = `chmod 0755 ${nowPath}`
+  if (process.platform === 'win32') {
+    return
+  }
 
-  return runAsRoot(
-    sudoCommand,
-    'It needs to set the correct permissions on the downloaded CLI.'
-  )
+  const nowPath = target || exports.getFile()
+  const mode = '0755'
+
+  try {
+    await fs.chmod(nowPath, mode)
+  } catch (err) {
+    const command = `chmod -p ${mode} ${nowPath}`
+    const why = 'It needs to make Now CLI executable.'
+
+    // Then move the new binary into position
+    await runAsRoot(command, why)
+  }
 }
 
 const platformName = () => {
