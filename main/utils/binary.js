@@ -223,14 +223,14 @@ exports.handleExisting = async next => {
   const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
   const copyCommand = `${copyPrefix} ${next} ${destFile}`
 
-  const dirPrefix = isWin ? 'md' : 'mkdir -p'
-  const dirCommand = `${dirPrefix} ${parent}`
-
   const why = 'It needs to move the downloaded CLI into its place.'
 
   try {
     await fs.ensureDir(parent)
   } catch (err) {
+    const dirPrefix = isWin ? 'md' : 'mkdir -p'
+    const dirCommand = `${dirPrefix} ${parent}`
+
     await runAsRoot(`${dirCommand} && ${copyCommand}`, why)
 
     await setPermissions()
@@ -239,8 +239,6 @@ exports.handleExisting = async next => {
     return
   }
 
-  // Firstly, try overwriting the file without root
-  // permissions. If it doesn't work, ask for password.
   try {
     await fs.copy(next, destFile)
   } catch (err) {
