@@ -210,32 +210,16 @@ exports.handleExisting = async next => {
   const destFile = exports.getFile()
 
   try {
-    // Firstly, try overwriting the file without root permissions
-    // If it doesn't work, ask for password
-    await fs.rename(next, destFile)
+    // Firstly, try overwriting the file without root
+    // permissions. If it doesn't work, ask for password.
+    await fs.copy(next, destFile)
   } catch (err) {
-    // We need to remove the old file first
-    // Because neither `mv`, nor `move` overwrite
-    try {
-      await fs.remove(destFile)
-    } catch (err) {
-      const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f'
-      const removalCommand = `${removalPrefix} ${destFile}`
-      const why = 'It needs to replace the existing instance of the CLI.'
+    const copyPrefix = process.platform === 'win32' ? 'copy /b/v/y' : 'cp'
+    const copyCommand = `${copyPrefix} ${next} ${destFile}`
+    const why = 'It needs to move the downloaded CLI into its place.'
 
-      await runAsRoot(removalCommand, why)
-    }
-
-    try {
-      await fs.rename(next, destFile)
-    } catch (err) {
-      const renamingPrefix = process.platform === 'win32' ? 'move' : 'mv'
-      const renamingCommand = `${renamingPrefix} ${next} ${destFile}`
-      const why = 'It needs to move the downloaded CLI into its place.'
-
-      // Then move the new binary into position
-      await runAsRoot(renamingCommand, why)
-    }
+    // Then move the new binary into position
+    await runAsRoot(copyCommand, why)
   }
 
   await setPermissions()
@@ -365,7 +349,6 @@ exports.installBundleTemp = async () => {
         }
 
         notifySuccessfulInstall()
-
         tempLocation.cleanup()
       } else {
         await disableUpdateCLI()
