@@ -7,14 +7,22 @@ const { resolve: resolvePath } = require('app-root-path')
 const deploy = require('./utils/deploy')
 
 exports.runAsRoot = (command, why) => {
+  const isWin = process.platform === 'win32'
+  let buttons = ['OK', 'Cancel']
+
+  if (isWin) {
+    buttons = buttons.reverse()
+  }
+
   const answer = dialog.showMessageBox({
     type: 'question',
     message: 'Now Needs More Permissions',
     detail: why,
-    buttons: ['OK', 'Please, no!']
+    buttons
   })
 
-  if (answer === 1) {
+  // The order of options is different on Windows
+  if (answer === (isWin ? 0 : 1)) {
     throw new Error('No permissions given')
   }
 
