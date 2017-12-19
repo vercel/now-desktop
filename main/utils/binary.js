@@ -217,17 +217,33 @@ exports.getFile = () => {
 
 exports.handleExisting = async next => {
   const destFile = exports.getFile()
+  const parent = path.basename(destFile)
+  const isWin = process.platform === 'win32'
+
+  const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
+  const copyCommand = `${copyPrefix} ${next} ${destFile}`
+
+  const dirPrefix = isWin ? 'md' : 'mkdir -p'
+  const dirCommand = `${dirPrefix} ${parent}`
+
+  const why = 'It needs to move the downloaded CLI into its place.'
 
   try {
-    // Firstly, try overwriting the file without root
-    // permissions. If it doesn't work, ask for password.
+    await fs.ensureDir(parent)
+  } catch (err) {
+    await runAsRoot(`${dirCommand} && ${copyCommand}`, why)
+
+    await setPermissions()
+    await ensurePath()
+
+    return
+  }
+
+  // Firstly, try overwriting the file without root
+  // permissions. If it doesn't work, ask for password.
+  try {
     await fs.copy(next, destFile)
   } catch (err) {
-    const copyPrefix = process.platform === 'win32' ? 'copy /b/v/y' : 'cp -p'
-    const copyCommand = `${copyPrefix} ${next} ${destFile}`
-    const why = 'It needs to move the downloaded CLI into its place.'
-
-    // Then move the new binary into position
     await runAsRoot(copyCommand, why)
   }
 
