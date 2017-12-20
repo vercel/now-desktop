@@ -91,13 +91,32 @@ const ensurePath = async () => {
 // Change the permissions of the `now` binary, so
 // that the user can execute it
 const setPermissions = async target => {
-  const nowPath = target || exports.getFile()
-  const sudoCommand = `chmod 0755 ${nowPath}`
+  if (process.platform === 'win32') {
+    return
+  }
 
-  return runAsRoot(
-    sudoCommand,
-    'It needs to set the correct permissions on the downloaded CLI.'
-  )
+  const nowPath = target || exports.getFile()
+  const mode = '0755'
+  const stat = await fs.stat(nowPath)
+  const current = '0' + (stat.mode & 511).toString(8)
+
+  // If the existing mode matches the one we
+  // want to set, we don't need to do anything.
+
+  // This is very important, because it avoids
+  // multiple dialog prompts.
+  if (current === mode) {
+    return
+  }
+
+  try {
+    await fs.chmod(nowPath, mode)
+  } catch (err) {
+    const command = `chmod ${mode} ${nowPath}`
+    const why = 'To make Now CLI executable.'
+
+    await runAsRoot(command, why)
+  }
 }
 
 const platformName = () => {
@@ -208,34 +227,34 @@ exports.getFile = () => {
 
 exports.handleExisting = async next => {
   const destFile = exports.getFile()
+  const parent = path.dirname(destFile)
+  const isWin = process.platform === 'win32'
+
+  const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
+  const copyCommand = `${copyPrefix} ${next} ${destFile}`
+
+  const why = 'To place Now CLI in the correct location.'
 
   try {
-    // Firstly, try overwriting the file without root permissions
-    // If it doesn't work, ask for password
-    await fs.rename(next, destFile)
+    await fs.ensureDir(parent)
   } catch (err) {
-    // We need to remove the old file first
-    // Because neither `mv`, nor `move` overwrite
-    try {
-      await fs.remove(destFile)
-    } catch (err) {
-      const removalPrefix = process.platform === 'win32' ? 'del /f' : 'rm -f'
-      const removalCommand = `${removalPrefix} ${destFile}`
-      const why = 'It needs to replace the existing instance of the CLI.'
+    const dirPrefix = isWin ? 'md' : 'mkdir -p'
+    const dirCommand = `${dirPrefix} ${parent}`
 
-      await runAsRoot(removalCommand, why)
-    }
+    await runAsRoot(`${dirCommand} && ${copyCommand}`, why)
 
-    try {
-      await fs.rename(next, destFile)
-    } catch (err) {
-      const renamingPrefix = process.platform === 'win32' ? 'move' : 'mv'
-      const renamingCommand = `${renamingPrefix} ${next} ${destFile}`
-      const why = 'It needs to move the downloaded CLI into its place.'
+    await setPermissions()
+    await ensurePath()
 
-      // Then move the new binary into position
-      await runAsRoot(renamingCommand, why)
-    }
+    return
+  }
+
+  try {
+    // We don't use the programmatic Node API here
+    // because we want to allow the `-p` flag.
+    await exec(copyCommand)
+  } catch (err) {
+    await runAsRoot(copyCommand, why)
   }
 
   await setPermissions()
@@ -361,11 +380,11 @@ exports.installBundleTemp = async () => {
         try {
           await exports.handleExisting(tempLocation.path)
         } catch (err) {
+          console.error(err)
           throw new Error('Not able to move binary')
         }
 
         notifySuccessfulInstall()
-
         tempLocation.cleanup()
       } else {
         await disableUpdateCLI()
@@ -429,6 +448,7 @@ exports.install = async () => {
   try {
     await exports.handleExisting(tempLocation.path)
   } catch (err) {
+    console.error(err)
     throw new Error('Not able to move binary')
   }
 
