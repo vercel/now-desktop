@@ -6,7 +6,6 @@ const { app, autoUpdater } = require('electron')
 const ms = require('ms')
 const semVer = require('semver')
 const trimWhitespace = require('trim')
-const exists = require('path-exists')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 
@@ -64,12 +63,6 @@ const localBinaryVersion = async () => {
 
 const updateBinary = async () => {
   if (process.env.CONNECTION === 'offline') {
-    return
-  }
-
-  const fullPath = binaryUtils.getFile()
-
-  if (!await exists(fullPath)) {
     return
   }
 
