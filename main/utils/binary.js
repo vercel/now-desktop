@@ -113,7 +113,7 @@ const setPermissions = async target => {
     await fs.chmod(nowPath, mode)
   } catch (err) {
     const command = `chmod ${mode} ${nowPath}`
-    const why = 'It needs to make Now CLI executable.'
+    const why = 'To make Now CLI executable.'
 
     await runAsRoot(command, why)
   }
@@ -233,7 +233,7 @@ exports.handleExisting = async next => {
   const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
   const copyCommand = `${copyPrefix} ${next} ${destFile}`
 
-  const why = 'To place the Now CLI in the correct location.'
+  const why = 'To place Now CLI in the correct location.'
 
   try {
     await fs.ensureDir(parent)
