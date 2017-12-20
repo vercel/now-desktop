@@ -115,7 +115,6 @@ const setPermissions = async target => {
     const command = `chmod ${mode} ${nowPath}`
     const why = 'It needs to make Now CLI executable.'
 
-    // Then move the new binary into position
     await runAsRoot(command, why)
   }
 }
