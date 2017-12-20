@@ -233,7 +233,7 @@ exports.handleExisting = async next => {
   const copyPrefix = isWin ? 'copy /b/v/y' : 'cp -p'
   const copyCommand = `${copyPrefix} ${next} ${destFile}`
 
-  const why = 'It needs to move the downloaded CLI into its place.'
+  const why = 'To place the Now CLI in the correct location.'
 
   try {
     await fs.ensureDir(parent)
