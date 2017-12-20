@@ -8,10 +8,10 @@ const deploy = require('./utils/deploy')
 
 exports.runAsRoot = (command, why) => {
   const isWin = process.platform === 'win32'
-  let buttons = ['OK', 'Cancel']
+  const buttons = ['OK', 'Cancel']
 
   if (isWin) {
-    buttons = buttons.reverse()
+    buttons.reverse()
   }
 
   const answer = dialog.showMessageBox({
