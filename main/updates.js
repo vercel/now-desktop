@@ -37,10 +37,19 @@ const localBinaryVersion = async () => {
     return null
   }
 
-  const cmd = await exec(`${fullPath} -v`, { cwd: homedir() })
+  let cmd
 
-  if (!cmd.stdout) {
-    throw new Error('Not version tag received from `now -v`')
+  try {
+    cmd = await exec(`${fullPath} -v`, { cwd: homedir() })
+  } catch (err) {
+    console.error(err)
+  }
+
+  // This ensures the CLI gets re-installed if there's
+  // no output. Later in the code, we also return `null` if
+  // what we got back is not a valid semver tag.
+  if (!cmd || !cmd.stdout) {
+    return null
   }
 
   // Make version tag parsable
@@ -63,10 +72,7 @@ const localBinaryVersion = async () => {
     return output
   }
 
-  // This is for the old version output
-  // Example: "𝚫 now 4.3.0"
-  // The new one (handled above) looks like this: "4.3.0"
-  return output.split(' ')[2].trim()
+  return null
 }
 
 const updateBinary = async () => {
