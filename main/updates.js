@@ -8,6 +8,7 @@ const semVer = require('semver')
 const trimWhitespace = require('trim')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
+const exists = require('path-exists')
 
 // Utilities
 const { version } = require('../package')
@@ -29,6 +30,13 @@ const localBinaryVersion = async () => {
   // We need to modify the `cwd` to prevent the app itself (Now.exe) to be
   // executed on Windows. On other platforms this shouldn't produce side effects.
   const fullPath = binaryUtils.getFile()
+
+  // If the binary is not there, but updates are enabled,
+  // we should put it back into place (download it).
+  if (!await exists(fullPath)) {
+    return null
+  }
+
   const cmd = await exec(`${fullPath} -v`, { cwd: homedir() })
 
   if (!cmd.stdout) {
