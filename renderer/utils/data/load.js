@@ -1,5 +1,6 @@
 // Packages
 const electron = require('electron')
+const ms = require('ms')
 
 // Utilities
 const userAgent = require('./user-agent')
@@ -55,7 +56,11 @@ module.exports = async (path, token = null, opts = {}) => {
   let error
 
   try {
-    res = await fetch(url, { ...opts, headers })
+    res = await fetch(url, {
+      ...opts,
+      headers,
+      timeout: ms('20s')
+    })
 
     if (res.status === 403) {
       const remote = electron.remote || false

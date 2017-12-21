@@ -1,5 +1,6 @@
 // Packages
 const fetch = require('node-fetch')
+const ms = require('ms')
 
 // Utilities
 const { getConfig } = require('../config')
@@ -37,7 +38,11 @@ module.exports = async (path, token) => {
   let error
 
   try {
-    res = await fetch(url, { headers })
+    res = await fetch(url, {
+      headers,
+      timeout: ms('20s')
+    })
+
     if (res.status < 200 || res.status >= 300) {
       if (res.headers.get('Content-Type') === 'application/json') {
         data = await res.json()
