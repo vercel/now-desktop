@@ -41,9 +41,7 @@ const localBinaryVersion = async () => {
 
   try {
     cmd = await exec(`${fullPath} -v`, { cwd: homedir() })
-  } catch (err) {
-    console.error(err)
-  }
+  } catch (err) {}
 
   // This ensures the CLI gets re-installed if there's
   // no output. Later in the code, we also return `null` if
@@ -75,7 +73,7 @@ const localBinaryVersion = async () => {
   return null
 }
 
-const updateBinary = async () => {
+const updateBinary = async config => {
   if (process.env.CONNECTION === 'offline') {
     return
   }
@@ -96,6 +94,14 @@ const updateBinary = async () => {
     }
 
     console.log('Found an update for binary! Downloading...')
+  } else if (!config.token) {
+    // The user is not yet logged in. At this point, we don't
+    // yet know if he/she wants to have binary updates enabled
+    // because the status of the checkbox wasn't yet passed on.
+
+    // In turn, we need to stop here. Otherwise we install
+    // Now CLI even though the user might not want it.
+    return
   }
 
   const updateFile = await binaryUtils.download(remote.url, remote.binaryName)
@@ -146,7 +152,7 @@ const startBinaryUpdates = () => {
       }
 
       try {
-        await updateBinary()
+        await updateBinary(config)
         binaryUpdateTimer(ms('10m'))
       } catch (err) {
         console.log(err)
