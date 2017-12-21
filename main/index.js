@@ -30,21 +30,13 @@ let tray = null
 let loggedIn = null
 
 const setLoggedInStatus = async () => {
-  let config
+  let token
 
   try {
-    config = await getConfig()
-  } catch (err) {
-    loggedIn = false
-    return
-  }
+    ;({ token } = await getConfig())
+  } catch (err) {}
 
-  if (config.token) {
-    loggedIn = true
-    return
-  }
-
-  loggedIn = false
+  loggedIn = Boolean(token)
 }
 
 // Check status once in the beginning when the app starting up
