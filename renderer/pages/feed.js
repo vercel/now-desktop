@@ -506,7 +506,7 @@ class Feed extends React.Component {
     return new Promise(resolve =>
       this.setState({ teams }, async () => {
         await retry(() => this.updateEvents(firstLoad), {
-          retries: 500
+          retries: 5
         })
 
         resolve()
