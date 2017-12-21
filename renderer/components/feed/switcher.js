@@ -155,6 +155,9 @@ class Switcher extends React.Component {
           // It's important that this is being `await`ed
           await this.loadTeams()
         } catch (err) {
+          // Retry first
+          listTimer()
+
           // Check if app is even online
           this.setOnlineState()
 
@@ -164,9 +167,7 @@ class Switcher extends React.Component {
             this.props.onlineStateFeed()
           }
 
-          // Then retry, to ensure that we get the
-          // data once it's working again
-          listTimer()
+          // No need to retry again
           return
         }
 
