@@ -4,7 +4,7 @@ import { platform } from 'os'
 // Packages
 import electron from 'electron'
 import React from 'react'
-import timeAgo from 'time-ago'
+import { ago as timeAgo } from 'time-ago'
 import isDev from 'electron-is-dev'
 
 // Vectors
@@ -103,7 +103,7 @@ class About extends React.PureComponent {
     }
 
     const setReleaseDate = () => {
-      const ago = timeAgo().ago(new Date(localRelease.published_at))
+      const ago = timeAgo(new Date(localRelease.published_at))
 
       this.setState({
         releaseDate: `(${ago})`
