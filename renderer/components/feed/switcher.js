@@ -129,6 +129,10 @@ class Switcher extends React.Component {
       newState.initialized = false
     }
 
+    if (this.state.online === online) {
+      return
+    }
+
     this.setState(newState)
   }
 
@@ -146,30 +150,20 @@ class Switcher extends React.Component {
       const time = isVisible() ? '5s' : '60s'
 
       setTimeout(async () => {
-        if (!this.state.online) {
-          listTimer()
-          return
-        }
-
         try {
           // It's important that this is being `await`ed
           await this.loadTeams()
-        } catch (err) {
+
           // Check if app is even online
           this.setOnlineState()
 
           // Also do the same for the feed, so that
           // both components reflect the online state
-          if (this.props.onlineStateFeed) {
-            this.props.onlineStateFeed()
-          }
+          this.props.onlineStateFeed()
+        } catch (err) {}
 
-          // Then retry, to ensure that we get the
-          // data once it's working again
-          listTimer()
-          return
-        }
-
+        // Once everything is done or has failed,
+        // try it again after some time.
         listTimer()
       }, ms(time))
     }

@@ -506,7 +506,9 @@ class Feed extends React.Component {
     return new Promise(resolve =>
       this.setState({ teams }, async () => {
         await retry(() => this.updateEvents(firstLoad), {
-          retries: 500
+          retries: 5,
+          factor: 2,
+          maxTimeout: 5000
         })
 
         resolve()
@@ -619,7 +621,9 @@ class Feed extends React.Component {
       const lastEvent = scopedEvents[scopedEvents.length - 1]
 
       retry(() => this.cacheEvents(scope, lastEvent.created), {
-        retries: 500
+        retries: 5,
+        factor: 2,
+        maxTimeout: 5000
       })
     }
   }
