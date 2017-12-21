@@ -127,8 +127,7 @@ const updateBinary = async config => {
 
   notify({
     title: 'Updated Now CLI to Version ' + newVersion,
-    body:
-      'Feel free to try it in your terminal or click to see what has changed!',
+    body: 'Try it in your terminal or click to see what has changed.',
     url: 'https://github.com/zeit/now-cli/releases/tag/' + newVersion
   })
 }

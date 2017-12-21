@@ -248,7 +248,7 @@ const configChanged = async (file, logout) => {
     await exports.saveConfig({ user: content.user }, 'config')
 
     // Let the developer know
-    console.log('Done refetching it!')
+    console.log('Done refetching it')
     return
   }
 
