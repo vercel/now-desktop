@@ -555,7 +555,7 @@ module.exports = async paths => {
 
           // Let the user know
           notify({
-            title: 'Copied URL to Clipboard!',
+            title: 'Copied URL to Clipboard',
             body: 'Opening the deployment in your browser...',
             url
           })

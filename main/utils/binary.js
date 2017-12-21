@@ -141,7 +141,7 @@ const canaryCheck = async () => {
   let config
 
   try {
-    config = await getConfig(true)
+    config = await getConfig()
   } catch (err) {
     config = {}
   }

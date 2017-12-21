@@ -9,6 +9,9 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
+// Utilities
+const loadData = require('./data/load')
+
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json',
@@ -24,6 +27,7 @@ for (const file in paths) {
 }
 
 let configWatcher = null
+let oldToken = null
 
 const hasNewConfig = async () => {
   if (!await pathExists(paths.auth)) {
@@ -37,7 +41,7 @@ const hasNewConfig = async () => {
   return true
 }
 
-exports.getConfig = async noCheck => {
+exports.getConfig = async () => {
   let content = {}
 
   if (await hasNewConfig()) {
@@ -68,12 +72,8 @@ exports.getConfig = async noCheck => {
     content = await fs.readJSON(paths.old)
   }
 
-  if (!noCheck && !content.token) {
-    throw new Error('No token contained inside config file')
-  }
-
-  if (!noCheck && !content.user) {
-    throw new Error('No user contained inside config file')
+  if (!content.token) {
+    throw new Error('No user token defined')
   }
 
   return content
@@ -202,7 +202,7 @@ exports.saveConfig = async (data, type) => {
   })
 }
 
-const configChanged = async logout => {
+const configChanged = async (file, logout) => {
   if (!global.windows || !configWatcher) {
     return
   }
@@ -211,6 +211,7 @@ const configChanged = async logout => {
   // call this method from the renderer without having to pass
   // the windows
   const mainWindow = global.windows.main
+  const name = path.basename(file)
 
   let content
 
@@ -218,6 +219,36 @@ const configChanged = async logout => {
     content = await exports.getConfig()
   } catch (err) {
     logout('config-removed')
+    return
+  }
+
+  if (name === 'auth.json' && oldToken !== content.token) {
+    content.user = false
+    console.log('Token has changed')
+  }
+
+  oldToken = content.token
+
+  if (
+    !content.user ||
+    (content.user && Object.keys(content.user).length === 0)
+  ) {
+    console.log('Re-fetching user information')
+
+    // Re-fetch the user information from our API
+    const { user } = await loadData('/api/www/user', content.token)
+
+    content.user = {
+      uid: user.uid,
+      username: user.username,
+      email: user.email
+    }
+
+    // Update the config file
+    await exports.saveConfig({ user: content.user }, 'config')
+
+    // Let the developer know
+    console.log('Done refetching it')
     return
   }
 
@@ -239,7 +270,7 @@ exports.watchConfig = async () => {
   // Start watching the config file and
   // inform the renderer about changes inside it
   configWatcher = watch(toWatch)
-  configWatcher.on('change', () => configChanged(logout))
+  configWatcher.on('change', file => configChanged(file, logout))
 
   // Log out when a config file is removed
   configWatcher.on('unlink', () => logout('config-removed'))

@@ -364,17 +364,20 @@ class Feed extends React.Component {
     // Update the `currentUser` state to reflect
     // switching the account using `now login`
     this.ipcRenderer.on('config-changed', (event, config) => {
-      if (compare(this.state.currentUser, config.user)) {
+      const { user } = config
+
+      if (compare(this.state.currentUser, user)) {
         return
       }
 
-      // Clear up the events to load new ones
-      const events = this.state.events
-
-      events[this.state.scope] = []
-      events[config.user.uid] = []
-
-      this.setState({ currentUser: config.user, events })
+      this.setState({
+        scope: user.uid,
+        currentUser: user,
+        events: {},
+        teams: [],
+        eventFilter: null,
+        typeFilter: 'team'
+      })
     })
   }
 

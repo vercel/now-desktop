@@ -17,7 +17,7 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const isCanary = async () => {
-  const { updateChannel } = await getConfig(true)
+  const { updateChannel } = await getConfig()
   return updateChannel && updateChannel === 'canary'
 }
 
@@ -127,8 +127,7 @@ const updateBinary = async config => {
 
   notify({
     title: 'Updated Now CLI to Version ' + newVersion,
-    body:
-      'Feel free to try it in your terminal or click to see what has changed!',
+    body: 'Try it in your terminal or click to see what has changed.',
     url: 'https://github.com/zeit/now-cli/releases/tag/' + newVersion
   })
 }
@@ -139,7 +138,7 @@ const startBinaryUpdates = () => {
       let config = {}
 
       try {
-        config = await getConfig(true)
+        config = await getConfig()
       } catch (err) {}
 
       // This needs to be explicit
@@ -207,7 +206,7 @@ const startAppUpdates = async mainWindow => {
   let config
 
   try {
-    config = await getConfig(true)
+    config = await getConfig()
   } catch (err) {
     config = {}
   }
