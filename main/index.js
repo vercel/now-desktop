@@ -29,6 +29,10 @@ let tray = null
 // Prevent having to check for login status when opening the window
 let loggedIn = null
 
+// Check status once in the beginning when the app starting up
+// And then every 2 seconds
+// We could to this on click on the tray icon, but we
+// don't want to block that action
 const setLoggedInStatus = async () => {
   let token
 
@@ -37,14 +41,9 @@ const setLoggedInStatus = async () => {
   } catch (err) {}
 
   loggedIn = Boolean(token)
+  setTimeout(setLoggedInStatus, 2000)
 }
-
-// Check status once in the beginning when the app starting up
-// And then every 2 seconds
-// We could to this on click on the tray icon, but we
-// don't want to block that action
 setLoggedInStatus()
-setInterval(setLoggedInStatus, 2000)
 
 // Load the app instance from electron
 const { app } = electron
