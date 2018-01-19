@@ -349,8 +349,10 @@ exports.download = async (url, binaryName) => {
   const destination = path.join(tempDir.path, binaryName)
   const writeStream = fs.createWriteStream(destination)
   const encoding = binaryDownload.headers.get('content-encoding')
+  const extension = path.extname(url)
+  const isCompressed = encoding === 'gzip' || extension === '.gz'
 
-  if (encoding === 'gzip') {
+  if (isCompressed) {
     const gunzip = createGunzip()
     await pipe(body, gunzip, writeStream)
   } else {
