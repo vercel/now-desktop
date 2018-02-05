@@ -4,7 +4,7 @@
   "description": "Create deployments right from the tray menu",
   "version": "4.0.0-canary.14",
   "author": {
-    "name": "Zeit, Inc.",
+    "name": "ZEIT, Inc.",
     "email": "team@zeit.co"
   },
   "repository": "zeit/now-desktop",
@@ -17,29 +17,8 @@
     "pack": "npm run build && build --dir",
     "dist": "npm run build && build"
   },
-  "build": {
-    "appId": "co.zeit.now",
-    "files": [
-      "**/*",
-      "!renderer",
-      "renderer/out"
-    ],
-    "win": {
-      "target": [
-        "squirrel"
-      ],
-      "icon": "main/static/icons/windows.ico"
-    },
-    "squirrelWindows": {
-      "loadingGif": "main/static/install-spinner.gif"
-    },
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "icon": "main/static/icons/mac.icns",
-      "extendInfo": {
-        "LSUIElement": 1
-      }
-    }
+  "neutron": {
+    "name": "Now"
   },
   "lint-staged": {
     "*.js": [
@@ -79,7 +58,6 @@
     "docker-file-parser": "1.0.3",
     "dot-prop": "4.2.0",
     "electron-is-dev": "0.3.0",
-    "electron-next": "3.1.3",
     "electron-squirrel-startup": "1.0.0",
     "first-run": "1.2.0",
     "fix-path": "2.1.0",
@@ -114,14 +92,13 @@
   },
   "devDependencies": {
     "electron": "1.7.11",
-    "electron-builder": "19.49.0",
-    "electron-builder-squirrel-windows": "19.49.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-react": "7.5.1",
     "html-to-react": "1.3.1",
     "husky": "0.14.3",
     "jquery": "3.2.1",
     "lint-staged": "6.0.0",
+    "neutron": "2.5.0",
     "next": "4.2.1",
     "prettier": "1.9.2",
     "prop-types": "15.6.0",
