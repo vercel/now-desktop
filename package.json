@@ -16,7 +16,13 @@
     "test": "xo"
   },
   "neutron": {
-    "name": "Now"
+    "name": "Now",
+    "macOS": {
+      "category": "public.app-category.developer-tools",
+      "info": {
+        "LSUIElement": 1
+      }
+    }
   },
   "lint-staged": {
     "*.js": [
