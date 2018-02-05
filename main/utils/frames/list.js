@@ -1,10 +1,6 @@
-// Native
-const path = require('path')
-
 // Packages
 const electron = require('electron')
-const isDev = require('electron-is-dev')
-const { resolve } = require('app-root-path')
+const { setWindowURL } = require('neutron')
 
 // Utilities
 const attachTrayState = require('../highlight')
@@ -12,14 +8,6 @@ const positionWindow = require('./position')
 
 // Check if Windows
 const isWinOS = process.platform === 'win32'
-
-const windowURL = page => {
-  if (isDev) {
-    return 'http://localhost:8000/' + page
-  }
-
-  return path.join('file://', resolve('./renderer/out'), page, 'index.html')
-}
 
 exports.tutorialWindow = tray => {
   const win = new electron.BrowserWindow({
@@ -40,7 +28,7 @@ exports.tutorialWindow = tray => {
     }
   })
 
-  win.loadURL(windowURL('tutorial'))
+  setWindowURL(win, 'tutorial')
   attachTrayState(win, tray)
 
   const emitTrayClick = aboutWindow => {
@@ -87,7 +75,7 @@ exports.aboutWindow = tray => {
     }
   })
 
-  win.loadURL(windowURL('about'))
+  setWindowURL(win, 'about')
   attachTrayState(win, tray)
 
   return win
@@ -120,7 +108,7 @@ exports.mainWindow = tray => {
 
   positionWindow(tray, win)
 
-  win.loadURL(windowURL('feed'))
+  setWindowURL(win, 'feed')
   attachTrayState(win, tray)
 
   // Hide window if it's not focused anymore

@@ -2,7 +2,6 @@
 const electron = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
-const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const firstRun = require('first-run')
 const squirrelStartup = require('electron-squirrel-startup')
@@ -143,9 +142,6 @@ app.on('ready', async () => {
 
   // Opening the context menu after login should work
   global.tray = tray
-
-  // Ensure that `next` works with `electron`
-  await prepareNext('./renderer')
 
   // Extract each window out of the list
   const { mainWindow, tutorialWindow, aboutWindow } = windowList
