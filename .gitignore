@@ -1,10 +1,4 @@
-# build output
-dist
-renderer/.next
-renderer/out
-
-# dependencies
+.next
+out
 node_modules
-
-# logs
-npm-debug.log
+*.log
