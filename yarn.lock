@@ -5060,9 +5060,9 @@ netrc@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/netrc/-/netrc-0.1.4.tgz#6be94fcaca8d77ade0a9670dc460914c94472444"
 
-neutron@2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/neutron/-/neutron-2.5.0.tgz#c14f3b4070ff8062f1262b53bb22542eb6cff608"
+neutron@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/neutron/-/neutron-2.5.1.tgz#7e8d60860a55fc70ce1fe1cf7941042acb6fa982"
   dependencies:
     app-root-path "2.0.1"
     archiver "2.1.1"
