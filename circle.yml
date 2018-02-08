@@ -1,6 +1,8 @@
 machine:
   xcode:
     version: 8.2
+  node:
+    version: 9
 
 deployment:
   artifacts:
