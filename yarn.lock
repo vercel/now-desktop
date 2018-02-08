@@ -330,6 +330,18 @@ asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
 
+asar@0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/asar/-/asar-0.11.0.tgz#b926e792c315f8c048c43371e325b09c97a76464"
+  dependencies:
+    chromium-pickle-js "^0.1.0"
+    commander "^2.9.0"
+    cuint "^0.2.1"
+    glob "^6.0.4"
+    minimatch "^3.0.0"
+    mkdirp "^0.5.0"
+    mksnapshot "^0.3.0"
+
 asar@0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/asar/-/asar-0.14.1.tgz#30002f12161024f7424e0e0ece8b6a78cb5cc999"
@@ -1077,7 +1089,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^3.5.0:
+bluebird@^3.1.1, bluebird@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -1441,6 +1453,10 @@ chokidar@2.0.0:
     readdirp "^2.0.0"
   optionalDependencies:
     fsevents "^1.0.0"
+
+chromium-pickle-js@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/chromium-pickle-js/-/chromium-pickle-js-0.1.0.tgz#1d48b107d82126a2f3e211c2ea25f803ba551b21"
 
 chromium-pickle-js@^0.2.0:
   version "0.2.0"
@@ -2178,6 +2194,10 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
+dot@^1.0.3:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/dot/-/dot-1.1.2.tgz#c7377019fc4e550798928b2b9afeb66abfa1f2f9"
+
 dotenv@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
@@ -2240,6 +2260,16 @@ electron-squirrel-startup@1.0.0:
 electron-to-chromium@^1.3.30:
   version "1.3.32"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.32.tgz#11d0684c0840e003c4be8928f8ac5f35dbc2b4e6"
+
+electron-windows-installer@1.7.8:
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/electron-windows-installer/-/electron-windows-installer-1.7.8.tgz#830f794c51d21ae127ffda22092692374509e244"
+  dependencies:
+    asar "0.11.0"
+    bluebird "^3.1.1"
+    dot "^1.0.3"
+    fs-extra "^0.26.3"
+    temp "^0.8.3"
 
 electron@1.7.11:
   version "1.7.11"
@@ -2861,7 +2891,7 @@ find-cache-dir@^1.0.0:
     make-dir "^1.0.0"
     pkg-dir "^2.0.0"
 
-find-parent-dir@^0.3.0, find-parent-dir@~0.3.0:
+find-parent-dir@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/find-parent-dir/-/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
@@ -2975,7 +3005,7 @@ from2@^2.1.1:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
 
-fs-extra@0.26.7:
+fs-extra@0.26.7, fs-extra@^0.26.3:
   version "0.26.7"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-0.26.7.tgz#9ae1fdd94897798edab76d0918cf42d0c3184fa9"
   dependencies:
@@ -5060,9 +5090,9 @@ netrc@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/netrc/-/netrc-0.1.4.tgz#6be94fcaca8d77ade0a9670dc460914c94472444"
 
-neutron@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/neutron/-/neutron-2.5.1.tgz#7e8d60860a55fc70ce1fe1cf7941042acb6fa982"
+neutron@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/neutron/-/neutron-2.6.0.tgz#7532391a33088c86235fdc5f9c74dd90c024790b"
   dependencies:
     app-root-path "2.0.1"
     archiver "2.1.1"
@@ -5075,12 +5105,12 @@ neutron@2.5.1:
     dot-prop "4.2.0"
     electron-installer-dmg "0.2.1"
     electron-is-dev "0.3.0"
+    electron-windows-installer "1.7.8"
     fs-extra "5.0.0"
     globby "7.1.1"
     inquirer "5.1.0"
     ora "1.4.0"
     plist "2.1.0"
-    resolve-binary "1.0.1"
     respawn "2.5.0"
 
 next@4.2.1:
@@ -6394,12 +6424,6 @@ require-uncached@^1.0.2:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
 
-resolve-binary@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/resolve-binary/-/resolve-binary-1.0.1.tgz#528fbf19cb1bc34c10e64747092b0abd8d0773b9"
-  dependencies:
-    find-parent-dir "~0.3.0"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -6480,6 +6504,10 @@ rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   dependencies:
     glob "^7.0.5"
+
+rimraf@~2.2.6:
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
 rimraf@~2.4.0:
   version "2.4.5"
@@ -7102,6 +7130,13 @@ tar@^2.2.1:
     block-stream "*"
     fstream "^1.0.2"
     inherits "2"
+
+temp@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/temp/-/temp-0.8.3.tgz#e0c6bc4d26b903124410e4fed81103014dfc1f59"
+  dependencies:
+    os-tmpdir "^1.0.0"
+    rimraf "~2.2.6"
 
 term-size@^1.2.0:
   version "1.2.0"
