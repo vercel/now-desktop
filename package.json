@@ -18,10 +18,16 @@
   "neutron": {
     "name": "Now",
     "macOS": {
+      "id": "co.zeit.now",
       "category": "public.app-category.developer-tools",
       "info": {
         "LSUIElement": 1
-      }
+      },
+      "icon": "./main/static/icons/mac.icns"
+    },
+    "windows": {
+      "icon": "./main/static/icons/windows.ico",
+      "loadingGIF": "./main/static/install-spinner.gif"
     }
   },
   "lint-staged": {
