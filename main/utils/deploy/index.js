@@ -55,6 +55,7 @@ class Now extends EventEmitter {
     this.currentTeam = currentTeam
   }
 
+  // eslint-disable-next-line complexity
   async create(
     path,
     {
@@ -241,9 +242,7 @@ class Now extends EventEmitter {
 
       if (sizeExceeded) {
         showError(
-          `${
-            sizeExceeded
-          } of the files exceeded the limit for your plan. Please upgrade`
+          `${sizeExceeded} of the files exceeded the limit for your plan. Please upgrade`
         )
       }
     }
