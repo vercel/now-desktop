@@ -83,7 +83,7 @@
     "mkdirp": "0.5.1",
     "moment": "2.20.1",
     "ms": "2.1.1",
-    "neutron": "2.6.0",
+    "neutron": "2.6.1",
     "node-fetch": "1.7.3",
     "path-exists": "3.0.0",
     "promisepipe": "2.1.1",
