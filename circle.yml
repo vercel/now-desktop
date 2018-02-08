@@ -7,9 +7,9 @@ deployment:
     branch: /^(?!master$).*$/
     owner: zeit
     commands:
-      - yarn build
+      - npm run build
       - cp out/*.zip $CIRCLE_ARTIFACTS
   release:
     tag: /.*/
     commands:
-      - yarn build
+      - npm run build
