@@ -72,12 +72,12 @@ class Avatar extends React.PureComponent {
     const { event, team, isUser } = this.props
     let title
 
-    if (event && event.user) {
-      title = event.user.username
-    }
-
     if ((team && !isUser) || (!event && isUser)) {
       title = team.name || 'You'
+    }
+
+    if (event && event.user) {
+      title = event.user.username || event.user.email
     }
 
     this.setState({ title })
