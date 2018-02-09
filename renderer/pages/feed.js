@@ -5,7 +5,8 @@ import os from 'os'
 // Packages
 import electron from 'electron'
 import React from 'react'
-import moment from 'moment'
+import parse from 'date-fns/parse'
+import format from 'date-fns/format'
 import compare from 'just-compare'
 import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -651,8 +652,8 @@ class Feed extends React.Component {
     const months = {}
 
     for (const message of filteredEvents) {
-      const created = moment(message.created)
-      const month = created.format('MMMM YYYY')
+      const created = parse(message.created)
+      const month = format(created, 'MMMM YYYY')
 
       if (!months[month]) {
         months[month] = []

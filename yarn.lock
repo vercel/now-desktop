@@ -1808,7 +1808,7 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-date-fns@^1.27.2:
+date-fns@1.29.0, date-fns@^1.27.2:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
@@ -4534,7 +4534,7 @@ module-paths@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/module-paths/-/module-paths-1.0.0.tgz#defa90d300fddd448d303525ca69936b62c8fca0"
 
-moment@2.20.1, moment@^2.11.2:
+moment@^2.11.2:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
