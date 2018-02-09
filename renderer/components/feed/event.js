@@ -5,12 +5,14 @@ import qs from 'querystring'
 import electron from 'electron'
 import React from 'react'
 import { object, func, string } from 'prop-types'
-import moment from 'moment'
 import dotProp from 'dot-prop'
 import ms from 'ms'
 
 // Styles
 import { localStyles, globalStyles } from '../../styles/components/feed/event'
+
+// Utilities
+import dateDiff from '../../utils/date-diff'
 
 // Components
 import Avatar from './avatar'
@@ -192,8 +194,8 @@ class EventMessage extends React.PureComponent {
   }
 
   parseDate(date) {
-    const parsed = moment(new Date())
-    const difference = parsed.diff(date)
+    const current = new Date()
+    const difference = dateDiff(current, date, 'milliseconds')
 
     const checks = {
       '1 minute': 'seconds',
@@ -213,7 +215,7 @@ class EventMessage extends React.PureComponent {
       const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0)
 
       if (difference < ms(check)) {
-        return parsed.diff(date, unit) + shortUnit
+        return dateDiff(current, date, unit) + shortUnit
       }
     }
 
