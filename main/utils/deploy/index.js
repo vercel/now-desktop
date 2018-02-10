@@ -4,7 +4,7 @@ const { homedir } = require('os')
 const qs = require('querystring')
 
 // Packages
-const { clipboard, shell, dialog } = require('electron')
+const { clipboard, shell } = require('electron')
 const { EventEmitter } = require('events')
 const { parse: parseUrl } = require('url')
 const splitArray = require('split-array')
@@ -21,6 +21,7 @@ const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const ua = require('../user-agent')
+const { error: handleError } = require('../error')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -36,19 +37,6 @@ const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
-
-const showError = (detail, trace) => {
-  if (trace) {
-    console.error(trace)
-  }
-
-  dialog.showMessageBox(null, {
-    type: 'error',
-    message: 'An Error Occurred',
-    detail,
-    buttons: []
-  })
-}
 
 class Now extends EventEmitter {
   constructor({
@@ -240,12 +228,12 @@ class Now extends EventEmitter {
         if (warning.reason === 'size_limit_exceeded') {
           const { sha, limit } = warning
           const n = hashes.get(sha).names.pop()
-          showError(`Skipping file ${n} (size exceeded ${bytes(limit)})`)
+          handleError(`Skipping file ${n} (size exceeded ${bytes(limit)})`)
           hashes.get(sha).names.unshift(n) // Move name (hack, if duplicate matches we report them in order)
           sizeExceeded++
         } else if (warning.reason === 'node_version_not_found') {
           const { wanted, used } = warning
-          showError(
+          handleError(
             `Requested node version ${wanted} is not available. Used ${used}`
           )
           missingVersion = true
@@ -253,7 +241,7 @@ class Now extends EventEmitter {
       })
 
       if (sizeExceeded) {
-        showError(
+        handleError(
           `${sizeExceeded} of the files exceeded the limit for your plan. Please upgrade`
         )
       }
@@ -516,7 +504,7 @@ module.exports = async paths => {
   try {
     deploymentType = await determineType(path)
   } catch (err) {
-    showError('Not able to determine deployment type', err)
+    handleError('Not able to determine deployment type', err)
     return
   }
 
@@ -530,7 +518,7 @@ module.exports = async paths => {
   try {
     config = await getConfig()
   } catch (err) {
-    showError('Error reading configuration while deploying')
+    handleError('Error reading configuration while deploying')
     return
   }
 
@@ -591,7 +579,7 @@ module.exports = async paths => {
             })
 
             now.on('complete', resolve)
-            now.on('error', err => showError(err.message, err))
+            now.on('error', err => handleError(err.message, err))
           })
         }
       } while (now.syncFileCount > 0)

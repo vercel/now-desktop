@@ -2,7 +2,7 @@
 const queryString = require('querystring')
 
 // Packages
-const { app } = require('electron')
+const { app, dialog } = require('electron')
 const serializeError = require('serialize-error')
 const fetch = require('node-fetch')
 const isDev = require('electron-is-dev')
@@ -10,7 +10,7 @@ const isDev = require('electron-is-dev')
 // Utilities
 const userAgent = require('./user-agent')
 
-module.exports = async error => {
+exports.exception = async error => {
   let errorParts = {}
 
   if (typeof error === 'string') {
@@ -49,4 +49,18 @@ module.exports = async error => {
   }
 
   app.exit(0)
+}
+
+exports.error = (detail, trace, win) => {
+  // We need to log the error in order to be able to inspect it
+  if (trace) {
+    console.error(trace)
+  }
+
+  dialog.showMessageBox(win || null, {
+    type: 'error',
+    message: 'An Error Occurred',
+    detail,
+    buttons: []
+  })
 }

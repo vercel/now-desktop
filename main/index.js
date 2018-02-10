@@ -15,7 +15,7 @@ const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const { getConfig, watchConfig } = require('./utils/config')
-const handleException = require('./utils/exception')
+const { exception: handleException } = require('./utils/error')
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
