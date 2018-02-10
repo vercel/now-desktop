@@ -413,7 +413,16 @@ class Now extends EventEmitter {
                   )
                 }
 
-                return bail(await formatError(res, names, this._path))
+                return bail(
+                  await formatError(
+                    res,
+                    {
+                      names,
+                      size: data.length
+                    },
+                    this._path
+                  )
+                )
               }
 
               this.emit('upload', file)

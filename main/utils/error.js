@@ -58,6 +58,9 @@ const renderError = async trace => {
 
   if (code === 'size_limit_exceeded') {
     const limit = bytes(trace.sizeLimit, { unitSeparator: ' ' })
+    const fileSize =
+      trace.file && bytes(trace.file.size, { unitSeparator: ' ' })
+
     let buttons = []
 
     try {
@@ -87,8 +90,10 @@ const renderError = async trace => {
     return {
       message: 'File Size Limit Exceeded',
       detail:
-        `You tried to upload a file that is bigger than your plan's file size limit (${limit}):\n\n` +
-        (trace.files ? `${trace.files.join('\n')}\n\n` : '') +
+        `You tried to upload files whose size${
+          fileSize ? ` (${fileSize})` : ''
+        } is bigger than your plan's file size limit (${limit}):\n\n` +
+        (trace.file ? `${trace.file.names.join('\n')}\n\n` : '') +
         `In order to be able to upload it, you need to switch to a higher plan.`,
       buttons,
       defaultId: 0

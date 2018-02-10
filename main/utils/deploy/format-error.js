@@ -1,7 +1,7 @@
 // Native
 const { relative } = require('path')
 
-module.exports = async (response, files, path) => {
+module.exports = async (response, file, path) => {
   const error = new Error()
 
   if (response.status >= 400 && response.status < 500) {
@@ -25,8 +25,11 @@ module.exports = async (response, files, path) => {
     }
   }
 
-  if (Array.isArray(files) && files.length > 0) {
-    error.files = path ? files.map(file => relative(path, file)) : files
+  if (file && file.names && file.size) {
+    error.file = {
+      names: path ? file.names.map(file => relative(path, file)) : file.names,
+      size: file.size
+    }
   }
 
   error.status = response.status
