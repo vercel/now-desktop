@@ -87,7 +87,8 @@ const renderError = async trace => {
     return {
       message: 'File Size Limit Exceeded',
       detail:
-        `You tried to upload a file that is bigger than your plan's file size limit (${limit}).\n\n` +
+        `You tried to upload a file that is bigger than your plan's file size limit (${limit}):\n\n` +
+        (trace.files ? `${trace.files.join('\n')}\n\n` : '') +
         `In order to be able to upload it, you need to switch to a higher plan.`,
       buttons,
       defaultId: 0
