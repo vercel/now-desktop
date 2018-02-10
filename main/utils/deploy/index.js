@@ -38,6 +38,34 @@ const MAX_CONCURRENT = 4
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
 
+const responseError = async response => {
+  const error = new Error()
+
+  if (response.status >= 400 && response.status < 500) {
+    let body = {}
+
+    try {
+      ;({ error: body } = await response.json())
+    } catch (err) {}
+
+    Object.assign(error, body)
+    error.userError = true
+  } else {
+    error.userError = false
+  }
+
+  if (response.status === 429) {
+    const retryAfter = response.headers.get('Retry-After')
+
+    if (retryAfter) {
+      error.retryAfter = parseInt(retryAfter, 10)
+    }
+  }
+
+  error.status = response.status
+  return error
+}
+
 class Now extends EventEmitter {
   constructor({
     apiUrl = 'https://api.zeit.co',
@@ -614,41 +642,6 @@ function toRelative(path, base) {
   }
 
   return relative.replace(/\\/g, '/')
-}
-
-async function responseError(res) {
-  let message
-  let userError
-
-  if (res.status >= 400 && res.status < 500) {
-    let body
-
-    try {
-      body = await res.json()
-    } catch (err) {
-      body = {}
-    }
-
-    // Some APIs wrongly return `err` instead of `error`
-    message = (body.error || body.err || {}).message
-    userError = true
-  } else {
-    userError = false
-  }
-
-  const err = new Error(message || 'Response error')
-  err.status = res.status
-  err.userError = userError
-
-  if (res.status === 429) {
-    const retryAfter = res.headers.get('Retry-After')
-
-    if (retryAfter) {
-      err.retryAfter = parseInt(retryAfter, 10)
-    }
-  }
-
-  return err
 }
 
 async function readAuthToken(path, name = '.npmrc') {
