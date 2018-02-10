@@ -35,7 +35,7 @@ exports.exception = async error => {
     stack: errorParts.stack
   })
 
-  // Post the error to slack
+  // Report the error
   try {
     await fetch('https://errors.zeit.sh/?' + query, {
       headers: {
