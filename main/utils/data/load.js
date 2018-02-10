@@ -3,14 +3,13 @@ const fetch = require('node-fetch')
 const ms = require('ms')
 
 // Utilities
-const { getConfig } = require('../config')
 const userAgent = require('../user-agent')
 
 const getToken = async () => {
   let config
 
   try {
-    config = await getConfig()
+    config = await require('../config').getConfig()
   } catch (err) {
     return false
   }

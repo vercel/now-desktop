@@ -4,7 +4,7 @@ const { homedir } = require('os')
 const qs = require('querystring')
 
 // Packages
-const { clipboard, shell } = require('electron')
+const { clipboard, shell, dialog } = require('electron')
 const { EventEmitter } = require('events')
 const { parse: parseUrl } = require('url')
 const splitArray = require('split-array')
@@ -21,7 +21,6 @@ const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const ua = require('../user-agent')
-const showError = require('../exception')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -38,6 +37,19 @@ const MAX_CONCURRENT = 4
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
 
+const showError = (detail, trace) => {
+  if (trace) {
+    console.error(trace)
+  }
+
+  dialog.showMessageBox(null, {
+    type: 'error',
+    message: 'An Error Occurred',
+    detail,
+    buttons: []
+  })
+}
+
 class Now extends EventEmitter {
   constructor({
     apiUrl = 'https://api.zeit.co',
@@ -47,6 +59,7 @@ class Now extends EventEmitter {
     debug = false
   }) {
     super()
+
     this._token = token
     this._debug = debug
     this._forceNew = forceNew
@@ -241,9 +254,7 @@ class Now extends EventEmitter {
 
       if (sizeExceeded) {
         showError(
-          `${
-            sizeExceeded
-          } of the files exceeded the limit for your plan. Please upgrade`
+          `${sizeExceeded} of the files exceeded the limit for your plan. Please upgrade`
         )
       }
     }
@@ -580,7 +591,7 @@ module.exports = async paths => {
             })
 
             now.on('complete', resolve)
-            now.on('error', showError)
+            now.on('error', err => showError(err.message, err))
           })
         }
       } while (now.syncFileCount > 0)

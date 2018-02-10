@@ -34,6 +34,6 @@ async function parsePlan(json) {
 }
 
 module.exports = async () => {
-  const json = await loadData('/api/plan')
+  const json = await loadData('api/plan')
   return parsePlan(json)
 }
