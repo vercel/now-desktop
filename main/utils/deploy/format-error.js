@@ -9,7 +9,9 @@ module.exports = async (response, file, path) => {
 
     try {
       ;({ error: body } = await response.json())
-    } catch (err) {}
+    } catch (err) {
+      body.message = 'Failed to parse response'
+    }
 
     Object.assign(error, body)
     error.userError = true
