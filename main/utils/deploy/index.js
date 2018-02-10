@@ -21,7 +21,7 @@ const notify = require('../../notify')
 const { getConfig } = require('../config')
 const getPlan = require('../data/plan')
 const ua = require('../user-agent')
-const showError = require('../exception')
+const { error: handleError } = require('../error')
 const Agent = require('./agent')
 const {
   staticFiles: getFiles,
@@ -31,6 +31,7 @@ const {
 const hash = require('./hash')
 const readMetaData = require('./read-metadata')
 const ossPrompt = require('./oss-prompt')
+const formatError = require('./format-error')
 
 // How many concurrent HTTP/2 stream uploads
 const MAX_CONCURRENT = 4
@@ -47,6 +48,7 @@ class Now extends EventEmitter {
     debug = false
   }) {
     super()
+
     this._token = token
     this._debug = debug
     this._forceNew = forceNew
@@ -227,12 +229,12 @@ class Now extends EventEmitter {
         if (warning.reason === 'size_limit_exceeded') {
           const { sha, limit } = warning
           const n = hashes.get(sha).names.pop()
-          showError(`Skipping file ${n} (size exceeded ${bytes(limit)})`)
+          handleError(`Skipping file ${n} (size exceeded ${bytes(limit)})`)
           hashes.get(sha).names.unshift(n) // Move name (hack, if duplicate matches we report them in order)
           sizeExceeded++
         } else if (warning.reason === 'node_version_not_found') {
           const { wanted, used } = warning
-          showError(
+          handleError(
             `Requested node version ${wanted} is not available. Used ${used}`
           )
           missingVersion = true
@@ -240,10 +242,8 @@ class Now extends EventEmitter {
       })
 
       if (sizeExceeded) {
-        showError(
-          `${
-            sizeExceeded
-          } of the files exceeded the limit for your plan. Please upgrade`
+        handleError(
+          `${sizeExceeded} of the files exceeded the limit for your plan. Please upgrade`
         )
       }
     }
@@ -344,7 +344,7 @@ class Now extends EventEmitter {
         if (this._debug) {
           console.log('> [debug] bailing on removal due to %s', res.status)
         }
-        return bail(await responseError(res))
+        return bail(await formatError(res))
       }
 
       if (res.status !== 200) {
@@ -413,7 +413,16 @@ class Now extends EventEmitter {
                   )
                 }
 
-                return bail(await responseError(res))
+                return bail(
+                  await formatError(
+                    res,
+                    {
+                      names,
+                      size: data.length
+                    },
+                    this._path
+                  )
+                )
               }
 
               this.emit('upload', file)
@@ -505,7 +514,7 @@ module.exports = async paths => {
   try {
     deploymentType = await determineType(path)
   } catch (err) {
-    showError('Not able to determine deployment type', err)
+    handleError('Not able to determine deployment type', err)
     return
   }
 
@@ -519,7 +528,7 @@ module.exports = async paths => {
   try {
     config = await getConfig()
   } catch (err) {
-    showError('Error reading configuration while deploying')
+    handleError('Error reading configuration while deploying')
     return
   }
 
@@ -580,7 +589,7 @@ module.exports = async paths => {
             })
 
             now.on('complete', resolve)
-            now.on('error', showError)
+            now.on('error', err => handleError(err.message, err))
           })
         }
       } while (now.syncFileCount > 0)
@@ -615,41 +624,6 @@ function toRelative(path, base) {
   }
 
   return relative.replace(/\\/g, '/')
-}
-
-async function responseError(res) {
-  let message
-  let userError
-
-  if (res.status >= 400 && res.status < 500) {
-    let body
-
-    try {
-      body = await res.json()
-    } catch (err) {
-      body = {}
-    }
-
-    // Some APIs wrongly return `err` instead of `error`
-    message = (body.error || body.err || {}).message
-    userError = true
-  } else {
-    userError = false
-  }
-
-  const err = new Error(message || 'Response error')
-  err.status = res.status
-  err.userError = userError
-
-  if (res.status === 429) {
-    const retryAfter = res.headers.get('Retry-After')
-
-    if (retryAfter) {
-      err.retryAfter = parseInt(retryAfter, 10)
-    }
-  }
-
-  return err
 }
 
 async function readAuthToken(path, name = '.npmrc') {

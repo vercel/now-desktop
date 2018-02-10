@@ -2,9 +2,11 @@
 const ms = require('ms')
 
 // Utilities
+const { getConfig } = require('../config')
+const { error: handleError } = require('../error')
 const loadData = require('./load')
 
-async function parsePlan(json) {
+const parsePlan = async json => {
   const { subscription } = json
   let id
   let until
@@ -33,7 +35,22 @@ async function parsePlan(json) {
   return { id, name, until }
 }
 
+const getToken = async () => {
+  let config
+
+  try {
+    config = await getConfig()
+  } catch (err) {
+    handleError('Not able to retrieve local token')
+    return null
+  }
+
+  return config.token
+}
+
 module.exports = async () => {
-  const json = await loadData('/api/plan')
+  const token = await getToken()
+  const json = await loadData('api/plan', token)
+
   return parsePlan(json)
 }

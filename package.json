@@ -113,7 +113,7 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
-    "electron": "1.7.11",
+    "electron": "1.8.2",
     "electron-builder": "19.49.0",
     "electron-builder-squirrel-windows": "19.49.0",
     "eslint-config-prettier": "2.9.0",
