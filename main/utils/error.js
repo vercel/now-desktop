@@ -6,6 +6,7 @@ const { app, dialog } = require('electron')
 const serializeError = require('serialize-error')
 const fetch = require('node-fetch')
 const isDev = require('electron-is-dev')
+const bytes = require('bytes')
 
 // Utilities
 const userAgent = require('./user-agent')
@@ -51,16 +52,38 @@ exports.exception = async error => {
   app.exit(0)
 }
 
-exports.error = (detail, trace, win) => {
-  // We need to log the error in order to be able to inspect it
-  if (trace) {
-    console.error(trace)
+const renderError = trace => {
+  const { code } = trace
+
+  if (code === 'size_limit_exceeded') {
+    const limit = bytes(trace.sizeLimit, { unitSeparator: ' ' })
+
+    return {
+      message: 'File Size Limit Exceeded',
+      detail:
+        `You tried to upload a file that is bigger than your plan's file size limit (${limit}).\n\n` +
+        `In order to be able to upload it, you need to switch to a higher plan.`
+    }
   }
 
-  dialog.showMessageBox(win || null, {
+  return {}
+}
+
+exports.error = (detail, trace, win) => {
+  const message = {
     type: 'error',
     message: 'An Error Occurred',
     detail,
     buttons: []
-  })
+  }
+
+  if (trace) {
+    console.error(trace)
+
+    if (trace.code) {
+      Object.assign(message, renderError(trace))
+    }
+  }
+
+  dialog.showMessageBox(win || null, message)
 }
