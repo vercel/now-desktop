@@ -5,18 +5,6 @@ const ms = require('ms')
 // Utilities
 const userAgent = require('../user-agent')
 
-const getToken = async () => {
-  let config
-
-  try {
-    config = await require('../config').getConfig()
-  } catch (err) {
-    return false
-  }
-
-  return config.token
-}
-
 const NETWORK_ERR_CODE = 'network_error'
 const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry'
 
@@ -24,12 +12,7 @@ module.exports = async (path, token) => {
   const headers = {}
   const url = `https://zeit.co/${path}`
 
-  // On login, the token isn't saved to the config yet
-  // but we need to make another network request to
-  // get all the user details before we can save to config there
-  const authToken = token || (await getToken())
-
-  headers.Authorization = `bearer ${authToken}`
+  headers.Authorization = `bearer ${token}`
   headers['user-agent'] = userAgent
 
   let res
