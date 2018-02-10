@@ -2,8 +2,8 @@
 const fetch = require('node-fetch')
 
 // Utilities
-const { error: showError } = require('../dialogs')
 const notify = require('../notify')
+const { error: handleError } = require('./error')
 const { removeConfig, getConfig } = require('./config')
 const userAgent = require('./user-agent')
 
@@ -22,7 +22,7 @@ const getTokenId = async token => {
   try {
     result = await fetch(endpoint, requestHeaders(token))
   } catch (err) {
-    showError('Could not fetch token id for revoking it on logout', err)
+    handleError('Could not fetch token id for revoking it on logout', err)
     return
   }
 
@@ -53,7 +53,7 @@ const revokeToken = async (token, tokenId) => {
   try {
     result = await fetch(endpoint + encodeURIComponent(tokenId), details)
   } catch (err) {
-    showError('Could not revoke token on logout', err)
+    handleError('Could not revoke token on logout', err)
     return
   }
 
@@ -96,7 +96,7 @@ module.exports = async reason => {
   try {
     await removeConfig()
   } catch (err) {
-    showError("Couldn't remove config while logging out", err)
+    handleError("Couldn't remove config while logging out", err)
   }
 
   const tutorialWindow = windows.tutorial
@@ -144,7 +144,7 @@ module.exports = async reason => {
   try {
     tokenId = await getTokenId(userDetails.token)
   } catch (err) {
-    showError('Not able to get token id on logout', err)
+    handleError('Not able to get token id on logout', err)
     return
   }
 
@@ -155,6 +155,6 @@ module.exports = async reason => {
   try {
     await revokeToken(userDetails.token, tokenId)
   } catch (err) {
-    showError('Could not revoke token on logout', err)
+    handleError('Could not revoke token on logout', err)
   }
 }

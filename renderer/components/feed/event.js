@@ -1,6 +1,3 @@
-// Native
-import qs from 'querystring'
-
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -100,19 +97,10 @@ class EventMessage extends React.PureComponent {
       return null
     }
 
-    const { currentUser, team } = this.props
-    const payload = content.payload
-    const host = payload.deploymentUrl || payload.url
-    const [, app, id] = (host || '').match(/^(.+)-([^-]+)\.now\.sh$/) || []
+    const { deploymentUrl, url } = content.payload
+    const host = deploymentUrl || url
 
-    if (!app || !id) {
-      return null
-    }
-
-    const handle = team ? team.slug : currentUser.username
-    const userId = currentUser.uid
-
-    return '/deployment?' + qs.stringify({ handle, userId, host })
+    return `https://zeit.co/deployments/${host}`
   }
 
   componentDidMount() {
@@ -160,7 +148,7 @@ class EventMessage extends React.PureComponent {
             return
           }
 
-          eventItem.remote.shell.openExternal(`https://zeit.co${dashboardURL}`)
+          eventItem.remote.shell.openExternal(dashboardURL)
         }
       })
     }
