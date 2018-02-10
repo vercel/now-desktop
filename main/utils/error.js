@@ -102,7 +102,7 @@ const renderError = async trace => {
 
   if (code === 'cannot_parse_response') {
     return {
-      message: 'Failed to Parse Response',
+      message: trace.message,
       detail:
         "Now Desktop wasn't able to parse the response from our servers. Please try again."
     }
