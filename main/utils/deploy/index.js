@@ -31,40 +31,13 @@ const {
 const hash = require('./hash')
 const readMetaData = require('./read-metadata')
 const ossPrompt = require('./oss-prompt')
+const formatError = require('./format-error')
 
 // How many concurrent HTTP/2 stream uploads
 const MAX_CONCURRENT = 4
 
 const IS_WIN = process.platform.startsWith('win')
 const SEP = IS_WIN ? '\\' : '/'
-
-const responseError = async response => {
-  const error = new Error()
-
-  if (response.status >= 400 && response.status < 500) {
-    let body = {}
-
-    try {
-      ;({ error: body } = await response.json())
-    } catch (err) {}
-
-    Object.assign(error, body)
-    error.userError = true
-  } else {
-    error.userError = false
-  }
-
-  if (response.status === 429) {
-    const retryAfter = response.headers.get('Retry-After')
-
-    if (retryAfter) {
-      error.retryAfter = parseInt(retryAfter, 10)
-    }
-  }
-
-  error.status = response.status
-  return error
-}
 
 class Now extends EventEmitter {
   constructor({
@@ -371,7 +344,7 @@ class Now extends EventEmitter {
         if (this._debug) {
           console.log('> [debug] bailing on removal due to %s', res.status)
         }
-        return bail(await responseError(res))
+        return bail(await formatError(res))
       }
 
       if (res.status !== 200) {
@@ -440,7 +413,7 @@ class Now extends EventEmitter {
                   )
                 }
 
-                return bail(await responseError(res))
+                return bail(await formatError(res))
               }
 
               this.emit('upload', file)
