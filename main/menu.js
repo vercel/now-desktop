@@ -1,5 +1,6 @@
 // Packages
 const { Menu, shell } = require('electron')
+const isDev = require('electron-is-dev')
 
 // Utilities
 const logout = require('./utils/logout')
@@ -99,6 +100,7 @@ exports.innerMenu = async function(app, tray, windows) {
           label: 'Launch at Login',
           type: 'checkbox',
           checked: openAtLogin,
+          enabled: !isDev,
           click() {
             app.setLoginItemSettings({
               openAtLogin: !openAtLogin
