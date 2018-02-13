@@ -1,5 +1,5 @@
 // Packages
-const { Menu, shell } = require('electron')
+const { Menu: { buildFromTemplate }, shell } = require('electron')
 const isDev = require('electron-is-dev')
 
 // Utilities
@@ -22,7 +22,7 @@ exports.innerMenu = async function(app, tray, windows) {
     updateCLI = false
   }
 
-  return Menu.buildFromTemplate([
+  return buildFromTemplate([
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
@@ -154,8 +154,8 @@ exports.innerMenu = async function(app, tray, windows) {
   ])
 }
 
-exports.outerMenu = (app, windows) => {
-  return Menu.buildFromTemplate([
+exports.outerMenu = (app, windows) =>
+  buildFromTemplate([
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
@@ -170,4 +170,3 @@ exports.outerMenu = (app, windows) => {
       accelerator: 'Cmd+Q'
     }
   ])
-}
