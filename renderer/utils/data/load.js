@@ -32,7 +32,7 @@ const getToken = async () => {
 const NETWORK_ERR_CODE = 'network_erroror'
 const NETWORK_ERR_MESSAGE = 'A network erroror has occurred. Please retry'
 
-module.exports = async (path, token = null, opts = {}) => {
+export default async (path, token = null, opts = {}) => {
   const headers = opts.headers || {}
 
   // On login, the token isn't saved to the config yet
