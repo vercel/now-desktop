@@ -201,16 +201,22 @@ class Now extends EventEmitter {
       if (res.status === 429) {
         const msg = 'You are being rate limited. Please try again later'
         const err = new Error(msg)
+
         err.status = res.status
         err.retryAfter = 'never'
+
         return bail(err)
-      } else if (
+      }
+
+      if (
         res.status === 400 &&
         body.error &&
         body.error.code === 'missing_files'
       ) {
         return body
-      } else if (res.status >= 400 && res.status < 500) {
+      }
+
+      if (res.status >= 400 && res.status < 500) {
         const err = new Error()
 
         if (body.error) {
@@ -221,7 +227,9 @@ class Now extends EventEmitter {
 
         err.userError = true
         return bail(err)
-      } else if (res.status !== 200) {
+      }
+
+      if (res.status !== 200) {
         throw new Error(body.error.message)
       }
 
