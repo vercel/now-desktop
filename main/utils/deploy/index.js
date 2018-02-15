@@ -19,7 +19,6 @@ const tmp = require('tmp-promise')
 // Utilites
 const notify = require('../../notify')
 const { getConfig } = require('../config')
-const getPlan = require('../data/plan')
 const ua = require('../user-agent')
 const { error: handleError } = require('../error')
 const Agent = require('./agent')
@@ -136,7 +135,7 @@ class Now extends EventEmitter {
 
     const deployment = await this.retry(async bail => {
       if (this._debug) {
-        console.time('> [debug] v2/now/deployments')
+        console.time('> [debug] v3/now/deployments')
       }
 
       // Flatten the array to contain files to sync where each nested input
@@ -170,7 +169,7 @@ class Now extends EventEmitter {
         )
       )
 
-      const res = await this._fetch('/v2/now/deployments', {
+      const res = await this._fetch('/v3/now/deployments', {
         method: 'POST',
         body: {
           env,
@@ -187,11 +186,12 @@ class Now extends EventEmitter {
       })
 
       if (this._debug) {
-        console.timeEnd('> [debug] v2/now/deployments')
+        console.timeEnd('> [debug] v3/now/deployments')
       }
 
       // No retry on 4xx
       let body
+
       try {
         body = await res.json()
       } catch (err) {
@@ -211,7 +211,14 @@ class Now extends EventEmitter {
       ) {
         return body
       } else if (res.status >= 400 && res.status < 500) {
-        const err = new Error(body.error.message)
+        const err = new Error()
+
+        if (body.error) {
+          Object.assign(err, body.error)
+        } else {
+          err.message = 'Not able to create deployment'
+        }
+
         err.userError = true
         return bail(err)
       } else if (res.status !== 200) {
@@ -457,27 +464,6 @@ class Now extends EventEmitter {
   }
 }
 
-const checkForOSS = async (loadingPlan, now) => {
-  let plan
-
-  try {
-    plan = await loadingPlan
-  } catch (err) {}
-
-  if (plan && plan.id && plan.id === 'oss') {
-    const shouldDeploy = await ossPrompt()
-
-    if (!shouldDeploy) {
-      await now.remove(now.id, { hard: true })
-
-      notify({
-        title: 'Aborted Deployment',
-        body: 'Because you chose not to continue it.'
-      })
-    }
-  }
-}
-
 const mergeFiles = async paths => {
   const { name: tmpDir, removeCallback: cleanup } = tmp.dirSync({
     unsafeCleanup: true
@@ -499,30 +485,7 @@ const mergeFiles = async paths => {
   }
 }
 
-module.exports = async paths => {
-  const loadingPlan = getPlan()
-  const multiple = paths.length > 1
-
-  let cleanup
-  let path = paths[0]
-  let deploymentType
-
-  if (multiple) {
-    ;({ path, cleanup } = await mergeFiles(paths))
-  }
-
-  try {
-    deploymentType = await determineType(path)
-  } catch (err) {
-    handleError('Not able to determine deployment type', err)
-    return
-  }
-
-  notify({
-    title: 'Deploying...',
-    body: 'Uploading the files and creating the deployment.'
-  })
-
+const createDeployment = async (path, type, multiple, wantsPublic) => {
   let config
 
   try {
@@ -533,18 +496,22 @@ module.exports = async paths => {
   }
 
   const now = new Now({
-    type: deploymentType,
+    type,
     token: config.token,
     debug: true,
     currentTeam: config.currentTeam || false
   })
 
   const metaData = await readMetaData(path, {
-    deploymentType
+    deploymentType: type
   })
 
   if (multiple) {
     metaData.name = 'files'
+  }
+
+  if (wantsPublic) {
+    metaData.wantsPublic = true
   }
 
   await retry(
@@ -572,10 +539,6 @@ module.exports = async paths => {
           // Ensure that the notification only
           // gets triggered once
           notified = true
-
-          // See if the user is on the OSS plan
-          // without blocking the upload
-          checkForOSS(loadingPlan, now)
         }
 
         if (now.syncFileCount > 0) {
@@ -598,6 +561,52 @@ module.exports = async paths => {
       retries: 5
     }
   )
+}
+
+module.exports = async paths => {
+  const multiple = paths.length > 1
+
+  let cleanup
+  let path = paths[0]
+  let deploymentType
+
+  if (multiple) {
+    ;({ path, cleanup } = await mergeFiles(paths))
+  }
+
+  try {
+    deploymentType = await determineType(path)
+  } catch (err) {
+    handleError('Not able to determine deployment type', err)
+    return
+  }
+
+  notify({
+    title: 'Deploying...',
+    body: 'Uploading the files and creating the deployment.'
+  })
+
+  try {
+    await createDeployment(path, deploymentType, multiple)
+  } catch (err) {
+    if (err.code === 'plan_requires_public') {
+      const shouldDeploy = await ossPrompt()
+
+      if (shouldDeploy) {
+        await createDeployment(path, deploymentType, multiple, true)
+      }
+
+      // Ensure to remove the temporary directory
+      if (cleanup) {
+        cleanup()
+        console.log('> Cleaned up deployment cache')
+      }
+
+      return
+    }
+
+    handleError(err.message, err)
+  }
 
   // Ensure to remove the temporary directory
   if (cleanup) {
