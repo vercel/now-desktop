@@ -515,11 +515,20 @@ const createDeployment = async (path, type, multiple, wantsPublic) => {
   }
 
   await retry(
-    async () => {
+    async bail => {
       let notified = false
 
       do {
-        await now.create(path, metaData)
+        try {
+          await now.create(path, metaData)
+        } catch (err) {
+          if (err.code === 'plan_requires_public') {
+            return bail(err)
+          }
+
+          throw err
+        }
+
         const { url } = now
 
         if (url && !notified) {
