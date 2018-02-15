@@ -2,7 +2,7 @@
 const { dialog, nativeImage, shell } = require('electron')
 const { resolve } = require('app-root-path')
 
-module.exports = () => {
+module.exports = config => {
   const iconPath = resolve('./main/static/icons/mac.icns')
   const icon = nativeImage.createFromPath(iconPath)
 
@@ -22,7 +22,14 @@ module.exports = () => {
   })
 
   if (response === 2) {
-    shell.openExternal('https://zeit.co/account/plan')
+    let url = 'https://zeit.co/account/plan'
+
+    if (config.currentTeam) {
+      const { slug } = config.currentTeam
+      url = `https://zeit.co/teams/${slug}/settings/plan`
+    }
+
+    shell.openExternal(url)
     return false
   }
 

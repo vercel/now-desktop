@@ -485,13 +485,13 @@ const mergeFiles = async paths => {
   }
 }
 
-const createDeployment = async (path, type, multiple, wantsPublic) => {
-  let config
+const createDeployment = async (path, config, multiple, wantsPublic) => {
+  let type
 
   try {
-    config = await getConfig()
+    type = await determineType(path)
   } catch (err) {
-    handleError('Error reading configuration while deploying')
+    handleError('Not able to determine deployment type', err)
     return
   }
 
@@ -577,16 +577,16 @@ module.exports = async paths => {
 
   let cleanup
   let path = paths[0]
-  let deploymentType
+  let config
 
   if (multiple) {
     ;({ path, cleanup } = await mergeFiles(paths))
   }
 
   try {
-    deploymentType = await determineType(path)
+    config = await getConfig()
   } catch (err) {
-    handleError('Not able to determine deployment type', err)
+    handleError('Error reading configuration while deploying')
     return
   }
 
@@ -596,13 +596,13 @@ module.exports = async paths => {
   })
 
   try {
-    await createDeployment(path, deploymentType, multiple)
+    await createDeployment(path, config, multiple)
   } catch (err) {
     if (err.code === 'plan_requires_public') {
-      const shouldDeploy = await ossPrompt()
+      const shouldDeploy = await ossPrompt(config)
 
       if (shouldDeploy) {
-        await createDeployment(path, deploymentType, multiple, true)
+        await createDeployment(path, config, multiple, true)
       }
 
       // Ensure to remove the temporary directory
