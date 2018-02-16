@@ -7,18 +7,17 @@ import Message from './message'
 export default class Alias extends Message {
   render() {
     const { event } = this.props
+    const { ruleCount } = event.payload
 
     // NOTE: no `ruleCount` on old logs
-    if (event.payload.ruleCount !== null || !event.payload.deploymentUrl) {
+    if ((ruleCount !== null && ruleCount > 0) || !event.payload.deploymentUrl) {
       return (
         <p>
           {this.getDisplayName()}
           configured {event.payload.ruleCount} alias rule
-          {event.payload.ruleCount === null || event.payload.ruleCount > 1 ? (
-            's'
-          ) : (
-            ''
-          )}{' '}
+          {event.payload.ruleCount === null || event.payload.ruleCount > 1
+            ? 's'
+            : ''}{' '}
           for <b>{event.payload.alias}</b>
         </p>
       )
