@@ -36,11 +36,7 @@ module.exports = (win, tray) => {
     return
   }
 
-  for (const state in states) {
-    if (!{}.hasOwnProperty.call(states, state)) {
-      return
-    }
-
+  for (const state of Object.keys(states)) {
     const highlighted = states[state]
 
     win.on(state, () => {

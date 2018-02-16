@@ -364,10 +364,13 @@ async function explode(paths, { accepts, debug }) {
       /* eslint-disable no-use-before-define */
       return many(all.map(subdir => asAbsolute(subdir, file)))
       /* eslint-enable no-use-before-define */
-    } else if (!s.isFile()) {
+    }
+
+    if (!s.isFile()) {
       if (debug) {
         console.log('> [debug] ignoring special file "%s"', file)
       }
+
       return null
     }
 

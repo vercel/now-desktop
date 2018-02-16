@@ -211,7 +211,9 @@ exports.getDirectory = () => {
 
   if (path.includes(first)) {
     return first
-  } else if (path.includes(second)) {
+  }
+
+  if (path.includes(second)) {
     return second
   }
 
@@ -277,7 +279,7 @@ exports.getURL = async () => {
   const releases = await response.json()
   const release = isCanary ? releases.canary : releases.stable
 
-  if (!release || !release.assets || release.assets.length < 1) {
+  if (!release || !release.assets || release.assets.length === 0) {
     throw new Error('Not able to get URL of latest binary')
   }
 
