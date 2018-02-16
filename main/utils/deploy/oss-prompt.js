@@ -14,14 +14,14 @@ module.exports = config => {
       'Do you really want to deploy?' +
       '\n\n' +
       'To prevent this message from showing up, upgrade to ' +
-      'a higher plan using the button on the left.',
-    buttons: ['Deploy', 'Cancel', 'Upgrade'],
+      'a higher plan using the blue button.',
+    buttons: ['Upgrade', 'Deploy', 'Cancel'],
     defaultId: 0,
-    cancelId: 1,
+    cancelId: 2,
     icon
   })
 
-  if (response === 2) {
+  if (response === 0) {
     let url = 'https://zeit.co/account/plan'
 
     if (config.currentTeam) {
@@ -33,5 +33,5 @@ module.exports = config => {
     return false
   }
 
-  return response === 0
+  return response === 1
 }
