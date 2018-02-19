@@ -421,9 +421,13 @@ class Feed extends Component {
       // resetted if the window was closed for 5 seconds.
       clearTimeout(scrollTimer)
 
-      // Refresh the events when the window gets
-      // shown, so that they're always up-to-date.
-      this.cacheEvents(this.state.scope)
+      const { scope } = this.state
+
+      if (scope) {
+        // Refresh the events when the window gets
+        // shown, so that they're always up-to-date.
+        this.cacheEvents(scope)
+      }
     })
 
     currentWindow.on('hide', () => {
