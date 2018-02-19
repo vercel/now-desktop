@@ -3,7 +3,7 @@ import queryString from 'querystring'
 
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
 import compare from 'just-compare'
@@ -38,7 +38,7 @@ import {
   pageStyles
 } from '../styles/pages/feed'
 
-class Feed extends React.Component {
+class Feed extends Component {
   state = {
     dropZone: false,
     events: {},
@@ -693,14 +693,14 @@ class Feed extends React.Component {
           this.loadingIndicator = item
         }}
       >
-        {allCached
-          ? [
-              <span key="description">{`That's it. No events left to show!`}</span>
-            ]
-          : [
-              <img key="animation" src="/static/loading.gif" />,
-              <span key="description">Loading Older Events...</span>
-            ]}
+        {allCached ? (
+          <span key="description">{`That's it. No events left to show!`}</span>
+        ) : (
+          <Fragment>
+            <img key="animation" src="/static/loading.gif" />
+            <span key="description">Loading Older Events...</span>
+          </Fragment>
+        )}
 
         <style jsx>{loaderStyles}</style>
       </aside>
