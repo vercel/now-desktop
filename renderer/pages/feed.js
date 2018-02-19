@@ -693,14 +693,14 @@ class Feed extends React.Component {
           this.loadingIndicator = item
         }}
       >
-        {allCached ? (
-          <span>{`That's it. No events left to show!`}</span>
-        ) : (
-          [
-            <img key="animation" src="/static/loading.gif" />,
-            <span key="description">Loading Older Events...</span>
-          ]
-        )}
+        {allCached
+          ? [
+              <span key="description">{`That's it. No events left to show!`}</span>
+            ]
+          : [
+              <img key="animation" src="/static/loading.gif" />,
+              <span key="description">Loading Older Events...</span>
+            ]}
 
         <style jsx>{loaderStyles}</style>
       </aside>
