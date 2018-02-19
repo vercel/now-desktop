@@ -685,21 +685,22 @@ class Feed extends React.Component {
 
     const teams = this.state.teams
     const relatedTeam = teams.find(item => item.id === scope)
-
-    if (relatedTeam.allCached && relatedTeam.allCached[group]) {
-      return (
-        <aside ref={this.setReference} name="loadingIndicator">
-          <span>{`That's it. No events left to show!`}</span>
-
-          <style jsx>{loaderStyles}</style>
-        </aside>
-      )
-    }
+    const allCached = relatedTeam.allCached && relatedTeam.allCached[group]
 
     return (
-      <aside ref={this.setReference} name="loadingIndicator">
-        <img src="/static/loading.gif" />
-        <span>Loading Older Events...</span>
+      <aside
+        ref={item => {
+          this.loadingIndicator = item
+        }}
+      >
+        {allCached ? (
+          <span>{`That's it. No events left to show!`}</span>
+        ) : (
+          [
+            <img key="animation" src="/static/loading.gif" />,
+            <span key="description">Loading Older Events...</span>
+          ]
+        )}
 
         <style jsx>{loaderStyles}</style>
       </aside>
