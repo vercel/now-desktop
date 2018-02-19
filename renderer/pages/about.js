@@ -1,6 +1,3 @@
-// Native
-import { platform } from 'os'
-
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -20,20 +17,12 @@ import showError from '../utils/error'
 import { mainStyles, globalStyles } from '../styles/pages/about'
 
 class About extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      version: null
-    }
-
-    this.remote = electron.remote || false
-    this.isWindows = platform() === 'win32'
-
-    this.handleTutorial = this.handleTutorial.bind(this)
-    this.handleCloseClick = this.handleCloseClick.bind(this)
-    this.openLink = this.openLink.bind(this)
+  state = {
+    version: null
   }
+
+  remote = electron.remote || false
+  isWindows = process.platform === 'win32'
 
   componentWillMount() {
     if (!this.remote) {
@@ -52,7 +41,7 @@ class About extends React.PureComponent {
     this.getReleaseDate()
   }
 
-  openLink(event) {
+  openLink = event => {
     const link = event.target
 
     if (!this.remote) {
@@ -116,7 +105,7 @@ class About extends React.PureComponent {
     setInterval(setReleaseDate, 1000)
   }
 
-  handleTutorial() {
+  handleTutorial = () => {
     if (!this.remote) {
       return
     }
@@ -131,7 +120,7 @@ class About extends React.PureComponent {
     windows.tutorial.show()
   }
 
-  handleCloseClick() {
+  handleCloseClick = () => {
     if (!this.remote) {
       return
     }
