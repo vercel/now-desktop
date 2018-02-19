@@ -177,11 +177,15 @@ class Feed extends Component {
     return groups
   }
 
-  async cacheEvents(scope, until) {
+  async cacheEvents(scope, until, track) {
     const types = this.eventTypes
     const { teams, currentUser, scope: activeScope } = this.state
 
     if (until) {
+      track = true
+    }
+
+    if (track) {
       this.loading.add(scope)
     }
 
@@ -226,7 +230,7 @@ class Feed extends Component {
     try {
       results = await Promise.all(loaders)
     } catch (err) {
-      if (until) {
+      if (track) {
         this.loading.delete(scope)
       }
 
@@ -322,7 +326,9 @@ class Feed extends Component {
         teams
       },
       () => {
-        this.loading.delete(scope)
+        if (track) {
+          this.loading.delete(scope)
+        }
       }
     )
   }
@@ -426,8 +432,8 @@ class Feed extends Component {
 
       // Refresh the events when the window gets
       // shown, so that they're always up-to-date
-      if (scope) {
-        this.cacheEvents(scope)
+      if (scope && !this.loading.has(scope)) {
+        this.cacheEvents(scope, null, true)
       }
     })
 
