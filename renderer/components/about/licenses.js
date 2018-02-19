@@ -1,6 +1,5 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
 import getLicenses from 'load-licenses'
 
 // Styles

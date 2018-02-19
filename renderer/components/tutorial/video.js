@@ -1,5 +1,5 @@
 // Packages
-import React, { Component } from 'react'
+import { Component } from 'react'
 import setRef from 'react-refs'
 import { bool, string } from 'prop-types'
 
@@ -10,14 +10,12 @@ import {
 } from '../../styles/components/tutorial/video'
 
 class Video extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = { playing: false }
-    this.setRef = setRef.bind(this)
-
-    this.os = process.platform === 'darwin' ? 'mac' : 'windows'
+  state = {
+    playing: false
   }
+
+  setRef = setRef.bind(this)
+  os = process.platform === 'darwin' ? 'mac' : 'windows'
 
   componentWillReceiveProps(nextProps) {
     const already = this.state.playing

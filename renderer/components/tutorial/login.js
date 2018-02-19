@@ -2,7 +2,7 @@
 import electron from 'electron'
 import { stringify as stringifyQuery } from 'querystring'
 import AutoSizeInput from 'react-input-autosize'
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import sleep from 'sleep-promise'
 import { func } from 'prop-types'
 
@@ -15,26 +15,20 @@ import emailProviders from '../../utils/email-providers'
 // Styles
 import styles from '../../styles/components/tutorial/login'
 
+const defaultState = {
+  value: '',
+  focus: false,
+  classes: [],
+  suggestion: '',
+  waiting: false
+}
+
 class LoginForm extends PureComponent {
-  constructor(props) {
-    super(props)
+  state = defaultState
+  initialState = Object.assign({}, defaultState)
 
-    this.state = {
-      value: '',
-      focus: false,
-      classes: [],
-      suggestion: '',
-      waiting: false
-    }
-
-    this.initialState = Object.assign({}, this.state)
-    this.remote = electron.remote || false
-    this.mounted = false
-
-    this.handleChange = this.handleChange.bind(this)
-    this.handleKey = this.handleKey.bind(this)
-    this.toggleFocus = this.toggleFocus.bind(this)
-  }
+  remote = electron.remote || false
+  mounted = false
 
   async verify(url, email, token, remote) {
     const query = {
@@ -94,7 +88,7 @@ class LoginForm extends PureComponent {
     }
   }
 
-  handleChange(event) {
+  handleChange = event => {
     const value = event.target.value
 
     this.setState({
@@ -303,7 +297,7 @@ class LoginForm extends PureComponent {
     })
   }
 
-  async handleKey(event) {
+  handleKey = async event => {
     this.setState({
       classes: []
     })
@@ -369,7 +363,7 @@ class LoginForm extends PureComponent {
     }
   }
 
-  toggleFocus() {
+  toggleFocus = () => {
     this.setState({
       focus: !this.state.focus
     })

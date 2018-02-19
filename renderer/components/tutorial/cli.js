@@ -1,5 +1,4 @@
 // Packages
-import React from 'react'
 import { bool, func } from 'prop-types'
 
 // Styles

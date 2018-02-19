@@ -1,10 +1,9 @@
 // Native
 import queryString from 'querystring'
-import os from 'os'
 
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
 import compare from 'just-compare'
@@ -39,42 +38,24 @@ import {
   pageStyles
 } from '../styles/pages/feed'
 
-class Feed extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      dropZone: false,
-      events: {},
-      scope: null,
-      currentUser: null,
-      teams: [],
-      eventFilter: null,
-      online: true,
-      typeFilter: 'team'
-    }
-
-    this.remote = electron.remote || false
-    this.ipcRenderer = electron.ipcRenderer || false
-    this.isWindows = os.platform() === 'win32'
-    this.setReference = setRef.bind(this)
-
-    this.showDropZone = this.showDropZone.bind(this)
-    this.setFilter = this.setFilter.bind(this)
-    this.hideDropZone = this.hideDropZone.bind(this)
-    this.scrolled = this.scrolled.bind(this)
-    this.setTeams = this.setTeams.bind(this)
-    this.setScope = this.setScope.bind(this)
-    this.setOnlineState = this.setOnlineState.bind(this)
-    this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
-    this.setTypeFilter = this.setTypeFilter.bind(this)
-
-    // Ensure that we're not loading events again
-    this.loading = new Set()
-
-    // Generate event types once in the beginning
-    this.eventTypes = this.getEventTypes()
+class Feed extends Component {
+  state = {
+    dropZone: false,
+    events: {},
+    scope: null,
+    currentUser: null,
+    teams: [],
+    eventFilter: null,
+    online: true,
+    typeFilter: 'team'
   }
+
+  remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
+  loading = new Set()
+  isWindows = process.platform === 'win32'
+  eventTypes = this.getEventTypes()
+  setReference = setRef.bind(this)
 
   getCurrentGroup() {
     const { typeFilter } = this.state
@@ -126,6 +107,7 @@ class Feed extends React.Component {
     }
 
     // Update the feed of events for each team
+    // eslint-disable-next-line no-await-in-loop
     for (const team of teams) {
       const index = teams.indexOf(team)
 
@@ -139,7 +121,6 @@ class Feed extends React.Component {
 
       // It's important that this is being `await`ed
       try {
-        // eslint-disable-next-line no-await-in-loop
         await this.cacheEvents(team.id)
       } catch (err) {
         console.log(err)
@@ -198,7 +179,7 @@ class Feed extends React.Component {
 
   async cacheEvents(scope, until) {
     const types = this.eventTypes
-    const { teams, currentUser } = this.state
+    const { teams, currentUser, scope: activeScope } = this.state
 
     if (until) {
       this.loading.add(scope)
@@ -276,7 +257,11 @@ class Feed extends React.Component {
           })
         }
 
-        return
+        // We had `return` here before, which was most
+        // likely causing the event stream to get stuck if
+        // there were no new ones in a certain group,
+        // although the other groups might still have had new events.
+        continue
       }
 
       let newLastUpdate
@@ -314,10 +299,18 @@ class Feed extends React.Component {
         }
 
         const unique = makeUnique(merged, (a, b) => a.id === b.id)
+        const isCurrent = relatedCache.id === activeScope
+        const scrollPosition = this.scrollingSection.scrollTop
 
-        // Ensure that never more than 50 events are cached
-        // But only if infinite scrolling isn't being used
-        events[scope][group] = until ? unique : unique.slice(0, 50)
+        let shouldKeep
+
+        // Ensure that never more than 50 events are cached. But only
+        // if infinite scrolling is not being used.
+        if (until || (isCurrent && scrollPosition > 0)) {
+          shouldKeep = true
+        }
+
+        events[scope][group] = shouldKeep ? unique : unique.slice(0, 50)
       } else {
         events[scope][group] = result
       }
@@ -334,7 +327,7 @@ class Feed extends React.Component {
     )
   }
 
-  onKeyDown(event) {
+  onKeyDown = event => {
     const currentWindow = this.remote.getCurrentWindow()
     const { keyCode, metaKey, altKey } = event
 
@@ -382,7 +375,7 @@ class Feed extends React.Component {
     })
   }
 
-  clearScroll() {
+  clearScroll = () => {
     if (!this.scrollingSection) {
       return
     }
@@ -390,16 +383,16 @@ class Feed extends React.Component {
     this.scrollingSection.scrollTop = 0
   }
 
+  lineStates = ['online', 'offline']
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
       return
     }
 
-    const states = ['online', 'offline']
-
-    for (const state of states) {
-      window.addEventListener(state, this.setOnlineState.bind(this))
+    for (const state of this.lineStates) {
+      window.addEventListener(state, this.setOnlineState)
     }
 
     if (!this.remote) {
@@ -417,6 +410,9 @@ class Feed extends React.Component {
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
 
+    // And then allow hiding the windows using the keyboard
+    document.addEventListener('keydown', this.onKeyDown)
+
     const currentWindow = this.remote.getCurrentWindow()
     let scrollTimer
 
@@ -424,42 +420,39 @@ class Feed extends React.Component {
       // Ensure that scrolling position only gets
       // resetted if the window was closed for 5 seconds
       clearTimeout(scrollTimer)
-
-      // When the app is hidden and the device in standby
-      // mode, it might not be able to render the updates, so we
-      // need to ensure that it's updated
-      this.forceUpdate()
-
-      // And then allow hiding the windows using the keyboard
-      document.addEventListener('keydown', this.onKeyDown.bind(this))
     })
 
     currentWindow.on('hide', () => {
       // Clear scrolling position if window closed for 5 seconds
-      scrollTimer = setTimeout(this.clearScroll.bind(this), ms('5s'))
-
-      // Remove key press listeners
-      document.removeEventListener('keydown', this.onKeyDown.bind(this))
+      scrollTimer = setTimeout(this.clearScroll, ms('5s'))
     })
   }
 
-  setOnlineState() {
+  componentWillUnmount() {
+    for (const state of this.lineStates) {
+      window.removeEventListener(state, this.setOnlineState)
+    }
+
+    document.removeEventListener('keydown', this.onKeyDown)
+  }
+
+  setOnlineState = () => {
     this.setState({ online: navigator.onLine })
   }
 
-  showDropZone() {
+  showDropZone = () => {
     this.setState({ dropZone: true })
   }
 
-  hideDropZone() {
+  hideDropZone = () => {
     this.setState({ dropZone: false })
   }
 
-  setTypeFilter(type) {
+  setTypeFilter = type => {
     this.setState({ typeFilter: type })
   }
 
-  setScope(scope) {
+  setScope = scope => {
     this.clearScroll()
 
     // Update the scope
@@ -478,7 +471,7 @@ class Feed extends React.Component {
     }
   }
 
-  setScopeWithSlug(slug) {
+  setScopeWithSlug = slug => {
     const detected = this.detectScope('slug', slug)
 
     if (detected) {
@@ -490,7 +483,7 @@ class Feed extends React.Component {
     return this.state.teams.find(team => team[property] === value)
   }
 
-  async setTeams(teams, firstLoad) {
+  setTeams = async (teams, firstLoad) => {
     if (!teams) {
       // If the teams didn't change, only the events
       // should be updated.
@@ -517,7 +510,7 @@ class Feed extends React.Component {
     )
   }
 
-  setFilter(eventFilter) {
+  setFilter = eventFilter => {
     this.setState({ eventFilter })
   }
 
@@ -596,7 +589,7 @@ class Feed extends React.Component {
     return events.filter(item => item)
   }
 
-  scrolled(event) {
+  scrolled = event => {
     if (!this.loadingIndicator) {
       return
     }
@@ -704,21 +697,22 @@ class Feed extends React.Component {
 
     const teams = this.state.teams
     const relatedTeam = teams.find(item => item.id === scope)
-
-    if (relatedTeam.allCached && relatedTeam.allCached[group]) {
-      return (
-        <aside ref={this.setReference} name="loadingIndicator">
-          <span>{`That's it. No events left to show!`}</span>
-
-          <style jsx>{loaderStyles}</style>
-        </aside>
-      )
-    }
+    const allCached = relatedTeam.allCached && relatedTeam.allCached[group]
 
     return (
-      <aside ref={this.setReference} name="loadingIndicator">
-        <img src="/static/loading.gif" />
-        <span>Loading Older Events...</span>
+      <aside
+        ref={item => {
+          this.loadingIndicator = item
+        }}
+      >
+        {allCached ? (
+          <span key="description">{`That's it. No events left to show!`}</span>
+        ) : (
+          <Fragment>
+            <img key="animation" src="/static/loading.gif" />
+            <span key="description">Loading Older Events...</span>
+          </Fragment>
+        )}
 
         <style jsx>{loaderStyles}</style>
       </aside>

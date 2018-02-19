@@ -1,17 +1,12 @@
 // Packages
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import { func, bool, string } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/tutorial/button'
 
 class Button extends PureComponent {
-  constructor(props) {
-    super(props)
-    this.clicked = this.clicked.bind(this)
-  }
-
-  clicked(event) {
+  clicked = event => {
     event.preventDefault()
 
     if (this.props.disabled || !this.props.onClick) {

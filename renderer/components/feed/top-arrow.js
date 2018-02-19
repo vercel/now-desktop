@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 
 // Components
 import Caret from '../../vectors/caret'
@@ -8,16 +8,12 @@ import Caret from '../../vectors/caret'
 // Styles
 import styles from '../../styles/components/feed/top-arrow'
 
-class TopArrow extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      left: 0
-    }
-
-    this.remote = electron.remote || false
+class TopArrow extends PureComponent {
+  state = {
+    left: 0
   }
+
+  remote = electron.remote || false
 
   preventDefault(event) {
     event.preventDefault()

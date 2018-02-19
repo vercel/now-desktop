@@ -1,6 +1,3 @@
-// Native
-import { platform } from 'os'
-
 // Packages
 import electron from 'electron'
 import React from 'react'
@@ -22,34 +19,24 @@ import End from '../components/tutorial/end'
 import { sliderStyle, wrapStyle, controlStyle } from '../styles/pages/tutorial'
 
 class Sections extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      loggedIn: false,
-      index: 0
-    }
-
-    this.remote = electron.remote || false
-    this.setReference = setRef.bind(this)
-    this.isWindows = platform() === 'win32'
-
-    this.handleCloseClick = this.handleCloseClick.bind(this)
-    this.handleMinimizeClick = this.handleMinimizeClick.bind(this)
-    this.arrowKeys = this.arrowKeys.bind(this)
-    this.setLoggedIn = this.saveState.bind(this, 'loggedIn')
-    this.sliderChanged = this.saveState.bind(this, 'index')
-    this.moveSlider = this.moveSlider.bind(this)
+  state = {
+    loggedIn: false,
+    index: 0
   }
 
-  saveState(property, value) {
-    const content = {}
-    content[property] = value
+  remote = electron.remote || false
+  isWindows = process.platform === 'win32'
+  setReference = setRef.bind(this)
 
-    this.setState(content)
+  setLoggedIn = loggedIn => {
+    this.setState({ loggedIn })
   }
 
-  handleMinimizeClick() {
+  sliderChanged = index => {
+    this.setState({ index })
+  }
+
+  handleMinimizeClick = () => {
     if (!this.remote) {
       return
     }
@@ -58,7 +45,7 @@ class Sections extends React.PureComponent {
     currentWindow.minimize()
   }
 
-  handleCloseClick() {
+  handleCloseClick = () => {
     if (!this.remote) {
       return
     }
@@ -67,7 +54,7 @@ class Sections extends React.PureComponent {
     currentWindow.hide()
   }
 
-  arrowKeys(event) {
+  arrowKeys = event => {
     const keyCode = event.keyCode
     const slider = this.slider
     const loginInputElement = window.loginInputElement
@@ -112,7 +99,7 @@ class Sections extends React.PureComponent {
     event.preventDefault()
   }
 
-  moveSlider(index) {
+  moveSlider = index => {
     if (!this.slider || !index) {
       return
     }

@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 // Styles
 import introStyles from '../../styles/components/tutorial/intro'
@@ -9,14 +9,9 @@ import introStyles from '../../styles/components/tutorial/intro'
 import Button from './button'
 
 class End extends Component {
-  constructor(props) {
-    super(props)
+  remote = electron.remote || false
 
-    this.remote = electron.remote || false
-    this.showApp = this.showApp.bind(this)
-  }
-
-  showApp(event) {
+  showApp = event => {
     event.preventDefault()
 
     if (!this.remote) {
