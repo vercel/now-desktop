@@ -432,7 +432,7 @@ class Feed extends Component {
     })
 
     currentWindow.on('hide', () => {
-      // Clear scrolling position if window closed for 5 seconds.
+      // Clear scrolling position if window closed for 5 seconds
       scrollTimer = setTimeout(this.clearScroll, ms('5s'))
     })
   }
