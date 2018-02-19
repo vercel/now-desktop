@@ -50,13 +50,6 @@
   },
   "xo": {
     "parser": "babel-eslint",
-    "parserOptions": {
-      "ecmaVersion": 8,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
     "extends": [
       "prettier",
       "prettier/react",
@@ -71,8 +64,8 @@
       "no-await-in-loop": 0,
       "import/no-unresolved": 0,
       "import/no-extraneous-dependencies": 0,
-      "unicorn/error-message": 0,
-      "complexity": 0
+      "complexity": 0,
+      "lines-between-class-members": 0
     }
   },
   "license": "MIT",

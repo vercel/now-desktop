@@ -1,6 +1,5 @@
 // Native
 import queryString from 'querystring'
-import os from 'os'
 
 // Packages
 import electron from 'electron'
@@ -40,40 +39,23 @@ import {
 } from '../styles/pages/feed'
 
 class Feed extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      dropZone: false,
-      events: {},
-      scope: null,
-      currentUser: null,
-      teams: [],
-      eventFilter: null,
-      online: true,
-      typeFilter: 'team'
-    }
-
-    this.remote = electron.remote || false
-    this.ipcRenderer = electron.ipcRenderer || false
-    this.isWindows = os.platform() === 'win32'
-    this.setReference = setRef.bind(this)
-
-    this.showDropZone = this.showDropZone.bind(this)
-    this.setFilter = this.setFilter.bind(this)
-    this.hideDropZone = this.hideDropZone.bind(this)
-    this.scrolled = this.scrolled.bind(this)
-    this.setTeams = this.setTeams.bind(this)
-    this.setScope = this.setScope.bind(this)
-    this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
-    this.setTypeFilter = this.setTypeFilter.bind(this)
-
-    // Ensure that we're not loading events again
-    this.loading = new Set()
-
-    // Generate event types once in the beginning
-    this.eventTypes = this.getEventTypes()
+  state = {
+    dropZone: false,
+    events: {},
+    scope: null,
+    currentUser: null,
+    teams: [],
+    eventFilter: null,
+    online: true,
+    typeFilter: 'team'
   }
+
+  remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
+  loading = new Set()
+  isWindows = process.platform === 'win32'
+  eventTypes = this.getEventTypes()
+  setReference = setRef.bind(this)
 
   getCurrentGroup() {
     const { typeFilter } = this.state
@@ -381,7 +363,7 @@ class Feed extends React.Component {
     })
   }
 
-  clearScroll() {
+  clearScroll = () => {
     if (!this.scrollingSection) {
       return
     }
@@ -389,7 +371,7 @@ class Feed extends React.Component {
     this.scrollingSection.scrollTop = 0
   }
 
-  lineStatus = ['online', 'offline']
+  lineStates = ['online', 'offline']
 
   async componentWillMount() {
     // Support SSR
@@ -397,9 +379,7 @@ class Feed extends React.Component {
       return
     }
 
-    const states = ['online', 'offline']
-
-    for (const state of states) {
+    for (const state of this.lineStates) {
       window.addEventListener(state, this.setOnlineState)
     }
 
@@ -432,11 +412,15 @@ class Feed extends React.Component {
 
     currentWindow.on('hide', () => {
       // Clear scrolling position if window closed for 5 seconds
-      scrollTimer = setTimeout(this.clearScroll.bind(this), ms('5s'))
+      scrollTimer = setTimeout(this.clearScroll, ms('5s'))
     })
   }
 
   componentWillUnmount() {
+    for (const state of this.lineStates) {
+      window.removeEventListener(state, this.setOnlineState)
+    }
+
     document.removeEventListener('keydown', this.onKeyDown)
   }
 
@@ -444,19 +428,19 @@ class Feed extends React.Component {
     this.setState({ online: navigator.onLine })
   }
 
-  showDropZone() {
+  showDropZone = () => {
     this.setState({ dropZone: true })
   }
 
-  hideDropZone() {
+  hideDropZone = () => {
     this.setState({ dropZone: false })
   }
 
-  setTypeFilter(type) {
+  setTypeFilter = type => {
     this.setState({ typeFilter: type })
   }
 
-  setScope(scope) {
+  setScope = scope => {
     this.clearScroll()
 
     // Update the scope
@@ -475,7 +459,7 @@ class Feed extends React.Component {
     }
   }
 
-  setScopeWithSlug(slug) {
+  setScopeWithSlug = slug => {
     const detected = this.detectScope('slug', slug)
 
     if (detected) {
@@ -487,7 +471,7 @@ class Feed extends React.Component {
     return this.state.teams.find(team => team[property] === value)
   }
 
-  async setTeams(teams, firstLoad) {
+  setTeams = async (teams, firstLoad) => {
     if (!teams) {
       // If the teams didn't change, only the events
       // should be updated.
@@ -514,7 +498,7 @@ class Feed extends React.Component {
     )
   }
 
-  setFilter(eventFilter) {
+  setFilter = eventFilter => {
     this.setState({ eventFilter })
   }
 
@@ -593,7 +577,7 @@ class Feed extends React.Component {
     return events.filter(item => item)
   }
 
-  scrolled(event) {
+  scrolled = event => {
     if (!this.loadingIndicator) {
       return
     }
