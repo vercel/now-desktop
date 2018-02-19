@@ -48,7 +48,6 @@ export default css`
   }
 
   b {
-    font-weight: normal;
-    text-decoration: underline;
+    font-weight: 700;
   }
 `
