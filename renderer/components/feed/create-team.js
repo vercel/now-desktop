@@ -1,15 +1,14 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 import { number } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/create-team'
 
-class CreateTeam extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = { scaled: false }
+class CreateTeam extends PureComponent {
+  state = {
+    scaled: false
   }
 
   open(event) {

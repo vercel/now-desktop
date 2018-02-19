@@ -1,8 +1,8 @@
 // Packages
-import React from 'react'
+import { PureComponent } from 'react'
 import { object } from 'prop-types'
 
-class Message extends React.PureComponent {
+class Message extends PureComponent {
   getDisplayName() {
     const { event, user } = this.props
 

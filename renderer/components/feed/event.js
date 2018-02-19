@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 import { object, func, string } from 'prop-types'
 import dotProp from 'dot-prop'
 import ms from 'ms'
@@ -14,22 +14,15 @@ import dateDiff from '../../utils/date-diff'
 // Components
 import Avatar from './avatar'
 
-class EventMessage extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      url: null
-    }
-
-    this.remote = electron.remote || false
-    this.menu = null
-
-    this.click = this.click.bind(this)
-    this.rightClick = this.rightClick.bind(this)
+class EventMessage extends PureComponent {
+  state = {
+    url: null
   }
 
-  click() {
+  remote = electron.remote || false
+  menu = null
+
+  click = () => {
     const { content, setScopeWithSlug } = this.props
 
     if (content.type === 'team' && setScopeWithSlug) {
@@ -48,7 +41,7 @@ class EventMessage extends React.PureComponent {
     this.remote.shell.openExternal(`https://${this.state.url}`)
   }
 
-  rightClick(event) {
+  rightClick = event => {
     event.preventDefault()
 
     if (!this.menu) {

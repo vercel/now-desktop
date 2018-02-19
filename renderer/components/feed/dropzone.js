@@ -1,25 +1,18 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 import { func } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/dropzone'
 
-class DropZone extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.droppedFile = this.droppedFile.bind(this)
-    this.hideDropZone = this.hideDropZone.bind(this)
-  }
-
+class DropZone extends PureComponent {
   componentDidMount() {
     const remote = electron.remote || false
     this.deploy = remote.require('./utils/deploy')
   }
 
-  hideDropZone() {
+  hideDropZone = () => {
     if (this.props.hide) {
       this.props.hide()
     }
@@ -33,7 +26,7 @@ class DropZone extends React.PureComponent {
     event.preventDefault()
   }
 
-  droppedFile(event) {
+  droppedFile = event => {
     this.hideDropZone()
 
     if (!event.dataTransfer || !event.dataTransfer.files) {

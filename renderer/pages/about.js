@@ -4,14 +4,12 @@ import React from 'react'
 import { ago as timeAgo } from 'time-ago'
 import isDev from 'electron-is-dev'
 
-// Vectors
-import CloseWindowSVG from '../vectors/close-window'
-
 // Components
 import Licenses from '../components/about/licenses'
 
-// Helpers
+// Utilities
 import showError from '../utils/error'
+import CloseWindowSVG from '../vectors/close-window'
 
 // Styles
 import { mainStyles, globalStyles } from '../styles/pages/about'

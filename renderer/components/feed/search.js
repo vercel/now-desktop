@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 import { func } from 'prop-types'
 import setRef from 'react-refs'
 
@@ -11,19 +11,14 @@ import Clear from '../../vectors/clear'
 // Styles
 import styles from '../../styles/components/feed/search'
 
-class Search extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = { shown: false }
-    this.setReference = setRef.bind(this)
-
-    this.hide = this.hide.bind(this)
-    this.show = this.show.bind(this)
-    this.typed = this.typed.bind(this)
+class Search extends PureComponent {
+  state = {
+    shown: false
   }
 
-  show() {
+  setReference = setRef.bind(this)
+
+  show = () => {
     this.props.showDeployIcon()
 
     setTimeout(() => {
@@ -37,7 +32,7 @@ class Search extends React.PureComponent {
     })
   }
 
-  hide(deployIcon) {
+  hide = deployIcon => {
     if (!this.form || !this.input) {
       return
     }
@@ -71,7 +66,7 @@ class Search extends React.PureComponent {
     }, 200)
   }
 
-  typed(event) {
+  typed = event => {
     if (event.keyCode && event.keyCode === 27) {
       this.hide(true)
       return
@@ -84,7 +79,7 @@ class Search extends React.PureComponent {
     }
   }
 
-  handleKeyDown(event) {
+  handleKeyDown = event => {
     if (!event) {
       return
     }
@@ -123,11 +118,11 @@ class Search extends React.PureComponent {
     }
 
     currentWindow.on('show', () => {
-      document.addEventListener('keydown', this.handleKeyDown.bind(this))
+      document.addEventListener('keydown', this.handleKeyDown)
     })
 
     currentWindow.on('hide', () => {
-      document.removeEventListener('keydown', this.handleKeyDown.bind(this))
+      document.removeEventListener('keydown', this.handleKeyDown)
     })
   }
 

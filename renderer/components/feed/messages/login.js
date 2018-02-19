@@ -1,6 +1,3 @@
-// Packages
-import React from 'react'
-
 // Utilities
 import parseUA from '../../../utils/user-agent'
 

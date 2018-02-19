@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { Component } from 'react'
 import { func, object } from 'prop-types'
 import exists from 'path-exists'
 import compare from 'just-compare'
@@ -30,44 +30,36 @@ import Clear from '../../vectors/clear'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
-class Switcher extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      teams: [],
-      scope: null,
-      updateFailed: false,
-      online: true,
-      initialized: false
-    }
-
-    this.remote = electron.remote || false
-    this.ipcRenderer = electron.ipcRenderer || false
-    this.setReference = setRef.bind(this)
-
-    if (electron.remote) {
-      const load = electron.remote.require
-
-      this.binaryUtils = load('./utils/binary')
-      this.configUtils = load('./utils/config')
-    }
-
-    this.scrollToEnd = this.scrollToEnd.bind(this)
-    this.openMenu = this.openMenu.bind(this)
-    this.onSortEnd = this.onSortEnd.bind(this)
-    this.onSortStart = this.onSortStart.bind(this)
-    this.allowDrag = this.allowDrag.bind(this)
-    this.retryUpdate = this.retryUpdate.bind(this)
-    this.closeUpdateMessage = this.closeUpdateMessage.bind(this)
-
-    // Don't update state when dragging teams
-    this.moving = false
-
-    // Ensure that config doesn't get checked when the
-    // file is updated from this component
-    this.savingConfig = false
+class Switcher extends Component {
+  state = {
+    teams: [],
+    scope: null,
+    updateFailed: false,
+    online: true,
+    initialized: false
   }
+
+  remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
+  setReference = setRef.bind(this)
+
+  load = file => {
+    if (electron.remote) {
+      return electron.remote.require(file)
+    }
+
+    return null
+  }
+
+  binaryUtils = this.load('./utils/binary')
+  configUtils = this.load('./utils/config')
+
+  // Don't update state when dragging teams
+  moving = false
+
+  // Ensure that config doesn't get checked when the
+  // file is updated from this component
+  savingConfig = false
 
   componentWillReceiveProps({ currentUser, activeScope }) {
     if (activeScope) {
@@ -530,7 +522,7 @@ class Switcher extends React.Component {
     return true
   }
 
-  openMenu() {
+  openMenu = () => {
     // The menu toggler element has children
     // we have the ability to prevent the event from
     // bubbling up from those, but we need to
@@ -563,7 +555,7 @@ class Switcher extends React.Component {
     })
   }
 
-  onSortEnd({ oldIndex, newIndex }) {
+  onSortEnd = ({ oldIndex, newIndex }) => {
     document.body.classList.toggle('is-moving')
 
     // Allow the state to update again
@@ -584,14 +576,14 @@ class Switcher extends React.Component {
     })
   }
 
-  onSortStart() {
+  onSortStart = () => {
     document.body.classList.toggle('is-moving')
 
     // Prevent the state from being updated
     this.moving = true
   }
 
-  scrollToEnd(event) {
+  scrollToEnd = event => {
     event.preventDefault()
 
     if (!this.list) {
@@ -651,7 +643,7 @@ class Switcher extends React.Component {
     ))
   }
 
-  allowDrag(event) {
+  allowDrag = event => {
     if (process.platform === 'win32') {
       return !event.ctrlKey
     }
@@ -659,7 +651,7 @@ class Switcher extends React.Component {
     return !event.metaKey
   }
 
-  retryUpdate() {
+  retryUpdate = () => {
     if (!this.remote) {
       return
     }
@@ -671,7 +663,7 @@ class Switcher extends React.Component {
     app.exit(0)
   }
 
-  closeUpdateMessage() {
+  closeUpdateMessage = () => {
     this.setState({
       updateFailed: false
     })
