@@ -418,12 +418,16 @@ class Feed extends Component {
 
     currentWindow.on('show', () => {
       // Ensure that scrolling position only gets
-      // resetted if the window was closed for 5 seconds
+      // resetted if the window was closed for 5 seconds.
       clearTimeout(scrollTimer)
+
+      // Refresh the events when the window gets
+      // shown, so that they're always up-to-date.
+      this.cacheEvents(this.state.scope)
     })
 
     currentWindow.on('hide', () => {
-      // Clear scrolling position if window closed for 5 seconds
+      // Clear scrolling position if window closed for 5 seconds.
       scrollTimer = setTimeout(this.clearScroll, ms('5s'))
     })
   }
