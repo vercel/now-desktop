@@ -340,6 +340,18 @@ class Switcher extends Component {
     const copy = JSON.parse(JSON.stringify(ordered))
     const order = await this.getTeamOrder()
 
+    for (const item of order) {
+      const isPart = newData.find(team => {
+        return team.name === item || team.slug === item
+      })
+
+      // If the saved team order contains a team that
+      // the user is not a part of, we can ignore it.
+      if (!isPart) {
+        return ordered
+      }
+    }
+
     if (compare(ordered, currentData)) {
       return false
     }
