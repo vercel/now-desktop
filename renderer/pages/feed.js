@@ -418,14 +418,14 @@ class Feed extends Component {
 
     currentWindow.on('show', () => {
       // Ensure that scrolling position only gets
-      // resetted if the window was closed for 5 seconds.
+      // resetted if the window was closed for 5 seconds
       clearTimeout(scrollTimer)
 
       // Get the currently active scope
       const { scope } = this.state
 
       // Refresh the events when the window gets
-      // shown, so that they're always up-to-date.
+      // shown, so that they're always up-to-date
       if (scope) {
         this.cacheEvents(scope)
       }
