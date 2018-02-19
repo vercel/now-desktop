@@ -37,8 +37,7 @@ module.exports = async (path, token) => {
         // Remove this hack https://github.com/zeit/front/issues/553
         error.code = data.error ? data.error.code : res.status
       } else {
-        // Handle it below as network error
-        throw new Error()
+        throw new Error('A network error occured')
       }
     } else {
       data = await res.json()

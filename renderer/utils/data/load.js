@@ -84,8 +84,7 @@ export default async (path, token = null, opts = {}) => {
 
         error.code = data.error === null ? res.status : data.error.code
       } else {
-        // Handle it below as network error
-        throw new Error()
+        throw new Error('A network error occured')
       }
     } else {
       data = await res.json()
