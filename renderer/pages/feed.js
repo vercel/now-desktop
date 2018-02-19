@@ -257,7 +257,11 @@ class Feed extends Component {
           })
         }
 
-        return
+        // We had `return` here before, which was most
+        // likely causing the event stream to get stuck if
+        // there were no new ones in a certain group,
+        // although the other groups might still have had new events.
+        continue
       }
 
       let newLastUpdate
