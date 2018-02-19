@@ -302,7 +302,7 @@ class Feed extends Component {
 
         // Ensure that never more than 50 events are cached. But only
         // if infinite scrolling is not being used.
-        if (until || (isCurrent && !until && scrollPosition > 0)) {
+        if (until || (isCurrent && scrollPosition > 0)) {
           shouldKeep = true
         }
 
