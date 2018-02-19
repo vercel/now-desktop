@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import { func } from 'prop-types'
 import retry from 'async-retry'
 
@@ -14,26 +14,18 @@ import CLI from './cli'
 import Button from './button'
 
 class Intro extends PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      sendingMail: false,
-      security: null,
-      done: false,
-      tested: false,
-      checked: true
-    }
-
-    this.initialState = Object.assign({}, this.state)
-    this.remote = electron.remote || false
-
-    this.setState = this.setState.bind(this)
-    this.showApp = this.showApp.bind(this)
-    this.startTutorial = this.moveSlider.bind(this, 1)
-    this.ipcRenderer = electron.ipcRenderer || false
-    this.onCheckboxChange = this.onCheckboxChange.bind(this)
+  state = {
+    sendingMail: false,
+    security: null,
+    done: false,
+    tested: false,
+    checked: true
   }
+
+  remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
+  setState = this.setState.bind(this)
+  startTutorial = this.moveSlider.bind(this, 1)
 
   async loggedIn() {
     if (!this.remote) {
@@ -51,13 +43,13 @@ class Intro extends PureComponent {
     return true
   }
 
-  onCheckboxChange(event) {
+  onCheckboxChange = event => {
     this.setState({
       checked: event.target.checked
     })
   }
 
-  showApp(event) {
+  showApp = event => {
     event.preventDefault()
 
     if (!this.remote) {

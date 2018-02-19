@@ -526,6 +526,7 @@ const createDeployment = async (path, config, multiple, wantsPublic) => {
     async bail => {
       let notified = false
 
+      // eslint-disable-next-line no-await-in-loop
       do {
         try {
           await now.create(path, metaData)

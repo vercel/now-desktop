@@ -1,6 +1,3 @@
-// Packages
-import React from 'react'
-
 // Vectors
 import ArrowSVG from '../../vectors/arrow'
 

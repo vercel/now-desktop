@@ -1,19 +1,15 @@
 // Packages
-import React from 'react'
+import { PureComponent } from 'react'
 import { object, bool, number, string } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/avatar'
 
-class Avatar extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      url: null,
-      title: null,
-      scaled: false
-    }
+class Avatar extends PureComponent {
+  state = {
+    url: null,
+    title: null,
+    scaled: false
   }
 
   componentWillMount() {

@@ -1,9 +1,6 @@
-// Native
-import os from 'os'
-
 // Packages
 import electron from 'electron'
-import React from 'react'
+import { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import setRef from 'react-refs'
 
@@ -16,23 +13,14 @@ import Deploy from '../vectors/deploy'
 import Filter from '../vectors/filter'
 import Search from './feed/search'
 
-class Title extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      updateMessage: false,
-      typeFilter: false,
-      filteredType: 'team'
-    }
-
-    this.setReference = setRef.bind(this)
-
-    this.selectToDeploy = this.selectToDeploy.bind(this)
-    this.hideDeployIcon = this.hideDeployIcon.bind(this)
-    this.showDeployIcon = this.showDeployIcon.bind(this)
-    this.toggleFilter = this.toggleFilter.bind(this)
+class Title extends PureComponent {
+  state = {
+    updateMessage: false,
+    typeFilter: false,
+    filteredType: 'team'
   }
+
+  setReference = setRef.bind(this)
 
   componentDidMount() {
     const remote = electron.remote || false
@@ -44,19 +32,19 @@ class Title extends React.PureComponent {
     this.dialogs = remote.require('./dialogs')
   }
 
-  selectToDeploy() {
+  selectToDeploy = () => {
     this.dialogs.deploy()
   }
 
-  hideDeployIcon() {
+  hideDeployIcon = () => {
     this.deployIcon.classList.add('hidden')
   }
 
-  showDeployIcon() {
+  showDeployIcon = () => {
     this.deployIcon.classList.remove('hidden')
   }
 
-  toggleFilter() {
+  toggleFilter = () => {
     this.setState({
       typeFilter: !this.state.typeFilter
     })
@@ -140,7 +128,7 @@ class Title extends React.PureComponent {
       classes.push('light')
     }
 
-    if (os.platform() === 'win32') {
+    if (process.platform === 'win32') {
       classes.push('windows')
     }
 
@@ -156,23 +144,23 @@ class Title extends React.PureComponent {
       <aside className={classes.join(' ')}>
         <div>
           {this.props.light &&
-          this.props.searchShown && (
-            <Search
-              hideDeployIcon={this.hideDeployIcon}
-              showDeployIcon={this.showDeployIcon}
-              setFeedFilter={this.props.setFilter || false}
-              setSearchRef={this.props.setSearchRef || false}
-            />
-          )}
+            this.props.searchShown && (
+              <Search
+                hideDeployIcon={this.hideDeployIcon}
+                showDeployIcon={this.showDeployIcon}
+                setFeedFilter={this.props.setFilter || false}
+                setSearchRef={this.props.setSearchRef || false}
+              />
+            )}
 
           <h1>{this.props.children}</h1>
 
           {this.props.light &&
-          this.props.searchShown && (
-            <span className="toggle-filter" onClick={this.toggleFilter}>
-              <Filter />
-            </span>
-          )}
+            this.props.searchShown && (
+              <span className="toggle-filter" onClick={this.toggleFilter}>
+                <Filter />
+              </span>
+            )}
 
           {this.props.light && (
             <span
