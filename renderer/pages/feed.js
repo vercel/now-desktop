@@ -179,7 +179,7 @@ class Feed extends Component {
 
   async cacheEvents(scope, until) {
     const types = this.eventTypes
-    const { teams, currentUser } = this.state
+    const { teams, currentUser, scope: activeScope } = this.state
 
     if (until) {
       this.loading.add(scope)
@@ -295,10 +295,18 @@ class Feed extends Component {
         }
 
         const unique = makeUnique(merged, (a, b) => a.id === b.id)
+        const isCurrent = relatedCache.id === activeScope
+        const scrollPosition = this.scrollingSection.scrollTop
 
-        // Ensure that never more than 50 events are cached
-        // But only if infinite scrolling isn't being used
-        events[scope][group] = until ? unique : unique.slice(0, 50)
+        let shouldKeep
+
+        // Ensure that never more than 50 events are cached. But only
+        // if infinite scrolling is not being used.
+        if (until || (isCurrent && !until && scrollPosition > 0)) {
+          shouldKeep = true
+        }
+
+        events[scope][group] = shouldKeep ? unique : unique.slice(0, 50)
       } else {
         events[scope][group] = result
       }
