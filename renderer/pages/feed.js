@@ -425,11 +425,6 @@ class Feed extends React.Component {
       // resetted if the window was closed for 5 seconds
       clearTimeout(scrollTimer)
 
-      // When the app is hidden and the device in standby
-      // mode, it might not be able to render the updates, so we
-      // need to ensure that it's updated
-      this.forceUpdate()
-
       // And then allow hiding the windows using the keyboard
       document.addEventListener('keydown', this.onKeyDown.bind(this))
     })
