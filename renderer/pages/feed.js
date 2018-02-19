@@ -65,7 +65,6 @@ class Feed extends React.Component {
     this.scrolled = this.scrolled.bind(this)
     this.setTeams = this.setTeams.bind(this)
     this.setScope = this.setScope.bind(this)
-    this.setOnlineState = this.setOnlineState.bind(this)
     this.setScopeWithSlug = this.setScopeWithSlug.bind(this)
     this.setTypeFilter = this.setTypeFilter.bind(this)
 
@@ -334,7 +333,7 @@ class Feed extends React.Component {
     )
   }
 
-  onKeyDown(event) {
+  onKeyDown = event => {
     const currentWindow = this.remote.getCurrentWindow()
     const { keyCode, metaKey, altKey } = event
 
@@ -390,6 +389,8 @@ class Feed extends React.Component {
     this.scrollingSection.scrollTop = 0
   }
 
+  lineStatus = ['online', 'offline']
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -399,7 +400,7 @@ class Feed extends React.Component {
     const states = ['online', 'offline']
 
     for (const state of states) {
-      window.addEventListener(state, this.setOnlineState.bind(this))
+      window.addEventListener(state, this.setOnlineState)
     }
 
     if (!this.remote) {
@@ -417,6 +418,9 @@ class Feed extends React.Component {
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
 
+    // And then allow hiding the windows using the keyboard
+    document.addEventListener('keydown', this.onKeyDown)
+
     const currentWindow = this.remote.getCurrentWindow()
     let scrollTimer
 
@@ -424,21 +428,19 @@ class Feed extends React.Component {
       // Ensure that scrolling position only gets
       // resetted if the window was closed for 5 seconds
       clearTimeout(scrollTimer)
-
-      // And then allow hiding the windows using the keyboard
-      document.addEventListener('keydown', this.onKeyDown.bind(this))
     })
 
     currentWindow.on('hide', () => {
       // Clear scrolling position if window closed for 5 seconds
       scrollTimer = setTimeout(this.clearScroll.bind(this), ms('5s'))
-
-      // Remove key press listeners
-      document.removeEventListener('keydown', this.onKeyDown.bind(this))
     })
   }
 
-  setOnlineState() {
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown)
+  }
+
+  setOnlineState = () => {
     this.setState({ online: navigator.onLine })
   }
 
