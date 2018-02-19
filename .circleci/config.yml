@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn test
+      - run: yarn run dist -- -p 'never'
+      - store_artifacts:
+          path: dist/*
+  deploy:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn test
+      - run: yarn run dist
+      - store_artifacts:
+          path: dist/*
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          filters:
+            tags:
+              only: /.*/
