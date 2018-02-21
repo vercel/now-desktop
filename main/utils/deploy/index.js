@@ -526,9 +526,9 @@ const createDeployment = async (path, config, multiple, wantsPublic) => {
     async bail => {
       let notified = false
 
-      // eslint-disable-next-line no-await-in-loop
       do {
         try {
+          // eslint-disable-next-line no-await-in-loop
           await now.create(path, metaData)
         } catch (err) {
           if (err.code === 'plan_requires_public') {
@@ -560,6 +560,7 @@ const createDeployment = async (path, config, multiple, wantsPublic) => {
         }
 
         if (now.syncFileCount > 0) {
+          // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => {
             now.upload()
 
