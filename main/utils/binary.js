@@ -242,11 +242,11 @@ exports.handleExisting = async next => {
   } catch (err) {
     const dirPrefix = isWin ? 'md' : 'mkdir -p'
 
-    const commands = [
-      `${dirPrefix} ${parent}`,
-      isWin ? `takeown /f ${parent} /r /d y` : `chown -R \`whoami\` ${parent}`,
-      copyCommand
-    ]
+    const commands = [`${dirPrefix} ${parent}`, copyCommand]
+
+    if (!isWin) {
+      commands.splice(1, 0, `chown -R \`whoami\` ${parent}`)
+    }
 
     await runAsRoot(commands.join(' && '), why)
 
