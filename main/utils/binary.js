@@ -240,8 +240,8 @@ exports.handleExisting = async next => {
   try {
     await fs.ensureDir(parent)
   } catch (err) {
-    const dirPrefix = isWin ? 'md' : 'mkdir -p'
-    const commands = [`${dirPrefix} ${parent}`, copyCommand]
+    const dirCommand = `${isWin ? 'md' : 'mkdir -p'} ${parent}`
+    const commands = [dirCommand, copyCommand]
 
     if (!isWin) {
       commands.splice(1, 0, `chown -R \`whoami\` ${parent}`)
