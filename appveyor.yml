@@ -1,33 +1,26 @@
-{
-  "environment": {
-    "matrix": [
-      {
-        "platform": "x64"
-      }
-    ]
-  },
-  "image": "Visual Studio 2015",
-  "install": [
-    {
-      "ps": "Install-Product node 6 x64"
-    },
-    "set CI=true",
-    "npm install"
-  ],
-  "build": false,
-  "shallow_clone": true,
-  "test_script": [
-    "node --version",
-    "npm --version",
-    "npm run test"
-  ],
-  "after_test": [
-    "npm run dist"
-  ],
-  "artifacts": [
-    {
-      "path": "dist/win/*",
-      "name": "output"
-    }
-  ]
-}
+environment:
+  matrix:
+    - platform: x64
+
+image: Visual Studio 2015
+
+install:
+  - ps: Install-Product node 8 x64
+  - set CI=true
+  - yarn
+
+build: off
+
+matrix:
+  fast_finish: true
+
+shallow_clone: true
+
+test_script:
+  - node --version
+  - yarn --version
+  - yarn test
+
+on_success:
+  - yarn dist
+  - ps: Get-ChildItem .\dist\squirrel-windows\*.exe | % { Push-AppveyorArtifact $_.FullName }
