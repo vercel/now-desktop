@@ -17,6 +17,7 @@ const semVer = require('semver')
 const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
 const exists = require('path-exists')
+const retry = require('async-retry')
 
 // Utilities
 const { runAsRoot } = require('../dialogs')
@@ -314,9 +315,16 @@ exports.testBinary = async which => {
 
   // And then try to get the version
   // To see if the binary is even working
-  const cmd = await exec(`${which} -v`, {
-    cwd: homedir()
-  })
+  const cmd = await retry(
+    () => {
+      const cwd = homedir()
+      return exec(`${which} -v`, { cwd })
+    },
+    {
+      retries: 5,
+      factor: 1
+    }
+  )
 
   if (cmd.stdout) {
     const output = trimWhitespace(cmd.stdout.toString())
