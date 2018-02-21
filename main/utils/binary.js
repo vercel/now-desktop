@@ -236,14 +236,20 @@ exports.handleExisting = async next => {
   const copyCommand = `${copyPrefix} ${next} ${destFile}`
 
   const why = 'To place Now CLI in the correct location.'
+  console.log(process)
 
   try {
     await fs.ensureDir(parent)
   } catch (err) {
     const dirPrefix = isWin ? 'md' : 'mkdir -p'
-    const dirCommand = `${dirPrefix} ${parent}`
 
-    await runAsRoot(`${dirCommand} && ${copyCommand}`, why)
+    const commands = [
+      `${dirPrefix} ${parent}`,
+      isWin ? `takeown /f ${parent} /r /d y` : `chown -R \`whoami\` ${parent}`,
+      copyCommand
+    ]
+
+    await runAsRoot(commands.join(' && '), why)
 
     await setPermissions()
     await ensurePath()
