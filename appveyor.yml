@@ -23,4 +23,7 @@ test_script:
 
 on_success:
   - yarn dist
-  - ps: Get-ChildItem .\dist\* | % { Push-AppveyorArtifact $_.FullName }
+
+artifacts:
+  - path: dist/win/*
+    name: output
