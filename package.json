@@ -14,8 +14,8 @@
     "build": "next build renderer && next export renderer",
     "precommit": "lint-staged",
     "test": "xo",
-    "pack": "npm run build && build --dir",
-    "dist": "npm run build && build"
+    "pack": "yarn build && build --dir",
+    "dist": "yarn build && build"
   },
   "build": {
     "appId": "co.zeit.now",
@@ -43,7 +43,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm run test",
+      "yarn test",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]

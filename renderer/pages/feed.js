@@ -428,11 +428,11 @@ class Feed extends Component {
       clearTimeout(scrollTimer)
 
       // Get the currently active scope
-      const { scope } = this.state
+      const { scope, teams } = this.state
 
       // Refresh the events when the window gets
       // shown, so that they're always up-to-date
-      if (scope && !this.loading.has(scope)) {
+      if (scope && teams.length > 0 && !this.loading.has(scope)) {
         this.cacheEvents(scope, null, true)
       }
     })
