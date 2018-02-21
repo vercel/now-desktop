@@ -17,6 +17,7 @@ const semVer = require('semver')
 const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
 const exists = require('path-exists')
+const retry = require('async-retry')
 
 // Utilities
 const { runAsRoot } = require('../dialogs')
@@ -124,17 +125,17 @@ const platformName = () => {
   let name
 
   switch (original) {
-    case 'win32':
-      name = 'Windows'
-      break
     case 'darwin':
-      name = 'macOS'
+      name = 'now-macos'
+      break
+    case 'win32':
+      name = 'now-win.exe'
       break
     default:
       name = original
   }
 
-  return name
+  return `${name}.gz`
 }
 
 const canaryCheck = async () => {
@@ -240,10 +241,14 @@ exports.handleExisting = async next => {
   try {
     await fs.ensureDir(parent)
   } catch (err) {
-    const dirPrefix = isWin ? 'md' : 'mkdir -p'
-    const dirCommand = `${dirPrefix} ${parent}`
+    const dirCommand = `${isWin ? 'md' : 'mkdir -p'} ${parent}`
+    const commands = [dirCommand, copyCommand]
 
-    await runAsRoot(`${dirCommand} && ${copyCommand}`, why)
+    if (!isWin) {
+      commands.splice(1, 0, `chown -R \`whoami\` ${parent}`)
+    }
+
+    await runAsRoot(commands.join(' && '), why)
 
     await setPermissions()
     await ensurePath()
@@ -284,7 +289,7 @@ exports.getURL = async () => {
   }
 
   const forPlatform = release.assets.find(
-    asset => asset.platform === platformName()
+    asset => asset.name === platformName()
   )
 
   if (!forPlatform) {
@@ -310,9 +315,16 @@ exports.testBinary = async which => {
 
   // And then try to get the version
   // To see if the binary is even working
-  const cmd = await exec(`${which} -v`, {
-    cwd: homedir()
-  })
+  const cmd = await retry(
+    () => {
+      const cwd = homedir()
+      return exec(`${which} -v`, { cwd })
+    },
+    {
+      retries: 5,
+      factor: 1
+    }
+  )
 
   if (cmd.stdout) {
     const output = trimWhitespace(cmd.stdout.toString())

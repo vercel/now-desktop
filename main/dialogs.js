@@ -32,10 +32,9 @@ exports.runAsRoot = (command, why) => {
       icns: resolvePath('./main/static/icons/mac.icns')
     }
 
-    sudo.exec(command, options, async error => {
+    sudo.exec(command, options, error => {
       if (error) {
-        reject(error)
-        return
+        return reject(error)
       }
 
       resolve()
