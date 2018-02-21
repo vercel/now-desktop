@@ -236,7 +236,6 @@ exports.handleExisting = async next => {
   const copyCommand = `${copyPrefix} ${next} ${destFile}`
 
   const why = 'To place Now CLI in the correct location.'
-  console.log(process)
 
   try {
     await fs.ensureDir(parent)
