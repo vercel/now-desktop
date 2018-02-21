@@ -124,17 +124,17 @@ const platformName = () => {
   let name
 
   switch (original) {
-    case 'win32':
-      name = 'Windows'
-      break
     case 'darwin':
-      name = 'macOS'
+      name = 'now-macos'
+      break
+    case 'win32':
+      name = 'now-win.exe'
       break
     default:
       name = original
   }
 
-  return name
+  return `${name}.gz`
 }
 
 const canaryCheck = async () => {
@@ -289,7 +289,7 @@ exports.getURL = async () => {
   }
 
   const forPlatform = release.assets.find(
-    asset => asset.platform === platformName()
+    asset => asset.name === platformName()
   )
 
   if (!forPlatform) {
