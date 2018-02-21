@@ -19,8 +19,8 @@ shallow_clone: true
 test_script:
   - node --version
   - yarn --version
-  - yarn run test
+  - yarn test
 
 on_success:
-  - yarn run dist
+  - yarn dist
   - ps: Get-ChildItem .\dist\win\* | % { Push-AppveyorArtifact $_.FullName }
