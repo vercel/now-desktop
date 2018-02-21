@@ -107,7 +107,6 @@ class Feed extends Component {
     }
 
     // Update the feed of events for each team
-    // eslint-disable-next-line no-await-in-loop
     for (const team of teams) {
       const index = teams.indexOf(team)
 
@@ -121,6 +120,7 @@ class Feed extends Component {
 
       // It's important that this is being `await`ed
       try {
+        // eslint-disable-next-line no-await-in-loop
         await this.cacheEvents(team.id)
       } catch (err) {
         console.log(err)
