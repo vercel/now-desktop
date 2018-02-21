@@ -154,7 +154,9 @@ class Switcher extends Component {
           // both components reflect the online state
           this.props.onlineStateFeed()
         } catch (err) {
-          console.error(err)
+          if (isDev) {
+            console.error(err)
+          }
         }
 
         // Once everything is done or has failed,
