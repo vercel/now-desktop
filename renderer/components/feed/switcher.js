@@ -12,6 +12,7 @@ import {
 } from 'react-sortable-hoc'
 import makeUnique from 'make-unique'
 import ms from 'ms'
+import isDev from 'electron-is-dev'
 
 // Styles
 import {
@@ -152,7 +153,11 @@ class Switcher extends Component {
           // Also do the same for the feed, so that
           // both components reflect the online state
           this.props.onlineStateFeed()
-        } catch (err) {}
+        } catch (err) {
+          if (isDev) {
+            console.error(err)
+          }
+        }
 
         // Once everything is done or has failed,
         // try it again after some time.
@@ -339,6 +344,10 @@ class Switcher extends Component {
     const ordered = this.merge(currentData, newData)
     const copy = JSON.parse(JSON.stringify(ordered))
     const order = await this.getTeamOrder()
+
+    if (!order) {
+      return ordered
+    }
 
     for (const item of order) {
       const isPart = newData.find(team => {
