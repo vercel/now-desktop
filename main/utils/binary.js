@@ -241,7 +241,6 @@ exports.handleExisting = async next => {
     await fs.ensureDir(parent)
   } catch (err) {
     const dirPrefix = isWin ? 'md' : 'mkdir -p'
-
     const commands = [`${dirPrefix} ${parent}`, copyCommand]
 
     if (!isWin) {
