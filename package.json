@@ -11,11 +11,11 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron main",
-    "build": "next build renderer && next export renderer",
+    "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
-    "test": "xo",
-    "pack": "yarn build && build --dir",
-    "dist": "yarn build && build"
+    "test": "yarn lint && yarn dist && ava",
+    "lint": "xo",
+    "dist": "yarn build-renderer && build"
   },
   "build": {
     "appId": "co.zeit.now",
@@ -43,7 +43,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn test",
+      "yarn lint",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
@@ -116,6 +116,7 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
+    "ava": "1.0.0-beta.3",
     "electron": "1.8.2",
     "electron-builder": "20.0.8",
     "electron-builder-squirrel-windows": "20.0.5",
@@ -132,6 +133,7 @@
     "react-dom": "16.2.0",
     "react-refs": "3.0.4",
     "react-sortable-hoc": "0.6.8",
+    "spectron": "3.8.0",
     "strip": "3.0.0",
     "xo": "0.20.3"
   }
