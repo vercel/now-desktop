@@ -25,7 +25,8 @@ test('make sure we have 4 windows', async t => {
 })
 
 test('enter gibberish into the login field', async t => {
-  const value = Math.random()
+  const { random } = Math
+  const value = random()
     .toString(36)
     .split('.')[1]
   const selector = 'aside.login input'
