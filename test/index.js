@@ -7,27 +7,40 @@ const test = require('ava')
 const { Application } = require('spectron')
 const trim = require('trim')
 const ms = require('ms')
-const { remove, pathExists } = require('fs-extra')
+const { remove, pathExists, readJSON, writeJSON } = require('fs-extra')
 const sleep = require('sleep-promise')
 
 // Utilities
 const changeWindow = require('./helpers/switch')
 const getRandom = require('./helpers/random')
 
+const configDir = resolve(homedir(), '.now')
+
+const configFiles = {
+  auth: resolve(configDir, 'auth.json'),
+  config: resolve(configDir, 'config.json')
+}
+
 test.before(async t => {
   let suffix = '../dist/mac/Now.app/Contents/MacOS/Now'
+  let configContent
 
   if (process.platform === 'win32') {
     suffix = '../dist/win-unpacked/Now.exe'
   }
 
   const app = resolve(__dirname, suffix)
-  const config = resolve(homedir(), '.now')
+  const { auth, config } = configFiles
 
   // Remove the config directory to
   // simulate a new user starting the app
-  if (await pathExists(config)) {
-    await remove(config)
+  if (await pathExists(configDir)) {
+    configContent = {
+      auth: await readJSON(auth),
+      config: await readJSON(config)
+    }
+
+    await remove(configDir)
   }
 
   t.context = new Application({
@@ -36,6 +49,10 @@ test.before(async t => {
     waitTimeout: 10000
   })
 
+  // Save it so we can put it back after the tests
+  t.context.oldConfig = configContent
+
+  // Spawn the application
   await t.context.start()
 })
 
@@ -193,4 +210,15 @@ test('open tutorial from about window', async t => {
 
 test.after.always(async t => {
   await t.context.stop()
+  const { oldConfig } = t.context
+
+  if (!oldConfig) {
+    return
+  }
+
+  const { auth, config } = oldConfig
+  const options = { spaces: 2 }
+
+  await writeJSON(configFiles.auth, auth, options)
+  await writeJSON(configFiles.config, config, options)
 })
