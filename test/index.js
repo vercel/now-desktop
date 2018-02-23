@@ -60,7 +60,6 @@ test('submit gibberish in the login field', async t => {
 
 test('log in properly', async t => {
   const selector = 'aside.login input'
-  const address = `${getRandom(10)}@zeit.pub`
   const { client } = t.context
 
   // Blur the input element and focus again
@@ -89,7 +88,7 @@ test('log in properly', async t => {
 
   await Promise.all(movers)
 
-  await client.setValue(selector, address)
+  await client.setValue(selector, 'now-desktop@zeit.pub')
   await client.keys('Enter')
   await client.waitForExist('span.sub', ms('10s'))
 
@@ -127,9 +126,29 @@ test('open the event feed', async t => {
   await client.waitForVisible(event, ms('10s'))
 
   const content = await client.getText(event)
-  t.is(content, 'You logged in from Now Desktop on macOS')
+  t.is(content[0], 'You logged in from Now Desktop on macOS')
+})
+
+test('switch the event group', async t => {
+  const { client } = t.context
+
+  const toggler = '.toggle-filter'
+  const system = '.filter nav a:last-child'
+
+  await client.click(toggler)
+  await client.click(system)
+
+  const systemText = await client.getText(system)
+
+  if (systemText !== 'System') {
+    throw new Error("Button text doesn't match")
+  }
+
+  const content = await client.getText('section[name="scrollingSection"]')
+  t.true(content.includes('No Events Found'))
 })
 
 test.after.always(async t => {
+  await new Promise(resolve => setTimeout(resolve, 10000))
   await t.context.stop()
 })
