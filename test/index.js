@@ -140,10 +140,12 @@ test('move through the tutorial', async t => {
     index++
   }
 
-  const selector = '.slick-slide[data-index="3"] a'
-  const content = await client.getText(selector)
+  await sleep(ms('2s'))
 
-  t.is(content, 'GET STARTED')
+  const selector = '.slick-slide[data-index="3"] a'
+  await client.waitForExist(selector, ms('10s'))
+
+  t.is(await client.getText(selector), 'GET STARTED')
   t.true(await client.isVisibleWithinViewport(selector))
 })
 
@@ -154,6 +156,8 @@ test('open the event feed', async t => {
 
   await client.click(button)
   await changeWindow(t.context, 'feed')
+
+  await sleep(ms('2s'))
   await client.waitForVisible(event, ms('10s'))
 
   const content = await client.getText(event)
@@ -170,6 +174,8 @@ test('switch the event group', async t => {
   await client.click(toggler)
   await client.click(system)
 
+  await sleep(ms('2s'))
+
   t.is(await client.getText(system), 'System')
 
   // Bring it back to normal
@@ -184,9 +190,13 @@ test('search for something', async t => {
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
+  await sleep(ms('2s'))
+
   await client.waitForExist(field, ms('10s'))
   await client.click(field)
   await client.setValue(input, 'logged in')
+
+  await sleep(ms('2s'))
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
@@ -207,6 +217,8 @@ test('open tutorial from about window', async t => {
   const sub = '.has-mini-spacing + a + .sub'
 
   await changeWindow(t.context, 'about')
+
+  await sleep(ms('2s'))
   await client.waitForExist(target, ms('10s'))
 
   const text = await client.getText(target)
@@ -214,6 +226,8 @@ test('open tutorial from about window', async t => {
 
   await client.click(target)
   await changeWindow(t.context, 'tutorial')
+
+  await sleep(ms('2s'))
   await client.waitForExist(sub, ms('10s'))
 
   t.true(await client.isExisting(sub))
