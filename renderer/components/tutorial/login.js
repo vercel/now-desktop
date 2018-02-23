@@ -214,7 +214,6 @@ class LoginForm extends PureComponent {
 
     let finalToken
 
-    /* eslint-disable no-await-in-loop */
     do {
       await sleep(2500)
 
@@ -224,7 +223,6 @@ class LoginForm extends PureComponent {
 
       console.log('Waiting for token...')
     } while (!finalToken)
-    /* eslint-enable no-await-in-loop */
 
     if (!this.remote) {
       return
