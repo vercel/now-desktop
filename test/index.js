@@ -148,14 +148,18 @@ test('switch the event group', async t => {
 
 test('search for something', async t => {
   const { client } = t.context
+
   const field = '.light aside span'
   const event = '.event figcaption p'
+  const input = `${field} + [name="form"] input`
 
   await client.click(field)
-  await client.setValue(`${field} + [name="form"] input`, 'deploy')
+  await client.setValue(input, 'deploy')
 
   const content = await client.getText(event)
   t.true(content.includes('You deployed'))
+
+  await client.click(`${input} + b`)
 })
 
 test.after.always(async t => {
