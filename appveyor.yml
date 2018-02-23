@@ -22,5 +22,4 @@ test_script:
   - yarn test
 
 on_success:
-  - yarn dist
   - ps: Get-ChildItem .\dist\squirrel-windows\*.exe | % { Push-AppveyorArtifact $_.FullName }
