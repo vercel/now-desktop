@@ -184,6 +184,5 @@ test('open tutorial from about window', async t => {
 })
 
 test.after.always(async t => {
-  await new Promise(resolve => setTimeout(resolve, 10000))
   await t.context.stop()
 })
