@@ -13,7 +13,7 @@
     "start": "electron main",
     "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
-    "test": "yarn lint && yarn dist -p never && yarn robot",
+    "test": "yarn lint && yarn dist && yarn robot",
     "lint": "xo",
     "robot": "ava -s",
     "dist": "yarn build-renderer && build"

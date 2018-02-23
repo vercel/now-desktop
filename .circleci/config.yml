@@ -23,10 +23,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
+      - build
       - deploy:
           filters:
             tags:
