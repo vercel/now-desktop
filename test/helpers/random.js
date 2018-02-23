@@ -3,7 +3,7 @@ const { createHash } = require('crypto')
 
 module.exports = () => {
   const pre = Math.random().toString()
-  return createHash('sha1')
-    .update(pre)
-    .digest('hex')
+  const generator = createHash('sha1').update(pre)
+
+  return generator.digest('hex')
 }
