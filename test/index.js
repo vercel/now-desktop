@@ -9,6 +9,7 @@ const trim = require('trim')
 const ms = require('ms')
 const { remove, pathExists, readJSON, writeJSON } = require('fs-extra')
 const sleep = require('sleep-promise')
+const fkill = require('fkill')
 
 // Utilities
 const changeWindow = require('./helpers/switch')
@@ -27,6 +28,13 @@ test.before(async t => {
 
   if (process.platform === 'win32') {
     suffix = '../dist/win-unpacked/Now.exe'
+  }
+
+  // Close the existing app
+  if (!process.env.CI) {
+    try {
+      await fkill('Now')
+    } catch (err) {}
   }
 
   const app = resolve(__dirname, suffix)
