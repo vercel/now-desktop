@@ -54,7 +54,7 @@ test.before(async t => {
   t.context = new Application({
     path: app,
     startTimeout: 10000,
-    waitTimeout: 10000
+    waitTimeout: 30000
   })
 
   // Save it so we can put it back after the tests
@@ -184,9 +184,10 @@ test('search for something', async t => {
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
-  await client.waitForExist(field)
+  await client.waitForExist(field, ms('10s'))
   await client.click(field)
   await client.setValue(input, 'logged in')
+  await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
   const text = `You logged in from Now Desktop`
@@ -202,17 +203,20 @@ test('search for something', async t => {
 
 test('open tutorial from about window', async t => {
   const { client } = t.context
-  await changeWindow(t.context, 'about')
-
   const target = '.wrapper nav a:last-child'
-  const text = await client.getText(target)
+  const sub = '.has-mini-spacing + a + .sub'
 
+  await changeWindow(t.context, 'about')
+  await client.waitForExist(target, ms('10s'))
+
+  const text = await client.getText(target)
   t.is(text, 'Tutorial')
 
   await client.click(target)
   await changeWindow(t.context, 'tutorial')
+  await client.waitForExist(sub, ms('10s'))
 
-  t.true(await client.isExisting('.has-mini-spacing + a + .sub'))
+  t.true(await client.isExisting(sub))
 })
 
 test.after.always(async t => {

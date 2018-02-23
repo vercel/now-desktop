@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-or-deploy:
+  compile:
     macos:
       xcode: '9.2.0'
     steps:
@@ -14,4 +14,4 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-or-deploy
+      - compile
