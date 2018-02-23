@@ -8,6 +8,7 @@ const { Application } = require('spectron')
 const trim = require('trim')
 const ms = require('ms')
 const { remove, pathExists } = require('fs-extra')
+const sleep = require('sleep-promise')
 
 // Utilities
 const changeWindow = require('./helpers/switch')
@@ -94,6 +95,26 @@ test('log in properly', async t => {
 
   const content = await client.getText('p.has-mini-spacing + a')
   t.is(trim(content.join('')), 'START TUTORIAL')
+})
+
+test('move through the tutorial', async t => {
+  const next = '.slick-arrow.slick-next'
+  const { client } = t.context
+
+  let index = 0
+
+  while (index < 3) {
+    await client.click(next)
+    await sleep(500)
+
+    index++
+  }
+
+  const selector = '.slick-slide[data-index="3"] a'
+  const content = await client.getText(selector)
+
+  t.is(content, 'GET STARTED')
+  t.true(await client.isVisibleWithinViewport(selector))
 })
 
 test.after.always(async t => {
