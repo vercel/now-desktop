@@ -5,8 +5,7 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: node --version
-      - run: yarn
+      - run: yarn --ignore-engines
       - run: yarn test
       - run: yarn run dist -p 'never'
       - store_artifacts:
@@ -16,8 +15,7 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: node --version
-      - run: yarn
+      - run: yarn --ignore-engines
       - run: yarn test
       - run: yarn run dist
       - store_artifacts:
