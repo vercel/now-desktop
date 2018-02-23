@@ -157,7 +157,13 @@ test('search for something', async t => {
   await client.setValue(input, 'deploy')
 
   const content = await client.getText(event)
-  t.true(content.includes('You deployed'))
+  const text = 'You deployed'
+
+  if (Array.isArray(content)) {
+    t.truthy(content.find(text => text.includes(text)))
+  } else {
+    t.true(content.includes(text))
+  }
 
   await client.click(`${input} + b`)
 })
