@@ -4,9 +4,12 @@ const { resolve } = require('path')
 // Packages
 const test = require('ava')
 const { Application } = require('spectron')
+const trim = require('trim')
+const ms = require('ms')
 
 // Utilities
 const changeWindow = require('./helpers/switch')
+const getRandom = require('./helpers/random')
 
 test.before(async t => {
   const path = resolve(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
@@ -24,16 +27,15 @@ test('make sure we have 4 windows', async t => {
   t.is(await t.context.client.getWindowCount(), 4)
 })
 
+test('switch to the tutorial window', async t => {
+  t.true(await changeWindow(t.context, 'tutorial'))
+})
+
 test('enter gibberish into the login field', async t => {
-  const { random } = Math
-  const value = random()
-    .toString(36)
-    .split('.')[1]
+  const value = getRandom()
   const selector = 'aside.login input'
 
-  await changeWindow(t.context, 'tutorial')
   await t.context.client.setValue(selector, value)
-
   t.is(await t.context.client.getValue(selector), value)
 })
 
@@ -46,7 +48,46 @@ test('submit gibberish in the login field', async t => {
   t.true(classes.split(' ').includes('error'))
 })
 
+test('log in properly', async t => {
+  const selector = 'aside.login input'
+  const address = `${getRandom(10)}@zeit.pub`
+  const { client } = t.context
+
+  // Blur the input element and focus again
+  await client.keys('Escape')
+  await client.click(selector)
+
+  const value = await client.getValue(selector)
+
+  let movers = []
+  let i = 0
+
+  while (i < value.length) {
+    movers.push(client.keys('ArrowRight'))
+    i++
+  }
+
+  await Promise.all(movers)
+
+  movers = []
+  i = 0
+
+  while (i < value.length) {
+    movers.push(client.keys('Backspace'))
+    i++
+  }
+
+  await Promise.all(movers)
+
+  await client.setValue(selector, address)
+  await client.keys('Enter')
+  await client.waitForExist('span.sub', ms('10s'))
+
+  const content = await client.getText('p.has-mini-spacing + a')
+  t.is(trim(content.join('')), 'START TUTORIAL')
+})
+
 test.after.always(async t => {
-  await new Promise(resolve => setTimeout(resolve, 5000))
+  await new Promise(resolve => setTimeout(resolve, 10000))
   await t.context.stop()
 })
