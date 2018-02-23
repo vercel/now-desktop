@@ -5,9 +5,8 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: yarn
+      - run: yarn --ignore-engines
       - run: yarn test
-      - run: yarn run dist -p 'never'
       - store_artifacts:
           path: dist/*
   deploy:
@@ -15,9 +14,8 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: yarn
-      - run: yarn test
-      - run: yarn run dist
+      - run: yarn --ignore-engines
+      - run: yarn dist
       - store_artifacts:
           path: dist/*
 
@@ -27,9 +25,11 @@ workflows:
     jobs:
       - build:
           filters:
-            branches:
-              only: master
+            tags:
+              ignore: /.*/
       - deploy:
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /.*/

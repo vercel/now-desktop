@@ -120,7 +120,6 @@ class Feed extends Component {
 
       // It's important that this is being `await`ed
       try {
-        // eslint-disable-next-line no-await-in-loop
         await this.cacheEvents(team.id)
       } catch (err) {
         console.log(err)
