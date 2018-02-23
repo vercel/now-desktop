@@ -134,11 +134,28 @@ test('switch the event group', async t => {
 
   const toggler = '.toggle-filter'
   const system = '.filter nav a:last-child'
+  const me = '.filter nav a:first-child'
 
   await client.click(toggler)
   await client.click(system)
 
   t.is(await client.getText(system), 'System')
+
+  // Bring it back to normal
+  await client.click(me)
+  await client.click(toggler)
+})
+
+test('search for something', async t => {
+  const { client } = t.context
+  const field = '.light aside span'
+  const event = '.event figcaption p'
+
+  await client.click(field)
+  await client.setValue(`${field} + [name="form"] input`, 'deploy')
+
+  const content = await client.getText(event)
+  t.true(content.includes('You deployed'))
 })
 
 test.after.always(async t => {
