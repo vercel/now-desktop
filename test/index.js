@@ -162,6 +162,21 @@ test('search for something', async t => {
   await client.click(`${input} + b`)
 })
 
+test('open tutorial from about window', async t => {
+  const { client } = t.context
+  await changeWindow(t.context, 'about')
+
+  const target = '.wrapper nav a:last-child'
+  const text = await client.getText(target)
+
+  t.is(text, 'Tutorial')
+
+  await client.click(target)
+  await changeWindow(t.context, 'tutorial')
+
+  t.true(await client.isExisting('.has-mini-spacing + a + .sub'))
+})
+
 test.after.always(async t => {
   await new Promise(resolve => setTimeout(resolve, 10000))
   await t.context.stop()
