@@ -14,8 +14,16 @@ const sleep = require('sleep-promise')
 const changeWindow = require('./helpers/switch')
 const getRandom = require('./helpers/random')
 
+const isWin = process.platform === 'win32'
+
 test.before(async t => {
-  const app = resolve(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
+  let suffix = '../dist/mac/Now.app/Contents/MacOS/Now'
+
+  if (isWin) {
+    suffix = '../dist/win-unpacked/Now.exe'
+  }
+
+  const app = resolve(__dirname, suffix)
   const config = resolve(homedir(), '.now')
 
   // Remove the config directory to
@@ -126,7 +134,9 @@ test('open the event feed', async t => {
   await client.waitForVisible(event, ms('10s'))
 
   const content = await client.getText(event)
-  t.is(content[0], 'You logged in from Now Desktop on macOS')
+  const os = isWin ? 'Windows' : 'macOS'
+
+  t.is(content[0], `You logged in from Now Desktop on ${os}`)
 })
 
 test('switch the event group', async t => {
@@ -154,10 +164,13 @@ test('search for something', async t => {
   const input = `${field} + [name="form"] input`
 
   await client.click(field)
-  await client.setValue(input, 'deploy')
+  await client.setValue(input, 'logged in')
+
+  await new Promise(resolve => setTimeout(resolve, 10000))
 
   const content = await client.getText(event)
-  const text = 'You deployed'
+  const os = isWin ? 'Windows' : 'macOS'
+  const text = `You logged in from Now Desktop on ${os}`
 
   if (Array.isArray(content)) {
     t.truthy(content.find(text => text.includes(text)))
