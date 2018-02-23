@@ -53,8 +53,8 @@ test.before(async t => {
 
   t.context = new Application({
     path: app,
-    startTimeout: 10000,
-    waitTimeout: 30000
+    startTimeout: ms('10s'),
+    waitTimeout: ms('30s')
   })
 
   // Save it so we can put it back after the tests
