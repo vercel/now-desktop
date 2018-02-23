@@ -7,7 +7,6 @@ jobs:
       - checkout
       - run: yarn --ignore-engines
       - run: yarn test
-      - run: yarn run dist -p 'never'
       - store_artifacts:
           path: dist/*
   deploy:
