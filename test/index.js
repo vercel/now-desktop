@@ -184,10 +184,9 @@ test('search for something', async t => {
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
+  await client.waitForExist(field)
   await client.click(field)
   await client.setValue(input, 'logged in')
-
-  await new Promise(resolve => setTimeout(resolve, 10000))
 
   const content = await client.getText(event)
   const text = `You logged in from Now Desktop`
