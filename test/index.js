@@ -14,12 +14,10 @@ const sleep = require('sleep-promise')
 const changeWindow = require('./helpers/switch')
 const getRandom = require('./helpers/random')
 
-const isWin = process.platform === 'win32'
-
 test.before(async t => {
   let suffix = '../dist/mac/Now.app/Contents/MacOS/Now'
 
-  if (isWin) {
+  if (process.platform === 'win32') {
     suffix = '../dist/win-unpacked/Now.exe'
   }
 
@@ -134,9 +132,7 @@ test('open the event feed', async t => {
   await client.waitForVisible(event, ms('10s'))
 
   const content = await client.getText(event)
-  const os = isWin ? 'Windows' : 'macOS'
-
-  t.is(content[0], `You logged in from Now Desktop on ${os}`)
+  t.true(content[0].includes('You logged in from Now Desktop'))
 })
 
 test('switch the event group', async t => {
@@ -169,8 +165,7 @@ test('search for something', async t => {
   await new Promise(resolve => setTimeout(resolve, 10000))
 
   const content = await client.getText(event)
-  const os = isWin ? 'Windows' : 'macOS'
-  const text = `You logged in from Now Desktop on ${os}`
+  const text = `You logged in from Now Desktop`
 
   if (Array.isArray(content)) {
     t.truthy(content.find(item => item.includes(text)))
