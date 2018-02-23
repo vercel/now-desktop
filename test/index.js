@@ -138,14 +138,7 @@ test('switch the event group', async t => {
   await client.click(toggler)
   await client.click(system)
 
-  const systemText = await client.getText(system)
-
-  if (systemText !== 'System') {
-    throw new Error("Button text doesn't match")
-  }
-
-  const content = await client.getText('section[name="scrollingSection"]')
-  t.true(content.includes('No Events Found'))
+  t.is(await client.getText(system), 'System')
 })
 
 test.after.always(async t => {
