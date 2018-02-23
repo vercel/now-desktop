@@ -5,6 +5,7 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
+      - run: node --version
       - run: yarn
       - run: yarn test
       - run: yarn run dist -p 'never'
@@ -15,6 +16,7 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
+      - run: node --version
       - run: yarn
       - run: yarn test
       - run: yarn run dist
