@@ -15,8 +15,7 @@ jobs:
     steps:
       - checkout
       - run: yarn --ignore-engines
-      - run: yarn test
-      - run: yarn run dist
+      - run: yarn dist
       - store_artifacts:
           path: dist/*
 
