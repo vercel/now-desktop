@@ -117,6 +117,19 @@ test('move through the tutorial', async t => {
   t.true(await client.isVisibleWithinViewport(selector))
 })
 
+test('open the event feed', async t => {
+  const { client } = t.context
+  const button = '.slick-slide[data-index="3"] a'
+  const event = '.event figcaption p'
+
+  await client.click(button)
+  await changeWindow(t.context, 'feed')
+  await client.waitForVisible(event, ms('10s'))
+
+  const content = await client.getText(event)
+  t.is(content, 'You logged in from Now Desktop on macOS')
+})
+
 test.after.always(async t => {
   await t.context.stop()
 })
