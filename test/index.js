@@ -173,7 +173,7 @@ test('search for something', async t => {
   const text = `You logged in from Now Desktop on ${os}`
 
   if (Array.isArray(content)) {
-    t.truthy(content.find(text => text.includes(text)))
+    t.truthy(content.find(item => item.includes(text)))
   } else {
     t.true(content.includes(text))
   }
