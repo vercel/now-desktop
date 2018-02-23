@@ -1,21 +1,30 @@
 // Native
 const { resolve } = require('path')
+const { homedir } = require('os')
 
 // Packages
 const test = require('ava')
 const { Application } = require('spectron')
 const trim = require('trim')
 const ms = require('ms')
+const { remove, pathExists } = require('fs-extra')
 
 // Utilities
 const changeWindow = require('./helpers/switch')
 const getRandom = require('./helpers/random')
 
 test.before(async t => {
-  const path = resolve(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
+  const app = resolve(__dirname, '../dist/mac/Now.app/Contents/MacOS/Now')
+  const config = resolve(homedir(), '.now')
+
+  // Remove the config directory to
+  // simulate a new user starting the app
+  if (await pathExists(config)) {
+    await remove(config)
+  }
 
   t.context = new Application({
-    path,
+    path: app,
     startTimeout: 10000,
     waitTimeout: 10000
   })
@@ -88,6 +97,5 @@ test('log in properly', async t => {
 })
 
 test.after.always(async t => {
-  await new Promise(resolve => setTimeout(resolve, 10000))
   await t.context.stop()
 })
