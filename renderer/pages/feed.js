@@ -488,7 +488,7 @@ class Feed extends Component {
   setScopeWithSlug = slug => {
     const detected = this.detectScope('slug', slug)
 
-    if (detected) {
+    if (detected && this.state.scope !== detected.id) {
       this.setScope(detected.id)
     }
   }
