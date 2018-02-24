@@ -36,7 +36,9 @@ class End extends Component {
           below to view the event feed:
         </p>
 
-        <Button onClick={this.showApp}>Get Started</Button>
+        <Button onClick={this.showApp} className="get-started">
+          Get Started
+        </Button>
         <style jsx>{introStyles}</style>
       </article>
     )

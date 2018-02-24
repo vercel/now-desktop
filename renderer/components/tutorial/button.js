@@ -17,9 +17,10 @@ class Button extends PureComponent {
   }
 
   render() {
-    const classes = []
+    const { disabled, title, className } = this.props
+    const classes = className ? className.split(' ') : []
 
-    if (this.props.disabled) {
+    if (disabled) {
       classes.push('disabled')
     }
 
@@ -29,8 +30,8 @@ class Button extends PureComponent {
       className: classes.join(' ')
     }
 
-    if (this.props.title) {
-      options.title = this.props.title
+    if (title) {
+      options.title = title
       options.style = { cursor: 'help' }
     }
 
@@ -47,7 +48,8 @@ Button.propTypes = {
   onClick: func,
   disabled: bool,
   children: string,
-  title: string
+  title: string,
+  className: string
 }
 
 export default Button

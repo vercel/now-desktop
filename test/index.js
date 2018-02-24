@@ -128,33 +128,31 @@ test('log in properly', async t => {
 })
 
 test('move through the tutorial', async t => {
-  const next = '.slick-arrow.slick-next'
   const { client } = t.context
-
   let index = 0
 
   while (index < 3) {
-    await client.click(next)
+    await client.click('.slick-next')
     await sleep(500)
 
     index++
   }
 
-  const selector = '.slick-slide[data-index="3"] a'
-  await client.waitForExist(selector, ms('10s'))
+  const button = '.get-started'
+  await client.waitForExist(button, ms('10s'))
 
-  t.is(await client.getText(selector), 'GET STARTED')
-  t.true(await client.isVisibleWithinViewport(selector))
+  t.is(await client.getText(button), 'GET STARTED')
+  t.true(await client.isVisibleWithinViewport(button))
 })
 
 test('open the event feed', async t => {
   const { client } = t.context
-  const button = '.slick-slide[data-index="3"] a'
+  const button = '.get-started'
   const event = '.event figcaption p'
 
   await client.click(button)
   await changeWindow(t.context, 'feed')
-  await client.waitForVisible(event, ms('10s'))
+  await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
   t.true(content[0].includes('You logged in from Now Desktop'))
