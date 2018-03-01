@@ -50,7 +50,8 @@ class EventMessage extends PureComponent {
 
     this.menu.popup({
       x: event.clientX,
-      y: event.clientY
+      y: event.clientY,
+      async: true
     })
   }
 
