@@ -129,9 +129,11 @@ class Feed extends Component {
 
   getEventTypes() {
     const auto = new Set([
+      'scale',
       'scale-auto',
       'deployment-freeze',
-      'deployment-unfreeze'
+      'deployment-unfreeze',
+      'cert-autorenew'
     ])
 
     const all = new Set(messageComponents.keys())
