@@ -15,7 +15,7 @@
     "build-app": "build",
     "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
-    "test": "yarn lint && yarn build -p 'never' && yarn test-integration",
+    "test": "yarn test-lint && yarn build -p 'never' && yarn test-integration",
     "test-lint": "xo",
     "test-integration": "ava -s"
   },
