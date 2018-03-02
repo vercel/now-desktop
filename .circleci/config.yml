@@ -1,17 +1,110 @@
 version: 2
 jobs:
-  compile:
+
+  install:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "yarn.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: Installing Dependencies
+          command: yarn --ignore-engines
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+
+  build:
     macos:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: yarn --ignore-engines
-      - run: yarn test
+      - attach_workspace:
+          at: .
+      - run:
+          name: Building Renderer
+          command: yarn build-renderer
+      - run:
+          name: Bundling Application
+          command: yarn build-app -p 'never'
       - store_artifacts:
           path: dist/*
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+
+  test-lint:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Linting Code
+          command: yarn test-lint
+
+  test-integration:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Testing Application
+          command: yarn test-integration
+
+  deploy:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - run: yarn build-app
 
 workflows:
   version: 2
   build:
     jobs:
-      - compile
+      - install:
+          filters:
+            tags:
+              only: /.*/
+      - build:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /.*/
+      - test-lint:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - test-integration:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - deploy:
+          requires:
+            - test-lint
+            - test-unit
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/

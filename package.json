@@ -11,12 +11,13 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron main",
+    "build": "yarn build-renderer && yarn build-app",
+    "build-app": "build",
     "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
-    "test": "yarn lint && yarn dist && yarn robot",
-    "lint": "xo",
-    "robot": "ava -s",
-    "dist": "yarn build-renderer && build"
+    "test": "yarn lint && yarn build -p 'never' && yarn test-integration",
+    "test-lint": "xo",
+    "test-integration": "ava -s"
   },
   "build": {
     "appId": "co.zeit.now",
@@ -44,7 +45,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn lint",
+      "yarn test-lint",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
