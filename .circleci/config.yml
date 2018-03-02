@@ -36,7 +36,7 @@ jobs:
           command: yarn build-renderer
       - run:
           name: Bundling Application
-          command: yarn build-app -p 'never'
+          command: yarn build-app --publish 'never'
       - store_artifacts:
           path: dist/*
       - persist_to_workspace:
