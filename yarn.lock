@@ -513,57 +513,17 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-app-builder-bin-linux@1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-linux/-/app-builder-bin-linux-1.3.8.tgz#138eaddce970fb485b715e8c3cd88064aee4efb4"
-
-app-builder-bin-linux@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-linux/-/app-builder-bin-linux-1.4.1.tgz#00eca4fbd3e9bdb04073b94b06c5a2c4a659f3d1"
-
 app-builder-bin-linux@1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/app-builder-bin-linux/-/app-builder-bin-linux-1.5.0.tgz#c22df1ab9ee7fb0270ec27a3c8a6993966ea4220"
-
-app-builder-bin-mac@1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-mac/-/app-builder-bin-mac-1.3.8.tgz#ca7fa326ffeea0eb70cbdce1715ebb27b2ebb7a2"
-
-app-builder-bin-mac@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-mac/-/app-builder-bin-mac-1.4.1.tgz#7385b1ed97e58ac4d8e3dc3b5dc6d76b67d97d8d"
 
 app-builder-bin-mac@1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/app-builder-bin-mac/-/app-builder-bin-mac-1.5.0.tgz#40821128a1f20e0559f1fca71a59ecab81bb59b5"
 
-app-builder-bin-win@1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-win/-/app-builder-bin-win-1.3.8.tgz#5f48cbe5ca9b200a11b7f786c7de486b53543df9"
-
-app-builder-bin-win@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/app-builder-bin-win/-/app-builder-bin-win-1.4.1.tgz#30806d14b13bdb7fce4021a7d4f5a9c9ecc9708e"
-
 app-builder-bin-win@1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/app-builder-bin-win/-/app-builder-bin-win-1.5.0.tgz#0a12437d825ac89fc2357e8be0ba855f54c083e9"
-
-app-builder-bin@1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-1.3.8.tgz#f0f2f41d5fa30aad7b2543d7263d2139c8a918ec"
-  optionalDependencies:
-    app-builder-bin-linux "1.3.8"
-    app-builder-bin-mac "1.3.8"
-    app-builder-bin-win "1.3.8"
-
-app-builder-bin@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-1.4.1.tgz#3ae86df2d3eb624ad93d097abe986fe07c2f5aca"
-  optionalDependencies:
-    app-builder-bin-linux "1.4.1"
-    app-builder-bin-mac "1.4.1"
-    app-builder-bin-win "1.4.1"
 
 app-builder-bin@1.5.0:
   version "1.5.0"
@@ -731,9 +691,9 @@ async-limiter@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
 
-async-retry@1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/async-retry/-/async-retry-1.1.4.tgz#e0edb546600f19bf90f892e9494faa9e19baf190"
+async-retry@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/async-retry/-/async-retry-1.2.1.tgz#308c6c4e1d91e63397a4676290334ae9bda7bcb1"
   dependencies:
     retry "0.10.1"
 
@@ -1714,45 +1674,7 @@ builder-util-runtime@4.0.5, builder-util-runtime@^4.0.5:
     fs-extra-p "^4.5.0"
     sax "^1.2.4"
 
-builder-util@5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-5.4.1.tgz#a387252162bca5a54e8ed979f2a45a63fc3d7b42"
-  dependencies:
-    "7zip-bin" "~3.1.0"
-    app-builder-bin "1.3.8"
-    bluebird-lst "^1.0.5"
-    builder-util-runtime "^4.0.5"
-    chalk "^2.3.0"
-    debug "^3.1.0"
-    fs-extra-p "^4.5.2"
-    is-ci "^1.1.0"
-    js-yaml "^3.10.0"
-    lazy-val "^1.0.3"
-    semver "^5.5.0"
-    source-map-support "^0.5.3"
-    stat-mode "^0.2.2"
-    temp-file "^3.1.1"
-
-builder-util@5.5.1, builder-util@~5.5.0:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-5.5.1.tgz#197f3606fd75967a154092d7810024258df86d66"
-  dependencies:
-    "7zip-bin" "~3.1.0"
-    app-builder-bin "1.4.1"
-    bluebird-lst "^1.0.5"
-    builder-util-runtime "^4.0.5"
-    chalk "^2.3.0"
-    debug "^3.1.0"
-    fs-extra-p "^4.5.2"
-    is-ci "^1.1.0"
-    js-yaml "^3.10.0"
-    lazy-val "^1.0.3"
-    semver "^5.5.0"
-    source-map-support "^0.5.3"
-    stat-mode "^0.2.2"
-    temp-file "^3.1.1"
-
-builder-util@^5.3.0, builder-util@^5.5.0:
+builder-util@5.6.0, builder-util@^5.6.0:
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-5.6.0.tgz#c37c5207cd818531bda819ac836b6d51dfbccd4a"
   dependencies:
@@ -2669,14 +2591,14 @@ dir-glob@^2.0.0:
     arrify "^1.0.1"
     path-type "^3.0.0"
 
-dmg-builder@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/dmg-builder/-/dmg-builder-4.1.0.tgz#40b6ce05b59a3baebd69680a1f2875b1ff475e24"
+dmg-builder@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/dmg-builder/-/dmg-builder-4.1.1.tgz#a12214eb3eb3cba0addccfd129f1981c9805045c"
   dependencies:
     bluebird-lst "^1.0.5"
-    builder-util "^5.3.0"
-    electron-builder-lib "~20.0.5"
-    fs-extra-p "^4.5.0"
+    builder-util "^5.6.0"
+    electron-builder-lib "~20.2.0"
+    fs-extra-p "^4.5.2"
     iconv-lite "^0.4.19"
     js-yaml "^3.10.0"
     parse-color "^1.0.0"
@@ -2788,21 +2710,21 @@ ejs@^2.5.7, ejs@~2.5.6:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.7.tgz#cc872c168880ae3c7189762fd5ffc00896c9518a"
 
-electron-builder-lib@20.1.1:
-  version "20.1.1"
-  resolved "https://registry.yarnpkg.com/electron-builder-lib/-/electron-builder-lib-20.1.1.tgz#47ae43f3b2856b77b85ddccc7bf8a5afece98ad0"
+electron-builder-lib@20.2.0, electron-builder-lib@~20.2.0:
+  version "20.2.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-lib/-/electron-builder-lib-20.2.0.tgz#e8dba288cf26858803eb1800da870d7312837bfa"
   dependencies:
     "7zip-bin" "~3.1.0"
-    app-builder-bin "1.4.1"
+    app-builder-bin "1.5.0"
     async-exit-hook "^2.0.1"
     bluebird-lst "^1.0.5"
-    builder-util "5.5.1"
+    builder-util "5.6.0"
     builder-util-runtime "4.0.5"
     chromium-pickle-js "^0.2.0"
     debug "^3.1.0"
     ejs "^2.5.7"
     electron-osx-sign "0.4.8"
-    electron-publish "20.1.0"
+    electron-publish "20.2.0"
     fs-extra-p "^4.5.2"
     hosted-git-info "^2.5.0"
     is-ci "^1.1.0"
@@ -2817,57 +2739,28 @@ electron-builder-lib@20.1.1:
     semver "^5.5.0"
     temp-file "^3.1.1"
 
-electron-builder-lib@~20.0.5:
-  version "20.0.9"
-  resolved "https://registry.yarnpkg.com/electron-builder-lib/-/electron-builder-lib-20.0.9.tgz#62d06eb8536ee6d85f82f9416c6e452dffa4734f"
-  dependencies:
-    "7zip-bin" "~3.1.0"
-    app-builder-bin "1.3.8"
-    async-exit-hook "^2.0.1"
-    bluebird-lst "^1.0.5"
-    builder-util "5.4.1"
-    builder-util-runtime "4.0.5"
-    chromium-pickle-js "^0.2.0"
-    debug "^3.1.0"
-    ejs "^2.5.7"
-    electron-osx-sign "0.4.8"
-    electron-publish "20.0.6"
-    fs-extra-p "^4.5.2"
-    hosted-git-info "^2.5.0"
-    is-ci "^1.1.0"
-    isbinaryfile "^3.0.2"
-    js-yaml "^3.10.0"
-    lazy-val "^1.0.3"
-    minimatch "^3.0.4"
-    normalize-package-data "^2.4.0"
-    plist "^2.1.0"
-    read-config-file "3.0.0"
-    sanitize-filename "^1.6.1"
-    semver "^5.5.0"
-    temp-file "^3.1.1"
-
-electron-builder-squirrel-windows@20.1.0:
-  version "20.1.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.1.0.tgz#46d4bf2324d27c0b501ac86b67c77d01bcb8d782"
+electron-builder-squirrel-windows@20.2.0:
+  version "20.2.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.2.0.tgz#7638a2b213ecad25a04b35c44a08138a3cffc727"
   dependencies:
     archiver "^2.1.1"
     bluebird-lst "^1.0.5"
-    builder-util "~5.5.0"
+    builder-util "^5.6.0"
     fs-extra-p "^4.5.2"
     sanitize-filename "^1.6.1"
   optionalDependencies:
     "7zip-bin" "~3.1.0"
 
-electron-builder@20.1.1:
-  version "20.1.1"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.1.1.tgz#5a3ec74e87485ca9dc5c43706cefdd43592f9a58"
+electron-builder@20.2.0:
+  version "20.2.0"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.2.0.tgz#aaeaa439cb96c9a3d7ffda25b28130327c982982"
   dependencies:
     bluebird-lst "^1.0.5"
-    builder-util "5.5.1"
+    builder-util "5.6.0"
     builder-util-runtime "4.0.5"
     chalk "^2.3.0"
-    dmg-builder "4.1.0"
-    electron-builder-lib "20.1.1"
+    dmg-builder "4.1.1"
+    electron-builder-lib "20.2.0"
     electron-download-tf "4.3.4"
     fs-extra-p "^4.5.2"
     is-ci "^1.1.0"
@@ -2930,9 +2823,9 @@ electron-is-dev@0.3.0, electron-is-dev@>=0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.3.0.tgz#14e6fda5c68e9e4ecbeff9ccf037cbd7c05c5afe"
 
-electron-next@3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/electron-next/-/electron-next-3.1.3.tgz#3c489d96f17eea799bbb0eb22a419c987639a19b"
+electron-next@3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/electron-next/-/electron-next-3.1.4.tgz#e8de2d066d108cf85302b255eb9c31009f60df11"
   dependencies:
     app-root-path ">=2.0.1"
     electron-is-dev ">=0.3.0"
@@ -2948,24 +2841,12 @@ electron-osx-sign@0.4.8:
     minimist "^1.2.0"
     plist "^2.1.0"
 
-electron-publish@20.0.6:
-  version "20.0.6"
-  resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-20.0.6.tgz#24a3c508428eea31813e064f80468f626dff1d87"
+electron-publish@20.2.0:
+  version "20.2.0"
+  resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-20.2.0.tgz#1812738c4a4e14a8e156a9a083424a6e4e8e8264"
   dependencies:
     bluebird-lst "^1.0.5"
-    builder-util "^5.3.0"
-    builder-util-runtime "^4.0.5"
-    chalk "^2.3.0"
-    fs-extra-p "^4.5.2"
-    lazy-val "^1.0.3"
-    mime "^2.2.0"
-
-electron-publish@20.1.0:
-  version "20.1.0"
-  resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-20.1.0.tgz#a1d84b8209cfa4a48407dd7e7f6d9d65c6711e63"
-  dependencies:
-    bluebird-lst "^1.0.5"
-    builder-util "^5.5.0"
+    builder-util "^5.6.0"
     builder-util-runtime "^4.0.5"
     chalk "^2.3.0"
     fs-extra-p "^4.5.2"
@@ -6490,7 +6371,11 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-prettier@1.10.2, prettier@~1.10.2:
+prettier@1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.11.1.tgz#61e43fc4cd44e68f2b0dfc2c38cd4bb0fccdcc75"
+
+prettier@~1.10.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.10.2.tgz#1af8356d1842276a99a5b5529c82dd9e9ad3cc93"
 
@@ -6581,7 +6466,7 @@ prop-types@15.6.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@15.6.1, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -6727,9 +6612,9 @@ react-refs@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-refs/-/react-refs-3.0.4.tgz#dcff7224b0bfa46039e17d1c06807a02a9051505"
 
-react-slick@0.18.1:
-  version "0.18.1"
-  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.18.1.tgz#9dd119af80d2f1276213b6fe04ff39edca12d9a1"
+react-slick@0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.19.0.tgz#dade3b34c24db0b09a27911b308fcdd53baa592d"
   dependencies:
     can-use-dom "^0.1.0"
     classnames "^2.2.5"
