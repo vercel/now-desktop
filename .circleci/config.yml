@@ -41,6 +41,8 @@ jobs:
           root: .
           paths:
             - dist
+            - renderer/.next
+            - renderer/out
 
   test-lint:
     macos:
