@@ -11,12 +11,13 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron main",
+    "build": "yarn build-renderer && yarn build-app",
+    "build-app": "build",
     "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
-    "test": "yarn lint && yarn dist && yarn robot",
-    "lint": "xo",
-    "robot": "ava -s",
-    "dist": "yarn build-renderer && build"
+    "test": "yarn test-lint && yarn build -p never && yarn test-integration",
+    "test-lint": "xo",
+    "test-integration": "ava -s"
   },
   "build": {
     "appId": "co.zeit.now",
@@ -44,7 +45,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn lint",
+      "yarn test-lint",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
@@ -73,7 +74,7 @@
   "dependencies": {
     "app-root-path": "2.0.1",
     "arr-flatten": "1.1.0",
-    "async-retry": "1.1.4",
+    "async-retry": "1.2.1",
     "babel-eslint": "8.2.2",
     "bytes": "3.0.0",
     "chalk": "2.3.1",
@@ -85,7 +86,7 @@
     "docker-file-parser": "1.0.3",
     "dot-prop": "4.2.0",
     "electron-is-dev": "0.3.0",
-    "electron-next": "3.1.3",
+    "electron-next": "3.1.4",
     "electron-squirrel-startup": "1.0.0",
     "first-run": "1.2.0",
     "fix-path": "2.1.0",
@@ -104,7 +105,7 @@
     "path-exists": "3.0.0",
     "promisepipe": "2.1.1",
     "react-input-autosize": "2.2.1",
-    "react-slick": "0.18.1",
+    "react-slick": "0.19.0",
     "resumer": "0.0.0",
     "semver": "5.5.0",
     "serialize-error": "2.1.0",
@@ -120,8 +121,8 @@
   "devDependencies": {
     "ava": "1.0.0-beta.3",
     "electron": "1.8.2",
-    "electron-builder": "20.1.1",
-    "electron-builder-squirrel-windows": "20.1.0",
+    "electron-builder": "20.2.0",
+    "electron-builder-squirrel-windows": "20.2.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-react": "7.7.0",
     "fkill": "5.2.0",
@@ -130,8 +131,8 @@
     "jquery": "3.3.1",
     "lint-staged": "7.0.0",
     "next": "5.0.0",
-    "prettier": "1.10.2",
-    "prop-types": "15.6.0",
+    "prettier": "1.11.1",
+    "prop-types": "15.6.1",
     "react": "16.2.0",
     "react-dom": "16.2.0",
     "react-refs": "3.0.4",
