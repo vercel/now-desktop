@@ -102,7 +102,7 @@ workflows:
       - deploy:
           requires:
             - test-lint
-            - test-unit
+            - test-integration
           filters:
             tags:
               only: /.*/
