@@ -2,8 +2,8 @@ version: 2
 jobs:
 
   install:
-    docker:
-      - image: circleci/node:latest
+    macos:
+      xcode: '9.2.0'
     working_directory: ~/repo
     steps:
       - checkout
