@@ -63,7 +63,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Testing Application
+          name: Running Integration Tests
           command: yarn test-integration
 
   deploy:
@@ -71,7 +71,9 @@ jobs:
       xcode: '9.2.0'
     steps:
       - checkout
-      - run: yarn build-app
+      - run:
+          name: Deploying to GitHub
+          command: yarn build-app
 
 workflows:
   version: 2
