@@ -2,8 +2,7 @@
 
 [![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
 [![Windows CI status](https://ci.appveyor.com/api/projects/status/8cgv7c7v45dw82vg?svg=true)](https://ci.appveyor.com/project/zeit/now-desktop)
-[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/now)
 
 For more details about Now and why you should use it, head to [this page](https://zeit.co/now).
 
