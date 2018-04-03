@@ -202,7 +202,7 @@ exports.saveConfig = async (data, type) => {
   })
 }
 
-const configChanged = async (file, logout) => {
+const configChanged = async file => {
   if (!global.windows || !configWatcher) {
     return
   }
@@ -218,7 +218,7 @@ const configChanged = async (file, logout) => {
   try {
     content = await exports.getConfig()
   } catch (err) {
-    logout('config-removed')
+    console.error(err)
     return
   }
 
@@ -270,7 +270,7 @@ exports.watchConfig = async () => {
   // Start watching the config file and
   // inform the renderer about changes inside it
   configWatcher = watch(toWatch)
-  configWatcher.on('change', file => configChanged(file, logout))
+  configWatcher.on('change', file => configChanged(file))
 
   // Log out when a config file is removed
   configWatcher.on('unlink', () => logout('config-removed'))
