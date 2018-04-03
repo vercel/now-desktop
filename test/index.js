@@ -1,6 +1,7 @@
 // Native
 const { resolve } = require('path')
 const { homedir } = require('os')
+const { randomBytes } = require('crypto')
 
 // Packages
 const test = require('ava')
@@ -119,7 +120,9 @@ test('log in properly', async t => {
 
   await Promise.all(movers)
 
-  await client.setValue(selector, 'now-desktop@zeit.pub')
+  const email = `now-desktop-${randomBytes(20)}@zeit.pub`
+
+  await client.setValue(selector, email)
   await client.keys('Enter')
   await client.waitForExist('span.sub', ms('10s'))
 
