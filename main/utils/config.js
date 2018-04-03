@@ -274,7 +274,7 @@ exports.watchConfig = async () => {
 
   // Log out when a config file is removed
   configWatcher.on('unlink', async file => {
-    let exists = true
+    let exists = null
 
     // Be sure we get a path passed
     if (!file) {
@@ -287,6 +287,7 @@ exports.watchConfig = async () => {
       exists = await pathExists(file)
     } catch (err) {
       console.error(err)
+      return
     }
 
     if (exists) {
