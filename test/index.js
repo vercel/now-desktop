@@ -159,7 +159,7 @@ test('open the event feed', async t => {
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
-  t.true(content[0].includes('You logged in from Now Desktop'))
+  t.true(content.includes('You logged in from Now Desktop'))
 })
 
 test('switch the event group', async t => {
