@@ -120,7 +120,8 @@ test('log in properly', async t => {
 
   await Promise.all(movers)
 
-  const email = `now-desktop-${randomBytes(20)}@zeit.pub`
+  const id = randomBytes(20).toString('hex')
+  const email = `now-desktop-${id}@zeit.pub`
 
   await client.setValue(selector, email)
   await client.keys('Enter')
