@@ -276,10 +276,15 @@ exports.watchConfig = async () => {
   configWatcher.on('unlink', async file => {
     let exists = true
 
+    // Be sure we get a path passed
+    if (!file) {
+      return
+    }
+
     // Be extra sure that it was removed, so that we
     // don't log out people for no reason
     try {
-      exists = file && (await pathExists(file))
+      exists = await pathExists(file)
     } catch (err) {
       console.error(err)
     }
