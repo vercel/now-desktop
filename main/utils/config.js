@@ -274,9 +274,17 @@ exports.watchConfig = async () => {
 
   // Log out when a config file is removed
   configWatcher.on('unlink', async file => {
+    let exists = true
+
     // Be extra sure that it was removed, so that we
     // don't log out people for no reason
-    if (file && (await pathExists(file))) {
+    try {
+      exists = file && (await pathExists(file))
+    } catch (err) {
+      console.error(err)
+    }
+
+    if (exists) {
       return
     }
 
