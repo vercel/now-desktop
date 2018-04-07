@@ -140,7 +140,7 @@ class Switcher extends Component {
     const { isVisible } = getCurrentWindow()
 
     const listTimer = () => {
-      const time = isVisible() ? '5s' : '60s'
+      const time = isVisible() ? '5s' : '5m'
 
       setTimeout(async () => {
         try {
