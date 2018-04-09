@@ -20,13 +20,13 @@ brew cask install now
 ## Caught a bug?
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
-2. Install the dependencies: `npm install`
-3. Start the app: `npm start`
+2. Install the dependencies: `yarn install`
+3. Start the app: `yarn start`
 
 To make sure that your code works in the bundled application, you can generate the binaries like this:
 
 ```bash
-npm run pack
+yarn run pack
 ```
 
 After that, you'll find them in the `./dist` folder!
