@@ -118,6 +118,8 @@ exports.mainWindow = tray => {
     }
   })
 
+  win.setVisibleOnAllWorkspaces(true)
+
   positionWindow(tray, win)
 
   win.loadURL(windowURL('feed'))
