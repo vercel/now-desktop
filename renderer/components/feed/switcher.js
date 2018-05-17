@@ -208,6 +208,9 @@ class Switcher extends Component {
         return
       }
 
+      // Load the teams in case there is a brand new team
+      await this.loadTeams()
+
       // Check for the `currentTeam` property in the config
       await this.checkCurrentTeam(config)
 
