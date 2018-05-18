@@ -2,7 +2,7 @@
 const { platform } = require('os')
 
 // Packages
-const compare = require('just-compare')
+const isEqual = require('react-fast-compare')
 
 let trayBoundsCache = null
 let displayAreaCache = null
@@ -20,8 +20,8 @@ module.exports = (tray, window) => {
   if (trayBoundsCache && displayAreaCache) {
     // Compare only the object props
     if (
-      compare(trayBoundsCache, trayBounds) &&
-      compare(displayAreaCache, displayArea)
+      isEqual(trayBoundsCache, trayBounds) &&
+      isEqual(displayAreaCache, displayArea)
     ) {
       return
     }

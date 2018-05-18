@@ -6,7 +6,7 @@ import electron from 'electron'
 import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
-import compare from 'just-compare'
+import isEqual from 'react-fast-compare'
 import setRef from 'react-refs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import strip from 'strip'
@@ -367,7 +367,7 @@ class Feed extends Component {
     this.ipcRenderer.on('config-changed', (event, config) => {
       const { user } = config
 
-      if (compare(this.state.currentUser, user)) {
+      if (isEqual(this.state.currentUser, user)) {
         return
       }
 
