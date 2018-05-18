@@ -37,7 +37,8 @@ class Switcher extends Component {
     scope: null,
     updateFailed: false,
     online: true,
-    initialized: false
+    initialized: false,
+    syncInterval: '5s'
   }
 
   remote = electron.remote || false
@@ -104,10 +105,22 @@ class Switcher extends Component {
     }
 
     currentWindow.on('show', () => {
+      if (this.timer && this.state.syncInterval !== '5s') {
+        clearInterval(this.timer)
+        this.listTimer()
+        this.setState({ syncInterval: '5s' })
+      }
+
       document.addEventListener('keydown', this.keyDown.bind(this))
     })
 
     currentWindow.on('hide', () => {
+      if (this.timer && this.state.syncInterval !== '5m') {
+        clearInterval(this.timer)
+        this.listTimer()
+        this.setState({ syncInterval: '5m' })
+      }
+
       document.removeEventListener('keydown', this.keyDown.bind(this))
     })
   }
@@ -129,6 +142,35 @@ class Switcher extends Component {
     this.setState(newState)
   }
 
+  listTimer = () => {
+    const { getCurrentWindow } = this.remote
+    const { isVisible } = getCurrentWindow()
+
+    const time = isVisible() ? '5s' : '5m'
+
+    this.timer = setTimeout(async () => {
+      try {
+        // It's important that this is being `await`ed
+        await this.loadTeams()
+
+        // Check if app is even online
+        this.setOnlineState()
+
+        // Also do the same for the feed, so that
+        // both components reflect the online state
+        this.props.onlineStateFeed()
+      } catch (err) {
+        if (isDev) {
+          console.error(err)
+        }
+      }
+
+      // Once everything is done or has failed,
+      // try it again after some time.
+      this.listTimer()
+    }, ms(time))
+  }
+
   async componentDidMount() {
     // Show a UI banner if the installation
     // of an update failed
@@ -136,46 +178,17 @@ class Switcher extends Component {
       this.setState({ updateFailed: true })
     })
 
-    const { getCurrentWindow } = this.remote
-    const { isVisible } = getCurrentWindow()
-
-    const listTimer = () => {
-      const time = isVisible() ? '5s' : '5m'
-
-      setTimeout(async () => {
-        try {
-          // It's important that this is being `await`ed
-          await this.loadTeams()
-
-          // Check if app is even online
-          this.setOnlineState()
-
-          // Also do the same for the feed, so that
-          // both components reflect the online state
-          this.props.onlineStateFeed()
-        } catch (err) {
-          if (isDev) {
-            console.error(err)
-          }
-        }
-
-        // Once everything is done or has failed,
-        // try it again after some time.
-        listTimer()
-      }, ms(time))
-    }
-
     // Only start updating teams once they're loaded!
     // This needs to be async so that we can already
     // start the state timer below for the data that's already cached
     if (!this.state.online) {
-      listTimer()
+      this.listTimer()
       return
     }
 
     this.loadTeams(true)
-      .then(listTimer)
-      .catch(listTimer)
+      .then(this.listTimer)
+      .catch(this.listTimer)
 
     // Check the config for `currentTeam`
     await this.checkCurrentTeam()
@@ -760,6 +773,7 @@ Switcher.propTypes = {
   currentUser: object,
   setTeams: func,
   titleRef: object,
+  onlineStateFeed: func,
   activeScope: object
 }
 
