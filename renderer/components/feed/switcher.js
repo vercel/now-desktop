@@ -407,6 +407,14 @@ class Switcher extends Component {
 
     const updated = await this.haveUpdated(teams)
 
+    const scopeExists = updated.find(team => {
+      return this.state.scope === team.id
+    })
+
+    if (!scopeExists) {
+      this.resetScope()
+    }
+
     if (updated) {
       this.setState({ teams: updated })
     }
