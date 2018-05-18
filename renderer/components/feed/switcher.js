@@ -3,7 +3,7 @@ import electron from 'electron'
 import { Component } from 'react'
 import { func, object } from 'prop-types'
 import exists from 'path-exists'
-import compare from 'just-compare'
+import isEqual from 'react-fast-compare'
 import setRef from 'react-refs'
 import {
   SortableContainer,
@@ -377,7 +377,7 @@ class Switcher extends Component {
       }
     }
 
-    if (compare(ordered, currentData)) {
+    if (isEqual(ordered, currentData)) {
       return false
     }
 
@@ -462,8 +462,8 @@ class Switcher extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { teams, scope } = this.state
 
-    const teamsChanged = !compare(teams, prevState.teams)
-    const scopeChanged = !compare(scope, prevState.scope)
+    const teamsChanged = !isEqual(teams, prevState.teams)
+    const scopeChanged = !isEqual(scope, prevState.scope)
 
     if (teamsChanged || scopeChanged) {
       this.updateTouchBar()
