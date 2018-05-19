@@ -107,6 +107,12 @@ class Switcher extends Component {
     currentWindow.on('show', () => {
       if (this.timer && this.state.syncInterval !== '5s') {
         clearInterval(this.timer)
+
+        // Refresh the teams and events when the window gets
+        // shown, so that they're always up-to-date
+        this.loadTeams()
+
+        // Restart the timer so we keep everything in sync every 5s
         this.listTimer()
         this.setState({ syncInterval: '5s' })
       }
@@ -117,6 +123,8 @@ class Switcher extends Component {
     currentWindow.on('hide', () => {
       if (this.timer && this.state.syncInterval !== '5m') {
         clearInterval(this.timer)
+
+        // Restart the timer so we keep everything in sync every 5m
         this.listTimer()
         this.setState({ syncInterval: '5m' })
       }
