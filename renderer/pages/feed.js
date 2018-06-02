@@ -21,6 +21,7 @@ import Title from '../components/title'
 import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
 import TopArrow from '../components/feed/top-arrow'
+import Clipboard from '../components/feed/clipboard'
 import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
@@ -47,7 +48,8 @@ class Feed extends Component {
     teams: [],
     eventFilter: null,
     online: true,
-    typeFilter: 'team'
+    typeFilter: 'team',
+    clipboardContents: []
   }
 
   remote = electron.remote || false
@@ -407,13 +409,24 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const { onPaste } = this.remote.require('./utils/deploy-from-clipboard.js')
+    const { deploy, getClipboardContents } = this.remote.require(
+      './utils/deploy-from-clipboard.js'
+    )
     const config = await getConfig()
 
     this.setState({
       scope: config.user.uid,
       currentUser: config.user
     })
+
+    const checkForClipboardContents = () =>
+      setTimeout(() => {
+        console.log(getClipboardContents())
+        this.setState({ clipboardContents: getClipboardContents() })
+        this.clipboardTimer = checkForClipboardContents()
+      }, 3000)
+    checkForClipboardContents()
+    this.onPaste = () => deploy()
 
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
@@ -422,7 +435,7 @@ class Feed extends Component {
     document.addEventListener('keydown', this.onKeyDown)
 
     // Propogate a clipoard 'paste' event down to the native implementation
-    document.addEventListener('paste', () => onPaste())
+    document.addEventListener('paste', this.onPaste)
 
     const currentWindow = this.remote.getCurrentWindow()
     let scrollTimer
@@ -761,6 +774,12 @@ class Feed extends Component {
             {activeScope ? activeScope.name : 'Now'}
           </Title>
 
+          {this.state.clipboardContents.length > 0 && (
+            <Clipboard
+              clipboardContents={this.state.clipboardContents}
+              onClick={this.onPaste}
+            />
+          )}
           {this.state.dropZone && <DropZone hide={this.hideDropZone} />}
 
           <section
