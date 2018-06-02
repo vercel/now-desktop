@@ -420,9 +420,9 @@ class Feed extends Component {
     })
 
     const checkForClipboardContents = () =>
-      setTimeout(() => {
+      setTimeout(async () => {
         console.log(getClipboardContents())
-        this.setState({ clipboardContents: getClipboardContents() })
+        this.setState({ clipboardContents: await getClipboardContents() })
         this.clipboardTimer = checkForClipboardContents()
       }, 3000)
     checkForClipboardContents()
