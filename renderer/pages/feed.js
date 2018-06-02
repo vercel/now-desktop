@@ -407,6 +407,7 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
+    const { onPaste } = this.remote.require('./utils/deploy-from-clipboard.js')
     const config = await getConfig()
 
     this.setState({
@@ -419,6 +420,9 @@ class Feed extends Component {
 
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown)
+
+    // Propogate a clipoard 'paste' event down to the native implementation
+    document.addEventListener('paste', () => onPaste())
 
     const currentWindow = this.remote.getCurrentWindow()
     let scrollTimer
