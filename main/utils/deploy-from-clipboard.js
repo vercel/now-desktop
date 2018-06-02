@@ -10,9 +10,12 @@ const deploy = require('./deploy')
 const writeFile = promisify(fs.writeFile)
 
 const clipboards = [
+  { type: 'file', name: 'public.html', ext: '.html' },
+  { type: 'file', name: 'Apple HTML pasteboard type', ext: '.html' },
   { type: 'plist', name: 'NSFilenamesPboardType' },
   { type: 'file', name: 'public.png', ext: '.png' },
-  { type: 'file', name: 'Apple PNG pasteboard type', ext: '.png' }
+  { type: 'file', name: 'Apple PNG pasteboard type', ext: '.png' },
+  { type: 'file', name: 'com.compuserve.gif', ext: '.gif' }
 ]
 
 exports.getClipboardContents = async forDeployment => {
