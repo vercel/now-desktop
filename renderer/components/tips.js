@@ -9,8 +9,10 @@ import styles from '../styles/components/tips'
 import Bulb from '../vectors/bulb'
 import Clear from '../vectors/clear'
 
-const tips = [
-  {
+const tips = []
+
+if (process.platform === 'darwin') {
+  tips.push({
     id: 'pasteFromClipboard',
     component: (
       <span>
@@ -29,8 +31,8 @@ const tips = [
         `}</style>
       </span>
     )
-  }
-]
+  })
+}
 
 class Tips extends Component {
   state = {
