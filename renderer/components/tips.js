@@ -82,7 +82,7 @@ class Tips extends Component {
             <p>
               <b>Tip:</b> {this.state.tip.component}
             </p>
-            <span className="icon clickable" onClick={this.closeTip}>
+            <span className="icon clickable close" onClick={this.closeTip}>
               <Clear color="#4e4e4e" />
             </span>
           </section>
