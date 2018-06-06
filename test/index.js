@@ -149,6 +149,14 @@ test('move through the tutorial', async t => {
   t.true(await client.isVisibleWithinViewport(button))
 })
 
+test('open the event feed', async t => {
+  const { client } = t.context
+  const button = '.get-started'
+
+  await client.click(button)
+  await changeWindow(t.context, 'feed')
+})
+
 test('dismiss tip', async t => {
   const { client } = t.context
   const tip = '.tip'
@@ -161,13 +169,10 @@ test('dismiss tip', async t => {
   await client.click(close)
 })
 
-test('open the event feed', async t => {
+test('ensure a "logged in" event appears', async t => {
   const { client } = t.context
-  const button = '.get-started'
   const event = '.event figcaption p'
 
-  await client.click(button)
-  await changeWindow(t.context, 'feed')
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
