@@ -1,7 +1,6 @@
 // Native
 const { resolve } = require('path')
 const { homedir } = require('os')
-const { randomBytes } = require('crypto')
 
 // Packages
 const test = require('ava')
@@ -120,8 +119,7 @@ test('log in properly', async t => {
 
   await Promise.all(movers)
 
-  const id = randomBytes(20).toString('hex')
-  const email = `now-desktop-${id}@zeit.pub`
+  const email = `now-desktop@zeit.pub`
 
   await client.setValue(selector, email)
   await client.keys('Enter')
@@ -184,7 +182,7 @@ test('open the event feed', async t => {
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
-  t.true(content.includes('You logged in from Now Desktop'))
+  t.true(content.includes('You logged in from Now Desktop on macOS'))
 })
 
 test('switch the event group', async t => {
