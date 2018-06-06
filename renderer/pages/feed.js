@@ -407,7 +407,7 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const { deploy } = this.remote.require('./utils/deploy-from-clipboard.js')
+    const { deploy } = this.remote.require('./utils/deploy-from-clipboard')
     const config = await getConfig()
 
     this.setState({
