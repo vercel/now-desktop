@@ -154,6 +154,7 @@ test('get started', async t => {
   const button = '.get-started'
 
   await client.click(button)
+  await changeWindow(t.context, 'feed')
   t.pass()
 })
 
@@ -180,7 +181,6 @@ test('open the event feed', async t => {
   const { client } = t.context
   const event = '.event figcaption p'
 
-  await changeWindow(t.context, 'feed')
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
