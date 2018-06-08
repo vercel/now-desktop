@@ -552,6 +552,10 @@ class Feed extends Component {
     const events = list[group].map(item => {
       const MessageComponent = messageComponents.get(item.type)
 
+      if (!MessageComponent) {
+        return null
+      }
+
       const args = {
         event: item,
         user: this.state.currentUser,
