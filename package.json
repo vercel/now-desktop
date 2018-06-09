@@ -12,7 +12,7 @@
   "scripts": {
     "start": "electron main",
     "build": "yarn build-renderer && yarn build-app",
-    "build-app": "build -c.mac.identity=null",
+    "build-app": "build",
     "build-renderer": "next build renderer && next export renderer",
     "precommit": "lint-staged",
     "test": "yarn test-lint && yarn build -p never && yarn test-integration",
