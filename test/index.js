@@ -149,13 +149,38 @@ test('move through the tutorial', async t => {
   t.true(await client.isVisibleWithinViewport(button))
 })
 
-test('open the event feed', async t => {
+test('get started', async t => {
   const { client } = t.context
   const button = '.get-started'
-  const event = '.event figcaption p'
 
   await client.click(button)
   await changeWindow(t.context, 'feed')
+  t.pass()
+})
+
+test('dismiss tip (if any)', async t => {
+  const { client } = t.context
+  const tip = '.tip'
+  const close = '.tip .close'
+
+  try {
+    await client.waitForExist(tip, ms('10s'))
+    const content = await client.getText(tip)
+    t.true(content.includes('Tip:'))
+    await client.click(close)
+  } catch (e) {
+    if (e.type === 'WaitUntilTimeoutError') {
+      t.pass('No tip')
+    } else {
+      t.fail(e.message)
+    }
+  }
+})
+
+test('open the event feed', async t => {
+  const { client } = t.context
+  const event = '.event figcaption p'
+
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)

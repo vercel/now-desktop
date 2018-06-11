@@ -6591,20 +6591,20 @@ please-upgrade-node@^3.0.2:
   dependencies:
     semver-compare "^1.0.0"
 
+plist@3.0.1, plist@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/plist/-/plist-3.0.1.tgz#a9b931d17c304e8912ef0ba3bdd6182baf2e1f8c"
+  dependencies:
+    base64-js "^1.2.3"
+    xmlbuilder "^9.0.7"
+    xmldom "0.1.x"
+
 plist@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/plist/-/plist-2.1.0.tgz#57ccdb7a0821df21831217a3cad54e3e146a1025"
   dependencies:
     base64-js "1.2.0"
     xmlbuilder "8.2.2"
-    xmldom "0.1.x"
-
-plist@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/plist/-/plist-3.0.1.tgz#a9b931d17c304e8912ef0ba3bdd6182baf2e1f8c"
-  dependencies:
-    base64-js "^1.2.3"
-    xmlbuilder "^9.0.7"
     xmldom "0.1.x"
 
 plur@^2.0.0, plur@^2.1.2:
