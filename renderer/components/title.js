@@ -12,6 +12,7 @@ import Done from '../vectors/done'
 import Deploy from '../vectors/deploy'
 import Filter from '../vectors/filter'
 import Search from './feed/search'
+import Tips from './tips'
 
 class Title extends PureComponent {
   state = {
@@ -178,6 +179,8 @@ class Title extends PureComponent {
           <Done />
           <p>Context updated for Now CLI!</p>
         </section>
+
+        <Tips />
 
         {this.renderTypeFilter()}
 
