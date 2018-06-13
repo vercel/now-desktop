@@ -30,9 +30,10 @@ import SecretDelete from './secret-delete'
 import SecretRename from './secret-rename'
 import Team from './team'
 import TeamAvatarUpdate from './team-avatar-update'
+import TeamDelete from './team-delete'
 import TeamMemberAdd from './team-member-add'
 import TeamMemberDelete from './team-member-delete'
-import TeamMemberRollUpdate from './team-member-roll-update'
+import TeamMemberRoleUpdate from './team-member-role-update'
 import TeamNameUpdate from './team-name-update'
 import TeamSlugUpdate from './team-slug-update'
 import Username from './username'
@@ -72,8 +73,9 @@ export default new Map([
   ['team-avatar-update', TeamAvatarUpdate],
   ['team-member-add', TeamMemberAdd],
   ['team-member-delete', TeamMemberDelete],
-  ['team-member-roll-update', TeamMemberRollUpdate],
+  ['team-member-role-update', TeamMemberRoleUpdate],
   ['team-name-update', TeamNameUpdate],
   ['team-slug-update', TeamSlugUpdate],
+  ['team-delete', TeamDelete],
   ['username', Username]
 ])
