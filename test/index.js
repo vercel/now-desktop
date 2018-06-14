@@ -213,7 +213,7 @@ test('search for something', async t => {
 
   await client.waitForExist(field, ms('10s'))
   await client.click(field)
-  await client.setValue(input, 'logged in')
+  await client.setValue(input, 'welcome')
 
   await client.waitForExist(event, ms('10s'))
 
