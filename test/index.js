@@ -184,7 +184,7 @@ test('open the event feed', async t => {
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
-  t.true(content.includes('You logged in from Now Desktop'))
+  t.true(content.includes('Welcome to Now'))
 })
 
 test('switch the event group', async t => {
@@ -218,7 +218,7 @@ test('search for something', async t => {
   await client.waitForExist(event, ms('10s'))
 
   const content = await client.getText(event)
-  const text = `You logged in from Now Desktop`
+  const text = `Welcome to Now`
 
   if (Array.isArray(content)) {
     t.truthy(content.find(item => item.includes(text)))
