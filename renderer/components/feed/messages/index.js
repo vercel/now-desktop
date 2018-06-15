@@ -25,6 +25,7 @@ import Plan from './plan'
 import Scale from './scale'
 import ScaleAuto from './scale-auto'
 import SetScale from './set-scale'
+import SignUp from './signup'
 import SecretAdd from './secret-add'
 import SecretDelete from './secret-delete'
 import SecretRename from './secret-rename'
@@ -66,6 +67,7 @@ export default new Map([
   ['scale', Scale],
   ['scale-auto', ScaleAuto],
   ['set-scale', SetScale],
+  ['signup', SignUp],
   ['secret-add', SecretAdd],
   ['secret-delete', SecretDelete],
   ['secret-rename', SecretRename],
