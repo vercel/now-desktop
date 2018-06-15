@@ -343,6 +343,11 @@ class Feed extends Component {
       currentWindow.webContents.openDevTools()
     }
 
+    if (keyCode === 86 && metaKey) {
+      const { deploy } = this.remote.require('./utils/deploy-from-clipboard')
+      deploy()
+    }
+
     if (event.keyCode !== 27) {
       return
     }
@@ -407,7 +412,7 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const { deploy } = this.remote.require('./utils/deploy-from-clipboard')
+
     const config = await getConfig()
 
     this.setState({
@@ -420,9 +425,6 @@ class Feed extends Component {
 
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown)
-
-    // Propogate a clipoard 'paste' event down to the native implementation
-    document.addEventListener('paste', () => deploy())
 
     const currentWindow = this.remote.getCurrentWindow()
     let scrollTimer
