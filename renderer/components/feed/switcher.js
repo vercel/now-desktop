@@ -471,7 +471,11 @@ class Switcher extends Component {
     }
 
     while (this.state.queue.length > 0) {
-      this.state.queue.shift()()
+      const queue = this.state.queue
+
+      queue.shift()()
+
+      this.setState({ queue })
     }
 
     if (this.state.initialized) {
