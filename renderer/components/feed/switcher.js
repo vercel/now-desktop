@@ -38,7 +38,8 @@ class Switcher extends Component {
     updateFailed: false,
     online: true,
     initialized: false,
-    syncInterval: '5s'
+    syncInterval: '5s',
+    queue: []
   }
 
   remote = electron.remote || false
@@ -469,6 +470,14 @@ class Switcher extends Component {
       this.updateTouchBar()
     }
 
+    while (this.state.queue.length > 0) {
+      const queue = this.state.queue
+
+      queue.shift()()
+
+      this.setState({ queue })
+    }
+
     if (this.state.initialized) {
       return
     }
@@ -555,7 +564,17 @@ class Switcher extends Component {
 
     // Save the new `currentTeam` to the config
     if (saveToConfig) {
-      this.updateConfig(team, byHand)
+      const queueFunction = (fn, context, params) => {
+        return () => {
+          fn.apply(context, params)
+        }
+      }
+
+      this.setState({
+        queue: this.state.queue.concat([
+          queueFunction(this.updateConfig, this, [team, byHand])
+        ])
+      })
     }
   }
 
