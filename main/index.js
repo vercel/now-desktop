@@ -221,15 +221,15 @@ app.on('ready', async () => {
     }
   }
 
-  // Define major event listeners for tray
-  tray.on('drop-files', filesDropped)
-  tray.on('click', toggleActivity)
-  tray.on('double-click', toggleActivity)
-
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   tray.setContextMenu(
     loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
   )
+  
+  // Define major event listeners for tray
+  tray.on('drop-files', filesDropped)
+  tray.on('click', toggleActivity)
+  tray.on('double-click', toggleActivity)
 
   let submenuShown = false
 
