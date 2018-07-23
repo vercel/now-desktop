@@ -433,15 +433,6 @@ class Feed extends Component {
       // Ensure that scrolling position only gets
       // resetted if the window was closed for 5 seconds
       clearTimeout(scrollTimer)
-
-      // Get the currently active scope
-      const { scope, teams } = this.state
-
-      // Refresh the events when the window gets
-      // shown, so that they're always up-to-date
-      if (scope && teams.length > 0 && !this.loading.has(scope)) {
-        this.cacheEvents(scope, null, true)
-      }
     })
 
     currentWindow.on('hide', () => {
