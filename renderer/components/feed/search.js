@@ -96,7 +96,7 @@ class Search extends PureComponent {
   hideWindow = () => {
     this.hide(true)
 
-    document.addEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 
   selectAll(event) {
@@ -117,9 +117,6 @@ class Search extends PureComponent {
     }
 
     const currentWindow = remote.getCurrentWindow()
-
-    // Clear search when window gets hidden
-    currentWindow.on('hide', () => this.hide(true))
 
     // Allow feed to close the search when switching
     // the team scope
