@@ -98,6 +98,14 @@ class LoginForm extends PureComponent {
     this.prepareSuggestion(value)
   }
 
+  showWindow = () => {
+    if (!this.loginInput) {
+      return
+    }
+
+    this.loginInput.focus()
+  }
+
   componentDidMount() {
     if (!this.remote) {
       return
@@ -105,15 +113,13 @@ class LoginForm extends PureComponent {
 
     const currentWindow = this.remote.getCurrentWindow()
 
-    currentWindow.on('show', () => {
-      if (!this.loginInput) {
-        return
-      }
-
-      this.loginInput.focus()
-    })
+    currentWindow.on('show', this.showWindow)
 
     this.mounted = true
+
+    window.addEventListener('beforeunload', () => {
+      currentWindow.removeListener('show', this.showWindow)
+    })
   }
 
   componentWillUnmount() {

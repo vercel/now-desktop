@@ -397,6 +397,17 @@ class Feed extends Component {
 
   lineStates = ['online', 'offline']
 
+  showWindow = () => {
+    // Ensure that scrolling position only gets
+    // resetted if the window was closed for 5 seconds
+    clearTimeout(this.scrollTimer)
+  }
+
+  hideWindow = () => {
+    // Clear scrolling position if window closed for 5 seconds
+    this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
+  }
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -427,17 +438,13 @@ class Feed extends Component {
     document.addEventListener('keydown', this.onKeyDown)
 
     const currentWindow = this.remote.getCurrentWindow()
-    let scrollTimer
 
-    currentWindow.on('show', () => {
-      // Ensure that scrolling position only gets
-      // resetted if the window was closed for 5 seconds
-      clearTimeout(scrollTimer)
-    })
+    currentWindow.on('show', this.showWindow)
+    currentWindow.on('hide', this.hideWindow)
 
-    currentWindow.on('hide', () => {
-      // Clear scrolling position if window closed for 5 seconds
-      scrollTimer = setTimeout(this.clearScroll, ms('5s'))
+    window.addEventListener('beforeunload', () => {
+      currentWindow.removeListener('show', this.showWindow)
+      currentWindow.removeListener('hide', this.hideWindow)
     })
   }
 

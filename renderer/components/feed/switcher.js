@@ -64,6 +64,34 @@ class Switcher extends Component {
   // file is updated from this component
   savingConfig = false
 
+  showWindow = () => {
+    if (this.timer && this.state.syncInterval !== '5s') {
+      clearInterval(this.timer)
+
+      // Refresh the teams and events when the window gets
+      // shown, so that they're always up-to-date
+      this.loadTeams()
+
+      // Restart the timer so we keep everything in sync every 5s
+      this.listTimer()
+      this.setState({ syncInterval: '5s' })
+    }
+
+    document.addEventListener('keydown', this.keyDown.bind(this))
+  }
+
+  hideWindow = () => {
+    if (this.timer && this.state.syncInterval !== '5m') {
+      clearInterval(this.timer)
+
+      // Restart the timer so we keep everything in sync every 5m
+      this.listTimer()
+      this.setState({ syncInterval: '5m' })
+    }
+
+    document.removeEventListener('keydown', this.keyDown.bind(this))
+  }
+
   componentWillReceiveProps({ currentUser, activeScope }) {
     if (activeScope) {
       this.changeScope(activeScope, true, true, true)
@@ -105,32 +133,12 @@ class Switcher extends Component {
       return
     }
 
-    currentWindow.on('show', () => {
-      if (this.timer && this.state.syncInterval !== '5s') {
-        clearInterval(this.timer)
+    currentWindow.on('show', this.showWindow)
+    currentWindow.on('hide', this.hideWindow)
 
-        // Refresh the teams and events when the window gets
-        // shown, so that they're always up-to-date
-        this.loadTeams()
-
-        // Restart the timer so we keep everything in sync every 5s
-        this.listTimer()
-        this.setState({ syncInterval: '5s' })
-      }
-
-      document.addEventListener('keydown', this.keyDown.bind(this))
-    })
-
-    currentWindow.on('hide', () => {
-      if (this.timer && this.state.syncInterval !== '5m') {
-        clearInterval(this.timer)
-
-        // Restart the timer so we keep everything in sync every 5m
-        this.listTimer()
-        this.setState({ syncInterval: '5m' })
-      }
-
-      document.removeEventListener('keydown', this.keyDown.bind(this))
+    window.addEventListener('beforeunload', () => {
+      currentWindow.removeListener('show', this.showWindow)
+      currentWindow.removeListener('hide', this.hideWindow)
     })
   }
 
