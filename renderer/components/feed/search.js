@@ -89,6 +89,16 @@ class Search extends PureComponent {
     }
   }
 
+  showWindow = () => {
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  hideWindow = () => {
+    this.hide(true)
+
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
   selectAll(event) {
     if (!event) {
       return
@@ -108,21 +118,18 @@ class Search extends PureComponent {
 
     const currentWindow = remote.getCurrentWindow()
 
-    // Clear search when window gets hidden
-    currentWindow.on('hide', () => this.hide(true))
-
     // Allow feed to close the search when switching
     // the team scope
     if (this.props.setSearchRef) {
       this.props.setSearchRef(this, 'searchField')
     }
 
-    currentWindow.on('show', () => {
-      document.addEventListener('keydown', this.handleKeyDown)
-    })
+    currentWindow.on('show', this.showWindow)
+    currentWindow.on('hide', this.hideWindow)
 
-    currentWindow.on('hide', () => {
-      document.removeEventListener('keydown', this.handleKeyDown)
+    window.addEventListener('beforeunload', () => {
+      currentWindow.removeListener('show', this.showWindow)
+      currentWindow.removeListener('hide', this.hideWindow)
     })
   }
 
