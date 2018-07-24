@@ -249,7 +249,7 @@ class Feed extends Component {
     for (const result of results) {
       const index = results.indexOf(result)
       const group = groups[index]
-      const hasEvents = result.length > 0
+      const hasEvents = result && result.length > 0
 
       newEvents[group] = result
 
