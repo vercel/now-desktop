@@ -32,7 +32,7 @@ exports.tutorialWindow = tray => {
     show: false,
     fullscreenable: false,
     maximizable: false,
-    titleBarStyle: 'hidden-inset',
+    titleBarStyle: 'hiddenInset',
     backgroundColor: '#000',
     webPreferences: {
       backgroundThrottling: false,
@@ -78,7 +78,7 @@ exports.aboutWindow = tray => {
     fullscreenable: false,
     maximizable: false,
     minimizable: false,
-    titleBarStyle: 'hidden-inset',
+    titleBarStyle: 'hiddenInset',
     frame: false,
     backgroundColor: '#ECECEC',
     webPreferences: {
