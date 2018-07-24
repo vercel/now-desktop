@@ -567,6 +567,8 @@ class Feed extends Component {
         const found = []
         const text = strip(markup)
 
+        keywords.sort((a, b) => b.length - a.length)
+
         for (const word of keywords) {
           // Check if the event message contains the keyword
           // and ignore the case
@@ -577,17 +579,16 @@ class Feed extends Component {
 
           found.push(true)
 
-          markup = markup.replace(new RegExp(word, 'gi'), (match, offset) => {
-            const before = markup.charAt(offset - 1)
-
-            // Don't replace HTML elements
-            if (before === '<' || before === '/') {
-              return match
+          markup = markup.replace(
+            new RegExp(
+              '(?!<mark[^>]*?>)(' + word + ')(?![^<]*?</mark>)(?![^<]*>)',
+              'gi'
+            ),
+            match => {
+              // Highlight the text we've found
+              return `<mark>${match}</mark>`
             }
-
-            // Highlight the text we've found
-            return `<mark>${match}</mark>`
-          })
+          )
         }
 
         // Don't include event if it doesn't contain any keywords
