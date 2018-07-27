@@ -1,6 +1,3 @@
-// Native
-const queryString = require('querystring')
-
 // Packages
 const { shell, app, dialog } = require('electron')
 const serializeError = require('serialize-error')
@@ -28,21 +25,31 @@ exports.exception = async error => {
   console.error(errorParts)
 
   // Prepare the request query
-  const query = queryString.stringify({
+  const query = {
     sender: 'Now Desktop',
     name: errorParts.name,
     message: errorParts.message,
     stack: errorParts.stack
-  })
+  }
 
   // Report the error
   try {
-    await fetch('https://errors.zeit.sh/?' + query, {
+    const response = await fetch('https://api.zeit.co/v2/errors', {
+      method: 'POST',
       headers: {
         'user-agent': userAgent
-      }
+      },
+      body: JSON.stringify(query)
     })
-  } catch (err) {}
+
+    const body = await response.json()
+
+    if (!body.done) {
+      throw new Error('Response not successful')
+    }
+  } catch (err) {
+    console.error(`Not able to send error away: ${err}`)
+  }
 
   // Restart the app, so that it doesn't continue
   // running in a broken state
