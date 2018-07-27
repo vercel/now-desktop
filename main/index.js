@@ -134,7 +134,10 @@ app.on('ready', async () => {
 
   // I have no idea why, but path.resolve doesn't work here
   try {
-    const iconName = process.platform === 'win32' ? 'iconWhite' : 'iconTemplate'
+    const iconName =
+      process.platform === 'win32'
+        ? 'iconWhite'
+        : process.platform === 'linux' ? 'iconWhite' : 'iconTemplate'
     tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`))
   } catch (err) {
     handleException(err)
@@ -218,6 +221,13 @@ app.on('ready', async () => {
     }
   }
 
+  // Linux requires setContextMenu to be called in order for the context menu to populate correctly
+  if (process.platform === 'linux') {
+    tray.setContextMenu(
+      loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+    )
+  }
+  
   // Define major event listeners for tray
   tray.on('drop-files', filesDropped)
   tray.on('click', toggleActivity)

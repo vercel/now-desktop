@@ -15,7 +15,7 @@ module.exports = (tray, window) => {
   const displayArea = display.workArea
 
   const trayBounds = tray.getBounds()
-  const isWin = platform() === 'win32'
+  const notMacOS = platform() !== 'darwin'
 
   if (trayBoundsCache && displayAreaCache) {
     // Compare only the object props
@@ -36,7 +36,7 @@ module.exports = (tray, window) => {
   let horizontalPosition
   let verticalPosition
 
-  if (isWin) {
+  if (notMacOS) {
     horizontalPosition = displayArea.x + displayArea.width - windowSize[0]
     verticalPosition = displayArea.y + displayArea.height - windowSize[1]
   } else {
