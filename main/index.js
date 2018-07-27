@@ -227,7 +227,7 @@ app.on('ready', async () => {
       loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
     )
   }
-  
+
   // Define major event listeners for tray
   tray.on('drop-files', filesDropped)
   tray.on('click', toggleActivity)
