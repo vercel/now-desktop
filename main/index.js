@@ -222,9 +222,11 @@ app.on('ready', async () => {
   }
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
-  tray.setContextMenu(
-    loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
-  )
+  if (process.platform === 'linux') {
+    tray.setContextMenu(
+      loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+    )
+  }
   
   // Define major event listeners for tray
   tray.on('drop-files', filesDropped)
