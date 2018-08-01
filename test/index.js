@@ -24,12 +24,7 @@ const configFiles = {
 }
 
 test.before(async t => {
-  let suffix = '../dist/mac/Now.app/Contents/MacOS/Now'
   let configContent
-
-  if (process.platform === 'win32') {
-    suffix = '../dist/win-unpacked/Now.exe'
-  }
 
   // Close the existing app
   if (!process.env.CI) {
@@ -38,7 +33,6 @@ test.before(async t => {
     } catch (err) {}
   }
 
-  const app = resolve(__dirname, suffix)
   const { auth, config } = configFiles
 
   // Remove the config directory to
@@ -52,59 +46,73 @@ test.before(async t => {
     await remove(configDir)
   }
 
-  t.context = new Application({
+  // Save it so we can put it back after the tests
+  t.context.oldConfig = configContent
+})
+
+test.beforeEach(async t => {
+  let suffix = '../dist/mac/Now.app/Contents/MacOS/Now'
+
+  if (process.platform === 'win32') {
+    suffix = '../dist/win-unpacked/Now.exe'
+  }
+
+  const app = resolve(__dirname, suffix)
+
+  t.context.app = new Application({
     path: app,
     startTimeout: ms('10s'),
     waitTimeout: ms('30s')
   })
 
-  // Save it so we can put it back after the tests
-  t.context.oldConfig = configContent
-
   // Spawn the application
-  await t.context.start()
+  await t.context.app.start()
 })
 
 test('make sure we have 4 windows', async t => {
-  t.is(await t.context.client.getWindowCount(), 4)
+  t.is(await t.context.app.client.getWindowCount(), 4)
 })
 
 test('switch to the tutorial window', async t => {
-  t.true(await changeWindow(t.context, 'tutorial'))
+  t.true(await changeWindow(t.context.app, 'tutorial'))
 })
 
-test('enter gibberish into the login field', async t => {
+test('enter and submit gibberish into the login field', async t => {
+  const { app } = t.context
   const value = getRandom()
-  const selector = 'aside.login input'
-
-  await t.context.client.setValue(selector, value)
-  t.is(await t.context.client.getValue(selector), value)
-})
-
-test('submit gibberish in the login field', async t => {
-  await t.context.client.keys('Enter')
-
   const selector = 'aside.login'
-  const classes = await t.context.client.getAttribute(selector, 'class')
+  const inputSelector = 'aside.login input'
 
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'tutorial')
+
+  await app.client.setValue(inputSelector, value)
+  await app.client.keys('Enter')
+
+  const classes = await app.client.getAttribute(selector, 'class')
+
+  t.is(await app.client.getValue(inputSelector), value)
   t.true(classes.split(' ').includes('error'))
 })
 
 test('log in properly', async t => {
+  const { app } = t.context
   const selector = 'aside.login input'
-  const { client } = t.context
+
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'tutorial')
 
   // Blur the input element and focus again
-  await client.keys('Escape')
-  await client.click(selector)
+  await app.client.keys('Escape')
+  await app.client.click(selector)
 
-  const value = await client.getValue(selector)
+  const value = await app.client.getValue(selector)
 
   let movers = []
   let i = 0
 
   while (i < value.length) {
-    movers.push(client.keys('ArrowRight'))
+    movers.push(app.client.keys('ArrowRight'))
     i++
   }
 
@@ -114,7 +122,7 @@ test('log in properly', async t => {
   i = 0
 
   while (i < value.length) {
-    movers.push(client.keys('Backspace'))
+    movers.push(app.client.keys('Backspace'))
     i++
   }
 
@@ -123,51 +131,70 @@ test('log in properly', async t => {
   const id = randomBytes(20).toString('hex')
   const email = `now-desktop-${id}@zeit.pub`
 
-  await client.setValue(selector, email)
-  await client.keys('Enter')
-  await client.waitForExist('span.sub', ms('10s'))
+  await app.client.setValue(selector, email)
+  await app.client.keys('Enter')
+  await app.client.waitForExist('span.sub', ms('10s'))
 
-  const content = await client.getText('p.has-mini-spacing + a')
+  const content = await app.client.getText('p.has-mini-spacing + a')
   t.is(trim(content.join('')), 'START TUTORIAL')
 })
 
 test('move through the tutorial', async t => {
-  const { client } = t.context
+  const { app } = t.context
+
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'tutorial')
+
   let index = 0
 
   while (index < 3) {
-    await client.click('.slick-next')
+    await app.client.click('.slick-next')
     await sleep(500)
 
     index++
   }
 
   const button = '.get-started'
-  await client.waitForExist(button, ms('10s'))
+  await app.client.waitForExist(button, ms('10s'))
 
-  t.is(await client.getText(button), 'GET STARTED')
-  t.true(await client.isVisibleWithinViewport(button))
+  t.is(await app.client.getText(button), 'GET STARTED')
+  t.true(await app.client.isVisibleWithinViewport(button))
 })
 
 test('get started', async t => {
-  const { client } = t.context
-  const button = '.get-started'
+  const { app } = t.context
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'tutorial')
 
-  await client.click(button)
-  await changeWindow(t.context, 'feed')
+  let index = 0
+
+  while (index < 3) {
+    await app.client.click('.slick-next')
+    await sleep(500)
+
+    index++
+  }
+
+  const button = '.get-started'
+  await app.client.click(button)
+  await changeWindow(t.context.app, 'feed')
   t.pass()
 })
 
 test('dismiss tip (if any)', async t => {
-  const { client } = t.context
+  const { app } = t.context
   const tip = '.tip'
   const close = '.tip .close'
 
   try {
-    await client.waitForExist(tip, ms('10s'))
-    const content = await client.getText(tip)
+    await app.client.waitUntilWindowLoaded()
+    await changeWindow(t.context.app, 'feed')
+
+    await app.client.waitForExist(tip, ms('10s'))
+
+    const content = await app.client.getText(tip)
     t.true(content.includes('Tip:'))
-    await client.click(close)
+    await app.client.click(close)
   } catch (e) {
     if (e.type === 'WaitUntilTimeoutError') {
       t.pass('No tip')
@@ -178,46 +205,57 @@ test('dismiss tip (if any)', async t => {
 })
 
 test('open the event feed', async t => {
-  const { client } = t.context
+  const { app } = t.context
   const event = '.event figcaption p'
 
-  await client.waitForExist(event, ms('10s'))
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'feed')
 
-  const content = await client.getText(event)
+  await app.client.waitForExist(event, ms('10s'))
+
+  const content = await app.client.getText(event)
   t.true(content.includes('Welcome to Now'))
 })
 
 test('switch the event group', async t => {
-  const { client } = t.context
+  const { app } = t.context
 
   const toggler = '.toggle-filter'
   const system = '.filter nav a:last-child'
   const me = '.filter nav a:first-child'
 
-  await client.click(toggler)
-  await client.click(system)
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'feed')
 
-  t.is(await client.getText(system), 'System')
+  await app.client.waitForExist(toggler, ms('10s'))
+
+  await app.client.click(toggler)
+  await app.client.click(system)
+
+  t.is(await app.client.getText(system), 'System')
 
   // Bring it back to normal
-  await client.click(me)
-  await client.click(toggler)
+  await app.client.click(me)
+  await app.client.click(toggler)
 })
 
 test('search for something', async t => {
-  const { client } = t.context
+  const { app } = t.context
 
   const field = '.light aside span'
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
-  await client.waitForExist(field, ms('10s'))
-  await client.click(field)
-  await client.setValue(input, 'welcome')
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'feed')
 
-  await client.waitForExist(event, ms('10s'))
+  await app.client.waitForExist(field, ms('10s'))
+  await app.client.click(field)
+  await app.client.setValue(input, 'welcome')
 
-  const content = await client.getText(event)
+  await app.client.waitForExist(event, ms('10s'))
+
+  const content = await app.client.getText(event)
   const text = `Welcome to Now`
 
   if (Array.isArray(content)) {
@@ -226,29 +264,34 @@ test('search for something', async t => {
     t.true(content.includes(text))
   }
 
-  await client.click(`${input} + b`)
+  await app.client.click(`${input} + b`)
 })
 
 test('open tutorial from about window', async t => {
-  const { client } = t.context
+  const { app } = t.context
   const target = '.wrapper nav a:last-child'
   const sub = '.has-mini-spacing + a + .sub'
 
-  await changeWindow(t.context, 'about')
-  await client.waitForExist(target, ms('10s'))
+  await app.client.waitUntilWindowLoaded()
+  await changeWindow(t.context.app, 'about')
 
-  const text = await client.getText(target)
+  await app.client.waitForExist(target, ms('10s'))
+
+  const text = await app.client.getText(target)
   t.is(text, 'Tutorial')
 
-  await client.click(target)
-  await changeWindow(t.context, 'tutorial')
-  await client.waitForExist(sub, ms('10s'))
+  await app.client.click(target)
+  await changeWindow(t.context.app, 'tutorial')
+  await app.client.waitForExist(sub, ms('10s'))
 
-  t.true(await client.isExisting(sub))
+  t.true(await app.client.isExisting(sub))
+})
+
+test.afterEach.always(async t => {
+  await t.context.app.stop()
 })
 
 test.after.always(async t => {
-  await t.context.stop()
   const { oldConfig } = t.context
 
   if (!oldConfig) {
