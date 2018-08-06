@@ -9,6 +9,11 @@ export default class Plan extends Message {
       <p>
         {this.getDisplayName()}
         changed plan to <b>{event.payload.plan}</b>
+        <style jsx>{`
+          b {
+            text-transform: capitalize;
+          }
+        `}</style>
       </p>
     )
   }
