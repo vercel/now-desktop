@@ -27,7 +27,10 @@ export default class Login extends Message {
       from = userAgent.browser
         ? userAgent.browser.name
         : userAgent.program ? 'Now CLI' : null
-      os = osNames[userAgent.os.name] || userAgent.os.name
+
+      if (userAgent.os) {
+        os = osNames[userAgent.os.name] || userAgent.os.name
+      }
     } else {
       from = payload.env
       os = payload.os
