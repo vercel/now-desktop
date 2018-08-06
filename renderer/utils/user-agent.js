@@ -1,6 +1,20 @@
 // Packages
 import uaParser from 'ua-parser-js'
 
+export default function parse(ua) {
+  const parsed = uaParser(ua)
+
+  if (!parsed.browser.name && isNowCLI(ua)) {
+    return parseNowCLI(ua)
+  }
+
+  return parsed
+}
+
+function isNowCLI(ua) {
+  return ua.startsWith('now ')
+}
+
 const regexps = {
   program: [[/\b(now)\b/i, 'name'], [/\b(\d+\.\d+\.\d+)\b/, 'version']],
   engine: [[/\b(node)-v(\d+\.\d+\.\d+)\b/i, 'name', 'version']],
@@ -8,9 +22,7 @@ const regexps = {
   cpu: [[/\b(arm|ia32|x64)\b/, 'architecture']]
 }
 
-const isNowCLI = ua => ua.startsWith('now')
-
-const parseNowCLI = ua => {
+function parseNowCLI(ua) {
   const parsed = { ua }
 
   Object.keys(regexps).forEach(p1 => {
@@ -24,16 +36,6 @@ const parseNowCLI = ua => {
       })
     })
   })
-
-  return parsed
-}
-
-export default ua => {
-  const parsed = uaParser(ua)
-
-  if (!parsed.browser.name && isNowCLI(ua)) {
-    return parseNowCLI(ua)
-  }
 
   return parsed
 }
