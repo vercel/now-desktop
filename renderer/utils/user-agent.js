@@ -7,12 +7,24 @@ export default function parse(ua) {
   if (!parsed.browser.name && isNowCLI(ua)) {
     return parseNowCLI(ua)
   }
+  if (!parsed.browser.name && isNowMobile(ua)) {
+    return parseNowMobile(ua)
+  }
 
   return parsed
 }
 
 function isNowCLI(ua) {
   return ua.startsWith('now ')
+}
+
+function isNowMobile(ua) {
+  // Both new and v1.0.x
+  return (
+    ua.startsWith('now-mobile') ||
+    ua.includes('CFNetwork') ||
+    ua.startsWith('okhttp')
+  )
 }
 
 const regexps = {
@@ -38,4 +50,24 @@ function parseNowCLI(ua) {
   })
 
   return parsed
+}
+
+function parseNowMobile(ua) {
+  // 1.0.x user agents
+  const legacy = ua.includes('CFNetwork') || ua.startsWith('okhttp')
+  if (legacy) {
+    return {
+      ua,
+      version: '1.0.3',
+      os: { name: ua.includes('CFNetwork') ? 'ios' : 'android' }
+    }
+  }
+
+  // New user agents have the 'now-mobile/<version>/<os>' format
+  const [, version, os] = ua.replace(/ /g, '').split('/')
+  return {
+    ua,
+    version,
+    os: { name: os }
+  }
 }
