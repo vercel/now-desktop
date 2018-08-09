@@ -10,8 +10,13 @@ const osNames = {
   linux: 'Linux',
   freebsd: 'FreeBSD',
   sunos: 'SunOS',
-  'Mac OS': 'macOS'
+  'Mac OS': 'macOS',
+  ios: 'iOS',
+  android: 'Android'
 }
+
+const isMobile = ua =>
+  ua.includes('now-mobile') || ua.includes('CFNetwork') || ua.includes('okhttp')
 
 export default class Login extends Message {
   render() {
@@ -26,6 +31,8 @@ export default class Login extends Message {
     if (userAgent) {
       if (userAgent.ua && userAgent.ua.includes('Electron/')) {
         from = 'Now Desktop'
+      } else if (userAgent.ua && isMobile(userAgent.ua)) {
+        from = 'Now Mobile'
       } else {
         from = userAgent.browser
           ? userAgent.browser.name
