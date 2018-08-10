@@ -1,3 +1,4 @@
+// Pacakges
 const Store = require('electron-store')
 
 const getStore = opts => {
@@ -8,17 +9,13 @@ const getStore = opts => {
 
 const firstRun = opts => {
   const conf = getStore(opts)
-  let firstRun
+  const isFirstRun = conf.get('firstRun')
 
-  if (firstRun === undefined) {
-    firstRun = conf.get('firstRun')
-  }
-
-  if (firstRun === true) {
+  if (isFirstRun === true) {
     conf.set('firstRun', false)
   }
 
-  return firstRun
+  return isFirstRun
 }
 
 const clear = opts => {
