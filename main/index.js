@@ -4,10 +4,10 @@ const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
-const firstRun = require('first-run')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
+const firstRun = require('./utils/first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./utils/deploy')
