@@ -3,6 +3,8 @@
 [![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
 [![Windows CI status](https://ci.appveyor.com/api/projects/status/8cgv7c7v45dw82vg?svg=true)](https://ci.appveyor.com/project/zeit/now-desktop)
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/zeit)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/zeit/now-desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zeit/now-desktop/context:javascript)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/zeit/now-desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zeit/now-desktop/alerts)
 
 For more details about Now and why you should use it, head to [this page](https://zeit.co/now).
 
