@@ -88,7 +88,7 @@
     "electron-is-dev": "0.3.0",
     "electron-next": "3.1.4",
     "electron-squirrel-startup": "1.0.0",
-    "first-run": "1.2.0",
+    "electron-store": "2.0.0",
     "fix-path": "2.1.0",
     "fs-extra": "5.0.0",
     "glob": "7.1.2",

@@ -142,7 +142,7 @@ test('log in properly', async t => {
 test('move through the tutorial', async t => {
   const { app } = t.context
 
-  await app.client.waitUntilWindowLoaded()
+  await app.client.waitUntilWindowLoaded(10000)
   await changeWindow(t.context.app, 'tutorial')
 
   let index = 0
