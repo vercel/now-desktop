@@ -4,10 +4,10 @@ const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
 const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
-const firstRun = require('first-run')
 const squirrelStartup = require('electron-squirrel-startup')
 
 // Utilities
+const firstRun = require('./utils/first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
 const deploy = require('./utils/deploy')
@@ -62,8 +62,10 @@ if (isDev && process.platform === 'darwin') {
   app.dock.hide()
 }
 
+const isFirstRun = firstRun()
+
 // Make Now start automatically on login
-if (!isDev && firstRun()) {
+if (!isDev && isFirstRun) {
   app.setLoginItemSettings({
     openAtLogin: true
   })
@@ -207,7 +209,7 @@ app.on('ready', async () => {
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
   const afterUpdate = config.desktop && config.desktop.updatedFrom
 
-  if (firstRun()) {
+  if (isFirstRun) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     if (!wasOpenedAtLogin && !afterUpdate) {
