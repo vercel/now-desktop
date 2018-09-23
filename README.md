@@ -1,4 +1,4 @@
-![](https://github.com/zeit/art/blob/ae28ead3b4406195f6ec3607eccd7935d0a11c50/now-desktop/repo-banner.png)
+![](https://assets.zeit.co/image/upload/v1537714691/repositories/now-desktop/now-desktop-repo-banner.png)
 
 [![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
 [![Windows CI status](https://ci.appveyor.com/api/projects/status/8cgv7c7v45dw82vg?svg=true)](https://ci.appveyor.com/project/zeit/now-desktop)
