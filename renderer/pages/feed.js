@@ -47,7 +47,8 @@ class Feed extends Component {
     teams: [],
     eventFilter: null,
     online: true,
-    typeFilter: 'team'
+    typeFilter: 'team',
+    darkMode: null
   }
 
   remote = electron.remote || false
@@ -408,6 +409,12 @@ class Feed extends Component {
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
 
+  themeChanged = (event, config) => {
+    const { darkMode } = config
+
+    this.setState({ darkMode })
+  }
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -428,11 +435,14 @@ class Feed extends Component {
 
     this.setState({
       scope: config.user.uid,
-      currentUser: config.user
+      currentUser: config.user,
+      darkMode: this.remote.systemPreferences.isDarkMode()
     })
 
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
+
+    this.ipcRenderer.on('theme-changed', this.themeChanged)
 
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown)
@@ -454,6 +464,8 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown)
+    this.ipcRenderer.removeListener('config-changed', this.themeChanged)
+    this.ipcRenderer.removeListener('theme-changed', this.themeChanged)
   }
 
   setOnlineState = () => {
