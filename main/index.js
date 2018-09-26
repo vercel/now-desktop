@@ -188,8 +188,13 @@ app.on('ready', async () => {
   electron.systemPreferences.subscribeNotification(
     'AppleInterfaceThemeChangedNotification',
     () => {
+      const darkMode = electron.systemPreferences.isDarkMode()
+
       windows.main.send('theme-changed', {
-        darkMode: electron.systemPreferences.isDarkMode()
+        darkMode
+      })
+      windows.about.send('theme-changed', {
+        darkMode
       })
     }
   )
