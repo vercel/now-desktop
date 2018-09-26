@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { Component } from 'react'
-import { func, object } from 'prop-types'
+import { func, object, bool } from 'prop-types'
 import exists from 'path-exists'
 import isEqual from 'react-fast-compare'
 import setRef from 'react-refs'
@@ -595,6 +595,10 @@ class Switcher extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.darkBg !== nextProps.darkBg) {
+      return true
+    }
+
     if (this.moving || this.state === nextState) {
       return false
     }
@@ -677,10 +681,21 @@ class Switcher extends Component {
   renderItem() {
     // eslint-disable-next-line new-cap
     return SortableElement(({ team }) => {
-      const isActive = this.state.scope === team.id ? 'active' : ''
+      const isActive = this.state.scope === team.id
       const isUser = !team.id.includes('team')
       const index = this.state.teams.indexOf(team)
       const shouldScale = !this.state.initialized
+      const darkBg = this.props.darkBg
+
+      const classes = []
+
+      if (isActive) {
+        classes.push('active')
+      }
+
+      if (darkBg) {
+        classes.push('dark')
+      }
 
       const clicked = event => {
         event.preventDefault()
@@ -688,7 +703,7 @@ class Switcher extends Component {
       }
 
       return (
-        <li onClick={clicked} className={isActive} key={team.id}>
+        <li onClick={clicked} className={classes.join(' ')} key={team.id}>
           <Avatar
             team={team}
             isUser={isUser}
@@ -753,6 +768,7 @@ class Switcher extends Component {
     const List = this.renderList()
     const { online, updateFailed, teams } = this.state
     const delay = teams.length
+    const { darkBg } = this.props
 
     return (
       <div>
@@ -765,7 +781,7 @@ class Switcher extends Component {
             <Clear onClick={this.closeUpdateMessage} color="#fff" />
           </span>
         )}
-        <aside>
+        <aside className={darkBg ? 'dark' : ''}>
           {online ? (
             <div className="list-container" ref={this.setReference} name="list">
               <div className="list-scroll">
@@ -817,7 +833,8 @@ Switcher.propTypes = {
   setTeams: func,
   titleRef: object,
   onlineStateFeed: func,
-  activeScope: object
+  activeScope: object,
+  darkBg: bool
 }
 
 export default Switcher

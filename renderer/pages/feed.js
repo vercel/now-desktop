@@ -48,7 +48,7 @@ class Feed extends Component {
     eventFilter: null,
     online: true,
     typeFilter: 'team',
-    darkMode: null
+    darkMode: false
   }
 
   remote = electron.remote || false
@@ -660,23 +660,28 @@ class Feed extends Component {
   }
 
   renderEvents(team) {
-    const { scope, events, online, eventFilter } = this.state
+    const { scope, events, online, eventFilter, darkMode } = this.state
 
     if (!online) {
-      return <Loading offline />
+      return <Loading darkBg={darkMode} offline />
     }
 
     const scopedEvents = events[scope]
 
     if (!scopedEvents) {
-      return <Loading />
+      return <Loading darkBg={darkMode} />
     }
 
     const group = this.getCurrentGroup()
     const filteredEvents = this.filterEvents(scopedEvents, team, group)
 
     if (filteredEvents.length === 0) {
-      return <NoEvents filtered={Boolean(eventFilter)} />
+      return (
+        <NoEvents
+          filtered={Boolean(eventFilter)}
+          darkBg={this.state.darkMode}
+        />
+      )
     }
 
     const months = {}
@@ -700,7 +705,8 @@ class Feed extends Component {
           team,
           setScopeWithSlug: this.setScopeWithSlug,
           message: content.message,
-          group
+          group,
+          darkBg: this.state.darkMode
         }
 
         return <EventMessage {...args} key={content.id} />
@@ -711,7 +717,7 @@ class Feed extends Component {
     // because they would glitch around in that case (as
     // the month is the same across scopes)
     return Object.keys(months).map(month => [
-      <h1 key={scope + month}>
+      <h1 className={this.state.darkMode ? 'dark' : ''} key={scope + month}>
         {month}
         <style jsx>{headingStyles}</style>
       </h1>,
@@ -762,7 +768,7 @@ class Feed extends Component {
 
     return (
       <main>
-        {!this.isWindows && <TopArrow />}
+        {!this.isWindows && <TopArrow darkBg={this.state.darkMode} />}
 
         <div onDragEnter={this.showDropZone}>
           <Title
@@ -774,6 +780,7 @@ class Feed extends Component {
             searchShown={Boolean(activeScope)}
             isUser={isUser}
             setTypeFilter={this.setTypeFilter}
+            darkBg={this.state.darkMode}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
@@ -781,6 +788,7 @@ class Feed extends Component {
           {this.state.dropZone && <DropZone hide={this.hideDropZone} />}
 
           <section
+            className={this.state.darkMode ? 'dark' : ''}
             ref={this.setReference}
             onScroll={this.scrolled}
             name="scrollingSection"
@@ -796,6 +804,7 @@ class Feed extends Component {
             titleRef={this.title}
             onlineStateFeed={this.setOnlineState}
             activeScope={activeScope}
+            darkBg={this.state.darkMode}
           />
         </div>
 

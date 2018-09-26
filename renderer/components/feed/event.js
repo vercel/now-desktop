@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
-import { object, func, string } from 'prop-types'
+import { object, func, string, bool } from 'prop-types'
 import dotProp from 'dot-prop'
 import ms from 'ms'
 
@@ -205,16 +205,27 @@ class EventMessage extends PureComponent {
   }
 
   render() {
-    const { message, content, team, group } = this.props
+    const { message, content, team, group, darkBg } = this.props
     const avatarHash = content.user && content.user.avatar
+    const classes = ['event']
+
+    if (darkBg) {
+      classes.push('dark')
+    }
 
     return (
       <figure
-        className="event"
+        className={classes.join(' ')}
         onClick={this.click}
         onContextMenu={this.rightClick}
       >
-        <Avatar event={content} team={team} group={group} hash={avatarHash} />
+        <Avatar
+          event={content}
+          team={team}
+          group={group}
+          hash={avatarHash}
+          darkBg={darkBg}
+        />
 
         <figcaption>
           {message}
@@ -236,7 +247,8 @@ EventMessage.propTypes = {
   team: object,
   setScopeWithSlug: func,
   message: object,
-  group: string
+  group: string,
+  darkBg: bool
 }
 
 export default EventMessage

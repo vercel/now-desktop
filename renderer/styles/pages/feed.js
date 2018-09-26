@@ -36,6 +36,10 @@ export const feedStyles = css`
     position: relative;
   }
 
+  section.dark {
+    background: #1f1f1f;
+  }
+
   /*
     This is required because the element always needs
     to be at least as high as the remaining space, flex
@@ -62,6 +66,13 @@ export const headingStyles = css`
     font-weight: 200;
     border-bottom: 1px solid #fff;
     border-top: 1px solid #fff;
+  }
+
+  h1.dark {
+    background: #161616;
+    color: #9c9c9c;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
   }
 
   h1:first-child {

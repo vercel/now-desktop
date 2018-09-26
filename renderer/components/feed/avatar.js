@@ -100,6 +100,10 @@ class Avatar extends PureComponent {
       classes += ' scaled'
     }
 
+    if (this.state.darkBg) {
+      classes += ' dark'
+    }
+
     return (
       <div>
         <img
