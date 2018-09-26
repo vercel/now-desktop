@@ -1,7 +1,7 @@
 import css from 'styled-jsx/css'
 
 export const mainStyles = css`
-  div.window {
+  div {
     background: #ececec;
     height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -10,7 +10,7 @@ export const mainStyles = css`
     -webkit-app-region: drag;
   }
 
-  div.window.dark {
+  .dark {
     background: #2c2c2c;
     background: linear-gradient(
       180deg,
