@@ -363,6 +363,14 @@ class Feed extends Component {
     currentWindow.hide()
   }
 
+  listenThemeChange() {
+    if (!this.ipcRenderer) {
+      return
+    }
+
+    this.ipcRenderer.on('theme-changed', this.themeChanged)
+  }
+
   listenToUserChange() {
     if (!this.ipcRenderer) {
       return
@@ -370,22 +378,7 @@ class Feed extends Component {
 
     // Update the `currentUser` state to reflect
     // switching the account using `now login`
-    this.ipcRenderer.on('config-changed', (event, config) => {
-      const { user } = config
-
-      if (isEqual(this.state.currentUser, user)) {
-        return
-      }
-
-      this.setState({
-        scope: user.uid,
-        currentUser: user,
-        events: {},
-        teams: [],
-        eventFilter: null,
-        typeFilter: 'team'
-      })
-    })
+    this.ipcRenderer.on('config-changed', this.onConfigChanged)
   }
 
   clearScroll = () => {
@@ -409,7 +402,24 @@ class Feed extends Component {
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
 
-  themeChanged = (event, config) => {
+  onConfigChanged = (event, config) => {
+    const { user } = config
+
+    if (isEqual(this.state.currentUser, user)) {
+      return
+    }
+
+    this.setState({
+      scope: user.uid,
+      currentUser: user,
+      events: {},
+      teams: [],
+      eventFilter: null,
+      typeFilter: 'team'
+    })
+  }
+
+  onThemeChanged = (event, config) => {
     const { darkMode } = config
 
     this.setState({ darkMode })
@@ -439,10 +449,11 @@ class Feed extends Component {
       darkMode: this.remote.systemPreferences.isDarkMode()
     })
 
+    // Listen to system darkMode system change
+    this.listenThemeChange()
+
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
-
-    this.ipcRenderer.on('theme-changed', this.themeChanged)
 
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown)
@@ -464,8 +475,8 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown)
-    this.ipcRenderer.removeListener('config-changed', this.themeChanged)
-    this.ipcRenderer.removeListener('theme-changed', this.themeChanged)
+    this.ipcRenderer.removeListener('config-changed', this.onConfigChanged)
+    this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged)
   }
 
   setOnlineState = () => {
