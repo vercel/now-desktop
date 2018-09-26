@@ -190,12 +190,8 @@ app.on('ready', async () => {
     () => {
       const darkMode = electron.systemPreferences.isDarkMode()
 
-      windows.main.send('theme-changed', {
-        darkMode
-      })
-      windows.about.send('theme-changed', {
-        darkMode
-      })
+      windows.main.send('theme-changed', { darkMode })
+      windows.about.send('theme-changed', { darkMode })
     }
   )
 

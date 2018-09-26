@@ -368,7 +368,7 @@ class Feed extends Component {
       return
     }
 
-    this.ipcRenderer.on('theme-changed', this.themeChanged)
+    this.ipcRenderer.on('theme-changed', this.onThemeChanged)
   }
 
   listenToUserChange() {
