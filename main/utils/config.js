@@ -127,9 +127,27 @@ exports.saveConfig = async (data, type) => {
   } catch (err) {}
 
   if (type === 'config') {
+    const keep = [
+      '_',
+      'user',
+      'updateChannel',
+      'currentTeam',
+      'desktop'
+    ]
+
     if (currentContent.sh) {
       Object.assign(currentContent, currentContent.sh)
       delete currentContent.sh
+    }
+
+    if (currentContent.shownTips) {
+      // Make sure tips don't show up again if they
+      // were hidden with the old config
+      data = deepExtend(data, {
+        desktop: {
+          shownTips: currentContent.shownTips
+        }
+      })
     }
 
     if (!currentContent._) {
@@ -156,6 +174,12 @@ exports.saveConfig = async (data, type) => {
       // Ensure that there are no empty objects inside the config
       if (isObject && Object.keys(propContent).length === 0) {
         delete currentContent[newProp]
+      }
+    }
+
+    for (const key of Object.keys(currentContent)) {
+      if (!keep.includes(key)) {
+        delete currentContent[key]
       }
     }
   } else if (type === 'auth') {
