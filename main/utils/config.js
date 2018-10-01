@@ -132,7 +132,8 @@ exports.saveConfig = async (data, type) => {
       'user',
       'updateChannel',
       'currentTeam',
-      'desktop'
+      'desktop',
+      'api'
     ]
 
     if (currentContent.sh) {
