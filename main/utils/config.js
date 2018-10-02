@@ -127,28 +127,44 @@ exports.saveConfig = async (data, type) => {
   } catch (err) {}
 
   if (type === 'config') {
-    const keep = [
-      '_',
-      'user',
-      'updateChannel',
-      'currentTeam',
-      'desktop',
-      'api'
-    ]
+    let existingShownTips = currentContent.shownTips;
 
     if (currentContent.sh) {
-      Object.assign(currentContent, currentContent.sh)
-      delete currentContent.sh
+      // These are top-level properties
+      const { updateChannel, desktop } = data
+
+      // Inject the content
+      data = { sh: data }
+
+      if (updateChannel) {
+        data.updateChannel = updateChannel
+        delete data.sh.updateChannel
+      }
+
+      if (desktop) {
+        data.desktop = desktop
+        delete data.sh.desktop
+      }
+
+      if (currentContent.sh.shownTips) {
+        existingShownTips = currentContent.sh.shownTips
+      }
     }
 
-    if (currentContent.shownTips) {
+    if (existingShownTips) {
       // Make sure tips don't show up again if they
       // were hidden with the old config
       data = deepExtend(data, {
         desktop: {
-          shownTips: currentContent.shownTips
+          shownTips: existingShownTips
         }
       })
+
+      delete currentContent.shownTips
+
+      if (currentContent.sh) {
+        delete currentContent.sh.shownTips
+      }
     }
 
     if (!currentContent._) {
@@ -177,12 +193,6 @@ exports.saveConfig = async (data, type) => {
         delete currentContent[newProp]
       }
     }
-
-    for (const key of Object.keys(currentContent)) {
-      if (!keep.includes(key)) {
-        delete currentContent[key]
-      }
-    }
   } else if (type === 'auth') {
     if (!currentContent._) {
       currentContent._ =
@@ -190,10 +200,14 @@ exports.saveConfig = async (data, type) => {
     }
 
     if (currentContent.credentials) {
-      delete currentContent.credentials
-    }
+      const { credentials } = currentContent
+      const related = credentials.find(item => item.provider === 'sh')
+      const index = related ? credentials.indexOf(related) : 0
 
-    Object.assign(currentContent, data);
+      credentials[index] = Object.assign(related || {}, data)
+    } else {
+      Object.assign(currentContent, data);
+    }
   }
 
   // Create all the directories
