@@ -14,8 +14,7 @@ const loadData = require('./data/load')
 
 const paths = {
   auth: '.now/auth.json',
-  config: '.now/config.json',
-  old: '.now.json'
+  config: '.now/config.json'
 }
 
 for (const file in paths) {
@@ -29,7 +28,7 @@ for (const file in paths) {
 let configWatcher = null
 let oldToken = null
 
-const hasNewConfig = async () => {
+const hasConfig = async () => {
   if (!await pathExists(paths.auth)) {
     return false
   }
@@ -42,21 +41,24 @@ const hasNewConfig = async () => {
 }
 
 exports.getConfig = async () => {
-  let content = {}
+  const content = {}
+  const authContent = await fs.readJSON(paths.auth)
 
-  if (await hasNewConfig()) {
-    const authContent = await fs.readJSON(paths.auth)
-    let token
+  let token = null
 
-    if (authContent && authContent.credentials) {
-      const shAuth = authContent.credentials.find(i => i.provider === 'sh')
-
-      if (shAuth) {
-        ;({ token } = shAuth)
-      }
+  if (authContent) {
+    if (authContent.credentials) {
+      ;({ token } = authContent.credentials.find(item => item.provider === 'sh'))
+    } else {
+      token = authContent.token
     }
+  }
 
-    const { sh, updateChannel, desktop } = await fs.readJSON(paths.config)
+  const config = await fs.readJSON(paths.config)
+  const tokenProp = token ? { token } : {}
+
+  if (config.sh) {
+    const { sh, updateChannel, desktop } = config
     const isCanary = updateChannel && updateChannel === 'canary'
 
     if (isCanary) {
@@ -67,9 +69,9 @@ exports.getConfig = async () => {
       content.desktop = desktop
     }
 
-    Object.assign(content, sh || {}, token ? { token } : {})
+    Object.assign(content, sh || {}, tokenProp)
   } else {
-    content = await fs.readJSON(paths.old)
+    Object.assign(content, config, tokenProp)
   }
 
   if (!content.token) {
@@ -88,42 +90,36 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
-  if (await hasNewConfig()) {
-    const configContent = await fs.readJSON(paths.config)
-    delete configContent.sh
+  const toRemove = [
+    'currentTeam',
+    'user',
+    'sh'
+  ]
 
-    await fs.writeJSON(paths.config, configContent, {
-      spaces: 2
-    })
+  const configContent = await fs.readJSON(paths.config)
 
-    const authContent = await fs.readJSON(paths.auth)
-    const { credentials } = authContent
-    const related = credentials.find(item => item.provider === 'sh')
-    const index = credentials.indexOf(related)
-
-    credentials.splice(index, 1)
-    authContent.credentials = credentials
-
-    await fs.writeJSON(paths.auth, authContent, {
-      spaces: 2
-    })
-
-    return
+  for (const item of toRemove) {
+    delete configContent[item]
   }
 
-  await fs.remove(paths.old)
+  await fs.writeJSON(paths.config, configContent, {
+    spaces: 2
+  })
+
+  const authContent = await fs.readJSON(paths.auth)
+  const comment = authContent._ ? `${authContent._}` : null;
+
+  if (comment) {
+    authContent._ = comment;
+  }
+
+  await fs.writeJSON(paths.auth, authContent, {
+    spaces: 2
+  })
 }
 
 exports.saveConfig = async (data, type) => {
-  let isNew = await hasNewConfig()
-
-  // Ensure that we're writing to the new config
-  // destination, if no config exists yet
-  if (!isNew && !await pathExists(paths.old)) {
-    isNew = true
-  }
-
-  const destination = isNew ? paths[type] : paths.old
+  const destination = paths[type]
   let currentContent = {}
 
   try {
@@ -131,8 +127,9 @@ exports.saveConfig = async (data, type) => {
   } catch (err) {}
 
   if (type === 'config') {
-    // Only create a sub prop for the new config
-    if (isNew) {
+    let existingShownTips = currentContent.shownTips;
+
+    if (currentContent.sh) {
       // These are top-level properties
       const { updateChannel, desktop } = data
 
@@ -147,6 +144,26 @@ exports.saveConfig = async (data, type) => {
       if (desktop) {
         data.desktop = desktop
         delete data.sh.desktop
+      }
+
+      if (currentContent.sh.shownTips) {
+        existingShownTips = currentContent.sh.shownTips
+      }
+    }
+
+    if (existingShownTips) {
+      // Make sure tips don't show up again if they
+      // were hidden with the old config
+      data = deepExtend(data, {
+        desktop: {
+          shownTips: existingShownTips
+        }
+      })
+
+      delete currentContent.shownTips
+
+      if (currentContent.sh) {
+        delete currentContent.sh.shownTips
       }
     }
 
@@ -182,15 +199,15 @@ exports.saveConfig = async (data, type) => {
         "This is your Now credentials file. DON'T SHARE! More: https://git.io/v5ECz"
     }
 
-    if (!currentContent.credentials) {
-      currentContent.credentials = []
+    if (currentContent.credentials) {
+      const { credentials } = currentContent
+      const related = credentials.find(item => item.provider === 'sh')
+      const index = related ? credentials.indexOf(related) : 0
+
+      credentials[index] = Object.assign(related || {}, data)
+    } else {
+      Object.assign(currentContent, data);
     }
-
-    const { credentials } = currentContent
-    const related = credentials.find(item => item.provider === 'sh')
-    const index = related ? credentials.indexOf(related) : 0
-
-    credentials[index] = Object.assign(related || {}, data)
   }
 
   // Create all the directories
@@ -256,11 +273,9 @@ const configChanged = async file => {
 }
 
 exports.watchConfig = async () => {
-  let toWatch = [paths.old]
+  const toWatch = [paths.auth, paths.config]
 
-  if (await hasNewConfig()) {
-    toWatch = [paths.auth, paths.config]
-  } else if (!await pathExists(paths.old)) {
+  if (!(await hasConfig())) {
     return
   }
 
