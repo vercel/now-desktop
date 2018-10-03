@@ -20,7 +20,6 @@ import makeUnique from 'make-unique'
 import Title from '../components/title'
 import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
-import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
@@ -779,8 +778,6 @@ class Feed extends Component {
 
     return (
       <main>
-        {!this.isWindows && <TopArrow darkBg={this.state.darkMode} />}
-
         <div onDragEnter={this.showDropZone}>
           <Title
             setFilter={this.setFilter}
