@@ -26,6 +26,10 @@ export default css`
     color: #000;
   }
 
+  .dark summary:hover {
+    color: #999;
+  }
+
   details[open] summary {
     color: #000;
   }

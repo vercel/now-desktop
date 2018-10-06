@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import getLicenses from 'load-licenses'
+import { bool } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/about/licenses'
@@ -15,8 +16,8 @@ const loadLicenses = () => {
   return getLicenses(remote.process.mainModule)
 }
 
-const Licenses = () => (
-  <section>
+const Licenses = ({ darkBg = false }) => (
+  <section className={darkBg ? 'dark' : ''}>
     {loadLicenses().map((item, index) => {
       return (
         item.name.includes('now-desktop') || (
@@ -31,5 +32,9 @@ const Licenses = () => (
     <style jsx>{styles}</style>
   </section>
 )
+
+Licenses.propTypes = {
+  darkBg: bool
+}
 
 export default Licenses

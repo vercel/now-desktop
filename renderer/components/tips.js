@@ -47,10 +47,10 @@ class Tips extends Component {
 
     const { getConfig } = this.remote.require('./utils/config')
     const config = await getConfig()
-    config.shownTips = config.shownTips || {}
+    const shownTips = (config.desktop && config.desktop.shownTips) || {}
 
     this.setState({
-      tip: tips.find(({ id }) => !config.shownTips[id])
+      tip: tips.find(({ id }) => !shownTips[id])
     })
   }
 
@@ -62,7 +62,9 @@ class Tips extends Component {
     const { saveConfig } = this.remote.require('./utils/config')
     await saveConfig(
       {
-        shownTips: { [this.state.tip.id]: true }
+        desktop: {
+          shownTips: { [this.state.tip.id]: true }
+        }
       },
       'config'
     )

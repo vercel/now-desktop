@@ -187,6 +187,16 @@ app.on('ready', async () => {
     }
   })
 
+  electron.systemPreferences.subscribeNotification(
+    'AppleInterfaceThemeChangedNotification',
+    () => {
+      const darkMode = electron.systemPreferences.isDarkMode()
+
+      windows.main.send('theme-changed', { darkMode })
+      windows.about.send('theme-changed', { darkMode })
+    }
+  )
+
   const toggleActivity = async event => {
     if (loggedIn) {
       toggleWindow(event || null, windows.main, tray)

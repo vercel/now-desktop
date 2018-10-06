@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
-import { number } from 'prop-types'
+import { number, bool } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/create-team'
@@ -51,6 +51,10 @@ class CreateTeam extends PureComponent {
       classes.push('scaled')
     }
 
+    if (this.props.darkBg) {
+      classes.push('dark')
+    }
+
     return (
       <a
         onClick={this.open}
@@ -67,7 +71,8 @@ class CreateTeam extends PureComponent {
 }
 
 CreateTeam.propTypes = {
-  delay: number
+  delay: number,
+  darkBg: bool
 }
 
 export default CreateTeam

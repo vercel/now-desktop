@@ -11,6 +11,10 @@ export default css`
     border-radius: 23px;
   }
 
+  img.dark {
+    border: 1px solid #fff;
+  }
+
   .scale {
     transform: scale(0);
     transition: all 0.6s;

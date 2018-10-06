@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
+import { bool } from 'prop-types'
 
 // Components
 import Caret from '../../vectors/caret'
@@ -99,12 +100,16 @@ class TopArrow extends PureComponent {
         onDragOver={this.preventDefault}
         onDrop={this.preventDefault}
       >
-        <Caret />
+        <Caret darkBg={this.props.darkBg} />
 
         <style jsx>{styles}</style>
       </span>
     )
   }
+}
+
+TopArrow.propTypes = {
+  darkBg: bool
 }
 
 export default TopArrow

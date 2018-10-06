@@ -16,6 +16,15 @@ export default css`
     cursor: default;
   }
 
+  aside.dark {
+    background: #2c2c2c;
+    background: linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 1) 0%,
+      rgba(51, 51, 51, 1) 100%
+    );
+  }
+
   aside.filter-visible {
     height: auto;
   }
@@ -26,6 +35,10 @@ export default css`
     font-size: 12px;
     letter-spacing: 0.02em;
     font-weight: 500;
+  }
+
+  aside.dark h1 {
+    color: #e1e1e1;
   }
 
   .light {
@@ -40,10 +53,18 @@ export default css`
     display: block;
   }
 
+  .dark.light {
+    border-bottom: 1px solid #000;
+  }
+
   .light h1 {
     color: #000;
     font-size: 13px;
     font-weight: 600;
+  }
+
+  .dark.light h1 {
+    color: #fff;
   }
 
   .light .toggle-filter,
@@ -99,6 +120,11 @@ export default css`
     height: 35px;
   }
 
+  .dark .update-message {
+    color: #fff;
+    background: #2c2c2c;
+  }
+
   .update-message p {
     margin-left: 12px;
   }
@@ -146,6 +172,14 @@ export default css`
     color: #000;
   }
 
+  .dark .filter a {
+    color: #999999;
+  }
+
+  .dark .filter a.active {
+    color: #fff;
+  }
+
   .filter a:nth-child(1) {
     border-right: 1px solid #eaeaea;
   }
@@ -154,12 +188,24 @@ export default css`
     border-left: 1px solid #eaeaea;
   }
 
+  .dark .filter a:nth-child(1) {
+    border-right: 1px solid #999;
+  }
+
+  .dark .filter a:nth-child(3) {
+    border-left: 1px solid #999;
+  }
+
   .filter nav {
     border: 1px solid #eaeaea;
     display: flex;
     border-radius: 3px;
     width: 190px;
     justify-content: space-between;
+  }
+
+  .dark .filter nav {
+    border: 1px solid #999;
   }
 
   .filter-visible .filter {

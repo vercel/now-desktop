@@ -20,7 +20,6 @@ import makeUnique from 'make-unique'
 import Title from '../components/title'
 import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
-import TopArrow from '../components/feed/top-arrow'
 import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
@@ -28,7 +27,7 @@ import messageComponents from '../components/feed/messages'
 
 // Utilities
 import loadData from '../utils/data/load'
-import { API_EVENTS } from '../utils/data/endpoints'
+import { API_EVENTS, API_USER } from '../utils/data/endpoints'
 
 // Styles
 import {
@@ -47,7 +46,8 @@ class Feed extends Component {
     teams: [],
     eventFilter: null,
     online: true,
-    typeFilter: 'team'
+    typeFilter: 'team',
+    darkMode: false
   }
 
   remote = electron.remote || false
@@ -362,6 +362,14 @@ class Feed extends Component {
     currentWindow.hide()
   }
 
+  listenThemeChange() {
+    if (!this.ipcRenderer) {
+      return
+    }
+
+    this.ipcRenderer.on('theme-changed', this.onThemeChanged)
+  }
+
   listenToUserChange() {
     if (!this.ipcRenderer) {
       return
@@ -369,22 +377,7 @@ class Feed extends Component {
 
     // Update the `currentUser` state to reflect
     // switching the account using `now login`
-    this.ipcRenderer.on('config-changed', (event, config) => {
-      const { user } = config
-
-      if (isEqual(this.state.currentUser, user)) {
-        return
-      }
-
-      this.setState({
-        scope: user.uid,
-        currentUser: user,
-        events: {},
-        teams: [],
-        eventFilter: null,
-        typeFilter: 'team'
-      })
-    })
+    this.ipcRenderer.on('config-changed', this.onConfigChanged)
   }
 
   clearScroll = () => {
@@ -408,6 +401,30 @@ class Feed extends Component {
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
 
+  onConfigChanged = async (event, config) => {
+    const { token } = config
+    const { user } = await loadData(API_USER, token)
+
+    if (isEqual(this.state.currentUser, user)) {
+      return
+    }
+
+    this.setState({
+      scope: user.uid,
+      currentUser: user,
+      events: {},
+      teams: [],
+      eventFilter: null,
+      typeFilter: 'team'
+    })
+  }
+
+  onThemeChanged = (event, config) => {
+    const { darkMode } = config
+
+    this.setState({ darkMode })
+  }
+
   async componentWillMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -425,11 +442,16 @@ class Feed extends Component {
     const { getConfig } = this.remote.require('./utils/config')
 
     const config = await getConfig()
+    const {user} = await loadData(API_USER, config.token)
 
     this.setState({
-      scope: config.user.uid,
-      currentUser: config.user
+      scope: user.uid,
+      currentUser: user,
+      darkMode: this.remote.systemPreferences.isDarkMode()
     })
+
+    // Listen to system darkMode system change
+    this.listenThemeChange()
 
     // Switch the `currentUser` property if config changes
     this.listenToUserChange()
@@ -454,6 +476,8 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown)
+    this.ipcRenderer.removeListener('config-changed', this.onConfigChanged)
+    this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged)
   }
 
   setOnlineState = () => {
@@ -648,23 +672,28 @@ class Feed extends Component {
   }
 
   renderEvents(team) {
-    const { scope, events, online, eventFilter } = this.state
+    const { scope, events, online, eventFilter, darkMode } = this.state
 
     if (!online) {
-      return <Loading offline />
+      return <Loading darkBg={darkMode} offline />
     }
 
     const scopedEvents = events[scope]
 
     if (!scopedEvents) {
-      return <Loading />
+      return <Loading darkBg={darkMode} />
     }
 
     const group = this.getCurrentGroup()
     const filteredEvents = this.filterEvents(scopedEvents, team, group)
 
     if (filteredEvents.length === 0) {
-      return <NoEvents filtered={Boolean(eventFilter)} />
+      return (
+        <NoEvents
+          filtered={Boolean(eventFilter)}
+          darkBg={this.state.darkMode}
+        />
+      )
     }
 
     const months = {}
@@ -688,7 +717,8 @@ class Feed extends Component {
           team,
           setScopeWithSlug: this.setScopeWithSlug,
           message: content.message,
-          group
+          group,
+          darkBg: this.state.darkMode
         }
 
         return <EventMessage {...args} key={content.id} />
@@ -699,7 +729,7 @@ class Feed extends Component {
     // because they would glitch around in that case (as
     // the month is the same across scopes)
     return Object.keys(months).map(month => [
-      <h1 key={scope + month}>
+      <h1 className={this.state.darkMode ? 'dark' : ''} key={scope + month}>
         {month}
         <style jsx>{headingStyles}</style>
       </h1>,
@@ -708,12 +738,13 @@ class Feed extends Component {
   }
 
   loadingOlder() {
-    if (this.state.eventFilter) {
+    const {events: eventList, eventFilter, scope, darkMode} = this.state
+
+    if (eventFilter) {
       return
     }
 
-    const scope = this.state.scope
-    const events = this.state.events[scope]
+    const events = eventList[scope]
     const group = this.getCurrentGroup()
 
     if (!events || !events[group] || events[group].length < 30) {
@@ -729,6 +760,7 @@ class Feed extends Component {
         ref={item => {
           this.loadingIndicator = item
         }}
+        className={darkMode ? 'dark' : ''}
       >
         {allCached ? (
           <span key="description">{`That's it. No events left to show!`}</span>
@@ -750,8 +782,6 @@ class Feed extends Component {
 
     return (
       <main>
-        {!this.isWindows && <TopArrow />}
-
         <div onDragEnter={this.showDropZone}>
           <Title
             setFilter={this.setFilter}
@@ -762,6 +792,7 @@ class Feed extends Component {
             searchShown={Boolean(activeScope)}
             isUser={isUser}
             setTypeFilter={this.setTypeFilter}
+            darkBg={this.state.darkMode}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>
@@ -769,6 +800,7 @@ class Feed extends Component {
           {this.state.dropZone && <DropZone hide={this.hideDropZone} />}
 
           <section
+            className={this.state.darkMode ? 'dark' : ''}
             ref={this.setReference}
             onScroll={this.scrolled}
             name="scrollingSection"
@@ -784,6 +816,7 @@ class Feed extends Component {
             titleRef={this.title}
             onlineStateFeed={this.setOnlineState}
             activeScope={activeScope}
+            darkBg={this.state.darkMode}
           />
         </div>
 
