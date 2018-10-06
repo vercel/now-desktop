@@ -7,12 +7,14 @@ const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig, saveConfig } = require('./utils/config')
 const binaryUtils = require('./utils/binary')
+const loadData = require('./utils/data/load')
 
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
   const { updateChannel, desktop } = config
   const isCanary = updateChannel && updateChannel === 'canary'
+  const { user } = await loadData('/api/www/user', config.token)
 
   let updateCLI = true
 
@@ -52,14 +54,14 @@ exports.innerMenu = async function(app, tray, windows) {
         label: 'Account',
         submenu: [
           {
-            label: config.user.username || config.user.email,
+            label: user.username || user.email,
             enabled: false
           },
           {
             type: 'separator'
           },
           {
-            label: config.user.username ? 'Change Username' : 'Set Username',
+            label: user.username ? 'Change Username' : 'Set Username',
             click() {
               shell.openExternal('https://zeit.co/account')
             }

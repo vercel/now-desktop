@@ -27,7 +27,7 @@ import messageComponents from '../components/feed/messages'
 
 // Utilities
 import loadData from '../utils/data/load'
-import { API_EVENTS } from '../utils/data/endpoints'
+import { API_EVENTS, API_USER } from '../utils/data/endpoints'
 
 // Styles
 import {
@@ -401,8 +401,9 @@ class Feed extends Component {
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
 
-  onConfigChanged = (event, config) => {
-    const { user } = config
+  onConfigChanged = async (event, config) => {
+    const { token } = config
+    const { user } = await loadData(API_USER, token)
 
     if (isEqual(this.state.currentUser, user)) {
       return
@@ -441,10 +442,11 @@ class Feed extends Component {
     const { getConfig } = this.remote.require('./utils/config')
 
     const config = await getConfig()
+    const {user} = await loadData(API_USER, config.token)
 
     this.setState({
-      scope: config.user.uid,
-      currentUser: config.user,
+      scope: user.uid,
+      currentUser: user,
       darkMode: this.remote.systemPreferences.isDarkMode()
     })
 
