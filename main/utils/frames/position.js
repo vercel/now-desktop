@@ -46,7 +46,7 @@ module.exports = (tray, window) => {
     // The macOS implementation of Electron.Tray ceils trayBounds.y to zero
     // making it unreliable for vertically positioning the window.
     // Use the display's work area instead.
-    verticalPosition = displayArea.y + 5
+    verticalPosition = displayArea.y + 7
 
     if (screen.getPrimaryDisplay().workArea.height === 0) {
       verticalPosition += 22

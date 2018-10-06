@@ -11,6 +11,10 @@ export const localStyles = css`
     background: #f5f5f5;
   }
 
+  figure.dark:hover {
+    background: #333;
+  }
+
   figure figcaption {
     border-top: 1px solid #f5f5f5;
     padding: 10px 10px 10px 0;
@@ -20,6 +24,10 @@ export const localStyles = css`
     flex-shrink: 1;
     word-break: break-word;
     flex-grow: 1;
+  }
+
+  figure.dark figcaption {
+    border-top: 1px solid #333;
   }
 
   figure:last-child figcaption {
@@ -52,9 +60,17 @@ export const globalStyles = css`
     flex-shrink: 1;
   }
 
+  .event.dark p {
+    color: #999;
+  }
+
   .event p b {
     font-weight: normal;
     color: #000;
+  }
+
+  .event.dark p b {
+    color: #fff;
   }
 
   .event p code {

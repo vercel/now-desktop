@@ -41,6 +41,16 @@ export default css`
     outline: none;
   }
 
+  .dark input {
+    background: #2c2c2c;
+    background: linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 1) 0%,
+      rgba(51, 51, 51, 1) 100%
+    );
+    color: #999;
+  }
+
   div {
     width: 100%;
     display: flex;
@@ -49,6 +59,15 @@ export default css`
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s ease;
+  }
+
+  .dark div {
+    background: #2c2c2c;
+    background: linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 1) 0%,
+      rgba(51, 51, 51, 1) 100%
+    );
   }
 
   b {

@@ -16,11 +16,27 @@ import { mainStyles, globalStyles } from '../styles/pages/about'
 
 class About extends React.PureComponent {
   state = {
-    version: null
+    version: null,
+    darkMode: false
   }
 
   remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
   isWindows = process.platform === 'win32'
+
+  onThemeChanged = (event, config) => {
+    const { darkMode } = config
+
+    this.setState({ darkMode })
+  }
+
+  listenThemeChange() {
+    if (!this.ipcRenderer) {
+      return
+    }
+
+    this.ipcRenderer.on('theme-changed', this.onThemeChanged)
+  }
 
   componentWillMount() {
     if (!this.remote) {
@@ -35,8 +51,19 @@ class About extends React.PureComponent {
       version = this.remote.app.getVersion()
     }
 
-    this.setState({ version })
+    this.setState({
+      version,
+      darkMode: this.remote.systemPreferences.isDarkMode()
+    })
+
+    // Listen to system darkMode system change
+    this.listenThemeChange()
+
     this.getReleaseDate()
+  }
+
+  componentWillUnmount() {
+    this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged)
   }
 
   openLink = event => {
@@ -129,7 +156,7 @@ class About extends React.PureComponent {
 
   render() {
     return (
-      <div>
+      <div className={this.state.darkMode ? 'dark' : ''}>
         {this.isWindows && (
           <div className="window-controls">
             <span onClick={this.handleCloseClick}>
@@ -173,7 +200,7 @@ class About extends React.PureComponent {
             </p>
 
             <h1>{'3rd party software'}</h1>
-            <Licenses />
+            <Licenses darkBg={this.state.darkMode} />
           </article>
 
           <span className="copyright">

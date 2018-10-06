@@ -125,6 +125,10 @@ class Title extends PureComponent {
   render() {
     const classes = []
 
+    if (this.props.darkBg) {
+      classes.push('dark')
+    }
+
     if (this.props.light) {
       classes.push('light')
     }
@@ -151,6 +155,7 @@ class Title extends PureComponent {
                 showDeployIcon={this.showDeployIcon}
                 setFeedFilter={this.props.setFilter || false}
                 setSearchRef={this.props.setSearchRef || false}
+                darkBg={this.props.darkBg}
               />
             )}
 
@@ -159,7 +164,7 @@ class Title extends PureComponent {
           {this.props.light &&
             this.props.searchShown && (
               <span className="toggle-filter" onClick={this.toggleFilter}>
-                <Filter />
+                <Filter darkBg={this.props.darkBg} />
               </span>
             )}
 
@@ -170,7 +175,7 @@ class Title extends PureComponent {
               ref={this.setReference}
               name="deployIcon"
             >
-              <Deploy />
+              <Deploy darkBg={this.props.darkBg} />
             </span>
           )}
         </div>
@@ -196,6 +201,7 @@ Title.propTypes = {
     PropTypes.element.isRequired
   ]),
   light: PropTypes.bool,
+  darkBg: PropTypes.bool,
   setFilter: PropTypes.func,
   setSearchRef: PropTypes.func,
   searchShown: PropTypes.bool,

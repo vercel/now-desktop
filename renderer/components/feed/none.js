@@ -8,8 +8,8 @@ import styles from '../../styles/components/feed/none'
 // Vectors
 import FilterIcon from '../../vectors/filter'
 
-const NoEvents = ({ filtered }) => (
-  <div>
+const NoEvents = ({ filtered, darkBg = false }) => (
+  <div className={darkBg ? 'dark' : ''}>
     {filtered ? (
       <Fragment>
         <h1>No Events Available</h1>
@@ -33,7 +33,8 @@ const NoEvents = ({ filtered }) => (
 )
 
 NoEvents.propTypes = {
-  filtered: bool
+  filtered: bool,
+  darkBg: bool
 }
 
 export default NoEvents
