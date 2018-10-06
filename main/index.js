@@ -16,6 +16,7 @@ const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
+const loadData = require('./utils/data/load')
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
@@ -81,12 +82,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-const contextMenu = async windows => {
+const contextMenu = async (windows, user) => {
   if (process.env.CONNECTION === 'offline') {
     return outerMenu(app, windows)
   }
 
-  return innerMenu(app, tray, windows)
+  return innerMenu(app, tray, windows, user)
 }
 
 const filesDropped = async (event, files) => {
@@ -108,12 +109,21 @@ const filesDropped = async (event, files) => {
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
 app.on('ready', async () => {
-  let config
+  let config = {}
+  let user = null
 
   try {
     config = await getConfig()
   } catch (err) {
     config = {}
+  }
+
+  if (config.token) {
+    try {
+      ({ user } = await loadData('/api/www/user', config.token))
+    } catch (err) {
+      // The token was revoked, the effect is caught elsewhere
+    }
   }
 
   const onlineStatusWindow = new electron.BrowserWindow({
@@ -177,7 +187,7 @@ app.on('ready', async () => {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
 
-      const menu = await contextMenu(windows)
+      const menu = await contextMenu(windows, user)
 
       menu.popup({
         x: bounds.x,
@@ -236,7 +246,7 @@ app.on('ready', async () => {
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
     tray.setContextMenu(
-      loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+      loggedIn ? await contextMenu(windows, user) : outerMenu(app, windows)
     )
   }
 
@@ -253,7 +263,7 @@ app.on('ready', async () => {
       return
     }
 
-    const menu = loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+    const menu = loggedIn ? await contextMenu(windows, user) : outerMenu(app, windows)
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)
