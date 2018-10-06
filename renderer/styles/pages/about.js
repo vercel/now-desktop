@@ -10,6 +10,15 @@ export const mainStyles = css`
     -webkit-app-region: drag;
   }
 
+  .dark {
+    background: #2c2c2c;
+    background: linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 1) 0%,
+      rgba(51, 51, 51, 1) 100%
+    );
+  }
+
   .window-controls {
     display: flex;
     justify-content: flex-end;
@@ -43,6 +52,10 @@ export const mainStyles = css`
     text-align: center;
     padding-top: 40px;
     color: #434343;
+  }
+
+  .dark .wrapper {
+    color: #999;
   }
 
   img {
@@ -99,6 +112,12 @@ export const mainStyles = css`
     margin-top: 20px;
   }
 
+  .dark article {
+    background: #1f1f1f;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+
   article h1,
   article p {
     color: #707070;
@@ -128,6 +147,10 @@ export const mainStyles = css`
     color: #2b2b2b;
   }
 
+  .dark article a:hover {
+    color: #999;
+  }
+
   .copyright {
     font-size: 11px;
     margin-top: 11px;
@@ -150,6 +173,10 @@ export const mainStyles = css`
     color: #000;
   }
 
+  .dark .copyright a:hover {
+    color: #999;
+  }
+
   nav {
     user-select: none;
   }
@@ -161,6 +188,10 @@ export const mainStyles = css`
     padding: 0 10px;
     position: relative;
     cursor: default;
+  }
+
+  .dark nav a {
+    color: #999;
   }
 
   nav a:after {
@@ -175,6 +206,10 @@ export const mainStyles = css`
 
   nav a:hover {
     color: #000;
+  }
+
+  .dark nav a:hover {
+    color: #999;
   }
 
   nav a:last-child:after {

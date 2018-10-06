@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
-import { func } from 'prop-types'
+import { func, bool } from 'prop-types'
 import setRef from 'react-refs'
 
 // Vectors
@@ -134,10 +134,20 @@ class Search extends PureComponent {
   }
 
   render() {
+    const classes = []
+
+    if (this.props.darkBg) {
+      classes.push('dark')
+    }
+
+    if (this.state.shown) {
+      classes.push('visible')
+    }
+
     return (
-      <aside className={this.state.shown ? 'visible' : ''}>
+      <aside className={classes.join(' ')}>
         <span onClick={this.show}>
-          <MagnifyingGlass />
+          <MagnifyingGlass darkBg={this.props.darkBg} />
         </span>
 
         <div ref={this.setReference} name="form">
@@ -151,7 +161,7 @@ class Search extends PureComponent {
           />
 
           <b onClick={this.hide}>
-            <Clear color="#4e4e4e" />
+            <Clear color={this.props.darkBg ? '#999' : '#4e4e4e'} />
           </b>
         </div>
 
@@ -165,7 +175,8 @@ Search.propTypes = {
   showDeployIcon: func.isRequired,
   hideDeployIcon: func.isRequired,
   setFeedFilter: func,
-  setSearchRef: func
+  setSearchRef: func,
+  darkBg: bool
 }
 
 export default Search

@@ -12,6 +12,10 @@ export default css`
     flex-direction: column;
   }
 
+  aside.dark {
+    background: #1f1f1f;
+  }
+
   img {
     width: 30px;
     margin: 0 auto;
