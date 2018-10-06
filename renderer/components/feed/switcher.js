@@ -795,7 +795,7 @@ class Switcher extends Component {
                   lockToContainerEdges={true}
                   lockOffset="0%"
                 />
-                <CreateTeam delay={delay} />
+                <CreateTeam delay={delay} darkBg={darkBg} />
               </div>
 
               <span className="shadow" onClick={this.scrollToEnd} />

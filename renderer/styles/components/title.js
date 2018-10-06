@@ -176,6 +176,10 @@ export default css`
     color: #999999;
   }
 
+  .dark .filter a.active {
+    color: #fff;
+  }
+
   .filter a:nth-child(1) {
     border-right: 1px solid #eaeaea;
   }
