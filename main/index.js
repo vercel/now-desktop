@@ -208,15 +208,13 @@ app.on('ready', async () => {
 
   // Only allow one instance of Now running
   // at the same time
-  const gotInstanceLock = app.requestSingleInstanceLock()
+  const shouldQuit = app.makeSingleInstance(toggleActivity)
 
-  if (!gotInstanceLock) {
+  if (shouldQuit) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheuss)
     return app.exit()
   }
-
-  app.on('second-instance', toggleActivity)
 
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
   const afterUpdate = config.desktop && config.desktop.updatedFrom
