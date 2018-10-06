@@ -26,7 +26,7 @@ brew cask install now
 To make sure that your code works in the bundled application, you can generate the binaries like this:
 
 ```bash
-yarn run pack
+yarn run build
 ```
 
 After that, you'll find them in the `./dist` folder!
