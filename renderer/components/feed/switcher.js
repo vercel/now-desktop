@@ -276,6 +276,12 @@ class Switcher extends Component {
       return
     }
 
+    // Legacy config
+    if (typeof config.currentTeam === 'object') {
+      this.changeScope(config.currentTeam, true)
+      return
+    }
+
     const { teams } = await loadData(API_TEAMS)
     const related = teams.find(team => team.id === config.currentTeam)
 
