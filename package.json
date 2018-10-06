@@ -2,7 +2,7 @@
   "name": "now-desktop",
   "productName": "Now",
   "description": "Create deployments right from the tray menu",
-  "version": "4.0.0-canary.51",
+  "version": "4.0.0-canary.52",
   "author": {
     "name": "Zeit, Inc.",
     "email": "team@zeit.co"
