@@ -19,8 +19,13 @@ export default css`
     transform: scale(1);
   }
 
+  a.dark,
   a:hover {
     border-color: #4e4e4e;
+  }
+
+  a.dark:hover {
+    border-color: #e8e8e8;
   }
 
   a i {
@@ -42,8 +47,13 @@ export default css`
     background: #999999;
   }
 
+  a.dark i:before,
   a:hover i:before {
     background: #4e4e4e;
+  }
+
+  a.dark:hover i:before {
+    background: #999;
   }
 
   a i:first-child:before {
