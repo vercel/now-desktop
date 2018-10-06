@@ -93,6 +93,12 @@ export const loaderStyles = css`
     height: 42px;
   }
 
+  aside.dark {
+    border-top-color: #1f1f1f;
+    background: #333;
+    color: #999;
+  }
+
   img {
     height: 17px;
     margin-right: 8px;

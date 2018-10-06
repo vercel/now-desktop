@@ -83,8 +83,17 @@ export const globalStyles = css`
     display: block;
   }
 
+  .event.dark p code {
+    background: #333;
+    color: #ccc;
+  }
+
   .event:hover p code {
     background: #e8e8e8;
+  }
+
+  .event.dark:hover p code {
+    background: #464646;
   }
 
   .event:hover + .event figcaption {

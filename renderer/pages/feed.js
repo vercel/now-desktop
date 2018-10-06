@@ -736,12 +736,13 @@ class Feed extends Component {
   }
 
   loadingOlder() {
-    if (this.state.eventFilter) {
+    const {events: eventList, eventFilter, scope, darkMode} = this.state
+
+    if (eventFilter) {
       return
     }
 
-    const scope = this.state.scope
-    const events = this.state.events[scope]
+    const events = eventList[scope]
     const group = this.getCurrentGroup()
 
     if (!events || !events[group] || events[group].length < 30) {
@@ -757,6 +758,7 @@ class Feed extends Component {
         ref={item => {
           this.loadingIndicator = item
         }}
+        className={darkMode ? 'dark' : ''}
       >
         {allCached ? (
           <span key="description">{`That's it. No events left to show!`}</span>

@@ -121,7 +121,6 @@ export const wrapStyle = css`
 
   aside.dark .toggle-menu i {
     background: #b3b3b3;
-    height: 1.4px;
   }
 
   aside .toggle-menu i:nth-child(2) {
