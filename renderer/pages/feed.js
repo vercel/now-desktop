@@ -28,7 +28,7 @@ import messageComponents from '../components/feed/messages'
 
 // Utilities
 import loadData from '../utils/data/load'
-import { API_EVENTS } from '../utils/data/endpoints'
+import { API_EVENTS, API_USER } from '../utils/data/endpoints'
 
 // Styles
 import {
@@ -369,8 +369,9 @@ class Feed extends Component {
 
     // Update the `currentUser` state to reflect
     // switching the account using `now login`
-    this.ipcRenderer.on('config-changed', (event, config) => {
-      const { user } = config
+    this.ipcRenderer.on('config-changed', async (event, config) => {
+      const { token } = config
+      const { user } = await loadData(API_USER, token)
 
       if (isEqual(this.state.currentUser, user)) {
         return
@@ -425,10 +426,11 @@ class Feed extends Component {
     const { getConfig } = this.remote.require('./utils/config')
 
     const config = await getConfig()
+    const {user} = await loadData(API_USER, config.token)
 
     this.setState({
-      scope: config.user.uid,
-      currentUser: config.user
+      scope: user.uid,
+      currentUser: user
     })
 
     // Switch the `currentUser` property if config changes
