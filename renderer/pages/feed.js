@@ -401,7 +401,7 @@ class Feed extends Component {
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
 
-  onConfigChanged = (event, config) => {
+  onConfigChanged = async (event, config) => {
     const { token } = config
     const { user } = await loadData(API_USER, token)
 
