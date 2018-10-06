@@ -7,14 +7,12 @@ const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig, saveConfig } = require('./utils/config')
 const binaryUtils = require('./utils/binary')
-const loadData = require('./utils/data/load')
 
-exports.innerMenu = async function(app, tray, windows) {
+exports.innerMenu = async function(app, tray, windows, user) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
   const { updateChannel, desktop } = config
   const isCanary = updateChannel && updateChannel === 'canary'
-  const { user } = await loadData('/api/www/user', config.token)
 
   let updateCLI = true
 
