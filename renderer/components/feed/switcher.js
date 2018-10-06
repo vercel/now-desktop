@@ -276,7 +276,16 @@ class Switcher extends Component {
       return
     }
 
-    this.changeScope(config.currentTeam, true)
+    const { teams } = await loadData(API_TEAMS)
+    const related = teams.find(team => team.id === config.currentTeam)
+
+    // The team was deleted
+    if (!related) {
+      this.resetScope()
+      return
+    }
+
+    this.changeScope(related, true)
   }
 
   async saveConfig(newConfig) {
