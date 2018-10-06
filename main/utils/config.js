@@ -74,6 +74,14 @@ exports.getConfig = async () => {
     Object.assign(content, config, tokenProp)
   }
 
+  if (typeof content.user === 'object') {
+    content.user = content.user.uid || content.user.id
+  }
+
+  if (typeof content.currentTeam === 'object') {
+    content.currentTeam = content.currentTeam.id
+  }
+
   if (!content.token) {
     throw new Error('No user token defined')
   }
@@ -164,6 +172,16 @@ exports.saveConfig = async (data, type) => {
 
       if (currentContent.sh) {
         delete currentContent.sh.shownTips
+      }
+    }
+
+    if (typeof currentContent.user === 'string' || typeof currentContent.currentTeam === 'string') {
+      if (typeof data.user === 'object') {
+        data.user = data.user.uid || data.user.id
+      }
+
+      if (typeof data.currentTeam === 'object') {
+        data.currentTeam = data.currentTeam.id
       }
     }
 
