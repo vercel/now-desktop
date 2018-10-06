@@ -12,6 +12,11 @@ export default css`
     flex-direction: column;
   }
 
+  div.dark {
+    color: #999;
+    background: #1f1f1f;
+  }
+
   h1 {
     font-size: 16px;
     margin: 0 0 20px 0;

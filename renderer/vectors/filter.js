@@ -1,9 +1,10 @@
 // Packages
 import React from 'react'
-import { string } from 'prop-types'
+import { string, bool } from 'prop-types'
 
-const Filter = ({ background }) => {
-  const bgFill = background || '#FFF'
+const Filter = ({ background, darkBg = false }) => {
+  const bgFill = darkBg ? '#3a3a3a' : '#FFF'
+  const strokeFill = darkBg ? '#999' : '#000'
 
   const props = {
     width: '17px',
@@ -37,7 +38,7 @@ const Filter = ({ background }) => {
         <g
           id="Now-Desktop"
           transform="translate(-408.000000, -110.000000)"
-          stroke="#000"
+          stroke={strokeFill}
         >
           <g id="App" transform="translate(79.000000, 54.000000)">
             <g id="Filters-Icon" transform="translate(329.000000, 57.000000)">
@@ -54,7 +55,8 @@ const Filter = ({ background }) => {
 }
 
 Filter.propTypes = {
-  background: string
+  background: string,
+  darkBg: bool
 }
 
 export default Filter

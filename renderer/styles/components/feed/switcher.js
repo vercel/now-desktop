@@ -29,6 +29,10 @@ export const itemStyle = css`
     transition-duraction: 300ms;
   }
 
+  li.dark {
+    border: 1px solid #666;
+  }
+
   li:last-child {
     margin-right: 0;
   }
@@ -84,6 +88,11 @@ export const wrapStyle = css`
     justify-content: space-between;
   }
 
+  aside.dark {
+    border-top: 1px solid #000;
+    background: #2c2c2c;
+  }
+
   aside .toggle-menu {
     display: block;
     width: 40px;
@@ -97,6 +106,10 @@ export const wrapStyle = css`
     background: #fff;
   }
 
+  aside.dark .toggle-menu {
+    background: #2c2c2c;
+  }
+
   aside .toggle-menu i {
     width: 18px;
     height: 1px;
@@ -104,6 +117,11 @@ export const wrapStyle = css`
     display: block;
     opacity: 0.5;
     transition: opacity 0.2s ease;
+  }
+
+  aside.dark .toggle-menu i {
+    background: #b3b3b3;
+    height: 1.4px;
   }
 
   aside .toggle-menu i:nth-child(2) {
@@ -145,6 +163,10 @@ export const wrapStyle = css`
     left: calc(290px - 20px);
     bottom: 0;
     z-index: 2000;
+  }
+
+  .dark .shadow {
+    background: linear-gradient(to right, transparent, #2c2c2c);
   }
 
   .offline {
