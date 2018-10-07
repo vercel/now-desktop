@@ -797,7 +797,7 @@ class Feed extends Component {
             {activeScope ? activeScope.name : 'Now'}
           </Title>
 
-          {this.state.dropZone && <DropZone hide={this.hideDropZone} />}
+          {this.state.dropZone && <DropZone darkBg={this.state.darkMode} hide={this.hideDropZone} />}
 
           <section
             className={this.state.darkMode ? 'dark' : ''}
