@@ -1,7 +1,7 @@
 // Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
-import { func,bool } from 'prop-types'
+import { func, bool } from 'prop-types'
 
 // Styles
 import styles from '../../styles/components/feed/dropzone'
@@ -51,7 +51,7 @@ class DropZone extends PureComponent {
         onDrop={this.droppedFile}
       >
         <section className={this.props.darkBg ? 'dark' : ''}>
-          <span className={this.props.darkBg ? 'dark' : ''}>
+          <span>
             <h1>Drop to Deploy</h1>
             <p>
               Your files will be uploaded to <b>Now</b>.
