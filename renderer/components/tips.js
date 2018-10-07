@@ -77,7 +77,7 @@ class Tips extends Component {
     return (
       <div>
         {this.state.tip && (
-          <section className={this.props.darkBg ? 'dark' : ''} key={this.state.tip.id}>
+          <section className={`tip${this.props.darkBg ? ' dark' : ''}`} key={this.state.tip.id}>
             <span className="icon">
               <Bulb />
             </span>
