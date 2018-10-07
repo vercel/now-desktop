@@ -26,7 +26,8 @@ export const itemStyle = css`
     border-radius: 100%;
     margin-right: 10px;
     opacity: 0.3;
-    transition-duraction: 300ms;
+    filter: grayscale(1);
+    transition-duration: 300ms;
   }
 
   li.dark {
@@ -40,6 +41,7 @@ export const itemStyle = css`
   li.active {
     opacity: 1;
     cursor: default;
+    filter: grayscale(0);
   }
 `
 

@@ -13,6 +13,7 @@ export default css`
     display: flex;
     justify-content: space-between;
     height: 35px;
+    filter: grayscale(1);
   }
 
   section.dark {
@@ -22,7 +23,7 @@ export default css`
       rgba(64, 64, 64, 1) 0%,
       rgba(51, 51, 51, 1) 100%
     );
-    color: #fff;
+    color: #999;
   }
 
   section .icon {

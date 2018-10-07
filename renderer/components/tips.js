@@ -21,9 +21,9 @@ if (process.platform === 'darwin') {
         <style>{`
           kbd {
             font-family: Monaco, Lucida Console, Liberation Mono, serif;
-            padding: 1px 4px;
+            padding: 1px 4px 0 4px;
             border-radius: 3px;
-            border: 1px solid #eaeaea;
+            background-color:rgba(0, 0, 0, 0.10);
             font-size: 10px;
             margin: 5px 0;
             display: inline-block;
@@ -85,7 +85,7 @@ class Tips extends Component {
               <b>Tip:</b> {this.state.tip.component}
             </p>
             <span className="icon clickable close" onClick={this.closeTip}>
-              <Clear color="#4e4e4e" />
+              <Clear color={this.props.darkBg ? '#999' : '#4e4e4e'} />
             </span>
           </section>
         )}
