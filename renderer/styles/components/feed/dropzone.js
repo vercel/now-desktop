@@ -16,7 +16,7 @@ export default css`
     display: block;
     height: 303px;
     background: #fff;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     width: 100%;
     margin-top: 36px;
@@ -38,6 +38,7 @@ export default css`
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    border-radius: 5px;
   }
 
   span.dark {
@@ -54,6 +55,7 @@ export default css`
     font-size: 12px;
     width: 250px;
     line-height: 20px;
+    margin-top: -2px;
   }
 
   b {
