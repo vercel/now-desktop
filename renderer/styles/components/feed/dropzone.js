@@ -41,8 +41,8 @@ export default css`
     border-radius: 5px;
   }
 
-  span.dark {
-    border: 1px dashed #444;
+  section.dark span {
+    border-color: #444;
   }
 
   h1 {
