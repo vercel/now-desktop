@@ -30,6 +30,11 @@ export const itemStyle = css`
     transition-duration: 300ms;
   }
 
+  li:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+
   li.dark {
     border: 1px solid #666;
   }
