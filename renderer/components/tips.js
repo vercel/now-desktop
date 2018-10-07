@@ -23,7 +23,7 @@ if (process.platform === 'darwin') {
             font-family: Monaco, Lucida Console, Liberation Mono, serif;
             padding: 1px 4px 0 4px;
             border-radius: 3px;
-            background-color:rgba(0, 0, 0, 0.10);
+            background-color: rgba(0, 0, 0, 0.10);
             font-size: 10px;
             margin: 5px 0;
             display: inline-block;
