@@ -189,11 +189,11 @@ export default css`
   }
 
   .dark .filter a:nth-child(1) {
-    border-right: 1px solid #999;
+    border-right: 1px solid #555;
   }
 
   .dark .filter a:nth-child(3) {
-    border-left: 1px solid #999;
+    border-left: 1px solid #555;
   }
 
   .filter nav {
@@ -205,7 +205,7 @@ export default css`
   }
 
   .dark .filter nav {
-    border: 1px solid #999;
+    border: 1px solid #555;
   }
 
   .filter-visible .filter {

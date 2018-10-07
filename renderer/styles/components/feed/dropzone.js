@@ -14,13 +14,18 @@ export default css`
 
   section {
     display: block;
-    height: 291px;
+    height: 303px;
     background: #fff;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     width: 100%;
     margin-top: 36px;
     pointer-events: none;
+  }
+
+  section.dark {
+    background: #121212;
+    color: #fff;
   }
 
   span {
@@ -33,6 +38,11 @@ export default css`
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    border-radius: 5px;
+  }
+
+  section.dark span {
+    border-color: #444;
   }
 
   h1 {
@@ -45,6 +55,7 @@ export default css`
     font-size: 12px;
     width: 250px;
     line-height: 20px;
+    margin-top: -2px;
   }
 
   b {
