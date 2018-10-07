@@ -185,7 +185,7 @@ class Title extends PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        <Tips />
+        <Tips darkBg={this.props.darkBg} />
 
         {this.renderTypeFilter()}
 

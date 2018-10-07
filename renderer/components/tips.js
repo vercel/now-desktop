@@ -1,6 +1,7 @@
 // Packages
 import electron from 'electron'
 import { Component } from 'react'
+import { bool } from 'prop-types'
 
 // Styles
 import styles from '../styles/components/tips'
@@ -20,11 +21,10 @@ if (process.platform === 'darwin') {
         <style>{`
           kbd {
             font-family: Monaco, Lucida Console, Liberation Mono, serif;
-            background: #f5f5f5;
-            padding: 2px 5px;
+            padding: 1px 4px 0 4px;
             border-radius: 3px;
-            border: 1px solid #d5d5d5;
-            font-size: 12px;
+            background-color: rgba(0, 0, 0, 0.10);
+            font-size: 10px;
             margin: 5px 0;
             display: inline-block;
           }
@@ -77,7 +77,7 @@ class Tips extends Component {
     return (
       <div>
         {this.state.tip && (
-          <section className="tip" key={this.state.tip.id}>
+          <section className={`tip${this.props.darkBg ? ' dark' : ''}`} key={this.state.tip.id}>
             <span className="icon">
               <Bulb />
             </span>
@@ -85,7 +85,7 @@ class Tips extends Component {
               <b>Tip:</b> {this.state.tip.component}
             </p>
             <span className="icon clickable close" onClick={this.closeTip}>
-              <Clear color="#4e4e4e" />
+              <Clear color={this.props.darkBg ? '#999' : '#4e4e4e'} />
             </span>
           </section>
         )}
@@ -94,6 +94,10 @@ class Tips extends Component {
       </div>
     )
   }
+}
+
+Tips.propTypes = {
+  darkBg: bool
 }
 
 export default Tips
