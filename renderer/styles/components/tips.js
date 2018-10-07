@@ -1,7 +1,7 @@
 import css from 'styled-jsx/css'
 
 export default css`
-  .tip {
+  section {
     position: absolute;
     left: 0;
     top: 0;
@@ -15,7 +15,17 @@ export default css`
     height: 35px;
   }
 
-  .tip .icon {
+  section.dark {
+    background: #2c2c2c;
+    background: linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 1) 0%,
+      rgba(51, 51, 51, 1) 100%
+    );
+    color: #fff;
+  }
+
+  section .icon {
     height: inherit;
     width: 36px;
     display: flex;
@@ -24,12 +34,12 @@ export default css`
     flex-shrink: 0;
   }
 
-  .tip .icon.clickable {
+  section .icon.clickable {
     opacity: 0.5;
     transition: opacity 0.2s ease;
   }
 
-  .tip .icon.clickable:hover {
+  section .icon.clickable:hover {
     opacity: 1;
   }
 `
