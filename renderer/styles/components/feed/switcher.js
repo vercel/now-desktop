@@ -27,7 +27,12 @@ export const itemStyle = css`
     margin-right: 10px;
     opacity: 0.3;
     filter: grayscale(1);
-    transition-duration: 300ms;
+    transition-duration: 200ms;
+  }
+
+  li:hover {
+    opacity: 1;
+    filter: grayscale(0);
   }
 
   li.dark {
