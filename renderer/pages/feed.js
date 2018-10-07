@@ -425,7 +425,7 @@ class Feed extends Component {
     this.setState({ darkMode })
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     // Support SSR
     if (typeof window === 'undefined') {
       return
@@ -442,7 +442,7 @@ class Feed extends Component {
     const { getConfig } = this.remote.require('./utils/config')
 
     const config = await getConfig()
-    const {user} = await loadData(API_USER, config.token)
+    const { user } = await loadData(API_USER, config.token)
 
     this.setState({
       scope: user.uid,
@@ -738,7 +738,7 @@ class Feed extends Component {
   }
 
   loadingOlder() {
-    const {events: eventList, eventFilter, scope, darkMode} = this.state
+    const { events: eventList, eventFilter, scope, darkMode } = this.state
 
     if (eventFilter) {
       return
@@ -797,7 +797,9 @@ class Feed extends Component {
             {activeScope ? activeScope.name : 'Now'}
           </Title>
 
-          {this.state.dropZone && <DropZone darkBg={this.state.darkMode} hide={this.hideDropZone} />}
+          {this.state.dropZone && (
+            <DropZone darkBg={this.state.darkMode} hide={this.hideDropZone} />
+          )}
 
           <section
             className={this.state.darkMode ? 'dark' : ''}

@@ -2,15 +2,11 @@ import css from 'styled-jsx/css'
 
 export const mainStyles = css`
   div {
-    background: #ececec;
     height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-      Helvetica Neue, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -webkit-app-region: drag;
+    background: #ececec;
   }
 
-  .dark {
+  div.dark {
     background: #2c2c2c;
     background: linear-gradient(
       180deg,
@@ -219,6 +215,10 @@ export const mainStyles = css`
 
 export const globalStyles = css`
   body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Helvetica Neue, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-app-region: drag;
     margin: 0;
   }
 
