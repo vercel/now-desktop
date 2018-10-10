@@ -139,46 +139,34 @@ test('log in properly', async t => {
   t.is(trim(content.join('')), 'START TUTORIAL')
 })
 
-test('move through the tutorial', async t => {
-  const { app } = t.context
-
-  await app.client.waitUntilWindowLoaded(10000)
-  await changeWindow(t.context.app, 'tutorial')
-
-  let index = 0
-
-  while (index < 3) {
-    await app.client.click('.slick-next')
-    await sleep(500)
-
-    index++
-  }
-
-  const button = '.get-started'
-  await app.client.waitForExist(button, ms('10s'))
-
-  t.is(await app.client.getText(button), 'GET STARTED')
-  t.true(await app.client.isVisibleWithinViewport(button))
-})
-
 test('get started', async t => {
   const { app } = t.context
-  await app.client.waitUntilWindowLoaded()
+  const button = '.get-started'
+
+  await app.client.waitUntilWindowLoaded(ms('10s'))
   await changeWindow(t.context.app, 'tutorial')
 
   let index = 0
 
-  while (index < 3) {
+  while (index < 10) {
     await app.client.click('.slick-next')
-    await sleep(500)
+    await sleep(1000)
 
-    index++
+    try {
+      await app.client.waitForExist(button, ms('5s'))
+      await app.client.click(button)
+
+      await changeWindow(t.context.app, 'feed')
+
+      t.pass()
+
+      return
+    } catch (err) {
+      index++
+    }
   }
 
-  const button = '.get-started'
-  await app.client.click(button)
-  await changeWindow(t.context.app, 'feed')
-  t.pass()
+  t.fail()
 })
 
 test('dismiss tip (if any)', async t => {
@@ -242,7 +230,7 @@ test('switch the event group', async t => {
 test('search for something', async t => {
   const { app } = t.context
 
-  const field = '.light aside span'
+  const field = 'aside div aside span'
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
