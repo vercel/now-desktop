@@ -38,7 +38,7 @@ class About extends React.PureComponent {
     this.ipcRenderer.on('theme-changed', this.onThemeChanged)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.remote) {
       return
     }
@@ -156,79 +156,87 @@ class About extends React.PureComponent {
 
   render() {
     return (
-      <div className={this.state.darkMode ? 'dark' : ''}>
-        {this.isWindows && (
-          <div className="window-controls">
-            <span onClick={this.handleCloseClick}>
-              <CloseWindowSVG />
+      <main>
+        <div className={this.state.darkMode ? 'dark' : ''}>
+          {this.isWindows && (
+            <div className="window-controls">
+              <span onClick={this.handleCloseClick}>
+                <CloseWindowSVG />
+              </span>
+            </div>
+          )}
+          <section className="wrapper">
+            <span className="window-title">About</span>
+
+            <img src="/static/app-icon.png" />
+
+            <h1>Now</h1>
+            <h2>
+              Version {this.state.version ? <b>{this.state.version}</b> : ''}{' '}
+              {this.state.releaseDate ? this.state.releaseDate : ''}
+            </h2>
+
+            <article>
+              <h1>Authors</h1>
+
+              <p>
+                <a
+                  href="https://twitter.com/notquiteleo"
+                  onClick={this.openLink}
+                >
+                  Leo Lamprecht
+                </a>
+                <br />
+                <a
+                  href="https://twitter.com/evilrabbit_"
+                  onClick={this.openLink}
+                >
+                  Evil Rabbit
+                </a>
+                <br />
+                <a href="https://twitter.com/rauchg" onClick={this.openLink}>
+                  Guillermo Rauch
+                </a>
+                <br />
+                <a
+                  href="https://twitter.com/matheusfrndes"
+                  onClick={this.openLink}
+                >
+                  Matheus Fernandes
+                </a>
+              </p>
+
+              <h1>{'3rd party software'}</h1>
+              <Licenses darkBg={this.state.darkMode} />
+            </article>
+
+            <span className="copyright">
+              Made by{' '}
+              <a href="https://zeit.co" onClick={this.openLink}>
+                ZEIT
+              </a>
             </span>
-          </div>
-        )}
-        <section className="wrapper">
-          <span className="window-title">About</span>
 
-          <img src="/static/app-icon.png" />
-
-          <h1>Now</h1>
-          <h2>
-            Version {this.state.version ? <b>{this.state.version}</b> : ''}{' '}
-            {this.state.releaseDate ? this.state.releaseDate : ''}
-          </h2>
-
-          <article>
-            <h1>Authors</h1>
-
-            <p>
-              <a href="https://twitter.com/notquiteleo" onClick={this.openLink}>
-                Leo Lamprecht
+            <nav>
+              <a href="https://zeit.co/docs" onClick={this.openLink}>
+                Docs
               </a>
-              <br />
-              <a href="https://twitter.com/evilrabbit_" onClick={this.openLink}>
-                Evil Rabbit
-              </a>
-              <br />
-              <a href="https://twitter.com/rauchg" onClick={this.openLink}>
-                Guillermo Rauch
-              </a>
-              <br />
               <a
-                href="https://twitter.com/matheusfrndes"
+                href="https://github.com/zeit/now-desktop"
                 onClick={this.openLink}
               >
-                Matheus Fernandes
+                Source
               </a>
-            </p>
-
-            <h1>{'3rd party software'}</h1>
-            <Licenses darkBg={this.state.darkMode} />
-          </article>
-
-          <span className="copyright">
-            Made by{' '}
-            <a href="https://zeit.co" onClick={this.openLink}>
-              ZEIT
-            </a>
-          </span>
-
-          <nav>
-            <a href="https://zeit.co/docs" onClick={this.openLink}>
-              Docs
-            </a>
-            <a
-              href="https://github.com/zeit/now-desktop"
-              onClick={this.openLink}
-            >
-              Source
-            </a>
-            <a onClick={this.handleTutorial}>Tutorial</a>
-          </nav>
-        </section>
+              <a onClick={this.handleTutorial}>Tutorial</a>
+            </nav>
+          </section>
+        </div>
 
         <style jsx>{mainStyles}</style>
         <style jsx global>
           {globalStyles}
         </style>
-      </div>
+      </main>
     )
   }
 }
