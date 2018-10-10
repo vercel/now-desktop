@@ -157,7 +157,6 @@ test('move through the tutorial', async t => {
   const button = '.get-started'
   await app.client.waitForExist(button, ms('10s'))
 
-  t.is(await app.client.getText(button), 'GET STARTED')
   t.true(await app.client.isVisibleWithinViewport(button))
 })
 
@@ -176,8 +175,12 @@ test('get started', async t => {
   }
 
   const button = '.get-started'
+
+  await app.client.waitForExist(button, ms('10s'))
   await app.client.click(button)
+
   await changeWindow(t.context.app, 'feed')
+
   t.pass()
 })
 
