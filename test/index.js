@@ -181,7 +181,7 @@ test('get started', async t => {
 
       t.pass()
 
-      break
+      return
     } catch (err) {
       index++
     }
