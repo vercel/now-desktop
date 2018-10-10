@@ -162,30 +162,32 @@ test('move through the tutorial', async t => {
 
 test('get started', async t => {
   const { app } = t.context
+  const button = '.get-started'
+
   await app.client.waitUntilWindowLoaded()
   await changeWindow(t.context.app, 'tutorial')
 
   let index = 0
 
-  while (index < 3) {
+  while (index < 10) {
     await app.client.click('.slick-next')
-    await sleep(500)
+    await sleep(1000)
 
-    index++
+    try {
+      await app.client.waitForExist(button, ms('5s'))
+      await app.client.click(button)
+
+      await changeWindow(t.context.app, 'feed')
+
+      t.pass()
+
+      break
+    } catch (err) {
+      index++
+    }
   }
 
-  const button = '.get-started'
-
-  try {
-    await app.client.waitForExist(button, ms('10s'))
-    await app.client.click(button)
-  } catch (err) {
-    // This ^ is optional
-  }
-
-  await changeWindow(t.context.app, 'feed')
-
-  t.pass()
+  t.fail()
 })
 
 test('dismiss tip (if any)', async t => {
