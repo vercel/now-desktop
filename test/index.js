@@ -139,32 +139,11 @@ test('log in properly', async t => {
   t.is(trim(content.join('')), 'START TUTORIAL')
 })
 
-test('move through the tutorial', async t => {
-  const { app } = t.context
-
-  await app.client.waitUntilWindowLoaded(10000)
-  await changeWindow(t.context.app, 'tutorial')
-
-  let index = 0
-
-  while (index < 3) {
-    await app.client.click('.slick-next')
-    await sleep(500)
-
-    index++
-  }
-
-  const button = '.get-started'
-  await app.client.waitForExist(button, ms('10s'))
-
-  t.true(await app.client.isVisibleWithinViewport(button))
-})
-
 test('get started', async t => {
   const { app } = t.context
   const button = '.get-started'
 
-  await app.client.waitUntilWindowLoaded()
+  await app.client.waitUntilWindowLoaded(ms('10s'))
   await changeWindow(t.context.app, 'tutorial')
 
   let index = 0
