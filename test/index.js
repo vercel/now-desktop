@@ -176,8 +176,12 @@ test('get started', async t => {
 
   const button = '.get-started'
 
-  await app.client.waitForExist(button, ms('10s'))
-  await app.client.click(button)
+  try {
+    await app.client.waitForExist(button, ms('10s'))
+    await app.client.click(button)
+  } catch (err) {
+    // This ^ is optional
+  }
 
   await changeWindow(t.context.app, 'feed')
 
