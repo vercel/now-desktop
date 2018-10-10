@@ -230,7 +230,7 @@ test('switch the event group', async t => {
 test('search for something', async t => {
   const { app } = t.context
 
-  const field = '.light aside span'
+  const field = 'aside div aside span'
   const event = '.event figcaption p'
   const input = `${field} + [name="form"] input`
 
