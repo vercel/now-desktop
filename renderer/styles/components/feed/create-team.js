@@ -11,7 +11,7 @@ export default css`
     flex-shrink: 0;
     margin: 0 20px 0 10px;
     display: block;
-    transition: border 0.2s, transform 0.6s;
+    transition: all 0.2s ease;
     transform: scale(0);
   }
 
@@ -21,11 +21,11 @@ export default css`
 
   a.dark,
   a:hover {
-    border-color: #4e4e4e;
+    border-color: #333;
   }
 
   a.dark:hover {
-    border-color: #e8e8e8;
+    border-color: #666;
   }
 
   a i {
@@ -44,16 +44,16 @@ export default css`
   a i:before {
     content: '';
     display: block;
-    background: #999999;
+    background: #666;
   }
 
   a.dark i:before,
   a:hover i:before {
-    background: #4e4e4e;
+    background: #666;
   }
 
   a.dark:hover i:before {
-    background: #999;
+    background: #fff;
   }
 
   a i:first-child:before {
