@@ -55,17 +55,6 @@ jobs:
           name: Linting Code
           command: yarn test-lint
 
-  test-integration:
-    macos:
-      xcode: '9.2.0'
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Running Integration Tests
-          command: yarn test-integration
-
   deploy:
     macos:
       xcode: '9.2.0'
@@ -97,16 +86,9 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-integration:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /.*/
       - deploy:
           requires:
             - test-lint
-            - test-integration
           filters:
             tags:
               only: /.*/
