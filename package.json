@@ -81,7 +81,7 @@
     "child-process-promise": "2.2.1",
     "chokidar": "2.0.3",
     "date-fns": "1.29.0",
-    "deep-extend": "0.6.0",
+    "deep-extend": "0.5.0",
     "deployment-type": "1.0.3",
     "docker-file-parser": "1.0.3",
     "dot-prop": "4.2.0",
