@@ -23,7 +23,7 @@ const NoEvents = ({ filtered, darkBg = false }) => (
         <h1>No Events Found</h1>
         <p>
           You can pick a different category of events using the{' '}
-          <FilterIcon background="#F5F5F5" /> filter on the top.
+          <FilterIcon darkBg={darkBg} background="#F5F5F5" /> filter on the top.
         </p>
       </Fragment>
     )}
