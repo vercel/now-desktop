@@ -1,0 +1,35 @@
+pool:
+  vmImage: 'vs2017-win2016'
+
+strategy:
+  maxParallel: 10
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    yarn install --ignore-engines
+  displayName: 'Install dependencies'
+
+- script: |
+    yarn build-renderer
+  displayName: 'Build renderer'
+  
+- script: |
+    yarn build-app -p "never"
+  displayName: 'Build app for tests'
+
+- script: |
+    yarn test-lint
+  displayName: 'Lint the code'
+
+- script: |
+    yarn test-integration
+  displayName: 'Run integration tests'
+
+- script: |
+    yarn build-app
+  displayName: 'Try to deploy'
