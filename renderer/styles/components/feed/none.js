@@ -19,7 +19,7 @@ export default css`
 
   h1 {
     font-size: 16px;
-    margin: 0 0 20px 0;
+    margin: 10px 0 0 0;
   }
 
   p {
@@ -27,7 +27,7 @@ export default css`
     font-size: 12px;
     width: 250px;
     line-height: 20px;
-    margin: 0;
+    margin: 5px;
   }
 
   b {
