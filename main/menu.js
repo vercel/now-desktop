@@ -7,8 +7,12 @@ const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig, saveConfig } = require('./utils/config')
 const binaryUtils = require('./utils/binary')
+const loadData = require('./utils/data/load')
 
-exports.innerMenu = async function(app, tray, windows, user) {
+// Cache the user for fast open
+let user = null
+
+exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
   const { updateChannel, desktop } = config
@@ -20,6 +24,14 @@ exports.innerMenu = async function(app, tray, windows, user) {
   // enabled by default if the config property is not set)
   if (desktop && desktop.updateCLI === false) {
     updateCLI = false
+  }
+
+  if (!user) {
+    try {
+      ;({ user } = await loadData('/api/www/user', config.token))
+    } catch (err) {
+      // The token was revoked, the effect is caught elsewhere
+    }
   }
 
   // We have to explicitly add a "Main" item on linux, otherwis
@@ -52,14 +64,14 @@ exports.innerMenu = async function(app, tray, windows, user) {
         label: 'Account',
         submenu: [
           {
-            label: user.username || user.email,
+            label: user ? user.username || user.email : 'Your Account',
             enabled: false
           },
           {
             type: 'separator'
           },
           {
-            label: user.username ? 'Change Username' : 'Set Username',
+            label: user && user.username ? 'Change Username' : 'Set Username',
             click() {
               shell.openExternal('https://zeit.co/account')
             }
