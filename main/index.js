@@ -16,7 +16,6 @@ const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
-const loadData = require('./utils/data/load')
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
@@ -82,12 +81,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-const contextMenu = async (windows, user) => {
+const contextMenu = async windows => {
   if (process.env.CONNECTION === 'offline') {
     return outerMenu(app, windows)
   }
 
-  return innerMenu(app, tray, windows, user)
+  return innerMenu(app, tray, windows)
 }
 
 const filesDropped = async (event, files) => {
@@ -110,20 +109,11 @@ app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
 app.on('ready', async () => {
   let config = {}
-  let user = null
 
   try {
     config = await getConfig()
   } catch (err) {
     config = {}
-  }
-
-  if (config.token) {
-    try {
-      ({ user } = await loadData('/api/www/user', config.token))
-    } catch (err) {
-      // The token was revoked, the effect is caught elsewhere
-    }
   }
 
   const onlineStatusWindow = new electron.BrowserWindow({
@@ -160,7 +150,11 @@ app.on('ready', async () => {
   global.tray = tray
 
   // Ensure that `next` works with `electron`
-  await prepareNext('./renderer')
+  try {
+    await prepareNext('./renderer')
+  } catch (e) {
+    // Next has failed to start but context menu should still work
+  }
 
   // Extract each window out of the list
   const { mainWindow, tutorialWindow, aboutWindow } = windowList
@@ -187,12 +181,11 @@ app.on('ready', async () => {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
 
-      const menu = await contextMenu(windows, user)
+      const menu = await contextMenu(windows)
 
       menu.popup({
         x: bounds.x,
-        y: bounds.y,
-        async: true
+        y: bounds.y
       })
     }
   })
@@ -218,13 +211,15 @@ app.on('ready', async () => {
 
   // Only allow one instance of Now running
   // at the same time
-  const shouldQuit = app.makeSingleInstance(toggleActivity)
+  const gotInstanceLock = app.requestSingleInstanceLock()
 
-  if (shouldQuit) {
+  if (!gotInstanceLock) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheuss)
     return app.exit()
   }
+
+  app.on('second-instance', toggleActivity)
 
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
   const afterUpdate = config.desktop && config.desktop.updatedFrom
@@ -246,7 +241,7 @@ app.on('ready', async () => {
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
     tray.setContextMenu(
-      loggedIn ? await contextMenu(windows, user) : outerMenu(app, windows)
+      loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
     )
   }
 
@@ -263,7 +258,7 @@ app.on('ready', async () => {
       return
     }
 
-    const menu = loggedIn ? await contextMenu(windows, user) : outerMenu(app, windows)
+    const menu = loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)
