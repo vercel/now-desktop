@@ -85,7 +85,7 @@
     "docker-file-parser": "1.0.3",
     "dot-prop": "4.2.0",
     "electron-is-dev": "0.3.0",
-    "electron-next": "3.1.4",
+    "electron-next": "3.1.5",
     "electron-squirrel-startup": "1.0.0",
     "electron-store": "2.0.0",
     "fix-path": "2.1.0",
@@ -119,7 +119,7 @@
     "winreg": "1.2.4"
   },
   "devDependencies": {
-    "electron": "2.0.8",
+    "electron": "3.0.4",
     "electron-builder": "20.28.4",
     "electron-builder-squirrel-windows": "20.28.3",
     "eslint-config-prettier": "2.9.0",
