@@ -1,10 +1,6 @@
-// Native
-const path = require('path')
-
 // Packages
 const electron = require('electron')
 const isDev = require('electron-is-dev')
-const { resolve } = require('app-root-path')
 
 // Utilities
 const attachTrayState = require('../highlight')
@@ -13,12 +9,13 @@ const positionWindow = require('./position')
 // Check if Windows
 const isWinOS = process.platform === 'win32'
 
-const windowURL = page => {
+const loadPage = (win, page) => {
   if (isDev) {
-    return 'http://localhost:8000/' + page
+    win.loadURL(`http://localhost:8000/${page}`)
+    win.openDevTools({ mode: 'detach' })
+  } else {
+    win.loadFile(`${electron.app.getAppPath()}/renderer/out/${page}/index.html`)
   }
-
-  return path.join('file://', resolve('./renderer/out'), page, 'index.html')
 }
 
 exports.tutorialWindow = tray => {
@@ -40,7 +37,7 @@ exports.tutorialWindow = tray => {
     }
   })
 
-  win.loadURL(windowURL('tutorial'))
+  loadPage(win, 'tutorial')
   attachTrayState(win, tray)
 
   const emitTrayClick = aboutWindow => {
@@ -87,7 +84,7 @@ exports.aboutWindow = tray => {
     }
   })
 
-  win.loadURL(windowURL('about'))
+  loadPage(win, 'about')
   attachTrayState(win, tray)
 
   return win
@@ -122,7 +119,7 @@ exports.mainWindow = tray => {
 
   positionWindow(tray, win)
 
-  win.loadURL(windowURL('feed'))
+  loadPage(win, 'feed')
   attachTrayState(win, tray)
 
   // Hide window if it's not focused anymore
