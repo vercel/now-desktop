@@ -42,22 +42,29 @@ const hasConfig = async () => {
 
 exports.getConfig = async () => {
   const content = {}
-  const authContent = await fs.readJSON(paths.auth)
+  let authContent = null
+  let config = null
+
+  try {
+    authContent = await fs.readJSON(paths.auth)
+    config = await fs.readJSON(paths.config)
+  } catch (e) {}
 
   let token = null
 
   if (authContent) {
     if (authContent.credentials) {
-      ;({ token } = authContent.credentials.find(item => item.provider === 'sh'))
+      ;({ token } = authContent.credentials.find(
+        item => item.provider === 'sh'
+      ))
     } else {
       token = authContent.token
     }
   }
 
-  const config = await fs.readJSON(paths.config)
   const tokenProp = token ? { token } : {}
 
-  if (config.sh) {
+  if (config && config.sh) {
     const { sh, updateChannel, desktop } = config
     const isCanary = updateChannel && updateChannel === 'canary'
 
@@ -71,7 +78,7 @@ exports.getConfig = async () => {
 
     Object.assign(content, sh || {}, tokenProp)
   } else {
-    Object.assign(content, config, tokenProp)
+    Object.assign(content, config || {}, tokenProp)
   }
 
   if (typeof content.user === 'object') {
@@ -98,11 +105,7 @@ exports.removeConfig = async () => {
     configWatcher = null
   }
 
-  const toRemove = [
-    'currentTeam',
-    'user',
-    'sh'
-  ]
+  const toRemove = ['currentTeam', 'user', 'sh']
 
   const configContent = await fs.readJSON(paths.config)
 
@@ -115,10 +118,10 @@ exports.removeConfig = async () => {
   })
 
   const authContent = await fs.readJSON(paths.auth)
-  const comment = authContent._ ? `${authContent._}` : null;
+  const comment = authContent._ ? `${authContent._}` : null
 
   if (comment) {
-    authContent._ = comment;
+    authContent._ = comment
   }
 
   await fs.writeJSON(paths.auth, authContent, {
@@ -135,7 +138,7 @@ exports.saveConfig = async (data, type) => {
   } catch (err) {}
 
   if (type === 'config') {
-    let existingShownTips = currentContent.shownTips;
+    let existingShownTips = currentContent.shownTips
 
     if (currentContent.sh) {
       // These are top-level properties
@@ -175,7 +178,10 @@ exports.saveConfig = async (data, type) => {
       }
     }
 
-    if (typeof currentContent.user === 'string' || typeof currentContent.currentTeam === 'string') {
+    if (
+      typeof currentContent.user === 'string' ||
+      typeof currentContent.currentTeam === 'string'
+    ) {
       if (typeof data.user === 'object') {
         data.user = data.user.uid || data.user.id
       }
@@ -224,7 +230,7 @@ exports.saveConfig = async (data, type) => {
 
       credentials[index] = Object.assign(related || {}, data)
     } else {
-      Object.assign(currentContent, data);
+      Object.assign(currentContent, data)
     }
   }
 
@@ -293,7 +299,7 @@ const configChanged = async file => {
 exports.watchConfig = async () => {
   const toWatch = [paths.auth, paths.config]
 
-  if (!(await hasConfig())) {
+  if (!await hasConfig()) {
     return
   }
 
