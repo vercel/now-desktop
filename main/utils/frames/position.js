@@ -35,19 +35,7 @@ module.exports = (tray, window) => {
 
   const windowPosition = notMacOS ? 'trayBottomCenter' : 'trayCenter'
 
-  let noBoundsPosition = null
-
-  if (
-    (trayBoundsCache === undefined || trayBoundsCache.x === 0) &&
-    windowPosition.substr(0, 4) === 'tray'
-  ) {
-    noBoundsPosition = notMacOS ? 'bottomRight' : 'topRight'
-  }
-
-  const { x, y } = positioner.calculate(
-    noBoundsPosition || windowPosition,
-    trayBoundsCache
-  )
+  const { x, y } = positioner.calculate(windowPosition, trayBoundsCache)
 
   const vertical = notMacOS ? y : y + 7
 
