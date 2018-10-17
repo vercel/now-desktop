@@ -150,7 +150,11 @@ app.on('ready', async () => {
   global.tray = tray
 
   // Ensure that `next` works with `electron`
-  await prepareNext('./renderer')
+  try {
+    await prepareNext('./renderer')
+  } catch (e) {
+    // Next has failed to start but context menu should still work
+  }
 
   // Extract each window out of the list
   const { mainWindow, tutorialWindow, aboutWindow } = windowList
