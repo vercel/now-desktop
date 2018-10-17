@@ -22,6 +22,17 @@ jobs:
           paths:
             - node_modules
 
+  lint:
+    macos:
+      xcode: '9.2.0'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Linting Code
+          command: yarn test-lint
+
   build:
     macos:
       xcode: '9.2.0'
@@ -33,38 +44,10 @@ jobs:
           name: Building Renderer
           command: yarn build-renderer
       - run:
-          name: Bundling Application
-          command: yarn build-app --publish 'never'
+          name: Bundling (and Deploying) Application
+          command: yarn build-app
       - store_artifacts:
           path: dist
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist
-            - renderer/.next
-            - renderer/out
-
-  test-lint:
-    macos:
-      xcode: '9.2.0'
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Linting Code
-          command: yarn test-lint
-
-  deploy:
-    macos:
-      xcode: '9.2.0'
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Deploying to GitHub
-          command: yarn build-app
 
 workflows:
   version: 2
@@ -74,23 +57,15 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build:
+      - lint:
           requires:
             - install
           filters:
             tags:
               only: /.*/
-      - test-lint:
+      - build:
           requires:
-            - build
+            - lint
           filters:
             tags:
               only: /.*/
-      - deploy:
-          requires:
-            - test-lint
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
