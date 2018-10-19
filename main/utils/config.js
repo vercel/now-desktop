@@ -9,9 +9,6 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
-// Utilities
-const loadData = require('./data/load')
-
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json'
@@ -183,7 +180,7 @@ exports.saveConfig = async (data, type) => {
         delete data.user
       }
 
-      if (typeof data.currentTeam === 'object') {
+      if (data.currentTeam !== null && typeof data.currentTeam === 'object') {
         data.currentTeam = data.currentTeam.id
       }
     }
@@ -266,29 +263,6 @@ const configChanged = async file => {
   }
 
   oldToken = content.token
-
-  if (
-    !content.user ||
-    (content.user && Object.keys(content.user).length === 0)
-  ) {
-    console.log('Re-fetching user information')
-
-    // Re-fetch the user information from our API
-    const { user } = await loadData('/api/www/user', content.token)
-
-    content.user = {
-      uid: user.uid,
-      username: user.username,
-      email: user.email
-    }
-
-    // Update the config file
-    await exports.saveConfig({ user: content.user }, 'config')
-
-    // Let the developer know
-    console.log('Done refetching it')
-    return
-  }
 
   mainWindow.webContents.send('config-changed', content)
 }
