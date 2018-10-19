@@ -178,12 +178,9 @@ exports.saveConfig = async (data, type) => {
       }
     }
 
-    if (
-      typeof currentContent.user === 'string' ||
-      typeof currentContent.currentTeam === 'string'
-    ) {
-      if (typeof data.user === 'object') {
-        data.user = data.user.uid || data.user.id
+    if (!currentContent.sh) {
+      if (typeof data.user !== 'undefined') {
+        delete data.user
       }
 
       if (typeof data.currentTeam === 'object') {
