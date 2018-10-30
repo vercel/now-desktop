@@ -97,6 +97,8 @@ exports.mainWindow = tray => {
     windowHeight -= 12
   }
 
+  const darkMode = electron.systemPreferences.isDarkMode()
+
   const win = new electron.BrowserWindow({
     width: 330,
     height: windowHeight,
@@ -109,6 +111,7 @@ exports.mainWindow = tray => {
     transparent: true,
     frame: false,
     movable: false,
+    backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
     webPreferences: {
       backgroundThrottling: false,
       devTools: true
