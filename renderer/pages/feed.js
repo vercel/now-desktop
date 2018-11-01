@@ -47,7 +47,8 @@ class Feed extends Component {
     eventFilter: null,
     online: true,
     typeFilter: 'team',
-    darkMode: false
+    darkMode: false,
+    hasLoaded: false
   }
 
   remote = electron.remote || false
@@ -447,7 +448,8 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: this.remote.systemPreferences.isDarkMode()
+      darkMode: this.remote.systemPreferences.isDarkMode(),
+      hasLoaded: true
     })
 
     // Listen to system darkMode system change
@@ -779,6 +781,10 @@ class Feed extends Component {
   render() {
     const activeScope = this.detectScope('id', this.state.scope)
     const isUser = this.isUser(activeScope)
+
+    if (!this.state.hasLoaded) {
+      return null
+    }
 
     return (
       <main>
