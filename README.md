@@ -1,7 +1,7 @@
 ![](https://assets.zeit.co/image/upload/v1537714691/repositories/now-desktop/now-desktop-repo-banner.png)
 
 [![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
-[![Windows CI status](https://ci.appveyor.com/api/projects/status/8cgv7c7v45dw82vg?svg=true)](https://ci.appveyor.com/project/zeit/now-desktop)
+[![Windows CI status](https://dev.azure.com/zeit-builds/Now%20Desktop/_apis/build/status/now-desktop)](https://dev.azure.com/zeit-builds/Now%20Desktop/_build/latest?definitionId=1)
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/zeit)
 
 For more details about Now and why you should use it, head to [this page](https://zeit.co).
