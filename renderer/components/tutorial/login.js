@@ -250,7 +250,8 @@ class LoginForm extends PureComponent {
             email: user.email
           }
         },
-        'config'
+        'config',
+        true
       )
     } catch (err) {
       error('Could not save main config', err)
@@ -263,7 +264,8 @@ class LoginForm extends PureComponent {
           provider: 'sh',
           token: finalToken
         },
-        'auth'
+        'auth',
+        true
       )
     } catch (err) {
       error('Could not save auth config', err)
