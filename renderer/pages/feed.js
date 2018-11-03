@@ -474,6 +474,10 @@ class Feed extends Component {
       currentWindow.removeListener('show', this.showWindow)
       currentWindow.removeListener('hide', this.hideWindow)
     })
+
+    setTimeout(() => {
+      this.ipcRenderer.send('main-window-ready')
+    }, 0)
   }
 
   componentWillUnmount() {

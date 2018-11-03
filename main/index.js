@@ -226,13 +226,13 @@ app.on('ready', async () => {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     if (!wasOpenedAtLogin && !afterUpdate) {
-      windows.tutorial.once('ready-to-show', toggleActivity)
+      electron.ipcMain.on('tutorial-window-ready', toggleActivity)
     }
   } else {
     const mainWindow = windows.main
 
     if (!mainWindow.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
-      mainWindow.once('ready-to-show', toggleActivity)
+      electron.ipcMain.on('main-window-ready', toggleActivity)
     }
   }
 

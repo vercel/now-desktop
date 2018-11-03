@@ -25,6 +25,7 @@ class Sections extends React.PureComponent {
   }
 
   remote = electron.remote || false
+  ipcRenderer = electron.ipcRenderer || false
   isWindows = process.platform === 'win32'
   setReference = setRef.bind(this)
 
@@ -122,6 +123,10 @@ class Sections extends React.PureComponent {
         this.slider.slickGoTo(0)
       }
     })
+
+    setTimeout(() => {
+      this.ipcRenderer.send('tutorial-window-ready')
+    }, 0)
   }
 
   render() {
