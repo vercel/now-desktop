@@ -127,7 +127,7 @@ exports.removeConfig = async () => {
   })
 }
 
-exports.saveConfig = async (data, type) => {
+exports.saveConfig = async (data, type, firstSave = false) => {
   const destination = paths[type]
   let currentContent = {}
 
@@ -137,6 +137,10 @@ exports.saveConfig = async (data, type) => {
 
   if (type === 'config') {
     let existingShownTips = currentContent.shownTips
+
+    if (firstSave && typeof currentContent.sh === 'undefined') {
+      currentContent.sh = {}
+    }
 
     if (currentContent.sh) {
       // These are top-level properties
@@ -216,6 +220,10 @@ exports.saveConfig = async (data, type) => {
     if (!currentContent._) {
       currentContent._ =
         "This is your Now credentials file. DON'T SHARE! More: https://git.io/v5ECz"
+    }
+
+    if (firstSave && typeof currentContent.credentials === 'undefined') {
+      currentContent.credentials = []
     }
 
     if (currentContent.credentials) {
