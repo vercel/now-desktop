@@ -116,12 +116,13 @@ exports.removeConfig = async () => {
 
   const authContent = await fs.readJSON(paths.auth)
   const comment = authContent._ ? `${authContent._}` : null
+  const newAuthContent = {}
 
   if (comment) {
-    authContent._ = comment
+    newAuthContent._ = comment
   }
 
-  await fs.writeJSON(paths.auth, authContent, {
+  await fs.writeJSON(paths.auth, newAuthContent, {
     spaces: 2
   })
 }
