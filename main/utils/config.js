@@ -9,6 +9,9 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
+// Utilities
+const loadData = require('./data/load')
+
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json'
@@ -48,17 +51,28 @@ exports.getConfig = async () => {
     config = await fs.readJSON(paths.config)
   } catch (e) {}
 
+  // This entire statement is only temporary
   if (authContent.token) {
-    exports.saveConfig(config, 'config', true)
+    const { token } = authContent
 
-    exports.saveConfig(
-      {
-        provider: 'sh',
-        token: authContent.token
-      },
-      'auth',
-      true
-    )
+    const normalizedConfig = Object.assign({}, config)
+    const normalizedAuthConfig = { provider: 'sh', token }
+
+    if (!normalizedConfig.user) {
+      const { user } = await loadData('/api/www/user', token)
+      normalizedConfig.user = user
+    }
+
+    if (typeof normalizedConfig.currentTeam === 'string') {
+      const currentTeam = await loadData(
+        `/api/teams/${normalizedConfig.currentTeam}`,
+        token
+      )
+      normalizedConfig.currentTeam = currentTeam
+    }
+
+    exports.saveConfig(normalizedConfig, 'config', true)
+    exports.saveConfig(normalizedAuthConfig, 'auth', true)
   }
 
   let token = null
