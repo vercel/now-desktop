@@ -442,12 +442,16 @@ class Feed extends Component {
 
     const { getConfig } = this.remote.require('./utils/config')
 
-    const config = await getConfig()
-    const { user } = await loadData(API_USER, config.token)
+    let user = null
+
+    try {
+      const config = await getConfig()
+      ;({ user } = await loadData(API_USER, config.token))
+    } catch (err) {}
 
     this.setState({
-      scope: user.uid,
-      currentUser: user,
+      scope: user ? user.uid : null,
+      currentUser: user ? user : null,
       darkMode: this.remote.systemPreferences.isDarkMode(),
       hasLoaded: true
     })

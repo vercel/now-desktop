@@ -13,7 +13,12 @@ const loadData = require('./utils/data/load')
 let user = null
 
 exports.innerMenu = async function(app, tray, windows) {
-  const config = await getConfig()
+  let config = {}
+
+  try {
+    config = await getConfig()
+  } catch (err) {}
+
   const { openAtLogin } = app.getLoginItemSettings()
   const { updateChannel, desktop } = config
   const isCanary = updateChannel && updateChannel === 'canary'

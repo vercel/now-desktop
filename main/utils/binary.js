@@ -139,15 +139,12 @@ const platformName = () => {
 }
 
 const canaryCheck = async () => {
-  let config
+  let updateChannel = null
 
   try {
-    config = await getConfig()
-  } catch (err) {
-    config = {}
-  }
+    ;({ updateChannel } = await getConfig())
+  } catch (err) {}
 
-  const { updateChannel } = config
   return updateChannel && updateChannel === 'canary'
 }
 

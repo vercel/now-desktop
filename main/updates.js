@@ -17,7 +17,12 @@ const binaryUtils = require('./utils/binary')
 const { getConfig, saveConfig } = require('./utils/config')
 
 const isCanary = async () => {
-  const { updateChannel } = await getConfig()
+  let updateChannel = null
+
+  try {
+    ;({ updateChannel } = await getConfig())
+  } catch (err) {}
+
   return updateChannel && updateChannel === 'canary'
 }
 
@@ -203,13 +208,11 @@ const deleteUpdateConfig = () =>
   )
 
 const startAppUpdates = async mainWindow => {
-  let config
+  let config = {}
 
   try {
     config = await getConfig()
-  } catch (err) {
-    config = {}
-  }
+  } catch (err) {}
 
   const updatedFrom = config.desktop && config.desktop.updatedFrom
   const appVersion = isDev ? version : app.getVersion()

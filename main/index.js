@@ -112,9 +112,7 @@ app.on('ready', async () => {
 
   try {
     config = await getConfig()
-  } catch (err) {
-    config = {}
-  }
+  } catch (err) {}
 
   const onlineStatusWindow = new electron.BrowserWindow({
     width: 0,
