@@ -9,9 +9,6 @@ const groom = require('groom')
 const deepExtend = require('deep-extend')
 const { watch } = require('chokidar')
 
-// Utilities
-const loadData = require('./data/load')
-
 const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json'
@@ -42,7 +39,6 @@ const hasConfig = async () => {
 
 exports.getConfig = async () => {
   const content = {}
-
   let authContent = null
   let config = null
 
@@ -50,30 +46,6 @@ exports.getConfig = async () => {
     authContent = await fs.readJSON(paths.auth)
     config = await fs.readJSON(paths.config)
   } catch (e) {}
-
-  // This entire statement is only temporary
-  if (authContent.token) {
-    const { token } = authContent
-
-    const normalizedConfig = Object.assign({}, config)
-    const normalizedAuthConfig = { provider: 'sh', token }
-
-    if (!normalizedConfig.user) {
-      const { user } = await loadData('/api/www/user', token)
-      normalizedConfig.user = user
-    }
-
-    if (typeof normalizedConfig.currentTeam === 'string') {
-      const currentTeam = await loadData(
-        `/api/teams/${normalizedConfig.currentTeam}`,
-        token
-      )
-      normalizedConfig.currentTeam = currentTeam
-    }
-
-    exports.saveConfig(normalizedConfig, 'config', true)
-    exports.saveConfig(normalizedAuthConfig, 'auth', true)
-  }
 
   let token = null
 
@@ -159,14 +131,9 @@ exports.saveConfig = async (data, type, firstSave = false) => {
   const destination = paths[type]
   let currentContent = {}
 
-  // If we are saving the config for the first time (login), there
-  // is no need to try to see whether the file exists already, because
-  // it definitely will not.
-  if (!firstSave) {
-    try {
-      currentContent = await fs.readJSON(destination)
-    } catch (err) {}
-  }
+  try {
+    currentContent = await fs.readJSON(destination)
+  } catch (err) {}
 
   if (type === 'config') {
     let existingShownTips = currentContent.shownTips
