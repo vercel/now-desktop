@@ -185,7 +185,7 @@ class Title extends PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        <Tips darkBg={this.props.darkBg} />
+        {this.props.showTips && <Tips darkBg={this.props.darkBg} />}
 
         {this.renderTypeFilter()}
 
@@ -206,7 +206,12 @@ Title.propTypes = {
   setSearchRef: PropTypes.func,
   searchShown: PropTypes.bool,
   setTypeFilter: PropTypes.func,
-  isUser: PropTypes.bool
+  isUser: PropTypes.bool,
+  showTips: PropTypes.bool
+}
+
+Title.defaultProps = {
+  showTips: true
 }
 
 export default Title
