@@ -9,6 +9,8 @@ const positionWindow = require('./position')
 // Check if Windows
 const isWinOS = process.platform === 'win32'
 
+const darkMode = electron.systemPreferences.isDarkMode()
+
 const loadPage = (win, page) => {
   if (isDev) {
     win.loadURL(`http://localhost:8000/${page}`)
@@ -30,7 +32,7 @@ exports.tutorialWindow = tray => {
     fullscreenable: false,
     maximizable: false,
     titleBarStyle: 'hiddenInset',
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     webPreferences: {
       backgroundThrottling: false,
       devTools: true
@@ -77,7 +79,7 @@ exports.aboutWindow = tray => {
     minimizable: false,
     titleBarStyle: 'hiddenInset',
     frame: false,
-    backgroundColor: '#ECECEC',
+    backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
     webPreferences: {
       backgroundThrottling: false,
       devTools: true
@@ -96,8 +98,6 @@ exports.mainWindow = tray => {
   if (isWinOS) {
     windowHeight -= 12
   }
-
-  const darkMode = electron.systemPreferences.isDarkMode()
 
   const win = new electron.BrowserWindow({
     width: 330,

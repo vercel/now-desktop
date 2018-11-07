@@ -186,7 +186,7 @@ class Sections extends React.PureComponent {
 
 const Tutorial = () => (
   <main>
-    <Title>Welcome to Now</Title>
+    <Title showTips={false}>Welcome to Now</Title>
     <Sections />
 
     <style jsx>{wrapStyle}</style>
