@@ -327,7 +327,10 @@ class Now extends EventEmitter {
     if (!opts.useCurrentTeam && this.currentTeam) {
       const parsedUrl = parseUrl(_url, true)
       const query = parsedUrl.query
-      query.teamId = this.currentTeam.id
+      query.teamId =
+        typeof this.currentTeam === 'string'
+          ? this.currentTeam
+          : this.currentTeam.id
       _url = `${parsedUrl.pathname}?${qs.encode(query)}`
       delete opts.useCurrentTeam
     }
