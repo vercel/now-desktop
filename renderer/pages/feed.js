@@ -13,7 +13,6 @@ import strip from 'strip'
 import parseHTML from 'html-to-react'
 import retry from 'async-retry'
 import ms from 'ms'
-import isDev from 'electron-is-dev'
 import makeUnique from 'make-unique'
 
 // Components
@@ -337,12 +336,7 @@ class Feed extends Component {
 
   onKeyDown = event => {
     const currentWindow = this.remote.getCurrentWindow()
-    const { keyCode, metaKey, altKey } = event
-
-    // Allow developers to inspect the app in production
-    if (keyCode === 73 && metaKey && altKey && !isDev) {
-      currentWindow.webContents.openDevTools()
-    }
+    const { keyCode, metaKey } = event
 
     if (keyCode === 86 && metaKey) {
       const { deploy } = this.remote.require('./utils/deploy-from-clipboard')
