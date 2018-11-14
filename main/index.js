@@ -5,6 +5,7 @@ const fixPath = require('fix-path')
 const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const squirrelStartup = require('electron-squirrel-startup')
+const Sentry = require('@sentry/electron')
 
 // Utilities
 const firstRun = require('./utils/first-run')
@@ -16,6 +17,10 @@ const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
 const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
+
+Sentry.init({
+  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
+})
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
