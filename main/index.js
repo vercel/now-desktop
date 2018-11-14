@@ -195,15 +195,17 @@ app.on('ready', async () => {
     }
   })
 
-  electron.systemPreferences.subscribeNotification(
-    'AppleInterfaceThemeChangedNotification',
-    () => {
-      const darkMode = electron.systemPreferences.isDarkMode()
+  if (process.platform === 'darwin') {
+    electron.systemPreferences.subscribeNotification(
+      'AppleInterfaceThemeChangedNotification',
+      () => {
+        const darkMode = electron.systemPreferences.isDarkMode()
 
-      windows.main.send('theme-changed', { darkMode })
-      windows.about.send('theme-changed', { darkMode })
-    }
-  )
+        windows.main.send('theme-changed', { darkMode })
+        windows.about.send('theme-changed', { darkMode })
+      }
+    )
+  }
 
   const toggleActivity = async event => {
     if (loggedIn) {

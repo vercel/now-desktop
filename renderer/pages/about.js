@@ -3,6 +3,7 @@ import electron from 'electron'
 import React from 'react'
 import { ago as timeAgo } from 'time-ago'
 import isDev from 'electron-is-dev'
+import isDarkMode from '../utils/dark-mode'
 
 // Components
 import Licenses from '../components/about/licenses'
@@ -53,7 +54,7 @@ class About extends React.PureComponent {
 
     this.setState({
       version,
-      darkMode: this.remote.systemPreferences.isDarkMode()
+      darkMode: isDarkMode(this.remote)
     })
 
     // Listen to system darkMode system change
