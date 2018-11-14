@@ -12,7 +12,19 @@ const loadData = require('./utils/data/load')
 // Cache the user for fast open
 let user = null
 
-exports.innerMenu = async function(app, tray, windows) {
+const openDeveloperTools = windows => {
+  if (!windows || Object.keys(windows).length === 0) {
+    return
+  }
+
+  const list = Object.values(windows)
+
+  for (const item of list) {
+    item.webContents.openDevTools()
+  }
+}
+
+exports.innerMenu = async function(app, tray, windows, inRenderer) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
   const { updateChannel, desktop } = config
@@ -49,137 +61,155 @@ exports.innerMenu = async function(app, tray, windows) {
       : []
 
   return buildFromTemplate(
-    prependItems.concat([
-      {
-        label:
-          process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
-        click() {
-          toggleWindow(null, windows.about)
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Account',
-        submenu: [
-          {
-            label: user ? user.username || user.email : 'Your Account',
-            enabled: false
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: user && user.username ? 'Change Username' : 'Set Username',
-            click() {
-              shell.openExternal('https://zeit.co/account')
-            }
-          },
-          {
-            label: 'Billing',
-            click() {
-              shell.openExternal('https://zeit.co/account/billing')
-            }
-          },
-          {
-            label: 'Plan',
-            click() {
-              shell.openExternal('https://zeit.co/account/plan')
-            }
-          },
-          {
-            label: 'API Tokens',
-            click() {
-              shell.openExternal('https://zeit.co/account/tokens')
-            }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: 'Logout',
-            click: logout
+    prependItems.concat(
+      [
+        {
+          label:
+            process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
+          click() {
+            toggleWindow(null, windows.about)
           }
-        ]
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Support',
-        click() {
-          shell.openExternal('https://zeit.chat')
-        }
-      },
-      {
-        label: 'Documentation',
-        click() {
-          shell.openExternal('https://zeit.co/docs')
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Preferences',
-        submenu: [
-          {
-            label: 'Launch at Login',
-            type: 'checkbox',
-            checked: openAtLogin,
-            enabled: !isDev,
-            click() {
-              app.setLoginItemSettings({
-                openAtLogin: !openAtLogin
-              })
-            }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: 'Canary Releases',
-            type: 'checkbox',
-            checked: isCanary,
-            click() {
-              saveConfig(
-                {
-                  updateChannel: isCanary ? 'stable' : 'canary'
-                },
-                'config'
-              )
-            }
-          },
-          {
-            label: 'Auto-Update Now CLI',
-            type: 'checkbox',
-            checked: updateCLI,
-            click() {
-              if (updateCLI === false) {
-                binaryUtils.install()
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Account',
+          submenu: [
+            {
+              label: user ? user.username || user.email : 'Your Account',
+              enabled: false
+            },
+            {
+              type: 'separator'
+            },
+            {
+              label: user && user.username ? 'Change Username' : 'Set Username',
+              click() {
+                shell.openExternal('https://zeit.co/account')
               }
-
-              saveConfig(
-                {
-                  desktop: {
-                    updateCLI: !updateCLI
-                  }
-                },
-                'config'
-              )
+            },
+            {
+              label: 'Billing',
+              click() {
+                shell.openExternal('https://zeit.co/account/billing')
+              }
+            },
+            {
+              label: 'Plan',
+              click() {
+                shell.openExternal('https://zeit.co/account/plan')
+              }
+            },
+            {
+              label: 'API Tokens',
+              click() {
+                shell.openExternal('https://zeit.co/account/tokens')
+              }
+            },
+            {
+              type: 'separator'
+            },
+            {
+              label: 'Logout',
+              click: logout
             }
+          ]
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Support',
+          click() {
+            shell.openExternal('https://zeit.chat')
           }
-        ]
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'quit',
-        accelerator: 'Cmd+Q'
-      }
-    ])
+        },
+        {
+          label: 'Documentation',
+          click() {
+            shell.openExternal('https://zeit.co/docs')
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Preferences',
+          submenu: [
+            {
+              label: 'Launch at Login',
+              type: 'checkbox',
+              checked: openAtLogin,
+              enabled: !isDev,
+              click() {
+                app.setLoginItemSettings({
+                  openAtLogin: !openAtLogin
+                })
+              }
+            },
+            {
+              type: 'separator'
+            },
+            {
+              label: 'Canary Releases',
+              type: 'checkbox',
+              checked: isCanary,
+              click() {
+                saveConfig(
+                  {
+                    updateChannel: isCanary ? 'stable' : 'canary'
+                  },
+                  'config'
+                )
+              }
+            },
+            {
+              label: 'Auto-Update Now CLI',
+              type: 'checkbox',
+              checked: updateCLI,
+              click() {
+                if (updateCLI === false) {
+                  binaryUtils.install()
+                }
+
+                saveConfig(
+                  {
+                    desktop: {
+                      updateCLI: !updateCLI
+                    }
+                  },
+                  'config'
+                )
+              }
+            }
+          ]
+        },
+        inRenderer
+          ? null
+          : {
+              type: 'separator'
+            },
+        // This is much better than using `visible` because
+        // it does not affect the width of the menu.
+        inRenderer
+          ? null
+          : {
+              label: 'Open Developer Tools',
+              click() {
+                openDeveloperTools(windows)
+              },
+              accelerator: 'Cmd+I'
+            },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit',
+          accelerator: 'Cmd+Q'
+        }
+      ].filter(Boolean)
+    )
   )
 }
 
@@ -190,6 +220,16 @@ exports.outerMenu = (app, windows) =>
       click() {
         toggleWindow(null, windows.about)
       }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Open Developer Tools',
+      click() {
+        openDeveloperTools(windows)
+      },
+      accelerator: 'Cmd+I'
     },
     {
       type: 'separator'
