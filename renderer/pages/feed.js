@@ -23,6 +23,7 @@ import EventMessage from '../components/feed/event'
 import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
 import messageComponents from '../components/feed/messages'
+import isDarkMode from '../utils/dark-mode'
 
 // Utilities
 import loadData from '../utils/data/load'
@@ -442,7 +443,7 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: this.remote.systemPreferences.isDarkMode(),
+      darkMode: isDarkMode(this.remote),
       hasLoaded: true
     })
 
