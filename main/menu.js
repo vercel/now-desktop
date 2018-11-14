@@ -195,7 +195,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
         inRenderer
           ? null
           : {
-              label: 'Toogle Developer Tools',
+              label: 'Open Developer Tools',
               click() {
                 openDeveloperTools(windows)
               },
