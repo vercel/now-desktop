@@ -81,12 +81,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-const contextMenu = async windows => {
+const contextMenu = async (windows, inRenderer) => {
   if (process.env.CONNECTION === 'offline') {
     return outerMenu(app, windows)
   }
 
-  return innerMenu(app, tray, windows)
+  return innerMenu(app, tray, windows, inRenderer)
 }
 
 const filesDropped = async (event, files) => {
@@ -181,7 +181,7 @@ app.on('ready', async () => {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
 
-      const menu = await contextMenu(windows)
+      const menu = await contextMenu(windows, true)
 
       menu.popup({
         x: bounds.x,
