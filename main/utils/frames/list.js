@@ -6,10 +6,17 @@ const isDev = require('electron-is-dev')
 const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
 
-// Check if Windows
+// Check if Windows or Mac
 const isWinOS = process.platform === 'win32'
+const isMacOS = process.platform === 'darwin'
 
-const darkMode = electron.systemPreferences.isDarkMode()
+let darkMode = false
+
+if (isMacOS) {
+  darkMode = electron.systemPreferences.isDarkMode()
+} else if (isWinOS) {
+  darkMode = electron.systemPreferences.isInvertedColorScheme()
+}
 
 const loadPage = (win, page) => {
   if (isDev) {
