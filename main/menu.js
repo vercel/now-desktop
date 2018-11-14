@@ -12,6 +12,18 @@ const loadData = require('./utils/data/load')
 // Cache the user for fast open
 let user = null
 
+const openDeveloperTools = windows => {
+  if (!windows || Object.keys(windows).length === 0) {
+    return
+  }
+
+  const list = Object.values(windows)
+
+  for (const item of list) {
+    item.webContents.openDevTools()
+  }
+}
+
 exports.innerMenu = async function(app, tray, windows) {
   const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
@@ -176,6 +188,16 @@ exports.innerMenu = async function(app, tray, windows) {
         type: 'separator'
       },
       {
+        label: 'Toogle Developer Tools',
+        click() {
+          openDeveloperTools(windows)
+        },
+        accelerator: 'Cmd+I'
+      },
+      {
+        type: 'separator'
+      },
+      {
         role: 'quit',
         accelerator: 'Cmd+Q'
       }
@@ -190,6 +212,16 @@ exports.outerMenu = (app, windows) =>
       click() {
         toggleWindow(null, windows.about)
       }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Toogle Developer Tools',
+      click() {
+        openDeveloperTools(windows)
+      },
+      accelerator: 'Cmd+I'
     },
     {
       type: 'separator'
