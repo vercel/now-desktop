@@ -14,7 +14,6 @@ const darkMode = electron.systemPreferences.isDarkMode()
 const loadPage = (win, page) => {
   if (isDev) {
     win.loadURL(`http://localhost:8000/${page}`)
-    win.openDevTools({ mode: 'detach' })
   } else {
     win.loadFile(`${electron.app.getAppPath()}/renderer/out/${page}/index.html`)
   }

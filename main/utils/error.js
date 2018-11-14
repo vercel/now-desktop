@@ -1,56 +1,12 @@
 // Packages
 const { shell, app, dialog } = require('electron')
-const serializeError = require('serialize-error')
-const fetch = require('node-fetch')
 const isDev = require('electron-is-dev')
 const bytes = require('bytes')
 
 // Utilities
-const userAgent = require('./user-agent')
 const { getConfig } = require('./config')
 
-exports.exception = async error => {
-  let errorParts = {}
-
-  if (typeof error === 'string') {
-    errorParts.name = 'Error'
-    errorParts.message = 'An error occured'
-    errorParts.stack = error
-  } else {
-    // Make the error sendable using GET
-    errorParts = serializeError(error)
-  }
-
-  // Log the error to the console
-  console.error(errorParts)
-
-  // Prepare the request query
-  const query = {
-    sender: 'Now Desktop',
-    name: errorParts.name,
-    message: errorParts.message,
-    stack: errorParts.stack
-  }
-
-  // Report the error
-  try {
-    const response = await fetch('https://api.zeit.co/v2/errors', {
-      method: 'POST',
-      headers: {
-        'user-agent': userAgent
-      },
-      body: JSON.stringify(query)
-    })
-
-    const body = await response.json()
-
-    if (!body.done) {
-      throw new Error('Response not successful')
-    }
-  } catch (err) {
-    console.error(`Not able to send error away: ${err}`)
-  }
-
+exports.exception = async () => {
   // Restart the app, so that it doesn't continue
   // running in a broken state
   if (!isDev) {
