@@ -225,7 +225,7 @@ exports.outerMenu = (app, windows) =>
       type: 'separator'
     },
     {
-      label: 'Toogle Developer Tools',
+      label: 'Open Developer Tools',
       click() {
         openDeveloperTools(windows)
       },
