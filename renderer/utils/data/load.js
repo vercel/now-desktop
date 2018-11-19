@@ -29,8 +29,8 @@ const getToken = async () => {
   return config.token
 }
 
-const NETWORK_ERR_CODE = 'network_erroror'
-const NETWORK_ERR_MESSAGE = 'A network erroror has occurred. Please retry'
+const NETWORK_ERR_CODE = 'network_error'
+const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry'
 
 export default async (path, token = null, opts = {}) => {
   const headers = opts.headers || {}
@@ -84,7 +84,7 @@ export default async (path, token = null, opts = {}) => {
 
         error.code = data.error === null ? res.status : data.error.code
       } else {
-        throw new Error('A network error occured')
+        throw new Error('A network error occurred')
       }
     } else {
       data = await res.json()

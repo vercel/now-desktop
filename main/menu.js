@@ -46,7 +46,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
     }
   }
 
-  // We have to explicitly add a "Main" item on linux, otherwis
+  // We have to explicitly add a "Main" item on linux, otherwise
   // there would be no way to toggle the main window
   const prependItems =
     process.platform === 'linux'
