@@ -48,5 +48,5 @@ exports.deploy = async () => {
   if (clipboardContents.length > 0) {
     return deploy(clipboardContents)
   }
-  throw new Error('Failed to deploy from clipobard: Clipboard is empty')
+  throw new Error('Failed to deploy from clipboard: Clipboard is empty')
 }

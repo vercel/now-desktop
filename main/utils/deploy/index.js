@@ -16,7 +16,7 @@ const bytes = require('bytes')
 const determineType = require('deployment-type')
 const tmp = require('tmp-promise')
 
-// Utilites
+// Utilities
 const notify = require('../../notify')
 const { getConfig } = require('../config')
 const ua = require('../user-agent')

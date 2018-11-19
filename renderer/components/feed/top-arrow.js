@@ -46,7 +46,7 @@ class TopArrow extends PureComponent {
       return
     }
 
-    // Center the caret unter the tray icon
+    // Center the caret under the tray icon
     const windowBounds = currentWindow.getBounds()
     this.position(tray, windowBounds)
   }

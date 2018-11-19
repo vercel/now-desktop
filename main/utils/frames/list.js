@@ -154,7 +154,7 @@ exports.mainWindow = tray => {
     const y = cursor.y >= trayBounds.y && cursor.y <= yAfter
 
     // Don't close the window on click on the tray icon
-    // Because that will already toogle the window
+    // Because that will already toggle the window
     if (x && y) {
       return
     }

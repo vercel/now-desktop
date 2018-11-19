@@ -222,7 +222,7 @@ app.on('ready', async () => {
 
   if (!gotInstanceLock) {
     // We're using `exit` because `quit` didn't work
-    // on Windows (tested by matheuss)
+    // on Windows (tested by matheus)
     return app.exit()
   }
 
