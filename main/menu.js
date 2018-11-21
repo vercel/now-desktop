@@ -43,6 +43,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
       ;({ user } = await loadData('/api/www/user', config.token))
     } catch (err) {
       // The token was revoked, the effect is caught elsewhere
+      // Or the user is offline
     }
   }
 

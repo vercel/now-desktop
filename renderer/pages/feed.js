@@ -45,7 +45,7 @@ class Feed extends Component {
     currentUser: null,
     teams: [],
     eventFilter: null,
-    online: true,
+    online: typeof navigator === 'undefined' ? true : navigator.onLine,
     typeFilter: 'team',
     darkMode: false,
     hasLoaded: false
@@ -399,7 +399,13 @@ class Feed extends Component {
 
   onConfigChanged = async (event, config) => {
     const { token } = config
-    const { user } = await loadData(API_USER, token)
+
+    let user = {}
+
+    // It's very important to not use `this.state` here
+    if (navigator.onLine) {
+      ;({ user } = await loadData(API_USER, token))
+    }
 
     if (isEqual(this.state.currentUser, user)) {
       return
@@ -436,9 +442,14 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-
     const config = await getConfig()
-    const { user } = await loadData(API_USER, config.token)
+
+    let user = {}
+
+    // It's very important to not use `this.state` here
+    if (navigator.onLine) {
+      ;({ user } = await loadData(API_USER, config.token))
+    }
 
     this.setState({
       scope: user.uid,
@@ -477,8 +488,23 @@ class Feed extends Component {
     this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged)
   }
 
-  setOnlineState = () => {
-    this.setState({ online: navigator.onLine })
+  setOnlineState = async () => {
+    const online = navigator.onLine
+
+    if (!online) {
+      this.setState({ online })
+      return
+    }
+
+    const { getConfig } = this.remote.require('./utils/config')
+    const config = await getConfig()
+    const { user: currentUser } = await loadData(API_USER, config.token)
+
+    this.setState({
+      online,
+      currentUser,
+      scope: config.currentTeam ? config.currentTeam : currentUser.uid
+    })
   }
 
   showDropZone = () => {
