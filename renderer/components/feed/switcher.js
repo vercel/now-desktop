@@ -816,7 +816,7 @@ class Switcher extends Component {
               <span className="shadow" onClick={this.scrollToEnd} />
             </div>
           ) : (
-            <p className="offline">{"You're offline!"}</p>
+            <p className="offline">{'You are offline'}</p>
           )}
 
           <a
