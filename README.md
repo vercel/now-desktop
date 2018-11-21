@@ -4,7 +4,7 @@
 [![Windows CI status](https://dev.azure.com/zeit-builds/Now%20Desktop/_apis/build/status/now-desktop)](https://dev.azure.com/zeit-builds/Now%20Desktop/_build/latest?definitionId=1)
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/zeit)
 
-For more details about Now and why you should use it, head to [this page](https://zeit.co).
+For more details about Now and why you should use it, head to [this page](https://zeit.co/now).
 
 ## Usage
 
