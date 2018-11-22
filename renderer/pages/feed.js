@@ -387,12 +387,16 @@ class Feed extends Component {
   lineStates = ['online', 'offline']
 
   showWindow = () => {
+    this.setOnlineState()
+
     // Ensure that scrolling position only gets
     // resetted if the window was closed for 5 seconds
     clearTimeout(this.scrollTimer)
   }
 
   hideWindow = () => {
+    this.setOnlineState()
+
     // Clear scrolling position if window closed for 5 seconds
     this.scrollTimer = setTimeout(this.clearScroll, ms('5s'))
   }
@@ -490,6 +494,10 @@ class Feed extends Component {
 
   setOnlineState = async () => {
     const online = navigator.onLine
+
+    if (online === this.state.online) {
+      return
+    }
 
     if (!online) {
       this.setState({ online })
