@@ -16,9 +16,26 @@ import CloseWindowSVG from '../vectors/close-window'
 import { mainStyles, globalStyles } from '../styles/pages/about'
 
 class About extends React.PureComponent {
-  state = {
-    version: null,
-    darkMode: false
+  constructor(props) {
+    super(props)
+
+    let releaseDate = '(not yet released)'
+
+    try {
+      // eslint-disable-next-line no-undef
+      const buildDate = `${BUILD_DATE}`
+
+      if (!isNaN(buildDate)) {
+        const ago = timeAgo(new Date(parseInt(buildDate, 10)))
+        releaseDate = `(${ago})`
+      }
+    } catch (err) {}
+
+    this.state = {
+      version: null,
+      darkMode: false,
+      releaseDate
+    }
   }
 
   remote = electron.remote || false
@@ -59,8 +76,6 @@ class About extends React.PureComponent {
 
     // Listen to system darkMode system change
     this.listenThemeChange()
-
-    this.getReleaseDate()
   }
 
   componentWillUnmount() {
@@ -76,59 +91,6 @@ class About extends React.PureComponent {
 
     this.remote.shell.openExternal(link.href)
     event.preventDefault()
-  }
-
-  async getReleaseDate() {
-    let data
-
-    try {
-      data = await fetch(
-        'https://api.github.com/repos/zeit/now-desktop/releases'
-      )
-    } catch (err) {
-      console.log(err)
-      return
-    }
-
-    if (!data.ok) {
-      return
-    }
-
-    try {
-      data = await data.json()
-    } catch (err) {
-      console.log(err)
-      return
-    }
-
-    let localRelease
-
-    for (const release of data) {
-      if (release.tag_name === this.state.version) {
-        localRelease = release
-      }
-    }
-
-    if (!localRelease) {
-      this.setState({
-        releaseDate: '(not yet released)'
-      })
-
-      return
-    }
-
-    const setReleaseDate = () => {
-      const ago = timeAgo(new Date(localRelease.published_at))
-
-      this.setState({
-        releaseDate: `(${ago})`
-      })
-    }
-
-    setReleaseDate()
-
-    // Make sure the date stays updated
-    setInterval(setReleaseDate, 1000)
   }
 
   handleTutorial = () => {
