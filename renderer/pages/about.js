@@ -38,9 +38,30 @@ class About extends React.PureComponent {
     }
   }
 
+  state = {
+    version: null,
+    darkMode: false,
+    releaseDate: '(not yet released)'
+  }
+
   remote = electron.remote || false
   ipcRenderer = electron.ipcRenderer || false
   isWindows = process.platform === 'win32'
+
+  setReleaseDate = () => {
+    // eslint-disable-next-line no-undef
+    const buildDate = `${BUILD_DATE}`
+
+    if (isNaN(buildDate)) {
+      return
+    }
+
+    const ago = timeAgo(new Date(parseInt(buildDate, 10)))
+
+    this.setState({
+      releaseDate: `(${ago})`
+    })
+  }
 
   onThemeChanged = (event, config) => {
     const { darkMode } = config
@@ -76,6 +97,11 @@ class About extends React.PureComponent {
 
     // Listen to system darkMode system change
     this.listenThemeChange()
+
+    // Set the release date
+    this.setReleaseDate()
+
+    setInterval(this.setReleaseDate, 1000)
   }
 
   componentWillUnmount() {
