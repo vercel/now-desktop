@@ -13,7 +13,7 @@
     "start": "electron main",
     "build": "yarn build-renderer && yarn build-app",
     "build-app": "build",
-    "build-renderer": "NODE_ENV='production' next build renderer && next export renderer",
+    "build-renderer": "cross-env NODE_ENV=production next build renderer && next export renderer",
     "precommit": "lint-staged",
     "test": "yarn test-lint",
     "test-lint": "xo"
@@ -128,6 +128,7 @@
   },
   "devDependencies": {
     "babel-plugin-transform-define": "1.3.0",
+    "cross-env": "5.2.0",
     "electron": "3.0.4",
     "electron-builder": "20.28.4",
     "electron-builder-squirrel-windows": "20.28.3",
