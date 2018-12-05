@@ -517,7 +517,6 @@ class Feed extends Component {
     try {
       config = await getConfig()
     } catch (err) {
-      this.setState({ online })
       return
     }
 
