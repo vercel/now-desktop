@@ -46,8 +46,15 @@ class Tips extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const config = await getConfig()
-    const shownTips = (config.desktop && config.desktop.shownTips) || {}
+
+    let shownTips = {}
+
+    try {
+      const config = await getConfig()
+      shownTips = (config.desktop && config.desktop.shownTips) || {}
+    } catch (err) {
+      // Nothing to do here, as there is a default
+    }
 
     this.setState({
       tip: tips.find(({ id }) => !shownTips[id])
@@ -77,7 +84,10 @@ class Tips extends Component {
     return (
       <div>
         {this.state.tip && (
-          <section className={`tip${this.props.darkBg ? ' dark' : ''}`} key={this.state.tip.id}>
+          <section
+            className={`tip${this.props.darkBg ? ' dark' : ''}`}
+            key={this.state.tip.id}
+          >
             <span className="icon">
               <Bulb />
             </span>
