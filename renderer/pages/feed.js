@@ -446,9 +446,15 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const config = await getConfig()
 
+    let config = {}
     let user = {}
+
+    try {
+      config = await getConfig()
+    } catch (err) {
+      // Nothing to do here, as there is a default
+    }
 
     // It's very important to not use `this.state` here
     if (navigator.onLine) {
@@ -505,7 +511,15 @@ class Feed extends Component {
     }
 
     const { getConfig } = this.remote.require('./utils/config')
-    const config = await getConfig()
+
+    let config = null
+
+    try {
+      config = await getConfig()
+    } catch (err) {
+      return
+    }
+
     const { user: currentUser } = await loadData(API_USER, config.token)
 
     this.setState({

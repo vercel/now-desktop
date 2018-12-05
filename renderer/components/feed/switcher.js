@@ -268,7 +268,14 @@ class Switcher extends Component {
 
     if (!config) {
       const { getConfig } = this.remote.require('./utils/config')
-      config = await getConfig()
+
+      try {
+        config = await getConfig()
+      } catch (err) {
+        // The config is not valid, so no need to update
+        // the current team.
+        return
+      }
     }
 
     if (!config.currentTeam) {
