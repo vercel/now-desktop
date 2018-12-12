@@ -7,6 +7,7 @@ const logout = require('./utils/logout')
 const toggleWindow = require('./utils/frames/toggle')
 const { getConfig, saveConfig } = require('./utils/config')
 const binaryUtils = require('./utils/binary')
+const { error: handleError } = require('./utils/error')
 const loadData = require('./utils/data/load')
 
 // Cache the user for fast open
@@ -171,7 +172,9 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               checked: updateCLI,
               click() {
                 if (updateCLI === false) {
-                  binaryUtils.install()
+                  binaryUtils.install().catch(err => {
+                    handleError('Not able to install Now CLI', err)
+                  })
                 }
 
                 saveConfig(
