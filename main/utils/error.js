@@ -85,7 +85,7 @@ exports.error = async (detail, trace, win) => {
     buttons: []
   }
 
-  let modified
+  let modified = null
 
   if (trace) {
     console.error(trace)
@@ -110,7 +110,7 @@ exports.error = async (detail, trace, win) => {
   const answer = dialog.showMessageBox(win || null, message)
   let target = {}
 
-  if (modified.buttons && modified.buttons.length > 0) {
+  if (modified && modified.buttons && modified.buttons.length > 0) {
     target = modified.buttons.find(button => {
       return button.label === message.buttons[answer]
     })
