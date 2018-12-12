@@ -1,14 +1,10 @@
-// Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
 import { func } from 'prop-types'
 import retry from 'async-retry'
-
-// Styles
 import introStyles from '../../styles/components/tutorial/intro'
-
-// Components
 import Logo from '../../vectors/logo'
+import handleError from '../utils/error'
 import LoginForm from './login'
 import CLI from './cli'
 import Button from './button'
@@ -93,7 +89,9 @@ class Intro extends PureComponent {
     // Cache binary so that we can move it into
     // the right place if the user decides to install the CLI
     if (!await isInstalled()) {
-      retry(installBundleTemp)
+      retry(installBundleTemp).catch(err => {
+        handleError('Not able to install Now CLI', err)
+      })
     }
 
     // Ensure that intro shows a different message
