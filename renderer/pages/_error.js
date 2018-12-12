@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser'
+import * as Sentry from '@sentry/electron'
 import React from 'react'
 import Error from 'next/error'
 import PropTypes from 'prop-types'
