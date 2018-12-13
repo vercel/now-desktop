@@ -344,7 +344,7 @@ exports.download = async (url, binaryName) => {
 
   ipcMain.once('online-status-changed', (event, status) => {
     if (status === 'offline') {
-      const error = new Error("You wen't offline! Stopping download...")
+      const error = new Error("You went offline! Stopping download...")
       error.name = 'offline'
 
       throw error
