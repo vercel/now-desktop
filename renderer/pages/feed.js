@@ -494,6 +494,7 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown)
+
     this.ipcRenderer.removeListener('config-changed', this.onConfigChanged)
     this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged)
   }
@@ -865,7 +866,7 @@ class Feed extends Component {
             setTeams={this.setTeams}
             currentUser={this.state.currentUser}
             titleRef={this.title}
-            onlineStateFeed={this.setOnlineState}
+            online={this.state.online}
             activeScope={activeScope}
             darkBg={this.state.darkMode}
           />
