@@ -36,7 +36,6 @@ class Switcher extends Component {
     teams: [],
     scope: null,
     updateFailed: false,
-    online: typeof navigator === 'undefined' ? true : navigator.onLine,
     initialized: false,
     syncInterval: '5s',
     queue: []
@@ -113,17 +112,7 @@ class Switcher extends Component {
 
   componentWillMount() {
     // Support SSR
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    const states = ['online', 'offline']
-
-    for (const state of states) {
-      window.addEventListener(state, this.setOnlineState.bind(this))
-    }
-
-    if (!this.remote) {
+    if (!this.remote || typeof window === 'undefined') {
       return
     }
 
@@ -142,23 +131,6 @@ class Switcher extends Component {
     })
   }
 
-  setOnlineState() {
-    const online = navigator.onLine
-    const newState = { online }
-
-    // Ensure that the animations for the teams
-    // fading in works after recovering from offline mode
-    if (!online) {
-      newState.initialized = false
-    }
-
-    if (this.state.online === online) {
-      return
-    }
-
-    this.setState(newState)
-  }
-
   listTimer = () => {
     const { getCurrentWindow } = this.remote
     const { isVisible } = getCurrentWindow()
@@ -169,13 +141,6 @@ class Switcher extends Component {
       try {
         // It's important that this is being `await`ed
         await this.loadTeams()
-
-        // Check if app is even online
-        this.setOnlineState()
-
-        // Also do the same for the feed, so that
-        // both components reflect the online state
-        this.props.onlineStateFeed()
       } catch (err) {
         if (isDev) {
           console.error(err)
@@ -198,7 +163,7 @@ class Switcher extends Component {
     // Only start updating teams once they're loaded!
     // This needs to be async so that we can already
     // start the state timer below for the data that's already cached
-    if (!this.state.online) {
+    if (!this.props.online) {
       this.listTimer()
       return
     }
@@ -531,7 +496,7 @@ class Switcher extends Component {
     setTimeout(() => {
       // Ensure that the animations for the teams
       // fading in works after recovering from offline mode
-      if (!this.state.online) {
+      if (!this.props.online) {
         return
       }
 
@@ -704,7 +669,7 @@ class Switcher extends Component {
     // eslint-disable-next-line new-cap
     return SortableElement(({ team }) => {
       const isActive = this.state.scope === team.id
-      const isUser = !team.id.includes('team')
+      const isUser = team.id && !team.id.includes('team')
       const index = this.state.teams.indexOf(team)
       const shouldScale = !this.state.initialized
       const darkBg = this.props.darkBg
@@ -788,9 +753,9 @@ class Switcher extends Component {
 
   render() {
     const List = this.renderList()
-    const { online, updateFailed, teams } = this.state
+    const { updateFailed, teams } = this.state
     const delay = teams.length
-    const { darkBg } = this.props
+    const { darkBg, online } = this.props
 
     return (
       <div>
@@ -854,9 +819,9 @@ Switcher.propTypes = {
   currentUser: object,
   setTeams: func,
   titleRef: object,
-  onlineStateFeed: func,
   activeScope: object,
-  darkBg: bool
+  darkBg: bool,
+  online: bool
 }
 
 export default Switcher
