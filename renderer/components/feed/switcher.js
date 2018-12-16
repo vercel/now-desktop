@@ -598,7 +598,7 @@ class Switcher extends Component {
       return true
     }
 
-    if (this.moving || this.state === nextState) {
+    if (this.moving || (this.state === nextState && this.props === nextProps)) {
       return false
     }
 
