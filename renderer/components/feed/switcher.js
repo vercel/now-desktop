@@ -506,6 +506,18 @@ class Switcher extends Component {
     }, when)
   }
 
+  static getDerivedStateFromProps(props) {
+    // Ensure that the animations for the teams
+    // fading in works after recovering from offline mode.
+    if (!props.online) {
+      return {
+        initialized: false
+      }
+    }
+
+    return null
+  }
+
   async updateConfig(team, updateMessage) {
     if (!this.remote) {
       return
