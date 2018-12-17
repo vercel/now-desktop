@@ -62,7 +62,16 @@ const { app } = electron
 // Set the application's name
 app.setName('Now')
 
-const reportAndHandle = async err => {
+// Here, we are ensuring that we are reporting unhandled
+// exceptions to Sentry and restarting the app whenever one of
+// them occurs, so that we can keep delivering auto updates.
+//
+// It is very important to understand that we cannot catch
+// unhandled rejections here too, as Electron creates
+// an unhandled rejection whenever it is not able to save
+// a crash dump. This means we would be causing an infinite loop
+// when doing the same for unhandled rejections.
+process.on('uncaughtException', async err => {
   if (isDev) {
     return
   }
@@ -78,10 +87,7 @@ const reportAndHandle = async err => {
   }
 
   handleException()
-}
-
-// Handle uncaught exceptions and rejections
-process.on('uncaughtException', reportAndHandle)
+})
 
 // Hide dock icon before the app starts
 // This is only required for development because
