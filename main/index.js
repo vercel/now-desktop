@@ -23,7 +23,7 @@ const { exception: handleException } = require('./utils/error')
 if (!isDev) {
   Sentry.init({
     dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140',
-    environment: pkg.includes('canary') ? 'canary' : 'stable',
+    environment: pkg.version.includes('canary') ? 'canary' : 'stable',
     release: `now-desktop@${pkg.version}`
   })
 }
