@@ -62,12 +62,21 @@ const { app } = electron
 // Set the application's name
 app.setName('Now')
 
-const reportAndHandle = err => {
+const reportAndHandle = async err => {
   if (isDev) {
     return
   }
 
   Sentry.captureException(err)
+
+  const client = Sentry.getCurrentHub().getClient()
+
+  if (client) {
+    // Block execution until the error is sent. This ensures
+    // we only relaunch the app once the error was reported to ZEIT.
+    await client.close()
+  }
+
   handleException()
 }
 
