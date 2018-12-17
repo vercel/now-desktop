@@ -2,15 +2,25 @@ import * as Sentry from '@sentry/electron'
 import React from 'react'
 import Error from 'next/error'
 import PropTypes from 'prop-types'
+import isDev from 'electron-is-dev'
+import pkg from '../../package'
 
-Sentry.init({
-  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
-})
+if (!isDev) {
+  Sentry.init({
+    dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140',
+    environment: pkg.includes('canary') ? 'canary' : 'stable',
+    release: `now-desktop@${pkg.version}`
+  })
+}
 
 class ErrorPage extends React.Component {
   static getInitialProps({ res, err }) {
     const statusCode = res ? res.statusCode : err ? err.statusCode : null
-    Sentry.captureException(err)
+
+    if (!isDev) {
+      Sentry.captureException(err)
+    }
+
     return { statusCode }
   }
 

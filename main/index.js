@@ -8,6 +8,7 @@ const squirrelStartup = require('electron-squirrel-startup')
 const Sentry = require('@sentry/electron')
 
 // Utilities
+const pkg = require('../package')
 const firstRun = require('./utils/first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const { error: showError } = require('./dialogs')
@@ -18,9 +19,14 @@ const windowList = require('./utils/frames/list')
 const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
 
-Sentry.init({
-  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
-})
+// In development, we do not want to report errors
+if (!isDev) {
+  Sentry.init({
+    dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140',
+    environment: pkg.includes('canary') ? 'canary' : 'stable',
+    release: `now-desktop@${pkg.version}`
+  })
+}
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
@@ -56,8 +62,27 @@ const { app } = electron
 // Set the application's name
 app.setName('Now')
 
-// Handle uncaught exceptions
-process.on('uncaughtException', handleException)
+const reportAndHandle = async err => {
+  if (isDev) {
+    return
+  }
+
+  Sentry.captureException(err)
+
+  const client = Sentry.getCurrentHub().getClient()
+
+  if (client) {
+    // Block execution until the error is sent. This ensures
+    // we only relaunch the app once the error was reported to ZEIT.
+    await client.close()
+  }
+
+  handleException()
+}
+
+// Handle uncaught exceptions and rejections
+process.on('uncaughtException', reportAndHandle)
+process.on('unhandledRejection', reportAndHandle)
 
 // Hide dock icon before the app starts
 // This is only required for development because

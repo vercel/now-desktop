@@ -4,7 +4,7 @@
   "description": "Create deployments right from the tray menu",
   "version": "4.0.0-canary.79",
   "author": {
-    "name": "Zeit, Inc.",
+    "name": "ZEIT Inc.",
     "email": "team@zeit.co"
   },
   "repository": "zeit/now-desktop",
