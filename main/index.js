@@ -82,7 +82,6 @@ const reportAndHandle = async err => {
 
 // Handle uncaught exceptions and rejections
 process.on('uncaughtException', reportAndHandle)
-process.on('unhandledRejection', reportAndHandle)
 
 // Hide dock icon before the app starts
 // This is only required for development because
