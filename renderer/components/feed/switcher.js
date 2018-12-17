@@ -594,11 +594,18 @@ class Switcher extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.darkBg !== nextProps.darkBg) {
-      return true
-    }
-
-    if (this.moving || this.state === nextState) {
+    // There are two cases in which we do not want to re-render:
+    //
+    // - Someone is dragging something around in the UI (this.moving)
+    // - The state and/or props didn't change (rest of the statement)
+    //
+    // It is extremely important to understand that `shouldComponentUpdate` will
+    // be called even if the state AND props did not change. Because that is exactly
+    // the purpose of this function: To decide whether something changed.
+    if (
+      this.moving ||
+      (isEqual(this.state, nextState) && isEqual(this.props, nextProps))
+    ) {
       return false
     }
 
