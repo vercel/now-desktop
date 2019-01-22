@@ -42,13 +42,17 @@ export default css`
   }
 
   .dark input {
+    background: none;
+    color: #999;
+  }
+
+  .dark aside {
     background: #2c2c2c;
     background: linear-gradient(
       180deg,
       rgba(64, 64, 64, 1) 0%,
       rgba(51, 51, 51, 1) 100%
     );
-    color: #999;
   }
 
   div {
@@ -62,12 +66,7 @@ export default css`
   }
 
   .dark div {
-    background: #2c2c2c;
-    background: linear-gradient(
-      180deg,
-      rgba(64, 64, 64, 1) 0%,
-      rgba(51, 51, 51, 1) 100%
-    );
+    background: none;
   }
 
   b {

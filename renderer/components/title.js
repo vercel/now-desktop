@@ -1,6 +1,6 @@
 // Packages
 import electron from 'electron'
-import { PureComponent } from 'react'
+import { Component } from 'react'
 import PropTypes from 'prop-types'
 import setRef from 'react-refs'
 
@@ -14,11 +14,17 @@ import Filter from '../vectors/filter'
 import Search from './feed/search'
 import Tips from './tips'
 
-class Title extends PureComponent {
+class Title extends Component {
+  constructor(...args) {
+    super(...args)
+    this.toggleSearch = this.toggleSearch.bind(this)
+  }
+
   state = {
     updateMessage: false,
     typeFilter: false,
-    filteredType: 'team'
+    filteredType: 'team',
+    isSearchVisible: false
   }
 
   setReference = setRef.bind(this)
@@ -79,6 +85,15 @@ class Title extends PureComponent {
     }
 
     this.setState({ filteredType: type })
+  }
+
+  toggleSearch(next = null) {
+    this.setState(state => {
+      state.isSearchVisible =
+        typeof next === 'boolean' ? next : !state.isSearchVisible
+
+      return state
+    })
   }
 
   renderTypeFilter() {
@@ -156,28 +171,33 @@ class Title extends PureComponent {
                 setFeedFilter={this.props.setFilter || false}
                 setSearchRef={this.props.setSearchRef || false}
                 darkBg={this.props.darkBg}
+                toggleSearch={this.toggleSearch}
               />
             )}
 
-          <h1>{this.props.children}</h1>
+          {this.state.isSearchVisible === false && (
+            <h1>{this.props.children}</h1>
+          )}
 
           {this.props.light &&
-            this.props.searchShown && (
+            this.props.searchShown &&
+            this.state.isSearchVisible === false && (
               <span className="toggle-filter" onClick={this.toggleFilter}>
                 <Filter darkBg={this.props.darkBg} />
               </span>
             )}
 
-          {this.props.light && (
-            <span
-              className="deploy"
-              onClick={this.selectToDeploy}
-              ref={this.setReference}
-              name="deployIcon"
-            >
-              <Deploy darkBg={this.props.darkBg} />
-            </span>
-          )}
+          {this.props.light &&
+            this.state.isSearchVisible === false && (
+              <span
+                className="deploy"
+                onClick={this.selectToDeploy}
+                ref={this.setReference}
+                name="deployIcon"
+              >
+                <Deploy darkBg={this.props.darkBg} />
+              </span>
+            )}
         </div>
 
         <section className="update-message">

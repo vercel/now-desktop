@@ -25,6 +25,8 @@ class Search extends PureComponent {
       this.input.focus()
     }, 200)
 
+    this.props.toggleSearch(true)
+
     this.form.style.visibility = 'visible'
 
     this.setState({
@@ -36,6 +38,8 @@ class Search extends PureComponent {
     if (!this.form || !this.input) {
       return
     }
+
+    this.props.toggleSearch(false)
 
     this.setState({
       shown: false
@@ -174,6 +178,7 @@ class Search extends PureComponent {
 Search.propTypes = {
   showDeployIcon: func.isRequired,
   hideDeployIcon: func.isRequired,
+  toggleSearch: func.isRequired,
   setFeedFilter: func,
   setSearchRef: func,
   darkBg: bool
