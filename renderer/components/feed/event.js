@@ -5,6 +5,7 @@ import { object, func, string, bool } from 'prop-types'
 import dotProp from 'dot-prop'
 import ms from 'ms'
 import * as Sentry from '@sentry/electron'
+import pkg from '../../../package'
 
 // Styles
 import { localStyles, globalStyles } from '../../styles/components/feed/event'
@@ -16,9 +17,7 @@ import dateDiff from '../../utils/date-diff'
 import Avatar from './avatar'
 
 Sentry.init({
-  dsn: electron.remote
-    ? electron.remote.require('../package.json').sentryDsn
-    : null
+  dsn: pkg.sentryDsn
 })
 
 class EventMessage extends PureComponent {
