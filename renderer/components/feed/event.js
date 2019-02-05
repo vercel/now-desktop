@@ -4,6 +4,7 @@ import { PureComponent } from 'react'
 import { object, func, string, bool } from 'prop-types'
 import dotProp from 'dot-prop'
 import ms from 'ms'
+import * as Sentry from '@sentry/electron'
 
 // Styles
 import { localStyles, globalStyles } from '../../styles/components/feed/event'
@@ -14,9 +15,14 @@ import dateDiff from '../../utils/date-diff'
 // Components
 import Avatar from './avatar'
 
+Sentry.init({
+  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
+})
+
 class EventMessage extends PureComponent {
   state = {
-    url: null
+    url: null,
+    hasError: false
   }
 
   remote = electron.remote || false
@@ -204,7 +210,23 @@ class EventMessage extends PureComponent {
     return null
   }
 
+  componentDidCatch(error, errorInfo) {
+    console.error('Failed to handle event:', error)
+    this.setState({ hasError: true })
+
+    Sentry.withScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key])
+      })
+      Sentry.captureException(error)
+    })
+  }
+
   render() {
+    if (this.state.hasError) {
+      return null
+    }
+
     const { message, content, team, group, darkBg } = this.props
     const avatarHash = content.user && content.user.avatar
     const classes = ['event']
