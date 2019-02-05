@@ -19,7 +19,7 @@ const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
 
 Sentry.init({
-  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
+  dsn: require('../package.json').sentryDsn
 })
 
 // Immediately quit the app if squirrel is launching it

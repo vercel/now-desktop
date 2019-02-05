@@ -16,7 +16,9 @@ import dateDiff from '../../utils/date-diff'
 import Avatar from './avatar'
 
 Sentry.init({
-  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
+  dsn: electron.remote
+    ? electron.remote.require('../package.json').sentryDsn
+    : null
 })
 
 class EventMessage extends PureComponent {
