@@ -2,9 +2,10 @@ import * as Sentry from '@sentry/electron'
 import React from 'react'
 import Error from 'next/error'
 import PropTypes from 'prop-types'
+import pkg from '../../package'
 
 Sentry.init({
-  dsn: 'https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140'
+  dsn: pkg.sentryDsn
 })
 
 class ErrorPage extends React.Component {
