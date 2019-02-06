@@ -18,6 +18,7 @@
     "test": "yarn test-lint",
     "test-lint": "xo"
   },
+  "sentryDsn": "https://d07ceda63dd8414e9c403388cfbd18fe@sentry.io/1323140",
   "build": {
     "appId": "co.zeit.now",
     "files": [
