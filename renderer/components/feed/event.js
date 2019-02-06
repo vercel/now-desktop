@@ -16,9 +16,13 @@ import dateDiff from '../../utils/date-diff'
 // Components
 import Avatar from './avatar'
 
-Sentry.init({
-  dsn: pkg.sentryDsn
-})
+// Check if this is on the client,
+// since the build won't work otherwise
+if (typeof window !== 'undefined') {
+  Sentry.init({
+    dsn: pkg.sentryDsn
+  })
+}
 
 class EventMessage extends PureComponent {
   state = {
