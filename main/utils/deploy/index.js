@@ -29,7 +29,7 @@ const {
 } = require('./get-files')
 const hash = require('./hash')
 const readMetaData = require('./read-metadata')
-const ossPrompt = require('./oss-prompt')
+const freePrompt = require('./free-prompt')
 const formatError = require('./format-error')
 
 // How many concurrent HTTP/2 stream uploads
@@ -610,7 +610,7 @@ module.exports = async paths => {
     await createDeployment(path, config, multiple)
   } catch (err) {
     if (err.code === 'plan_requires_public') {
-      const shouldDeploy = await ossPrompt(config)
+      const shouldDeploy = await freePrompt(config)
 
       if (shouldDeploy) {
         await createDeployment(path, config, multiple, true)
