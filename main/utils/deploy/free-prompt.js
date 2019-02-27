@@ -8,7 +8,7 @@ module.exports = config => {
 
   const response = dialog.showMessageBox({
     type: 'question',
-    message: `You Are on the OSS Plan`,
+    message: `You Are on the Free Plan`,
     detail:
       'This means that your code and logs will be publicly accessible. ' +
       'Do you really want to deploy?' +
