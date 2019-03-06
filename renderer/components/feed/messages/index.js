@@ -1,6 +1,7 @@
 import Alias from './alias'
 import AliasChown from './alias-chown'
 import AliasDelete from './alias-delete'
+import AliasSystem from './alias-system'
 import Avatar from './avatar'
 import Cert from './cert'
 import CertAutoRenew from './cert-autorenew'
@@ -44,6 +45,7 @@ export default new Map([
   ['alias', Alias],
   ['alias-chown', AliasChown],
   ['alias-delete', AliasDelete],
+  ['alias-system', AliasSystem],
   ['avatar', Avatar],
   ['cert', Cert],
   ['cert-autorenew', CertAutoRenew],

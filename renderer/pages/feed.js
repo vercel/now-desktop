@@ -134,7 +134,8 @@ class Feed extends Component {
       'scale-auto',
       'deployment-freeze',
       'deployment-unfreeze',
-      'cert-autorenew'
+      'cert-autorenew',
+      'alias-system'
     ])
 
     const all = new Set(messageComponents.keys())
