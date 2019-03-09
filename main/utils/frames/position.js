@@ -16,8 +16,8 @@ module.exports = (tray, window) => {
 
   const trayBounds = tray.getBounds()
 
-  const notMacOS = platform() !== 'darwin'
-  const isWindows = platform() === 'win32'
+  const isMacOS = platform() !== 'darwin'
+  const notWindows = platform() !== 'win32'
 
   if (trayBoundsCache && displayAreaCache) {
     // Compare only the object props
@@ -34,15 +34,15 @@ module.exports = (tray, window) => {
 
   const positioner = new Positioner(window)
 
-  const windowPosition = notMacOS
-    ? isWindows
-      ? trayBoundsCache.y === 0 || trayBoundsCache.y === 40 // Taskbar located top
+  const windowPosition = isMacOS
+    ? 'trayCenter'
+    : notWindows
+      ? 'trayBottomCenter'
+      : trayBoundsCache.y === 0 || trayBoundsCache.y === 40 // Taskbar located top
         ? 'trayCenter'
         : trayBoundsCache.x < trayBoundsCache.y // Taskbar located left
           ? 'bottomLeft'
           : 'trayBottomCenter'
-      : 'trayBottomCenter'
-    : 'trayCenter'
 
   const { x, y } = positioner.calculate(windowPosition, trayBoundsCache)
 
