@@ -46,6 +46,14 @@ class LoginForm extends PureComponent {
     })
 
     const body = await res.json()
+    const badRequest = res.status === 400;
+
+    if (badRequest && body.error && body.error.code === 'invalid_email') {
+      const error = new Error(body.error.message);
+      error.code = 'invalid_email';
+      throw error;
+    }
+
     return body.token
   }
 
@@ -225,7 +233,15 @@ class LoginForm extends PureComponent {
 
       try {
         finalToken = await this.verify(apiURL, email, token, this.remote)
-      } catch (err) {}
+      } catch (err) {
+        if (err.code === 'invalid_email') {
+          error(err.message, err)
+        } else {
+          error('Failed to verify login. Please retry later.', err);
+        }
+
+        break;
+      }
 
       console.log('Waiting for token...')
     } while (!finalToken)
