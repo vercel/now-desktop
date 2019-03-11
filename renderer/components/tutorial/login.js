@@ -240,7 +240,12 @@ class LoginForm extends PureComponent {
           error('Failed to verify login. Please retry later.', err);
         }
 
-        break;
+        this.props.setIntroState({
+          classes: [],
+          security: null
+        });
+
+        return;
       }
 
       console.log('Waiting for token...')
