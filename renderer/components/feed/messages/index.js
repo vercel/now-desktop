@@ -22,6 +22,12 @@ import Domain from './domain'
 import DomainBuy from './domain-buy'
 import DomainChown from './domain-chown'
 import DomainDelete from './domain-delete'
+import DomainMoveIn from './domain-move-in'
+import DomainMoveOut from './domain-move-out'
+import DomainMoveOutRequestSent from './domain-move-out-request-sent'
+import DomainTransferIn from './domain-transfer-in'
+import DomainTransferInCanceled from './domain-transfer-in-canceled'
+import DomainTransferInCompleted from './domain-transfer-in-completed'
 import Login from './login'
 import Plan from './plan'
 import Scale from './scale'
@@ -66,6 +72,12 @@ export default new Map([
   ['deployment-unfreeze', DeploymentUnfreeze],
   ['domain-chown', DomainChown],
   ['domain-delete', DomainDelete],
+  ['domain-move-in', DomainMoveIn],
+  ['domain-move-out-request-sent', DomainMoveOutRequestSent],
+  ['domain-move-out', DomainMoveOut],
+  ['domain-transfer-in-canceled', DomainTransferInCanceled],
+  ['domain-transfer-in-completed', DomainTransferInCompleted],
+  ['domain-transfer-in', DomainTransferIn],
   ['login', Login],
   ['plan', Plan],
   ['scale', Scale],
