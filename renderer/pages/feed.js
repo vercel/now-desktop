@@ -135,7 +135,9 @@ class Feed extends Component {
       'deployment-freeze',
       'deployment-unfreeze',
       'cert-autorenew',
-      'alias-system'
+      'alias-system',
+      'domain-transfer-in-canceled',
+      'domain-transfer-in-completed'
     ])
 
     const all = new Set(messageComponents.keys())
