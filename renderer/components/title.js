@@ -1,13 +1,8 @@
-// Packages
 import electron from 'electron'
 import { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import setRef from 'react-refs'
-
-// Styles
 import styles from '../styles/components/title'
-
-// Components
 import Done from '../vectors/done'
 import Deploy from '../vectors/deploy'
 import Filter from '../vectors/filter'
@@ -82,13 +77,9 @@ class Title extends PureComponent {
   }
 
   renderTypeFilter() {
-    const types = ['Me', 'Team', 'System']
     const { isUser } = this.props
+    const types = isUser ? [] : ['Me', 'Team']
     const { filteredType } = this.state
-
-    if (isUser) {
-      types.splice(1, 1)
-    }
 
     return (
       <section className="filter">
@@ -124,12 +115,13 @@ class Title extends PureComponent {
 
   render() {
     const classes = []
+    const { darkBg, light, isUser, searchShown, showTips } = this.props
 
-    if (this.props.darkBg) {
+    if (darkBg) {
       classes.push('dark')
     }
 
-    if (this.props.light) {
+    if (light) {
       classes.push('light')
     }
 
@@ -155,27 +147,28 @@ class Title extends PureComponent {
                 showDeployIcon={this.showDeployIcon}
                 setFeedFilter={this.props.setFilter || false}
                 setSearchRef={this.props.setSearchRef || false}
-                darkBg={this.props.darkBg}
+                darkBg={darkBg}
               />
             )}
 
           <h1>{this.props.children}</h1>
 
-          {this.props.light &&
-            this.props.searchShown && (
+          {light &&
+            searchShown &&
+            !isUser && (
               <span className="toggle-filter" onClick={this.toggleFilter}>
-                <Filter darkBg={this.props.darkBg} />
+                <Filter darkBg={darkBg} />
               </span>
             )}
 
-          {this.props.light && (
+          {light && (
             <span
               className="deploy"
               onClick={this.selectToDeploy}
               ref={this.setReference}
               name="deployIcon"
             >
-              <Deploy darkBg={this.props.darkBg} />
+              <Deploy darkBg={darkBg} />
             </span>
           )}
         </div>
@@ -185,7 +178,7 @@ class Title extends PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        {this.props.showTips && <Tips darkBg={this.props.darkBg} />}
+        {showTips && <Tips darkBg={darkBg} />}
 
         {this.renderTypeFilter()}
 
