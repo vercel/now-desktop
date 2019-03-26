@@ -49,7 +49,7 @@ class Feed extends Component {
   ipcRenderer = electron.ipcRenderer || false
   loading = new Set()
   isWindows = process.platform === 'win32'
-  eventTypes = this.getEventTypes()
+  eventTypes = new Set(messageComponents.keys())
   setReference = setRef.bind(this)
 
   getCurrentGroup() {
@@ -122,27 +122,6 @@ class Feed extends Component {
     }
   }
 
-  getEventTypes() {
-    const auto = new Set([
-      'scale',
-      'scale-auto',
-      'deployment-freeze',
-      'deployment-unfreeze',
-      'cert-autorenew',
-      'alias-system',
-      'domain-transfer-in-canceled',
-      'domain-transfer-in-completed'
-    ])
-
-    const all = new Set(messageComponents.keys())
-    const manual = [...all].filter(t => !auto.has(t))
-
-    return {
-      auto,
-      manual: new Set(manual)
-    }
-  }
-
   async loadEvents(customParams) {
     const defaults = { limit: 30 }
     const query = Object.assign(defaults, customParams)
@@ -160,7 +139,7 @@ class Feed extends Component {
   getGroups(isTeam, until) {
     // Can't be a `Set` because we need to pick per index
     // down in the code later
-    let groups = ['me', 'team', 'system']
+    let groups = ['me', 'team']
 
     if (!isTeam) {
       groups.splice(1, 1)
@@ -177,7 +156,6 @@ class Feed extends Component {
   }
 
   async cacheEvents(scope, until, track) {
-    const types = this.eventTypes
     const { teams, currentUser, scope: activeScope } = this.state
 
     if (until) {
@@ -196,11 +174,8 @@ class Feed extends Component {
     const loaders = new Set()
 
     for (const group of groups) {
-      const isSystem = group === 'system'
-      const type = isSystem ? 'auto' : 'manual'
-
       const query = {
-        types: types[type]
+        types: this.eventTypes
       }
 
       if (until) {
