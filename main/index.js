@@ -11,6 +11,7 @@ const { innerMenu, outerMenu } = require('./menu')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
+const { getConfig } = require('./utils/config')
 
 Sentry.init({
   dsn: sentryDsn
@@ -106,6 +107,18 @@ app.on('ready', async () => {
 
   // Make the window instances accessible from everywhere
   global.windows = windows
+
+  electron.ipcMain.on('config-request', async event => {
+    let config = null
+
+    try {
+      config = await getConfig()
+    } catch (err) {
+      config = err
+    }
+
+    event.sender.send('config-response', config)
+  })
 
   electron.ipcMain.on('open-menu', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {

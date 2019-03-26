@@ -2,11 +2,11 @@ import { timeout } from 'promise-timeout'
 
 export default timeout(
   new Promise((resolve, reject) => {
-    window.ipc.on('config-response', (event, arg) => {
-      if (arg instanceof Error) {
-        reject(arg)
+    window.ipc.on('config-reply', (event, config) => {
+      if (config instanceof Error) {
+        reject(config)
       } else {
-        resolve(arg)
+        resolve(config)
       }
     })
 

@@ -1,4 +1,3 @@
-import electron from 'electron'
 import { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import setRef from 'react-refs'
@@ -17,16 +16,6 @@ class Title extends PureComponent {
   }
 
   setReference = setRef.bind(this)
-
-  componentDidMount() {
-    const remote = electron.remote || false
-
-    if (!remote) {
-      return
-    }
-
-    this.dialogs = remote.require('./dialogs')
-  }
 
   selectToDeploy = () => {
     this.dialogs.deploy()

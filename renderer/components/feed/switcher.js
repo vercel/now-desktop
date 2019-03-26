@@ -39,16 +39,6 @@ class Switcher extends Component {
   ipcRenderer = electron.ipcRenderer || false
   setReference = setRef.bind(this)
 
-  load = file => {
-    if (electron.remote) {
-      return electron.remote.require(file)
-    }
-
-    return null
-  }
-
-  binaryUtils = this.load('./utils/binary')
-
   // Don't update state when dragging teams
   moving = false
 

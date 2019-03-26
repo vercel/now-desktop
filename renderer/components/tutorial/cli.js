@@ -1,7 +1,4 @@
-// Packages
 import { bool, func } from 'prop-types'
-
-// Styles
 import binaryStyles from '../../styles/components/tutorial/cli'
 
 const Binary = props => (

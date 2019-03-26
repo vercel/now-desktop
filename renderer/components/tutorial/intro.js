@@ -1,10 +1,8 @@
 import electron from 'electron'
 import { PureComponent } from 'react'
 import { func } from 'prop-types'
-import retry from 'async-retry'
 import introStyles from '../../styles/components/tutorial/intro'
 import Logo from '../../vectors/logo'
-import handleError from '../../utils/error'
 import getConfig from '../../utils/config'
 import LoginForm from './login'
 import CLI from './cli'
@@ -73,39 +71,6 @@ class Intro extends PureComponent {
     this.setState({
       tested: true,
       done: true
-    })
-  }
-
-  async componentDidMount() {
-    if (!this.remote) {
-      return
-    }
-
-    const { require: load } = this.remote
-    const { isInstalled, installBundleTemp } = load('./utils/binary')
-    const currentWindow = this.remote.getCurrentWindow()
-
-    // Cache binary so that we can move it into
-    // the right place if the user decides to install the CLI
-    if (!await isInstalled()) {
-      retry(installBundleTemp).catch(err => {
-        handleError('Not able to install Now CLI', err)
-      })
-    }
-
-    // Ensure that intro shows a different message
-    // after the window was closed and re-opened after
-    // getting logged in
-    currentWindow.on('hide', () => {
-      const { done, tested } = this.state
-
-      if (!done || tested) {
-        return
-      }
-
-      this.setState({
-        tested: true
-      })
     })
   }
 

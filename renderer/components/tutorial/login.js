@@ -1,5 +1,4 @@
-import electron from 'electron'
-import { stringify as stringifyQuery } from 'querystring'
+import { stringify as stringifyQuery } from 'query-string'
 import AutoSizeInput from 'react-input-autosize'
 import { PureComponent } from 'react'
 import sleep from 'sleep-promise'
@@ -20,21 +19,19 @@ class LoginForm extends PureComponent {
   state = defaultState
   initialState = Object.assign({}, defaultState)
 
-  remote = electron.remote || false
   mounted = false
 
-  async verify(url, email, token, remote) {
+  async verify(url, email, token) {
     const query = {
       email,
       token
     }
 
     const apiURL = url + '/now/registration/verify?' + stringifyQuery(query)
-    const userAgent = remote.require('./utils/user-agent')
 
     const res = await fetch(apiURL, {
       headers: {
-        'user-agent': userAgent
+        'user-agent': 'Now Desktop'
       }
     })
 
@@ -50,18 +47,10 @@ class LoginForm extends PureComponent {
     return body.token
   }
 
-  async getVerificationData(url, email, remote) {
-    const os = remote.require('os')
-    const hyphens = new RegExp('-', 'g')
-    const host = os
-      .hostname()
-      .replace(hyphens, ' ')
-      .replace('.local', '')
-    const userAgent = remote.require('./utils/user-agent')
-
+  async getVerificationData(url, email) {
     const body = JSON.stringify({
       email,
-      tokenName: `Now Desktop on ${host}`
+      tokenName: `Now Desktop`
     })
 
     const apiURL = `${url}/now/registration`
@@ -71,7 +60,7 @@ class LoginForm extends PureComponent {
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': JSON.stringify(body).length,
-        'user-agent': userAgent
+        'user-agent': 'Now Desktop'
       },
       body
     })
@@ -108,18 +97,10 @@ class LoginForm extends PureComponent {
   }
 
   componentDidMount() {
-    if (!this.remote) {
-      return
-    }
-
-    const currentWindow = this.remote.getCurrentWindow()
-
-    currentWindow.on('show', this.showWindow)
-
     this.mounted = true
 
     window.addEventListener('beforeunload', () => {
-      currentWindow.removeListener('show', this.showWindow)
+      // Show the window here
     })
   }
 
@@ -169,11 +150,7 @@ class LoginForm extends PureComponent {
   }
 
   async tryLogin(email) {
-    if (!this.remote) {
-      return
-    }
-
-    const onlineStatus = this.remote.process.env.CONNECTION
+    const onlineStatus = 'online'
 
     if (onlineStatus === 'offline') {
       error("You're offline!")
@@ -199,8 +176,7 @@ class LoginForm extends PureComponent {
     const apiURL = 'https://api.zeit.co'
     const { token, securityCode } = await this.getVerificationData(
       apiURL,
-      email,
-      this.remote
+      email
     )
 
     if (!token) {
@@ -225,7 +201,7 @@ class LoginForm extends PureComponent {
       await sleep(2500)
 
       try {
-        finalToken = await this.verify(apiURL, email, token, this.remote)
+        finalToken = await this.verify(apiURL, email, token)
       } catch (err) {
         if (err.code === 'invalid_email') {
           error(err.message, err)
@@ -243,32 +219,6 @@ class LoginForm extends PureComponent {
 
       console.log('Waiting for token...')
     } while (!finalToken)
-
-    if (!this.remote) {
-      return
-    }
-
-    const { main, tutorial } = this.remote.getGlobal('windows')
-
-    // Ensure that the event feed starts fresh
-    main.reload()
-
-    // As soon as the event feed has finished reloading,
-    // adjust the content of the intro
-    main.once('ready-to-show', async () => {
-      if (!this.props.setIntroState) {
-        return
-      }
-
-      this.props.setIntroState({
-        security: null,
-        done: true
-      })
-
-      // Focus on current window so that the user
-      // can start the tutorial, now that he's logged in
-      tutorial.focus()
-    })
   }
 
   handleKey = async event => {

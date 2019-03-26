@@ -1,10 +1,5 @@
-// Packages
-const electron = require('electron')
-const ms = require('ms')
-
-// Utilities
-const getConfig = require('../config').default
-const userAgent = require('./user-agent')
+import ms from 'ms'
+import getConfig from '../config'
 
 const getToken = async () => {
   let config
@@ -36,7 +31,7 @@ export default async (path, token = null, opts = {}) => {
   }
 
   headers.Authorization = `bearer ${authToken}`
-  headers['user-agent'] = userAgent
+  headers['user-agent'] = 'Now Desktop'
 
   // Accept path to be a full url or a relative path
   const url = path[0] === '/' ? 'https://zeit.co' + path : path
@@ -53,13 +48,7 @@ export default async (path, token = null, opts = {}) => {
     })
 
     if (res.status === 403) {
-      const remote = electron.remote || false
-
-      if (remote) {
-        // Log out
-        remote.require('./utils/logout')()
-      }
-
+      // We need to log out here
       return false
     }
 

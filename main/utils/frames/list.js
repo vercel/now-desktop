@@ -1,8 +1,6 @@
-// Packages
 const electron = require('electron')
+const path = require('path')
 const isDev = require('electron-is-dev')
-
-// Utilities
 const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
 
@@ -24,78 +22,6 @@ const loadPage = (win, page) => {
   } else {
     win.loadFile(`${electron.app.getAppPath()}/renderer/out/${page}/index.html`)
   }
-}
-
-exports.tutorialWindow = tray => {
-  const win = new electron.BrowserWindow({
-    width: 650,
-    height: 430,
-    title: 'Welcome to Now',
-    resizable: false,
-    center: true,
-    frame: false,
-    show: false,
-    fullscreenable: false,
-    maximizable: false,
-    titleBarStyle: 'hiddenInset',
-    backgroundColor: '#fff',
-    webPreferences: {
-      backgroundThrottling: false,
-      devTools: true
-    }
-  })
-
-  loadPage(win, 'tutorial')
-  attachTrayState(win, tray)
-
-  const emitTrayClick = aboutWindow => {
-    const emitClick = () => {
-      if (aboutWindow && aboutWindow.isVisible()) {
-        return
-      }
-
-      // Automatically open the context menu
-      if (tray) {
-        tray.emit('click')
-      }
-
-      win.removeListener('hide', emitClick)
-    }
-
-    win.on('hide', emitClick)
-    win.close()
-  }
-
-  win.on('open-tray', emitTrayClick)
-
-  // Just hand it back
-  return win
-}
-
-exports.aboutWindow = tray => {
-  const win = new electron.BrowserWindow({
-    width: 360,
-    height: 408,
-    title: 'About Now',
-    resizable: false,
-    center: true,
-    show: false,
-    fullscreenable: false,
-    maximizable: false,
-    minimizable: false,
-    titleBarStyle: 'hiddenInset',
-    frame: false,
-    backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
-    webPreferences: {
-      backgroundThrottling: false,
-      devTools: true
-    }
-  })
-
-  loadPage(win, 'about')
-  attachTrayState(win, tray)
-
-  return win
 }
 
 exports.mainWindow = tray => {
@@ -120,7 +46,10 @@ exports.mainWindow = tray => {
     backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
     webPreferences: {
       backgroundThrottling: false,
-      devTools: true
+      // We need it for HMR
+      nodeIntegration: isDev,
+      devTools: true,
+      preload: path.join(__dirname, '../preload.js')
     }
   })
 

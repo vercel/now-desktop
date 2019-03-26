@@ -1,17 +1,8 @@
-// Packages
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { func, bool } from 'prop-types'
-
-// Styles
 import styles from '../../styles/components/feed/dropzone'
 
 class DropZone extends PureComponent {
-  componentDidMount() {
-    const remote = electron.remote || false
-    this.deploy = remote.require('./utils/deploy')
-  }
-
   hideDropZone = () => {
     if (this.props.hide) {
       this.props.hide()
@@ -36,8 +27,7 @@ class DropZone extends PureComponent {
     const { files } = event.dataTransfer
     const list = [...files].map(file => file.path)
 
-    // Shoot them into the cloud
-    this.deploy(list)
+    console.log(list)
 
     // And prevent the window from loading the file inside it
     event.preventDefault()

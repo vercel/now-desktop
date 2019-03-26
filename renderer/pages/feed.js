@@ -1,5 +1,5 @@
-import queryString from 'querystring'
 import electron from 'electron'
+import queryString from 'query-string'
 import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
@@ -22,8 +22,6 @@ import isDarkMode from '../utils/dark-mode'
 import loadData from '../utils/data/load'
 import { API_EVENTS, API_USER } from '../utils/data/endpoints'
 import getConfig from '../utils/config'
-
-// Styles
 import {
   feedStyles,
   headingStyles,
@@ -311,10 +309,8 @@ class Feed extends Component {
     const currentWindow = this.remote.getCurrentWindow()
     const { keyCode, metaKey } = event
 
-    if (keyCode === 86 && metaKey) {
-      const { deploy } = this.remote.require('./utils/deploy-from-clipboard')
-      deploy()
-    }
+    console.log(keyCode)
+    console.log(metaKey)
 
     if (event.keyCode !== 27) {
       return
