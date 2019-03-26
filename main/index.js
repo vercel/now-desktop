@@ -1,4 +1,3 @@
-// Packages
 const electron = require('electron')
 const isDev = require('electron-is-dev')
 const fixPath = require('fix-path')
@@ -7,16 +6,11 @@ const { resolve: resolvePath } = require('app-root-path')
 const squirrelStartup = require('electron-squirrel-startup')
 const Sentry = require('@sentry/electron')
 const { sentryDsn } = require('../package.json')
-
-// Utilities
 const firstRun = require('./utils/first-run')
 const { innerMenu, outerMenu } = require('./menu')
-const { error: showError } = require('./dialogs')
-const deploy = require('./utils/deploy')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
-const { getConfig, watchConfig } = require('./utils/config')
 const { exception: handleException } = require('./utils/error')
 
 Sentry.init({
@@ -31,25 +25,6 @@ if (squirrelStartup) {
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
 let tray = null
-
-// Prevent having to check for login status when opening the window
-let loggedIn = null
-
-// Check status once in the beginning when the app starting up
-// And then every 2 seconds
-// We could to this on click on the tray icon, but we
-// don't want to block that action
-const setLoggedInStatus = async () => {
-  let token
-
-  try {
-    ;({ token } = await getConfig())
-  } catch (err) {}
-
-  loggedIn = Boolean(token)
-  setTimeout(setLoggedInStatus, 2000)
-}
-setLoggedInStatus()
 
 // Load the app instance from electron
 const { app } = electron
@@ -95,52 +70,10 @@ const contextMenu = async (windows, inRenderer) => {
   return innerMenu(app, tray, windows, inRenderer)
 }
 
-const filesDropped = async (event, files) => {
-  event.preventDefault()
-
-  if (process.env.CONNECTION === 'offline') {
-    showError("You're offline")
-    return
-  }
-
-  if (!loggedIn) {
-    return
-  }
-
-  await deploy(files)
-}
-
 // Chrome Command Line Switches
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
 app.on('ready', async () => {
-  let config = {}
-
-  try {
-    config = await getConfig()
-  } catch (err) {
-    config = {}
-  }
-
-  const onlineStatusWindow = new electron.BrowserWindow({
-    width: 0,
-    height: 0,
-    show: false
-  })
-
-  onlineStatusWindow.loadURL(
-    'file://' + resolvePath('./main/static/pages/status.html')
-  )
-
-  electron.ipcMain.on('online-status-changed', (event, status) => {
-    process.env.CONNECTION = status
-  })
-
-  // DO NOT create the tray icon BEFORE the login status has been checked!
-  // Otherwise, the user will start clicking...
-  // ...the icon and the app wouldn't know what to do
-
-  // I have no idea why, but path.resolve doesn't work here
   try {
     const iconName =
       process.platform === 'win32'
@@ -163,13 +96,11 @@ app.on('ready', async () => {
   }
 
   // Extract each window out of the list
-  const { mainWindow, tutorialWindow, aboutWindow } = windowList
+  const { mainWindow } = windowList
 
   // And then put it back into a list :D
   const windows = {
-    main: mainWindow(tray),
-    tutorial: tutorialWindow(tray),
-    about: aboutWindow(tray)
+    main: mainWindow(tray)
   }
 
   // Provide application and the CLI with automatic updates
@@ -177,10 +108,6 @@ app.on('ready', async () => {
 
   // Make the window instances accessible from everywhere
   global.windows = windows
-
-  // Listen to changes inside .now.json
-  // This needs to be called AFTER setting global.windows
-  await watchConfig()
 
   electron.ipcMain.on('open-menu', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
@@ -209,12 +136,7 @@ app.on('ready', async () => {
   }
 
   const toggleActivity = async event => {
-    if (loggedIn) {
-      toggleWindow(event || null, windows.main, tray)
-      return
-    }
-
-    toggleWindow(event || null, windows.tutorial)
+    toggleWindow(event || null, windows.main, tray)
   }
 
   // Only allow one instance of Now running
@@ -230,31 +152,27 @@ app.on('ready', async () => {
   app.on('second-instance', toggleActivity)
 
   const { wasOpenedAtLogin } = app.getLoginItemSettings()
-  const afterUpdate = config.desktop && config.desktop.updatedFrom
 
   if (isFirstRun) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    if (!wasOpenedAtLogin && !afterUpdate) {
+    if (!wasOpenedAtLogin) {
       windows.tutorial.once('ready-to-show', toggleActivity)
     }
   } else {
     const mainWindow = windows.main
 
-    if (!mainWindow.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
+    if (!mainWindow.isVisible() && !wasOpenedAtLogin) {
       mainWindow.once('ready-to-show', toggleActivity)
     }
   }
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
-    tray.setContextMenu(
-      loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
-    )
+    tray.setContextMenu(await contextMenu(windows))
   }
 
   // Define major event listeners for tray
-  tray.on('drop-files', filesDropped)
   tray.on('click', toggleActivity)
   tray.on('double-click', toggleActivity)
 
@@ -266,7 +184,7 @@ app.on('ready', async () => {
       return
     }
 
-    const menu = loggedIn ? await contextMenu(windows) : outerMenu(app, windows)
+    const menu = await contextMenu(windows)
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)
