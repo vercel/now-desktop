@@ -3,6 +3,7 @@ const electron = require('electron')
 const isDev = require('electron-is-dev')
 
 // Utilities
+const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
 
 // Check if Windows or Mac
@@ -45,6 +46,7 @@ exports.tutorialWindow = tray => {
   })
 
   loadPage(win, 'tutorial')
+  attachTrayState(win, tray)
 
   const emitTrayClick = aboutWindow => {
     const emitClick = () => {
@@ -70,7 +72,7 @@ exports.tutorialWindow = tray => {
   return win
 }
 
-exports.aboutWindow = () => {
+exports.aboutWindow = tray => {
   const win = new electron.BrowserWindow({
     width: 360,
     height: 408,
@@ -91,6 +93,7 @@ exports.aboutWindow = () => {
   })
 
   loadPage(win, 'about')
+  attachTrayState(win, tray)
 
   return win
 }
@@ -126,6 +129,7 @@ exports.mainWindow = tray => {
   positionWindow(tray, win)
 
   loadPage(win, 'feed')
+  attachTrayState(win, tray)
 
   // Hide window if it's not focused anymore
   // This can only happen if the dev tools are not open

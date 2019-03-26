@@ -9,12 +9,15 @@ module.exports = (event, window, tray) => {
     // Don't open the menu
     event.preventDefault()
   }
+  console.log('EL')
 
   // If window open and not focused, bring it to focus
   if (!isWin && isVisible && !window.isFocused()) {
+    console.log('HAHA')
     window.focus()
     return
   }
+  console.log('HOOH')
 
   // Show or hide onboarding window
   // Calling `.close()` will actually make it
