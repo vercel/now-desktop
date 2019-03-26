@@ -11,7 +11,6 @@ const { innerMenu, outerMenu } = require('./menu')
 const autoUpdater = require('./updates')
 const toggleWindow = require('./utils/frames/toggle')
 const windowList = require('./utils/frames/list')
-const { exception: handleException } = require('./utils/error')
 
 Sentry.init({
   dsn: sentryDsn
@@ -33,7 +32,7 @@ const { app } = electron
 app.setName('Now')
 
 // Handle uncaught exceptions
-process.on('uncaughtException', handleException)
+process.on('uncaughtException', error => console.log(error))
 
 // Hide dock icon before the app starts
 // This is only required for development because
@@ -81,7 +80,6 @@ app.on('ready', async () => {
         : process.platform === 'linux' ? 'iconWhite' : 'iconTemplate'
     tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`))
   } catch (err) {
-    handleException(err)
     return
   }
 

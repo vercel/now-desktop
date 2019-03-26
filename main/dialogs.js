@@ -1,10 +1,6 @@
-// Packages
 const { dialog } = require('electron')
 const sudo = require('sudo-prompt')
 const { resolve: resolvePath } = require('app-root-path')
-
-// Utilities
-const deploy = require('./utils/deploy')
 
 exports.runAsRoot = (command, why) => {
   const isWin = process.platform === 'win32'
@@ -55,9 +51,5 @@ exports.deploy = async () => {
     return
   }
 
-  try {
-    await deploy(paths)
-  } catch (err) {
-    exports.error('Not able to deploy', err)
-  }
+  console.log('test')
 }

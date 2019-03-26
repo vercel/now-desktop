@@ -1,14 +1,10 @@
-// Packages
 import electron from 'electron'
 import { Component } from 'react'
 import { bool } from 'prop-types'
-
-// Styles
 import styles from '../styles/components/tips'
-
-// Bulb
 import Bulb from '../vectors/bulb'
 import Clear from '../vectors/clear'
+import getConfig from '../utils/config'
 
 const tips = []
 
@@ -45,8 +41,6 @@ class Tips extends Component {
       return
     }
 
-    const { getConfig } = this.remote.require('./utils/config')
-
     let shownTips = {}
 
     try {
@@ -66,15 +60,6 @@ class Tips extends Component {
       return
     }
 
-    const { saveConfig } = this.remote.require('./utils/config')
-    await saveConfig(
-      {
-        desktop: {
-          shownTips: { [this.state.tip.id]: true }
-        }
-      },
-      'config'
-    )
     this.setState({
       tip: null
     })

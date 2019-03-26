@@ -3,26 +3,16 @@ const electron = require('electron')
 const ms = require('ms')
 
 // Utilities
+const getConfig = require('../config').default
 const userAgent = require('./user-agent')
 
-let getConfig
-
 const getToken = async () => {
-  if (!getConfig) {
-    const remote = electron.remote || false
-
-    if (!remote) {
-      return
-    }
-
-    getConfig = remote.require('./utils/config').getConfig
-  }
-
   let config
 
   try {
     config = await getConfig()
   } catch (err) {
+    console.log(err)
     return false
   }
 

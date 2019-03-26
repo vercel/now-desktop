@@ -1,18 +1,11 @@
-// Packages
 import electron from 'electron'
 import { stringify as stringifyQuery } from 'querystring'
 import AutoSizeInput from 'react-input-autosize'
 import { PureComponent } from 'react'
 import sleep from 'sleep-promise'
 import { func } from 'prop-types'
-
-// Utilities
-import loadData from '../../utils/data/load'
-import { API_USER } from '../../utils/data/endpoints'
 import error from '../../utils/error'
 import emailProviders from '../../utils/email-providers'
-
-// Styles
 import styles from '../../styles/components/tutorial/login'
 
 const defaultState = {
@@ -46,12 +39,12 @@ class LoginForm extends PureComponent {
     })
 
     const body = await res.json()
-    const badRequest = res.status === 400;
+    const badRequest = res.status === 400
 
     if (badRequest && body.error && body.error.code === 'invalid_email') {
-      const error = new Error(body.error.message);
-      error.code = 'invalid_email';
-      throw error;
+      const error = new Error(body.error.message)
+      error.code = 'invalid_email'
+      throw error
     }
 
     return body.token
@@ -237,65 +230,19 @@ class LoginForm extends PureComponent {
         if (err.code === 'invalid_email') {
           error(err.message, err)
         } else {
-          error('Failed to verify login. Please retry later.', err);
+          error('Failed to verify login. Please retry later.', err)
         }
 
         this.props.setIntroState({
           classes: [],
           security: null
-        });
+        })
 
-        return;
+        return
       }
 
       console.log('Waiting for token...')
     } while (!finalToken)
-
-    if (!this.remote) {
-      return
-    }
-
-    // Also save it to now.json
-    const { saveConfig, watchConfig } = this.remote.require('./utils/config')
-
-    // Load the user's data
-    const userData = await loadData(API_USER, finalToken)
-    const user = userData.user
-
-    try {
-      await saveConfig(
-        {
-          user: {
-            uid: user.uid,
-            username: user.username,
-            email: user.email
-          }
-        },
-        'config',
-        true
-      )
-    } catch (err) {
-      error('Could not save main config', err)
-      return
-    }
-
-    try {
-      await saveConfig(
-        {
-          provider: 'sh',
-          token: finalToken
-        },
-        'auth',
-        true
-      )
-    } catch (err) {
-      error('Could not save auth config', err)
-      return
-    }
-
-    // Start watching for changes in .now.json
-    // This will update the scope in the main window
-    watchConfig()
 
     if (!this.remote) {
       return

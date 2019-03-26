@@ -5,6 +5,7 @@ import retry from 'async-retry'
 import introStyles from '../../styles/components/tutorial/intro'
 import Logo from '../../vectors/logo'
 import handleError from '../../utils/error'
+import getConfig from '../../utils/config'
 import LoginForm from './login'
 import CLI from './cli'
 import Button from './button'
@@ -27,8 +28,6 @@ class Intro extends PureComponent {
     if (!this.remote) {
       return
     }
-
-    const { getConfig } = this.remote.require('./utils/config')
 
     try {
       await getConfig()

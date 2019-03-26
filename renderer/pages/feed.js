@@ -1,7 +1,4 @@
-// Native
 import queryString from 'querystring'
-
-// Packages
 import electron from 'electron'
 import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
@@ -14,8 +11,6 @@ import parseHTML from 'html-to-react'
 import retry from 'async-retry'
 import ms from 'ms'
 import makeUnique from 'make-unique'
-
-// Components
 import Title from '../components/title'
 import Switcher from '../components/feed/switcher'
 import DropZone from '../components/feed/dropzone'
@@ -24,10 +19,9 @@ import NoEvents from '../components/feed/none'
 import Loading from '../components/feed/loading'
 import messageComponents from '../components/feed/messages'
 import isDarkMode from '../utils/dark-mode'
-
-// Utilities
 import loadData from '../utils/data/load'
 import { API_EVENTS, API_USER } from '../utils/data/endpoints'
+import getConfig from '../utils/config'
 
 // Styles
 import {
@@ -448,8 +442,6 @@ class Feed extends Component {
       return
     }
 
-    const { getConfig } = this.remote.require('./utils/config')
-
     let config = {}
     let user = {}
 
@@ -513,8 +505,6 @@ class Feed extends Component {
       this.setState({ online })
       return
     }
-
-    const { getConfig } = this.remote.require('./utils/config')
 
     let config = null
 

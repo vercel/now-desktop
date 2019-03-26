@@ -1,17 +1,6 @@
-// Packages
 const { Menu: { buildFromTemplate }, shell } = require('electron')
 const isDev = require('electron-is-dev')
-
-// Utilities
-const logout = require('./utils/logout')
-const toggleWindow = require('./utils/frames/toggle')
-const { getConfig, saveConfig } = require('./utils/config')
 const binaryUtils = require('./utils/binary')
-const { error: handleError } = require('./utils/error')
-const loadData = require('./utils/data/load')
-
-// Cache the user for fast open
-let user = null
 
 const openDeveloperTools = windows => {
   if (!windows || Object.keys(windows).length === 0) {
@@ -26,10 +15,9 @@ const openDeveloperTools = windows => {
 }
 
 exports.innerMenu = async function(app, tray, windows, inRenderer) {
-  const config = await getConfig()
   const { openAtLogin } = app.getLoginItemSettings()
-  const { updateChannel, desktop } = config
-  const isCanary = updateChannel && updateChannel === 'canary'
+  const desktop = {}
+  const isCanary = true
 
   let updateCLI = true
 
@@ -37,15 +25,6 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
   // enabled by default if the config property is not set)
   if (desktop && desktop.updateCLI === false) {
     updateCLI = false
-  }
-
-  if (!user) {
-    try {
-      ;({ user } = await loadData('/api/www/user', config.token))
-    } catch (err) {
-      // The token was revoked, the effect is caught elsewhere
-      // Or the user is offline
-    }
   }
 
   // We have to explicitly add a "Main" item on linux, otherwise
@@ -56,7 +35,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           {
             label: 'Main',
             click() {
-              toggleWindow(null, windows.main, tray)
+              console.log('test')
             }
           }
         ]
@@ -69,7 +48,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           label:
             process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
           click() {
-            toggleWindow(null, windows.about)
+            console.log('test')
           }
         },
         {
@@ -79,14 +58,14 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           label: 'Account',
           submenu: [
             {
-              label: user ? user.username || user.email : 'Your Account',
+              label: 'Your Account',
               enabled: false
             },
             {
               type: 'separator'
             },
             {
-              label: user && user.username ? 'Change Username' : 'Set Username',
+              label: 'Set Username',
               click() {
                 shell.openExternal('https://zeit.co/account')
               }
@@ -108,13 +87,6 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               click() {
                 shell.openExternal('https://zeit.co/account/tokens')
               }
-            },
-            {
-              type: 'separator'
-            },
-            {
-              label: 'Logout',
-              click: logout
             }
           ]
         },
@@ -158,12 +130,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               type: 'checkbox',
               checked: isCanary,
               click() {
-                saveConfig(
-                  {
-                    updateChannel: isCanary ? 'stable' : 'canary'
-                  },
-                  'config'
-                )
+                console.log('test')
               }
             },
             {
@@ -173,18 +140,11 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               click() {
                 if (updateCLI === false) {
                   binaryUtils.install().catch(err => {
-                    handleError('Not able to install Now CLI', err)
+                    console.error(err)
                   })
                 }
 
-                saveConfig(
-                  {
-                    desktop: {
-                      updateCLI: !updateCLI
-                    }
-                  },
-                  'config'
-                )
+                console.log('test')
               }
             }
           ]
@@ -222,7 +182,7 @@ exports.outerMenu = (app, windows) =>
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
       click() {
-        toggleWindow(null, windows.about)
+        console.log('test')
       }
     },
     {

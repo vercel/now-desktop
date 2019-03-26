@@ -1,4 +1,3 @@
-// Packages
 import electron from 'electron'
 import { Component } from 'react'
 import { func, object, bool } from 'prop-types'
@@ -13,20 +12,15 @@ import {
 import makeUnique from 'make-unique'
 import ms from 'ms'
 import isDev from 'electron-is-dev'
-
-// Styles
 import {
   wrapStyle,
   listStyle,
   itemStyle,
   helperStyle
 } from '../../styles/components/feed/switcher'
-
-// Utilities
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
-
-// Components
+import getConfig from '../../utils/config'
 import Clear from '../../vectors/clear'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
@@ -54,7 +48,6 @@ class Switcher extends Component {
   }
 
   binaryUtils = this.load('./utils/binary')
-  configUtils = this.load('./utils/config')
 
   // Don't update state when dragging teams
   moving = false
@@ -227,20 +220,12 @@ class Switcher extends Component {
   }
 
   async checkCurrentTeam(config) {
-    if (!this.remote) {
+    try {
+      config = await getConfig()
+    } catch (err) {
+      // The config is not valid, so no need to update
+      // the current team.
       return
-    }
-
-    if (!config) {
-      const { getConfig } = this.remote.require('./utils/config')
-
-      try {
-        config = await getConfig()
-      } catch (err) {
-        // The config is not valid, so no need to update
-        // the current team.
-        return
-      }
     }
 
     if (!config.currentTeam) {
@@ -255,6 +240,7 @@ class Switcher extends Component {
     }
 
     const { teams } = await loadData(API_TEAMS)
+    console.log(teams)
     const related = teams.find(team => team.id === config.currentTeam)
 
     // The team was deleted
@@ -266,21 +252,15 @@ class Switcher extends Component {
     this.changeScope(related, true)
   }
 
-  async saveConfig(newConfig) {
-    const { saveConfig } = this.configUtils
-
+  async saveConfig() {
     // Ensure that we're not handling the
     // event triggered by changes made to the config
     // because the changes were triggered manually
     // inside this app
     this.savingConfig = true
-
-    // Then update the config file
-    await saveConfig(newConfig, 'config')
   }
 
   async getTeamOrder() {
-    const { getConfig } = this.configUtils
     let config
 
     try {

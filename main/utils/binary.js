@@ -1,10 +1,7 @@
-// Native
 const path = require('path')
 const { spawnSync } = require('child_process')
 const { homedir } = require('os')
 const { createGunzip } = require('zlib')
-
-// Packages
 const { ipcMain } = require('electron')
 const fetch = require('node-fetch')
 const tmp = require('tmp-promise')
@@ -18,12 +15,8 @@ const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
 const exists = require('path-exists')
 const retry = require('async-retry')
-
-// Utilities
 const { runAsRoot } = require('../dialogs')
 const notify = require('../notify')
-const userAgent = require('./user-agent')
-const { saveConfig, getConfig } = require('./config')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -139,27 +132,14 @@ const platformName = () => {
 }
 
 const canaryCheck = async () => {
-  let config
-
-  try {
-    config = await getConfig()
-  } catch (err) {
-    config = {}
-  }
+  const config = {}
 
   const { updateChannel } = config
   return updateChannel && updateChannel === 'canary'
 }
 
 const disableUpdateCLI = async () => {
-  await saveConfig(
-    {
-      desktop: {
-        updateCLI: false
-      }
-    },
-    'config'
-  )
+  console.log('test')
 }
 
 const installedWithNPM = async () => {
@@ -272,7 +252,7 @@ exports.getURL = async () => {
   const url = 'https://now-cli-releases.zeit.sh'
   const response = await fetch(url, {
     headers: {
-      'user-agent': userAgent
+      'user-agent': 'test'
     }
   })
 
@@ -344,7 +324,7 @@ exports.download = async (url, binaryName) => {
 
   ipcMain.once('online-status-changed', (event, status) => {
     if (status === 'offline') {
-      const error = new Error("You went offline! Stopping download...")
+      const error = new Error('You went offline! Stopping download...')
       error.name = 'offline'
 
       throw error
@@ -353,7 +333,7 @@ exports.download = async (url, binaryName) => {
 
   const binaryDownload = await fetch(url, {
     headers: {
-      'user-agent': userAgent
+      'user-agent': 'test'
     },
     compress: false
   })
