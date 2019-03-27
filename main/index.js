@@ -9,8 +9,7 @@ const { sentryDsn } = require('../package')
 const firstRun = require('./first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const autoUpdater = require('./updates')
-const toggleWindow = require('./frame/toggle')
-const frame = require('./frame')
+const { getWindow, toggleWindow } = require('./window')
 const { getConfig, saveConfig } = require('./config')
 
 Sentry.init({
@@ -62,12 +61,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-const contextMenu = async (windows, inRenderer) => {
+const contextMenu = async (window, inRenderer) => {
   if (process.env.CONNECTION === 'offline') {
-    return outerMenu(app, windows)
+    return outerMenu(app, window)
   }
 
-  return innerMenu(app, tray, windows, inRenderer)
+  return innerMenu(app, tray, window, inRenderer)
 }
 
 // Chrome Command Line Switches
@@ -94,16 +93,11 @@ app.on('ready', async () => {
     // Next has failed to start but context menu should still work
   }
 
-  // And then put it back into a list :D
-  const windows = {
-    main: frame(tray)
-  }
+  // Generate the browser window
+  const window = getWindow(tray)
 
   // Provide application and the CLI with automatic updates
-  autoUpdater(windows.main)
-
-  // Make the window instances accessible from everywhere
-  global.windows = windows
+  autoUpdater(window)
 
   electron.ipcMain.on('config-get-request', async event => {
     let config = null
@@ -142,7 +136,7 @@ app.on('ready', async () => {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
 
-      const menu = await contextMenu(windows, true)
+      const menu = await contextMenu(window, true)
 
       menu.popup({
         x: bounds.x,
@@ -157,14 +151,13 @@ app.on('ready', async () => {
       () => {
         const darkMode = electron.systemPreferences.isDarkMode()
 
-        windows.main.send('theme-changed', { darkMode })
-        windows.about.send('theme-changed', { darkMode })
+        window.send('theme-changed', { darkMode })
       }
     )
   }
 
   const toggleActivity = async event => {
-    toggleWindow(event || null, windows.main, tray)
+    toggleWindow(event || null, window, tray)
   }
 
   // Only allow one instance of Now running
@@ -185,19 +178,15 @@ app.on('ready', async () => {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     if (!wasOpenedAtLogin) {
-      windows.tutorial.once('ready-to-show', toggleActivity)
+      window.once('ready-to-show', toggleActivity)
     }
-  } else {
-    const mainWindow = windows.main
-
-    if (!mainWindow.isVisible() && !wasOpenedAtLogin) {
-      mainWindow.once('ready-to-show', toggleActivity)
-    }
+  } else if (!window.isVisible() && !wasOpenedAtLogin) {
+    window.once('ready-to-show', toggleActivity)
   }
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
-    tray.setContextMenu(await contextMenu(windows))
+    tray.setContextMenu(await contextMenu(window))
   }
 
   // Define major event listeners for tray
@@ -207,12 +196,12 @@ app.on('ready', async () => {
   let submenuShown = false
 
   tray.on('right-click', async event => {
-    if (windows.main.isVisible()) {
-      windows.main.hide()
+    if (window.isVisible()) {
+      window.hide()
       return
     }
 
-    const menu = await contextMenu(windows)
+    const menu = await contextMenu(window)
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)

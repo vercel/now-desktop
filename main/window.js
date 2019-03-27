@@ -1,13 +1,17 @@
-const electron = require('electron')
+const { platform } = require('os')
 const path = require('path')
+const electron = require('electron')
 const isDev = require('electron-is-dev')
-const positionWindow = require('./position')
+const isEqual = require('react-fast-compare')
+const Positioner = require('electron-positioner')
 
 // Check if Windows or Mac
 const isWinOS = process.platform === 'win32'
 const isMacOS = process.platform === 'darwin'
 
 let darkMode = false
+let trayBoundsCache = null
+let displayAreaCache = null
 
 if (isMacOS) {
   darkMode = electron.systemPreferences.isDarkMode()
@@ -55,7 +59,7 @@ const attachTrayState = (win, tray) => {
   })
 }
 
-module.exports = tray => {
+exports.getWindow = tray => {
   let windowHeight = 380
 
   if (isWinOS) {
@@ -79,14 +83,14 @@ module.exports = tray => {
       backgroundThrottling: false,
       nodeIntegration: false,
       devTools: true,
-      preload: path.join(__dirname, '../static/preload.js')
+      preload: path.join(__dirname, './static/preload.js')
     }
   })
 
   win.setVisibleOnAllWorkspaces(true)
   win.webContents.openDevTools()
 
-  positionWindow(tray, win)
+  exports.positionWindow(tray, win)
 
   loadPage(win, 'feed')
   attachTrayState(win, tray)
@@ -104,8 +108,7 @@ module.exports = tray => {
       return
     }
 
-    const { screen } = electron
-    const cursor = screen.getCursorScreenPoint()
+    const cursor = electron.screen.getCursorScreenPoint()
     const trayBounds = global.tray.getBounds()
 
     const xAfter = cursor.x <= trayBounds.x + trayBounds.width
@@ -123,4 +126,62 @@ module.exports = tray => {
   })
 
   return win
+}
+
+exports.toggleWindow = (event, window, tray) => {
+  const isVisible = window.isVisible()
+  const isWin = process.platform === 'win32'
+
+  if (event) {
+    // Don't open the menu
+    event.preventDefault()
+  }
+
+  // If window open and not focused, bring it to focus
+  if (!isWin && isVisible && !window.isFocused()) {
+    window.focus()
+    return
+  }
+
+  // Show or hide onboarding window
+  // Calling `.close()` will actually make it
+  // hide, but it's a special scenario which we're
+  // listening for in a different// If the "blur" event was triggered when
+  // clicking on the tray icon, don't do anything place
+  if (isVisible) {
+    window.close()
+  } else {
+    // Position main window correctly under the tray icon
+    exports.positionWindow(tray, window)
+    window.show()
+  }
+}
+
+exports.positionWindow = (tray, window) => {
+  const { screen } = electron
+  const screenPoint = screen.getCursorScreenPoint()
+  const display = screen.getDisplayNearestPoint(screenPoint)
+  const displayArea = display.workArea
+  const trayBounds = tray.getBounds()
+  const notMacOS = platform() !== 'darwin'
+
+  if (trayBoundsCache && displayAreaCache) {
+    // Compare only the object props
+    if (
+      isEqual(trayBoundsCache, trayBounds) &&
+      isEqual(displayAreaCache, displayArea)
+    ) {
+      return
+    }
+  }
+
+  trayBoundsCache = trayBounds
+  displayAreaCache = displayArea
+
+  const positioner = new Positioner(window)
+  const windowPosition = notMacOS ? 'trayBottomCenter' : 'trayCenter'
+  const { x, y } = positioner.calculate(windowPosition, trayBoundsCache)
+  const vertical = notMacOS ? y : y + 7
+
+  window.setPosition(x, vertical)
 }

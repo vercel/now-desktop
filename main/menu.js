@@ -2,19 +2,7 @@ const { Menu: { buildFromTemplate }, shell } = require('electron')
 const isDev = require('electron-is-dev')
 const binaryUtils = require('./binary')
 
-const openDeveloperTools = windows => {
-  if (!windows || Object.keys(windows).length === 0) {
-    return
-  }
-
-  const list = Object.values(windows)
-
-  for (const item of list) {
-    item.webContents.openDevTools()
-  }
-}
-
-exports.innerMenu = async function(app, tray, windows, inRenderer) {
+exports.innerMenu = async function(app, tray, window, inRenderer) {
   const { openAtLogin } = app.getLoginItemSettings()
   const desktop = {}
   const isCanary = true
@@ -161,7 +149,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           : {
               label: 'Open Developer Tools',
               click() {
-                openDeveloperTools(windows)
+                window.webContents.openDevTools()
               },
               accelerator: 'Cmd+I'
             },
@@ -177,7 +165,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
   )
 }
 
-exports.outerMenu = (app, windows) =>
+exports.outerMenu = (app, window) =>
   buildFromTemplate([
     {
       label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
@@ -191,7 +179,7 @@ exports.outerMenu = (app, windows) =>
     {
       label: 'Open Developer Tools',
       click() {
-        openDeveloperTools(windows)
+        window.webContents.openDevTools()
       },
       accelerator: 'Cmd+I'
     },
