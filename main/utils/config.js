@@ -1,13 +1,8 @@
-// Native
 const path = require('path')
 const { homedir } = require('os')
-
-// Packages
 const fs = require('fs-extra')
-const pathExists = require('path-exists')
 const groom = require('groom')
 const deepExtend = require('deep-extend')
-const { watch } = require('chokidar')
 
 const paths = {
   auth: '.now/auth.json',
@@ -22,69 +17,17 @@ for (const file in paths) {
   paths[file] = path.join(homedir(), paths[file])
 }
 
-let configWatcher = null
-let oldToken = null
-
-const hasConfig = async () => {
-  if (!await pathExists(paths.auth)) {
-    return false
-  }
-
-  if (!await pathExists(paths.config)) {
-    return false
-  }
-
-  return true
-}
-
 exports.getConfig = async () => {
-  const content = {}
-  let authContent = null
-  let config = null
-
-  try {
-    authContent = await fs.readJSON(paths.auth)
-    config = await fs.readJSON(paths.config)
-  } catch (e) {}
+  const authContent = await fs.readJSON(paths.auth)
+  const config = await fs.readJSON(paths.config)
 
   let token = null
 
   if (authContent) {
-    if (authContent.credentials) {
-      ;({ token } = authContent.credentials.find(
-        item => item.provider === 'sh'
-      ))
-    } else {
-      token = authContent.token
-    }
+    token = authContent.token
   }
 
-  const tokenProp = token ? { token } : {}
-
-  if (config && config.sh) {
-    const { sh, updateChannel, desktop } = config
-    const isCanary = updateChannel && updateChannel === 'canary'
-
-    if (isCanary) {
-      content.updateChannel = 'canary'
-    }
-
-    if (desktop) {
-      content.desktop = desktop
-    }
-
-    Object.assign(content, sh || {}, tokenProp)
-  } else {
-    Object.assign(content, config || {}, tokenProp)
-  }
-
-  if (typeof content.user === 'object') {
-    content.user = content.user.uid || content.user.id
-  }
-
-  if (typeof content.currentTeam === 'object') {
-    content.currentTeam = content.currentTeam.id
-  }
+  const content = Object.assign({}, config || {}, { token })
 
   if (!content.token) {
     throw new Error('No user token defined')
@@ -94,21 +37,9 @@ exports.getConfig = async () => {
 }
 
 exports.removeConfig = async () => {
-  // Stop watching the config file
-  if (configWatcher) {
-    configWatcher.close()
-
-    // Reset the watcher state back to none
-    configWatcher = null
-  }
-
-  const toRemove = ['currentTeam', 'user', 'sh']
-
   const configContent = await fs.readJSON(paths.config)
 
-  for (const item of toRemove) {
-    delete configContent[item]
-  }
+  delete configContent.currentTeam
 
   await fs.writeJSON(paths.config, configContent, {
     spaces: 2
@@ -127,7 +58,7 @@ exports.removeConfig = async () => {
   })
 }
 
-exports.saveConfig = async (data, type, firstSave = false) => {
+exports.saveConfig = async (data, type) => {
   const destination = paths[type]
   let currentContent = {}
 
@@ -136,33 +67,7 @@ exports.saveConfig = async (data, type, firstSave = false) => {
   } catch (err) {}
 
   if (type === 'config') {
-    let existingShownTips = currentContent.shownTips
-
-    if (firstSave && typeof currentContent.sh === 'undefined') {
-      currentContent.sh = {}
-    }
-
-    if (currentContent.sh) {
-      // These are top-level properties
-      const { updateChannel, desktop } = data
-
-      // Inject the content
-      data = { sh: data }
-
-      if (updateChannel) {
-        data.updateChannel = updateChannel
-        delete data.sh.updateChannel
-      }
-
-      if (desktop) {
-        data.desktop = desktop
-        delete data.sh.desktop
-      }
-
-      if (currentContent.sh.shownTips) {
-        existingShownTips = currentContent.sh.shownTips
-      }
-    }
+    const existingShownTips = currentContent.shownTips
 
     if (existingShownTips) {
       // Make sure tips don't show up again if they
@@ -180,14 +85,12 @@ exports.saveConfig = async (data, type, firstSave = false) => {
       }
     }
 
-    if (!currentContent.sh) {
-      if (typeof data.user !== 'undefined') {
-        delete data.user
-      }
+    if (typeof data.user !== 'undefined') {
+      delete data.user
+    }
 
-      if (data.currentTeam !== null && typeof data.currentTeam === 'object') {
-        data.currentTeam = data.currentTeam.id
-      }
+    if (data.currentTeam !== null && typeof data.currentTeam === 'object') {
+      data.currentTeam = data.currentTeam.id
     }
 
     if (!currentContent._) {
@@ -222,19 +125,7 @@ exports.saveConfig = async (data, type, firstSave = false) => {
         "This is your Now credentials file. DON'T SHARE! More: https://git.io/v5ECz"
     }
 
-    if (firstSave && typeof currentContent.credentials === 'undefined') {
-      currentContent.credentials = []
-    }
-
-    if (currentContent.credentials) {
-      const { credentials } = currentContent
-      const related = credentials.find(item => item.provider === 'sh')
-      const index = related ? credentials.indexOf(related) : 0
-
-      credentials[index] = Object.assign(related || {}, data)
-    } else {
-      Object.assign(currentContent, data)
-    }
+    Object.assign(currentContent, data)
   }
 
   // Create all the directories
@@ -243,76 +134,5 @@ exports.saveConfig = async (data, type, firstSave = false) => {
   // Update config file
   await fs.writeJSON(destination, currentContent, {
     spaces: 2
-  })
-}
-
-const configChanged = async file => {
-  if (!global.windows || !configWatcher) {
-    return
-  }
-
-  // We use the global `windows` list so that we can
-  // call this method from the renderer without having to pass
-  // the windows
-  const mainWindow = global.windows.main
-  const name = path.basename(file)
-
-  let content
-
-  try {
-    content = await exports.getConfig()
-  } catch (err) {
-    console.error(err)
-    return
-  }
-
-  if (name === 'auth.json' && oldToken !== content.token) {
-    content.user = false
-    console.log('Token has changed')
-  }
-
-  oldToken = content.token
-
-  mainWindow.webContents.send('config-changed', content)
-}
-
-exports.watchConfig = async () => {
-  const toWatch = [paths.auth, paths.config]
-
-  if (!await hasConfig()) {
-    return
-  }
-
-  // Load this now, because it otherwise doesn't work
-  const logout = require('./logout')
-
-  // Start watching the config file and
-  // inform the renderer about changes inside it
-  configWatcher = watch(toWatch)
-  configWatcher.on('change', file => configChanged(file))
-
-  // Log out when a config file is removed
-  configWatcher.on('unlink', async file => {
-    let exists = null
-
-    // Be sure we get a path passed
-    if (!file) {
-      return
-    }
-
-    // Be extra sure that it was removed, so that we
-    // don't log out people for no reason
-    try {
-      exists = await pathExists(file)
-    } catch (err) {
-      console.error(err)
-      return
-    }
-
-    if (exists) {
-      return
-    }
-
-    logout('config-removed')
   })
 }
