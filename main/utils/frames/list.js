@@ -46,14 +46,14 @@ exports.mainWindow = tray => {
     backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
     webPreferences: {
       backgroundThrottling: false,
-      // We need it for HMR
-      nodeIntegration: isDev,
+      nodeIntegration: false,
       devTools: true,
       preload: path.join(__dirname, '../preload.js')
     }
   })
 
   win.setVisibleOnAllWorkspaces(true)
+  win.webContents.openDevTools()
 
   positionWindow(tray, win)
 

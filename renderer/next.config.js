@@ -1,6 +1,6 @@
 module.exports = {
   webpack(config) {
-    config.target = 'electron-renderer'
+    config.target = 'web'
 
     // Hide the "dependency is a critical expression" warnings
     // There's no need to care about them
@@ -19,6 +19,8 @@ module.exports = {
       delete config.resolve.alias.react
       delete config.resolve.alias['react-dom']
     }
+
+    config.externals = []
 
     return config
   },

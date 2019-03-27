@@ -1,9 +1,5 @@
-// Packages
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { number, bool } from 'prop-types'
-
-// Styles
 import styles from '../../styles/components/feed/create-team'
 
 class CreateTeam extends PureComponent {
@@ -13,7 +9,6 @@ class CreateTeam extends PureComponent {
 
   open(event) {
     event.preventDefault()
-    electron.shell.openExternal('https://zeit.co/teams/create')
   }
 
   componentDidMount() {

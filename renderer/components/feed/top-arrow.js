@@ -1,20 +1,12 @@
-// Packages
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { bool } from 'prop-types'
-
-// Components
 import Caret from '../../vectors/caret'
-
-// Styles
 import styles from '../../styles/components/feed/top-arrow'
 
 class TopArrow extends PureComponent {
   state = {
     left: 0
   }
-
-  remote = electron.remote || false
 
   preventDefault(event) {
     event.preventDefault()
@@ -31,24 +23,7 @@ class TopArrow extends PureComponent {
   }
 
   tryPosition() {
-    if (!this.remote) {
-      return
-    }
-
-    if (!this.remote.process || !this.remote.getCurrentWindow) {
-      return
-    }
-
-    const currentWindow = this.remote.getCurrentWindow()
-    const tray = this.remote.getGlobal('tray')
-
-    if (!currentWindow || !tray) {
-      return
-    }
-
-    // Center the caret under the tray icon
-    const windowBounds = currentWindow.getBounds()
-    this.position(tray, windowBounds)
+    // Handle positioing
   }
 
   position(tray, windowBounds) {

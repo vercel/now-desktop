@@ -1,4 +1,3 @@
-import electron from 'electron'
 import { Component } from 'react'
 import { bool } from 'prop-types'
 import styles from '../styles/components/tips'
@@ -34,13 +33,8 @@ class Tips extends Component {
   state = {
     tip: null
   }
-  remote = electron.remote || false
 
   async componentDidMount() {
-    if (!this.remote) {
-      return
-    }
-
     let shownTips = {}
 
     try {
@@ -56,10 +50,6 @@ class Tips extends Component {
   }
 
   closeTip = async () => {
-    if (!this.remote) {
-      return
-    }
-
     this.setState({
       tip: null
     })

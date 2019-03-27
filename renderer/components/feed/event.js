@@ -1,19 +1,11 @@
-// Packages
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { object, func, string, bool } from 'prop-types'
 import dotProp from 'dot-prop'
 import ms from 'ms'
-import * as Sentry from '@sentry/electron'
+import * as Sentry from '@sentry/browser'
 import pkg from '../../../package'
-
-// Styles
 import { localStyles, globalStyles } from '../../styles/components/feed/event'
-
-// Utilities
 import dateDiff from '../../utils/date-diff'
-
-// Components
 import Avatar from './avatar'
 
 // Check if this is on the client,
@@ -30,7 +22,6 @@ class EventMessage extends PureComponent {
     hasError: false
   }
 
-  remote = electron.remote || false
   menu = null
 
   click = () => {
@@ -41,15 +32,7 @@ class EventMessage extends PureComponent {
       return
     }
 
-    if (!this.state.url) {
-      return
-    }
-
-    if (!this.remote) {
-      return
-    }
-
-    this.remote.shell.openExternal(`https://${this.state.url}`)
+    console.log('haha')
   }
 
   rightClick = event => {
@@ -67,11 +50,7 @@ class EventMessage extends PureComponent {
   }
 
   copyToClipboard(text) {
-    if (!this.remote) {
-      return
-    }
-
-    this.remote.clipboard.writeText(text)
+    console.log(text)
   }
 
   getID() {
@@ -106,63 +85,6 @@ class EventMessage extends PureComponent {
     const host = deploymentUrl || url
 
     return `https://zeit.co/deployments/${host}`
-  }
-
-  componentDidMount() {
-    if (!this.remote) {
-      return
-    }
-
-    const Menu = this.remote.Menu
-    const eventItem = this
-    const menuContent = []
-
-    if (this.state.url) {
-      menuContent.push({
-        label: 'Copy URL',
-        click() {
-          const url = `https://${eventItem.state.url}`
-          eventItem.copyToClipboard(url, 'address')
-        }
-      })
-    }
-
-    const identificator = this.getID()
-    const dashboardURL = this.getDashboardURL()
-
-    if (identificator) {
-      menuContent.push({
-        label: 'Copy ID',
-        click() {
-          eventItem.copyToClipboard(identificator, 'ID')
-        }
-      })
-    }
-
-    if (dashboardURL) {
-      if (menuContent.length > 0) {
-        menuContent.push({
-          type: 'separator'
-        })
-      }
-
-      menuContent.push({
-        label: 'Open in Dashboard',
-        click() {
-          if (!eventItem.remote) {
-            return
-          }
-
-          eventItem.remote.shell.openExternal(dashboardURL)
-        }
-      })
-    }
-
-    if (menuContent.length === 0) {
-      return
-    }
-
-    this.menu = Menu.buildFromTemplate(menuContent)
   }
 
   componentWillMount() {

@@ -1,14 +1,8 @@
-// Packages
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { func, bool } from 'prop-types'
 import setRef from 'react-refs'
-
-// Vectors
 import MagnifyingGlass from '../../vectors/search'
 import Clear from '../../vectors/clear'
-
-// Styles
 import styles from '../../styles/components/feed/search'
 
 class Search extends PureComponent {
@@ -107,30 +101,6 @@ class Search extends PureComponent {
     if (event.keyCode === 65 && event.metaKey) {
       event.target.select()
     }
-  }
-
-  componentDidMount() {
-    const remote = electron.remote || false
-
-    if (!remote) {
-      return
-    }
-
-    const currentWindow = remote.getCurrentWindow()
-
-    // Allow feed to close the search when switching
-    // the team scope
-    if (this.props.setSearchRef) {
-      this.props.setSearchRef(this, 'searchField')
-    }
-
-    currentWindow.on('show', this.showWindow)
-    currentWindow.on('hide', this.hideWindow)
-
-    window.addEventListener('beforeunload', () => {
-      currentWindow.removeListener('show', this.showWindow)
-      currentWindow.removeListener('hide', this.hideWindow)
-    })
   }
 
   render() {

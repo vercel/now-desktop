@@ -1,4 +1,3 @@
-import electron from 'electron'
 import queryString from 'query-string'
 import { Fragment, Component } from 'react'
 import parse from 'date-fns/parse'
@@ -43,8 +42,6 @@ class Feed extends Component {
     hasLoaded: false
   }
 
-  remote = electron.remote || false
-  ipcRenderer = electron.ipcRenderer || false
   loading = new Set()
   isWindows = process.platform === 'win32'
   eventTypes = new Set(messageComponents.keys())
@@ -306,7 +303,6 @@ class Feed extends Component {
   }
 
   onKeyDown = event => {
-    const currentWindow = this.remote.getCurrentWindow()
     const { keyCode, metaKey } = event
 
     console.log(keyCode)
@@ -317,13 +313,14 @@ class Feed extends Component {
     }
 
     event.preventDefault()
-    const activeItem = document.activeElement
+    /* Const activeItem = document.activeElement
 
     if (activeItem && activeItem.tagName === 'INPUT') {
       return
     }
+    */
 
-    currentWindow.hide()
+    // Hide window
   }
 
   listenThemeChange() {
@@ -409,10 +406,6 @@ class Feed extends Component {
       window.addEventListener(state, this.setOnlineState)
     }
 
-    if (!this.remote) {
-      return
-    }
-
     let config = {}
     let user = {}
 
@@ -421,6 +414,7 @@ class Feed extends Component {
     } catch (err) {
       // Nothing to do here, as there is a default
     }
+    console.log(config)
 
     // It's very important to not use `this.state` here
     if (navigator.onLine) {
@@ -430,7 +424,7 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: isDarkMode(this.remote),
+      darkMode: isDarkMode(),
       hasLoaded: true
     })
 
@@ -443,15 +437,7 @@ class Feed extends Component {
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown)
 
-    const currentWindow = this.remote.getCurrentWindow()
-
-    currentWindow.on('show', this.showWindow)
-    currentWindow.on('hide', this.hideWindow)
-
-    window.addEventListener('beforeunload', () => {
-      currentWindow.removeListener('show', this.showWindow)
-      currentWindow.removeListener('hide', this.hideWindow)
-    })
+    // Do remaining stuff
   }
 
   componentWillUnmount() {

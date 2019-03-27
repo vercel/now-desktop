@@ -1,7 +1,5 @@
-import electron from 'electron'
 import { Component } from 'react'
 import { func, object, bool } from 'prop-types'
-import exists from 'path-exists'
 import isEqual from 'react-fast-compare'
 import setRef from 'react-refs'
 import {
@@ -10,8 +8,6 @@ import {
   arrayMove
 } from 'react-sortable-hoc'
 import makeUnique from 'make-unique'
-import ms from 'ms'
-import isDev from 'electron-is-dev'
 import {
   wrapStyle,
   listStyle,
@@ -20,7 +16,6 @@ import {
 } from '../../styles/components/feed/switcher'
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
-import getConfig from '../../utils/config'
 import Clear from '../../vectors/clear'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
@@ -35,8 +30,6 @@ class Switcher extends Component {
     queue: []
   }
 
-  remote = electron.remote || false
-  ipcRenderer = electron.ipcRenderer || false
   setReference = setRef.bind(this)
 
   // Don't update state when dragging teams
@@ -95,204 +88,10 @@ class Switcher extends Component {
 
   componentWillMount() {
     // Support SSR
-    if (!this.remote || typeof window === 'undefined') {
-      return
-    }
-
-    const currentWindow = this.remote.getCurrentWindow()
-
-    if (!currentWindow) {
-      return
-    }
-
-    currentWindow.on('show', this.showWindow)
-    currentWindow.on('hide', this.hideWindow)
-
-    window.addEventListener('beforeunload', () => {
-      currentWindow.removeListener('show', this.showWindow)
-      currentWindow.removeListener('hide', this.hideWindow)
-    })
   }
 
   listTimer = () => {
-    const { getCurrentWindow } = this.remote
-    const { isVisible } = getCurrentWindow()
-
-    const time = isVisible() ? '5s' : '5m'
-
-    this.timer = setTimeout(async () => {
-      try {
-        // It's important that this is being `await`ed
-        await this.loadTeams()
-      } catch (err) {
-        if (isDev) {
-          console.error(err)
-        }
-      }
-
-      // Once everything is done or has failed,
-      // try it again after some time.
-      this.listTimer()
-    }, ms(time))
-  }
-
-  async componentDidMount() {
-    // Show a UI banner if the installation
-    // of an update failed
-    this.ipcRenderer.on('update-failed', () => {
-      this.setState({ updateFailed: true })
-    })
-
-    // Only start updating teams once they're loaded!
-    // This needs to be async so that we can already
-    // start the state timer below for the data that's already cached
-    if (!this.props.online) {
-      this.listTimer()
-      return
-    }
-
-    this.loadTeams(true)
-      .then(this.listTimer)
-      .catch(this.listTimer)
-
-    // Check the config for `currentTeam`
-    await this.checkCurrentTeam()
-
-    // Update the scope if the config changes
-    this.listenToConfig()
-  }
-
-  async checkTeamOrder() {
-    const order = await this.getTeamOrder()
-    const updated = await this.applyTeamOrder(this.state.teams, order)
-
-    if (updated) {
-      this.setState({ teams: updated })
-    }
-  }
-
-  listenToConfig() {
-    if (!this.ipcRenderer) {
-      return
-    }
-
-    this.ipcRenderer.on('config-changed', async (event, config) => {
-      if (this.state.teams.length === 0) {
-        return
-      }
-
-      if (this.savingConfig) {
-        this.savingConfig = false
-        return
-      }
-
-      // Load the teams in case there is a brand new team
-      await this.loadTeams()
-
-      // Check for the `currentTeam` property in the config
-      await this.checkCurrentTeam(config)
-
-      // Do the same for the `desktop.teamOrder` property
-      await this.checkTeamOrder()
-    })
-  }
-
-  resetScope() {
-    const currentUser = this.props.currentUser
-
-    if (!currentUser) {
-      return
-    }
-
-    this.changeScope({
-      id: currentUser.uid
-    })
-  }
-
-  async checkCurrentTeam(config) {
-    try {
-      config = await getConfig()
-    } catch (err) {
-      // The config is not valid, so no need to update
-      // the current team.
-      return
-    }
-
-    if (!config.currentTeam) {
-      this.resetScope()
-      return
-    }
-
-    // Legacy config
-    if (typeof config.currentTeam === 'object') {
-      this.changeScope(config.currentTeam, true)
-      return
-    }
-
-    const { teams } = await loadData(API_TEAMS)
-    console.log(teams)
-    const related = teams.find(team => team.id === config.currentTeam)
-
-    // The team was deleted
-    if (!related) {
-      this.resetScope()
-      return
-    }
-
-    this.changeScope(related, true)
-  }
-
-  async saveConfig() {
-    // Ensure that we're not handling the
-    // event triggered by changes made to the config
-    // because the changes were triggered manually
-    // inside this app
-    this.savingConfig = true
-  }
-
-  async getTeamOrder() {
-    let config
-
-    try {
-      config = await getConfig()
-    } catch (err) {}
-
-    if (!config || !config.desktop || !config.desktop.teamOrder) {
-      return false
-    }
-
-    const order = config.desktop.teamOrder
-
-    if (!Array.isArray(order) || order.length === 0) {
-      return false
-    }
-
-    return order
-  }
-
-  updateTouchBar() {
-    if (!this.remote) {
-      return
-    }
-
-    const { getCurrentWindow, TouchBar } = this.remote
-    const currentWindow = getCurrentWindow()
-    const buttons = []
-
-    for (const team of this.state.teams) {
-      const active = team.id === this.state.scope
-      const backgroundColor = active ? '#3782D1' : null
-
-      const button = new TouchBar.TouchBarButton({
-        label: team.name || 'You',
-        backgroundColor,
-        click: () => this.changeScope(team, true, true)
-      })
-
-      buttons.push(button)
-    }
-
-    currentWindow.setTouchBar(new TouchBar(buttons))
+    // Test
   }
 
   async applyTeamOrder(list, order) {
@@ -360,15 +159,9 @@ class Switcher extends Component {
   }
 
   async loadTeams(firstLoad) {
-    if (!this.remote) {
-      return
-    }
-
-    const currentWindow = this.remote.getCurrentWindow()
-
     // If the window isn't visible, don't pull the teams
     // Ensure to always load the first chunk
-    if (!currentWindow.isVisible() && this.state.initialized) {
+    if (this.state.initialized) {
       if (this.props.setTeams) {
         // When passing `null`, the feed will only
         // update the events, not the teams
@@ -489,10 +282,6 @@ class Switcher extends Component {
   }
 
   async updateConfig(team, updateMessage) {
-    if (!this.remote) {
-      return
-    }
-
     const currentUser = this.props.currentUser
 
     if (!currentUser) {
@@ -521,12 +310,7 @@ class Switcher extends Component {
     // in the title bar
     if (updateMessage && this.props.titleRef) {
       const { getFile } = this.binaryUtils
-
-      // Only show the notification if the CLI is installed
-      if (!await exists(getFile())) {
-        return
-      }
-
+      console.log(getFile)
       this.props.titleRef.scopeUpdated()
     }
   }
@@ -588,19 +372,6 @@ class Switcher extends Component {
     // bubbling up from those, but we need to
     // use `this.menu` to make sure the menu always gets
     // bounds to the parent
-    const { bottom, left, height, width } = this.menu.getBoundingClientRect()
-    const sender = electron.ipcRenderer || false
-
-    if (!sender) {
-      return
-    }
-
-    sender.send('open-menu', {
-      x: left,
-      y: bottom,
-      height,
-      width
-    })
   }
 
   saveTeamOrder(teams) {
@@ -722,17 +493,7 @@ class Switcher extends Component {
     return !event.metaKey
   }
 
-  retryUpdate = () => {
-    if (!this.remote) {
-      return
-    }
-
-    const { app } = this.remote
-
-    // Restart the application
-    app.relaunch()
-    app.exit(0)
-  }
+  retryUpdate = () => {}
 
   closeUpdateMessage = () => {
     this.setState({

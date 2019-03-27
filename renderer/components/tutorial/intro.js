@@ -1,4 +1,3 @@
-import electron from 'electron'
 import { PureComponent } from 'react'
 import { func } from 'prop-types'
 import introStyles from '../../styles/components/tutorial/intro'
@@ -17,8 +16,6 @@ class Intro extends PureComponent {
     checked: true
   }
 
-  remote = electron.remote || false
-  ipcRenderer = electron.ipcRenderer || false
   setState = this.setState.bind(this)
   startTutorial = this.moveSlider.bind(this, 1)
 
@@ -82,8 +79,6 @@ class Intro extends PureComponent {
     if (!prevState.done && this.state.done) {
       // This event will simply land in the void if the
       // binary is already installed
-      this.ipcRenderer.send('complete-installation', this.state.checked)
-
       // Let the parent components know that the user
       // is now logged in
       this.props.setLoggedIn(true)
