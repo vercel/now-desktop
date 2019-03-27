@@ -73,6 +73,7 @@ class Feed extends Component {
 
   async updateEvents(firstLoad) {
     const { teams, scope } = this.state
+    console.log('LOOL')
 
     if (!teams || Object.keys(teams).length === 0 || !scope) {
       return
@@ -414,7 +415,6 @@ class Feed extends Component {
     } catch (err) {
       // Nothing to do here, as there is a default
     }
-    console.log(config)
 
     // It's very important to not use `this.state` here
     if (navigator.onLine) {

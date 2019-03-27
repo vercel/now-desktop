@@ -17,6 +17,7 @@ import {
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 import Clear from '../../vectors/clear'
+import getConfig from '../../utils/config'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
@@ -53,6 +54,10 @@ class Switcher extends Component {
     }
 
     document.addEventListener('keydown', this.keyDown.bind(this))
+  }
+
+  componentDidMount() {
+    this.loadTeams()
   }
 
   hideWindow = () => {
@@ -119,6 +124,26 @@ class Switcher extends Component {
     return makeUnique(merged, (a, b) => a.id === b.id)
   }
 
+  async getTeamOrder() {
+    let config
+
+    try {
+      config = await getConfig()
+    } catch (err) {}
+
+    if (!config || !config.desktop || !config.desktop.teamOrder) {
+      return false
+    }
+
+    const order = config.desktop.teamOrder
+
+    if (!Array.isArray(order) || order.length === 0) {
+      return false
+    }
+
+    return order
+  }
+
   async haveUpdated(data) {
     const newData = JSON.parse(JSON.stringify(data))
     let currentData = JSON.parse(JSON.stringify(this.state.teams))
@@ -159,18 +184,6 @@ class Switcher extends Component {
   }
 
   async loadTeams(firstLoad) {
-    // If the window isn't visible, don't pull the teams
-    // Ensure to always load the first chunk
-    if (this.state.initialized) {
-      if (this.props.setTeams) {
-        // When passing `null`, the feed will only
-        // update the events, not the teams
-        await this.props.setTeams(null, firstLoad)
-      }
-
-      return
-    }
-
     const data = await loadData(API_TEAMS)
 
     if (!data || !data.teams || !this.props.currentUser) {
@@ -206,6 +219,18 @@ class Switcher extends Component {
     }
   }
 
+  resetScope() {
+    const currentUser = this.props.currentUser
+
+    if (!currentUser) {
+      return
+    }
+
+    this.changeScope({
+      id: currentUser.uid
+    })
+  }
+
   keyDown(event) {
     const activeItem = document.activeElement
 
@@ -233,7 +258,7 @@ class Switcher extends Component {
     const scopeChanged = !isEqual(scope, prevState.scope)
 
     if (teamsChanged || scopeChanged) {
-      this.updateTouchBar()
+      // Update touch bar here
     }
 
     while (this.state.queue.length > 0) {
