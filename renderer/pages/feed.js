@@ -73,7 +73,6 @@ class Feed extends Component {
 
   async updateEvents(firstLoad) {
     const { teams, scope } = this.state
-    console.log('LOOL')
 
     if (!teams || Object.keys(teams).length === 0 || !scope) {
       return
@@ -441,6 +440,10 @@ class Feed extends Component {
   }
 
   componentWillUnmount() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
     for (const state of this.lineStates) {
       window.removeEventListener(state, this.setOnlineState)
     }

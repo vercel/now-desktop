@@ -17,7 +17,7 @@ import {
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 import Clear from '../../vectors/clear'
-import { getConfig } from '../../utils/ipc'
+import { getConfig, saveConfig } from '../../utils/ipc'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
@@ -334,8 +334,6 @@ class Switcher extends Component {
     // Show a notification that the context was updated
     // in the title bar
     if (updateMessage && this.props.titleRef) {
-      const { getFile } = this.binaryUtils
-      console.log(getFile)
       this.props.titleRef.scopeUpdated()
     }
   }
@@ -409,6 +407,17 @@ class Switcher extends Component {
     this.saveConfig({
       desktop: { teamOrder }
     })
+  }
+
+  async saveConfig(newConfig) {
+    // Ensure that we're not handling the
+    // event triggered by changes made to the config
+    // because the changes were triggered manually
+    // inside this app
+    this.savingConfig = true
+
+    // Then update the config file
+    await saveConfig(newConfig, 'config')
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
