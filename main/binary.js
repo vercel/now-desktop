@@ -2,7 +2,7 @@ const path = require('path')
 const { spawnSync } = require('child_process')
 const { homedir } = require('os')
 const { createGunzip } = require('zlib')
-const { ipcMain } = require('electron')
+const { ipcMain, dialog } = require('electron')
 const fetch = require('node-fetch')
 const tmp = require('tmp-promise')
 const fs = require('fs-extra')
@@ -15,7 +15,8 @@ const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
 const exists = require('path-exists')
 const retry = require('async-retry')
-const { runAsRoot } = require('./dialogs')
+const sudo = require('sudo-prompt')
+const { resolve: resolvePath } = require('app-root-path')
 const notify = require('./notify')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
@@ -80,6 +81,42 @@ const ensurePath = async () => {
       )
     })
   )
+}
+
+const runAsRoot = (command, why) => {
+  const isWin = process.platform === 'win32'
+  const buttons = ['OK', 'Cancel']
+
+  if (isWin) {
+    buttons.reverse()
+  }
+
+  const answer = dialog.showMessageBox({
+    type: 'question',
+    message: 'Now Needs More Permissions',
+    detail: why,
+    buttons
+  })
+
+  // The order of options is different on Windows
+  if (answer === (isWin ? 0 : 1)) {
+    throw new Error('No permissions given')
+  }
+
+  return new Promise((resolve, reject) => {
+    const options = {
+      name: 'Now',
+      icns: resolvePath('./main/static/icons/mac.icns')
+    }
+
+    sudo.exec(command, options, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
 }
 
 // Change the permissions of the `now` binary, so
