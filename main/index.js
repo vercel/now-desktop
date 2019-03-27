@@ -9,8 +9,8 @@ const { sentryDsn } = require('../package.json')
 const firstRun = require('./utils/first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const autoUpdater = require('./updates')
-const toggleWindow = require('./utils/frames/toggle')
-const windowList = require('./utils/frames/list')
+const toggleWindow = require('./utils/frame/toggle')
+const frame = require('./utils/frame')
 const { getConfig, saveConfig } = require('./utils/config')
 
 Sentry.init({
@@ -94,12 +94,9 @@ app.on('ready', async () => {
     // Next has failed to start but context menu should still work
   }
 
-  // Extract each window out of the list
-  const { mainWindow } = windowList
-
   // And then put it back into a list :D
   const windows = {
-    main: mainWindow(tray)
+    main: frame(tray)
   }
 
   // Provide application and the CLI with automatic updates

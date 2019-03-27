@@ -24,7 +24,7 @@ const loadPage = (win, page) => {
   }
 }
 
-exports.mainWindow = tray => {
+module.exports = tray => {
   let windowHeight = 380
 
   if (isWinOS) {
