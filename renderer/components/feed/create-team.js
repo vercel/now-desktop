@@ -1,6 +1,7 @@
 import { PureComponent } from 'react'
 import { number, bool } from 'prop-types'
 import styles from '../../styles/components/feed/create-team'
+import { openURL } from '../../utils/ipc'
 
 class CreateTeam extends PureComponent {
   state = {
@@ -9,6 +10,7 @@ class CreateTeam extends PureComponent {
 
   open(event) {
     event.preventDefault()
+    openURL('https://zeit.co/teams/create')
   }
 
   componentDidMount() {

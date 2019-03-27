@@ -120,6 +120,10 @@ app.on('ready', async () => {
     event.sender.send('config-response', config)
   })
 
+  electron.ipcMain.on('url-request', async (event, url) => {
+    electron.shell.openExternal(url)
+  })
+
   electron.ipcMain.on('open-menu', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2

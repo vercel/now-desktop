@@ -3,7 +3,7 @@ import { bool } from 'prop-types'
 import styles from '../styles/components/tips'
 import Bulb from '../vectors/bulb'
 import Clear from '../vectors/clear'
-import getConfig from '../utils/config'
+import { getConfig } from '../utils/ipc'
 
 const tips = []
 

@@ -1,5 +1,5 @@
 import ms from 'ms'
-import getConfig from '../config'
+import { getConfig } from '../ipc'
 
 const getToken = async () => {
   let config

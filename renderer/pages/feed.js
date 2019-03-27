@@ -20,7 +20,7 @@ import messageComponents from '../components/feed/messages'
 import isDarkMode from '../utils/dark-mode'
 import loadData from '../utils/data/load'
 import { API_EVENTS, API_USER } from '../utils/data/endpoints'
-import getConfig from '../utils/config'
+import { getConfig } from '../utils/ipc'
 import {
   feedStyles,
   headingStyles,

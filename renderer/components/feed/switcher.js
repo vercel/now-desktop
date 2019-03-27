@@ -17,7 +17,7 @@ import {
 import loadData from '../../utils/data/load'
 import { API_TEAMS } from '../../utils/data/endpoints'
 import Clear from '../../vectors/clear'
-import getConfig from '../../utils/config'
+import { getConfig } from '../../utils/ipc'
 import Avatar from './avatar'
 import CreateTeam from './create-team'
 
