@@ -1,4 +1,3 @@
-// Packages
 const Store = require('electron-store')
 
 const getStore = opts => {
