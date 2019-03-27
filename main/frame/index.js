@@ -79,7 +79,7 @@ module.exports = tray => {
       backgroundThrottling: false,
       nodeIntegration: false,
       devTools: true,
-      preload: path.join(__dirname, '../preload.js')
+      preload: path.join(__dirname, '../static/preload.js')
     }
   })
 
