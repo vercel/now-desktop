@@ -1,4 +1,3 @@
-// Packages
 const { shell, Notification } = require('electron')
 const { resolve } = require('app-root-path')
 

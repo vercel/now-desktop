@@ -32,11 +32,8 @@ module.exports = (tray, window) => {
   displayAreaCache = displayArea
 
   const positioner = new Positioner(window)
-
   const windowPosition = notMacOS ? 'trayBottomCenter' : 'trayCenter'
-
   const { x, y } = positioner.calculate(windowPosition, trayBoundsCache)
-
   const vertical = notMacOS ? y : y + 7
 
   window.setPosition(x, vertical)

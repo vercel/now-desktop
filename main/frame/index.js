@@ -1,7 +1,6 @@
 const electron = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev')
-const attachTrayState = require('../highlight')
 const positionWindow = require('./position')
 
 // Check if Windows or Mac
@@ -22,6 +21,38 @@ const loadPage = (win, page) => {
   } else {
     win.loadFile(`${electron.app.getAppPath()}/renderer/out/${page}/index.html`)
   }
+}
+
+const states = {
+  hide: false,
+  show: true,
+  minimize: false,
+  restore: true,
+  focus: true
+}
+
+const attachTrayState = (win, tray) => {
+  if (!tray) {
+    return
+  }
+
+  for (const state of Object.keys(states)) {
+    const highlighted = states[state]
+
+    win.on(state, () => {
+      // Highlight the tray or don't
+      tray.setHighlightMode(highlighted ? 'always' : 'selection')
+    })
+  }
+
+  electron.app.on('before-quit', () => {
+    win.destroy()
+  })
+
+  win.on('close', event => {
+    event.preventDefault()
+    win.hide()
+  })
 }
 
 module.exports = tray => {
