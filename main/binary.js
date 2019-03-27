@@ -15,8 +15,8 @@ const trimWhitespace = require('trim')
 const pipe = require('promisepipe')
 const exists = require('path-exists')
 const retry = require('async-retry')
-const { runAsRoot } = require('../dialogs')
-const notify = require('../notify')
+const { runAsRoot } = require('./dialogs')
+const notify = require('./notify')
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {

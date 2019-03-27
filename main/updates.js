@@ -1,7 +1,4 @@
-// Native
 const { homedir } = require('os')
-
-// Packages
 const { app, autoUpdater } = require('electron')
 const ms = require('ms')
 const semVer = require('semver')
@@ -9,11 +6,9 @@ const trimWhitespace = require('trim')
 const { exec } = require('child-process-promise')
 const isDev = require('electron-is-dev')
 const exists = require('path-exists')
-
-// Utilities
 const { version } = require('../package')
 const notify = require('./notify')
-const binaryUtils = require('./utils/binary')
+const binaryUtils = require('./binary')
 
 const isCanary = async () => {
   const { updateChannel } = {}

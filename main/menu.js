@@ -1,6 +1,6 @@
 const { Menu: { buildFromTemplate }, shell } = require('electron')
 const isDev = require('electron-is-dev')
-const binaryUtils = require('./utils/binary')
+const binaryUtils = require('./binary')
 
 const openDeveloperTools = windows => {
   if (!windows || Object.keys(windows).length === 0) {

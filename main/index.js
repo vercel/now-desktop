@@ -5,13 +5,13 @@ const prepareNext = require('electron-next')
 const { resolve: resolvePath } = require('app-root-path')
 const squirrelStartup = require('electron-squirrel-startup')
 const Sentry = require('@sentry/electron')
-const { sentryDsn } = require('../package.json')
-const firstRun = require('./utils/first-run')
+const { sentryDsn } = require('../package')
+const firstRun = require('./first-run')
 const { innerMenu, outerMenu } = require('./menu')
 const autoUpdater = require('./updates')
-const toggleWindow = require('./utils/frame/toggle')
-const frame = require('./utils/frame')
-const { getConfig, saveConfig } = require('./utils/config')
+const toggleWindow = require('./frame/toggle')
+const frame = require('./frame')
+const { getConfig, saveConfig } = require('./config')
 
 Sentry.init({
   dsn: sentryDsn
