@@ -1,18 +1,18 @@
-const { Menu: { buildFromTemplate }, shell } = require('electron')
-const isDev = require('electron-is-dev')
-const binaryUtils = require('./binary')
+const { Menu: { buildFromTemplate }, shell } = require('electron');
+const isDev = require('electron-is-dev');
+const binaryUtils = require('./binary');
 
 module.exports = async function(app, tray, window, inRenderer) {
-  const { openAtLogin } = app.getLoginItemSettings()
-  const desktop = {}
-  const isCanary = true
+  const { openAtLogin } = app.getLoginItemSettings();
+  const desktop = {};
+  const isCanary = true;
 
-  let updateCLI = true
+  let updateCLI = true;
 
   // This check needs to be explicit (updates should be
   // enabled by default if the config property is not set)
   if (desktop && desktop.updateCLI === false) {
-    updateCLI = false
+    updateCLI = false;
   }
 
   // We have to explicitly add a "Main" item on linux, otherwise
@@ -23,11 +23,11 @@ module.exports = async function(app, tray, window, inRenderer) {
           {
             label: 'Main',
             click() {
-              console.log('test')
+              console.log('test');
             }
           }
         ]
-      : []
+      : [];
 
   return buildFromTemplate(
     prependItems.concat(
@@ -36,7 +36,7 @@ module.exports = async function(app, tray, window, inRenderer) {
           label:
             process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
           click() {
-            console.log('test')
+            console.log('test');
           }
         },
         {
@@ -55,25 +55,25 @@ module.exports = async function(app, tray, window, inRenderer) {
             {
               label: 'Change Username',
               click() {
-                shell.openExternal('https://zeit.co/account')
+                shell.openExternal('https://zeit.co/account');
               }
             },
             {
               label: 'Billing',
               click() {
-                shell.openExternal('https://zeit.co/account/billing')
+                shell.openExternal('https://zeit.co/account/billing');
               }
             },
             {
               label: 'Plan',
               click() {
-                shell.openExternal('https://zeit.co/account/plan')
+                shell.openExternal('https://zeit.co/account/plan');
               }
             },
             {
               label: 'API Tokens',
               click() {
-                shell.openExternal('https://zeit.co/account/tokens')
+                shell.openExternal('https://zeit.co/account/tokens');
               }
             }
           ]
@@ -84,13 +84,13 @@ module.exports = async function(app, tray, window, inRenderer) {
         {
           label: 'Support',
           click() {
-            shell.openExternal('https://zeit.chat')
+            shell.openExternal('https://zeit.chat');
           }
         },
         {
           label: 'Documentation',
           click() {
-            shell.openExternal('https://zeit.co/docs')
+            shell.openExternal('https://zeit.co/docs');
           }
         },
         {
@@ -107,7 +107,7 @@ module.exports = async function(app, tray, window, inRenderer) {
               click() {
                 app.setLoginItemSettings({
                   openAtLogin: !openAtLogin
-                })
+                });
               }
             },
             {
@@ -118,7 +118,7 @@ module.exports = async function(app, tray, window, inRenderer) {
               type: 'checkbox',
               checked: isCanary,
               click() {
-                console.log('test')
+                console.log('test');
               }
             },
             {
@@ -128,11 +128,11 @@ module.exports = async function(app, tray, window, inRenderer) {
               click() {
                 if (updateCLI === false) {
                   binaryUtils.install().catch(err => {
-                    console.error(err)
-                  })
+                    console.error(err);
+                  });
                 }
 
-                console.log('test')
+                console.log('test');
               }
             }
           ]
@@ -149,7 +149,7 @@ module.exports = async function(app, tray, window, inRenderer) {
           : {
               label: 'Open Developer Tools',
               click() {
-                window.webContents.openDevTools()
+                window.webContents.openDevTools();
               },
               accelerator: 'Cmd+I'
             },
@@ -162,5 +162,5 @@ module.exports = async function(app, tray, window, inRenderer) {
         }
       ].filter(Boolean)
     )
-  )
-}
+  );
+};

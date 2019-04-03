@@ -1,38 +1,38 @@
 // Packages
-import { PureComponent } from 'react'
-import { func, bool, string } from 'prop-types'
+import { PureComponent } from 'react';
+import { func, bool, string } from 'prop-types';
 
 // Styles
-import styles from '../../styles/components/tutorial/button'
+import styles from '../../styles/components/tutorial/button';
 
 class Button extends PureComponent {
   clicked = event => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (this.props.disabled || !this.props.onClick) {
-      return
+      return;
     }
 
-    this.props.onClick(event)
-  }
+    this.props.onClick(event);
+  };
 
   render() {
-    const { disabled, title, className } = this.props
-    const classes = className ? className.split(' ') : []
+    const { disabled, title, className } = this.props;
+    const classes = className ? className.split(' ') : [];
 
     if (disabled) {
-      classes.push('disabled')
+      classes.push('disabled');
     }
 
     const options = {
       href: '#',
       onClick: this.clicked,
       className: classes.join(' ')
-    }
+    };
 
     if (title) {
-      options.title = title
-      options.style = { cursor: 'help' }
+      options.title = title;
+      options.style = { cursor: 'help' };
     }
 
     return (
@@ -40,7 +40,7 @@ class Button extends PureComponent {
         {this.props.children}
         <style jsx>{styles}</style>
       </a>
-    )
+    );
   }
 }
 
@@ -50,6 +50,6 @@ Button.propTypes = {
   children: string,
   title: string,
   className: string
-}
+};
 
-export default Button
+export default Button;

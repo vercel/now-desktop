@@ -1,117 +1,117 @@
-import { PureComponent } from 'react'
-import { func, bool } from 'prop-types'
-import setRef from 'react-refs'
-import MagnifyingGlass from '../../vectors/search'
-import Clear from '../../vectors/clear'
-import styles from '../../styles/components/feed/search'
+import { PureComponent } from 'react';
+import { func, bool } from 'prop-types';
+import setRef from 'react-refs';
+import MagnifyingGlass from '../../vectors/search';
+import Clear from '../../vectors/clear';
+import styles from '../../styles/components/feed/search';
 
 class Search extends PureComponent {
   state = {
     shown: false
-  }
+  };
 
-  setReference = setRef.bind(this)
+  setReference = setRef.bind(this);
 
   show = () => {
-    this.props.showDeployIcon()
+    this.props.showDeployIcon();
 
     setTimeout(() => {
-      this.input.focus()
-    }, 200)
+      this.input.focus();
+    }, 200);
 
-    this.form.style.visibility = 'visible'
+    this.form.style.visibility = 'visible';
 
     this.setState({
       shown: true
-    })
-  }
+    });
+  };
 
   hide = deployIcon => {
     if (!this.form || !this.input) {
-      return
+      return;
     }
 
     this.setState({
       shown: false
-    })
+    });
 
     // Reset feed filter to show all events again
     if (this.props.setFeedFilter) {
-      this.props.setFeedFilter(null)
+      this.props.setFeedFilter(null);
     }
 
     if (!deployIcon) {
       setTimeout(() => {
-        this.props.hideDeployIcon()
-      }, 100)
+        this.props.hideDeployIcon();
+      }, 100);
     }
 
     setTimeout(() => {
       // We need to check here again because
       // the element changes over time
       if (!this.form || !this.input) {
-        return
+        return;
       }
 
-      this.form.style.visibility = 'hidden'
+      this.form.style.visibility = 'hidden';
 
-      this.input.value = ''
-      this.input.blur()
-    }, 200)
-  }
+      this.input.value = '';
+      this.input.blur();
+    }, 200);
+  };
 
   typed = event => {
     if (event.keyCode && event.keyCode === 27) {
-      this.hide(true)
-      return
+      this.hide(true);
+      return;
     }
 
-    const value = event.target.value || null
+    const value = event.target.value || null;
 
     if (this.props.setFeedFilter) {
-      this.props.setFeedFilter(value)
+      this.props.setFeedFilter(value);
     }
-  }
+  };
 
   handleKeyDown = event => {
     if (!event) {
-      return
+      return;
     }
 
     if (event.keyCode === 70 && event.metaKey) {
-      this.show()
+      this.show();
     }
-  }
+  };
 
   showWindow = () => {
-    document.addEventListener('keydown', this.handleKeyDown)
-  }
+    document.addEventListener('keydown', this.handleKeyDown);
+  };
 
   hideWindow = () => {
-    this.hide(true)
+    this.hide(true);
 
-    document.removeEventListener('keydown', this.handleKeyDown)
-  }
+    document.removeEventListener('keydown', this.handleKeyDown);
+  };
 
   selectAll(event) {
     if (!event) {
-      return
+      return;
     }
 
     if (event.keyCode === 65 && event.metaKey) {
-      event.target.select()
+      event.target.select();
     }
   }
 
   render() {
-    const classes = []
+    const classes = [];
 
     if (this.props.darkBg) {
-      classes.push('dark')
+      classes.push('dark');
     }
 
     if (this.state.shown) {
-      classes.push('visible')
+      classes.push('visible');
     }
 
     return (
@@ -137,7 +137,7 @@ class Search extends PureComponent {
 
         <style jsx>{styles}</style>
       </aside>
-    )
+    );
   }
 }
 
@@ -147,6 +147,6 @@ Search.propTypes = {
   setFeedFilter: func,
   setSearchRef: func,
   darkBg: bool
-}
+};
 
-export default Search
+export default Search;

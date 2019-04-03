@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const localStyles = css`
   figure {
@@ -43,7 +43,7 @@ export const localStyles = css`
     color: #9b9b9b;
     flex-shrink: 0;
   }
-`
+`;
 
 export const globalStyles = css`
   h1 + .event figcaption {
@@ -103,4 +103,4 @@ export const globalStyles = css`
   .event mark {
     background: #ffff21;
   }
-`
+`;

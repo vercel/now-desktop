@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   span {
@@ -11,4 +11,4 @@ export default css`
     display: flex;
     justify-content: center;
   }
-`
+`;

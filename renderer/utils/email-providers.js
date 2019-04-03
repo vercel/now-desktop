@@ -13,4 +13,4 @@ export default [
   'icloud.com',
   'me.com',
   'zeit.co'
-]
+];

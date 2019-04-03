@@ -1,23 +1,23 @@
 // Packages
-import React from 'react'
-import { string, bool } from 'prop-types'
+import React from 'react';
+import { string, bool } from 'prop-types';
 
 const Filter = ({ background, darkBg = false }) => {
-  const bgFill = darkBg ? '#3a3a3a' : '#FFF'
-  const strokeFill = darkBg ? '#999' : '#000'
+  const bgFill = darkBg ? '#3a3a3a' : '#FFF';
+  const strokeFill = darkBg ? '#999' : '#000';
 
   const props = {
     width: '17px',
     height: '13px'
-  }
+  };
 
   if (background) {
-    props.height = '11px'
-    props.width = '15px'
+    props.height = '11px';
+    props.width = '15px';
 
     props.style = {
       margin: '0 1px -1px 2px'
-    }
+    };
   }
 
   return (
@@ -51,12 +51,12 @@ const Filter = ({ background, darkBg = false }) => {
         </g>
       </g>
     </svg>
-  )
-}
+  );
+};
 
 Filter.propTypes = {
   background: string,
   darkBg: bool
-}
+};
 
-export default Filter
+export default Filter;

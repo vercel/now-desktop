@@ -1,24 +1,24 @@
 // Components
-import { Fragment } from 'react'
-import Message from './message'
+import { Fragment } from 'react';
+import Message from './message';
 
 export default class CertRenew extends Message {
   render() {
-    const { event } = this.props
-    const { cn, cns } = event.payload
+    const { event } = this.props;
+    const { cn, cns } = event.payload;
 
-    let domains = cns || cn
-    domains = Array.isArray(domains) ? domains : [domains]
-    domains = domains.map(domain => <b key={domain}>{domain}</b>)
+    let domains = cns || cn;
+    domains = Array.isArray(domains) ? domains : [domains];
+    domains = domains.map(domain => <b key={domain}>{domain}</b>);
 
     return (
       <p>
         {this.getDisplayName()}
         renewed a certificate for{' '}
         {domains.map((domain, index) => {
-          const hasNext = domains[index + 1]
-          const isLast = domain === domains[domains.length - 1]
-          const isPreLast = domain === domains[domains.length - 2]
+          const hasNext = domains[index + 1];
+          const isLast = domain === domains[domains.length - 1];
+          const isPreLast = domain === domains[domains.length - 2];
 
           if (isLast && domains.length > 1) {
             return (
@@ -26,7 +26,7 @@ export default class CertRenew extends Message {
                 {' '}
                 and <b>{domain}</b>
               </Fragment>
-            )
+            );
           }
 
           if (hasNext && !isPreLast) {
@@ -34,16 +34,16 @@ export default class CertRenew extends Message {
               <Fragment key={domain}>
                 <b>{domain}</b>,{' '}
               </Fragment>
-            )
+            );
           }
 
           return (
             <Fragment key={domain}>
               <b>{domain}</b>
             </Fragment>
-          )
+          );
         })}
       </p>
-    )
+    );
   }
 }

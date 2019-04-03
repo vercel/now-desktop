@@ -1,9 +1,9 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class TeamMemberRoleUpdate extends Message {
   render() {
-    const { event } = this.props
+    const { event } = this.props;
 
     return (
       <p>
@@ -12,6 +12,6 @@ export default class TeamMemberRoleUpdate extends Message {
         {`'`}s role from <b>{event.payload.previousRole}</b> to{' '}
         <b>{event.payload.role}</b>
       </p>
-    )
+    );
   }
 }

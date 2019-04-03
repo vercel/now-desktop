@@ -1,11 +1,11 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class TeamMemberDelete extends Message {
   render() {
-    const { event } = this.props
-    const deletedUser = event.payload.deletedUser
-    const username = deletedUser.username || deletedUser.email
+    const { event } = this.props;
+    const deletedUser = event.payload.deletedUser;
+    const username = deletedUser.username || deletedUser.email;
 
     return (
       <p>
@@ -13,6 +13,6 @@ export default class TeamMemberDelete extends Message {
         removed user{deletedUser.username ? '' : ' with email address'}{' '}
         <b>{username}</b>
       </p>
-    )
+    );
   }
 }

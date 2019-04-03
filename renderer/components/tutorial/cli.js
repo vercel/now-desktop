@@ -1,5 +1,5 @@
-import { bool, func } from 'prop-types'
-import binaryStyles from '../../styles/components/tutorial/cli'
+import { bool, func } from 'prop-types';
+import binaryStyles from '../../styles/components/tutorial/cli';
 
 const Binary = props => (
   <div className="cli-wrapper">
@@ -21,11 +21,11 @@ const Binary = props => (
     </p>
     <style jsx>{binaryStyles}</style>
   </div>
-)
+);
 
 Binary.propTypes = {
   checked: bool,
   onCheckboxChange: func
-}
+};
 
-export default Binary
+export default Binary;

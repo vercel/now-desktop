@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   article {
@@ -111,4 +111,4 @@ export default css`
       opacity: 0.2;
     }
   }
-`
+`;

@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   aside {
@@ -97,4 +97,4 @@ export default css`
     opacity: 1;
     cursor: default;
   }
-`
+`;

@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   .login input {
@@ -109,4 +109,4 @@ export default css`
       transform: translate3d(10px, 0, 0);
     }
   }
-`
+`;

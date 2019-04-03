@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   aside {
@@ -27,4 +27,4 @@ export default css`
     color: #999;
     font-size: 13px;
   }
-`
+`;

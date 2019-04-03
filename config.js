@@ -1,16 +1,16 @@
-import { timeout } from 'promise-timeout'
+import { timeout } from 'promise-timeout';
 
 export default timeout(
   new Promise((resolve, reject) => {
     window.ipc.on('config-reply', (event, config) => {
       if (config instanceof Error) {
-        reject(config)
+        reject(config);
       } else {
-        resolve(config)
+        resolve(config);
       }
-    })
+    });
 
-    window.ipc.send('config-request')
+    window.ipc.send('config-request');
   }),
   1000
-)
+);

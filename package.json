@@ -4,7 +4,7 @@
   "description": "Create deployments right from the tray menu",
   "version": "4.0.17-canary.3",
   "author": {
-    "name": "Zeit, Inc.",
+    "name": "ZEIT, Inc.",
     "email": "team@zeit.co"
   },
   "repository": "zeit/now-desktop",
@@ -46,7 +46,7 @@
   "lint-staged": {
     "*.js": [
       "yarn test-lint",
-      "prettier --single-quote --no-semi --write --no-editorconfig",
+      "prettier --single-quote --write --no-editorconfig",
       "git add"
     ]
   },

@@ -1,10 +1,10 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class Alias extends Message {
   render() {
-    const { event } = this.props
-    const { ruleCount } = event.payload
+    const { event } = this.props;
+    const { ruleCount } = event.payload;
 
     // NOTE: no `ruleCount` on old logs
     if ((ruleCount !== null && ruleCount > 0) || !event.payload.deploymentUrl) {
@@ -17,7 +17,7 @@ export default class Alias extends Message {
             : ''}{' '}
           for <b>{event.payload.alias}</b>
         </p>
-      )
+      );
     }
 
     return (
@@ -26,6 +26,6 @@ export default class Alias extends Message {
         aliased <b>{event.payload.deploymentUrl}</b> to{' '}
         <b>{event.payload.alias}</b>
       </p>
-    )
+    );
   }
 }

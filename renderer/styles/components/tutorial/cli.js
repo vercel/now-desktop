@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   p {
@@ -88,4 +88,4 @@ export default css`
     color: #999999;
     font-size: 12px;
   }
-`
+`;

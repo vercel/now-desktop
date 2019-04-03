@@ -1,11 +1,11 @@
-import { Component } from 'react'
-import introStyles from '../../styles/components/tutorial/intro'
-import Button from './button'
+import { Component } from 'react';
+import introStyles from '../../styles/components/tutorial/intro';
+import Button from './button';
 
 class End extends Component {
   showApp = event => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   render() {
     return (
@@ -24,8 +24,8 @@ class End extends Component {
         </Button>
         <style jsx>{introStyles}</style>
       </article>
-    )
+    );
   }
 }
 
-export default End
+export default End;

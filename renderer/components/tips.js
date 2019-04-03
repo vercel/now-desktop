@@ -1,11 +1,11 @@
-import { Component } from 'react'
-import { bool } from 'prop-types'
-import styles from '../styles/components/tips'
-import Bulb from '../vectors/bulb'
-import Clear from '../vectors/clear'
-import { getConfig } from '../utils/ipc'
+import { Component } from 'react';
+import { bool } from 'prop-types';
+import styles from '../styles/components/tips';
+import Bulb from '../vectors/bulb';
+import Clear from '../vectors/clear';
+import { getConfig } from '../utils/ipc';
 
-const tips = []
+const tips = [];
 
 if (process.platform === 'darwin') {
   tips.push({
@@ -26,34 +26,34 @@ if (process.platform === 'darwin') {
         `}</style>
       </span>
     )
-  })
+  });
 }
 
 class Tips extends Component {
   state = {
     tip: null
-  }
+  };
 
   async componentDidMount() {
-    let shownTips = {}
+    let shownTips = {};
 
     try {
-      const config = await getConfig()
-      shownTips = (config.desktop && config.desktop.shownTips) || {}
+      const config = await getConfig();
+      shownTips = (config.desktop && config.desktop.shownTips) || {};
     } catch (err) {
       // Nothing to do here, as there is a default
     }
 
     this.setState({
       tip: tips.find(({ id }) => !shownTips[id])
-    })
+    });
   }
 
   closeTip = async () => {
     this.setState({
       tip: null
-    })
-  }
+    });
+  };
 
   render() {
     return (
@@ -77,12 +77,12 @@ class Tips extends Component {
 
         <style jsx>{styles}</style>
       </div>
-    )
+    );
   }
 }
 
 Tips.propTypes = {
   darkBg: bool
-}
+};
 
-export default Tips
+export default Tips;

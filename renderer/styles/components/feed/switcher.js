@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const listStyle = css`
   ul {
@@ -11,7 +11,7 @@ export const listStyle = css`
     align-items: center;
     position: relative;
   }
-`
+`;
 
 /*
   Do not user hidden overflow here, otherwise
@@ -48,7 +48,7 @@ export const itemStyle = css`
     cursor: default;
     filter: grayscale(0);
   }
-`
+`;
 
 export const helperStyle = css`
   .switcher-helper {
@@ -78,7 +78,7 @@ export const helperStyle = css`
       transform: scale(1.15);
     }
   }
-`
+`;
 
 export const wrapStyle = css`
   aside {
@@ -207,4 +207,4 @@ export const wrapStyle = css`
   .update-failed + aside {
     border-top: 0;
   }
-`
+`;

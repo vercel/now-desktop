@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   aside {
@@ -211,4 +211,4 @@ export default css`
   .filter-visible .filter {
     display: flex;
   }
-`
+`;

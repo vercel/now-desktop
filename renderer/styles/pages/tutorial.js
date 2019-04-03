@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const sliderStyle = css`
   body {
@@ -188,7 +188,7 @@ export const sliderStyle = css`
   .slick-dots li.slick-active button {
     background: #000;
   }
-`
+`;
 
 export const wrapStyle = css`
   main {
@@ -197,7 +197,7 @@ export const wrapStyle = css`
     height: 100vh;
     width: 100vw;
   }
-`
+`;
 
 export const controlStyle = css`
   .window-controls {
@@ -224,4 +224,4 @@ export const controlStyle = css`
   .window-controls span:hover {
     opacity: 1;
   }
-`
+`;

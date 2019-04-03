@@ -1,5 +1,5 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class SignUp extends Message {
   render() {
@@ -7,6 +7,6 @@ export default class SignUp extends Message {
       <p>
         Welcome to <b>Now</b>
       </p>
-    )
+    );
   }
 }

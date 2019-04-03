@@ -1,25 +1,25 @@
-import { Component } from 'react'
-import { func, object, bool } from 'prop-types'
-import isEqual from 'react-fast-compare'
-import setRef from 'react-refs'
+import { Component } from 'react';
+import { func, object, bool } from 'prop-types';
+import isEqual from 'react-fast-compare';
+import setRef from 'react-refs';
 import {
   SortableContainer,
   SortableElement,
   arrayMove
-} from 'react-sortable-hoc'
-import makeUnique from 'make-unique'
+} from 'react-sortable-hoc';
+import makeUnique from 'make-unique';
 import {
   wrapStyle,
   listStyle,
   itemStyle,
   helperStyle
-} from '../../styles/components/feed/switcher'
-import loadData from '../../utils/data/load'
-import { API_TEAMS } from '../../utils/data/endpoints'
-import Clear from '../../vectors/clear'
-import { getConfig, saveConfig } from '../../utils/ipc'
-import Avatar from './avatar'
-import CreateTeam from './create-team'
+} from '../../styles/components/feed/switcher';
+import loadData from '../../utils/data/load';
+import { API_TEAMS } from '../../utils/data/endpoints';
+import Clear from '../../vectors/clear';
+import { getConfig, saveConfig } from '../../utils/ipc';
+import Avatar from './avatar';
+import CreateTeam from './create-team';
 
 class Switcher extends Component {
   state = {
@@ -29,66 +29,66 @@ class Switcher extends Component {
     initialized: false,
     syncInterval: '5s',
     queue: []
-  }
+  };
 
-  setReference = setRef.bind(this)
+  setReference = setRef.bind(this);
 
   // Don't update state when dragging teams
-  moving = false
+  moving = false;
 
   // Ensure that config doesn't get checked when the
   // file is updated from this component
-  savingConfig = false
+  savingConfig = false;
 
   showWindow = () => {
     if (this.timer && this.state.syncInterval !== '5s') {
-      clearInterval(this.timer)
+      clearInterval(this.timer);
 
       // Refresh the teams and events when the window gets
       // shown, so that they're always up-to-date
-      this.loadTeams()
+      this.loadTeams();
 
       // Restart the timer so we keep everything in sync every 5s
-      this.listTimer()
-      this.setState({ syncInterval: '5s' })
+      this.listTimer();
+      this.setState({ syncInterval: '5s' });
     }
 
-    document.addEventListener('keydown', this.keyDown.bind(this))
-  }
+    document.addEventListener('keydown', this.keyDown.bind(this));
+  };
 
   componentDidMount() {
-    this.loadTeams()
+    this.loadTeams();
   }
 
   hideWindow = () => {
     if (this.timer && this.state.syncInterval !== '5m') {
-      clearInterval(this.timer)
+      clearInterval(this.timer);
 
       // Restart the timer so we keep everything in sync every 5m
-      this.listTimer()
-      this.setState({ syncInterval: '5m' })
+      this.listTimer();
+      this.setState({ syncInterval: '5m' });
     }
 
-    document.removeEventListener('keydown', this.keyDown.bind(this))
-  }
+    document.removeEventListener('keydown', this.keyDown.bind(this));
+  };
 
   componentWillReceiveProps({ currentUser, activeScope }) {
     if (activeScope) {
-      this.changeScope(activeScope, true, true, true)
-      return
+      this.changeScope(activeScope, true, true, true);
+      return;
     }
 
     if (!currentUser) {
-      return
+      return;
     }
 
     if (this.state.scope !== null) {
-      return
+      return;
     }
 
     this.setState({
       scope: currentUser.uid
-    })
+    });
   }
 
   componentWillMount() {
@@ -97,201 +97,201 @@ class Switcher extends Component {
 
   listTimer = () => {
     // Test
-  }
+  };
 
   async applyTeamOrder(list, order) {
-    const newList = []
+    const newList = [];
 
     if (!order) {
-      return list
+      return list;
     }
 
     for (const position of order) {
-      const index = order.indexOf(position)
+      const index = order.indexOf(position);
 
       newList[index] = list.find(item => {
-        const name = item.slug || item.name
-        return name === position
-      })
+        const name = item.slug || item.name;
+        return name === position;
+      });
     }
 
     // Apply the new data at the end, but keep order
-    return this.merge(newList, list)
+    return this.merge(newList, list);
   }
 
   merge(first, second) {
-    const merged = first.concat(second)
-    return makeUnique(merged, (a, b) => a.id === b.id)
+    const merged = first.concat(second);
+    return makeUnique(merged, (a, b) => a.id === b.id);
   }
 
   async getTeamOrder() {
-    let config
+    let config;
 
     try {
-      config = await getConfig()
+      config = await getConfig();
     } catch (err) {}
 
     if (!config || !config.desktop || !config.desktop.teamOrder) {
-      return false
+      return false;
     }
 
-    const order = config.desktop.teamOrder
+    const order = config.desktop.teamOrder;
 
     if (!Array.isArray(order) || order.length === 0) {
-      return false
+      return false;
     }
 
-    return order
+    return order;
   }
 
   async haveUpdated(data) {
-    const newData = JSON.parse(JSON.stringify(data))
-    let currentData = JSON.parse(JSON.stringify(this.state.teams))
+    const newData = JSON.parse(JSON.stringify(data));
+    let currentData = JSON.parse(JSON.stringify(this.state.teams));
 
     if (currentData.length > 0) {
       // Remove teams that the user has left
       currentData = currentData.filter(team => {
-        return Boolean(newData.find(item => item.id === team.id))
-      })
+        return Boolean(newData.find(item => item.id === team.id));
+      });
     }
 
-    const ordered = this.merge(currentData, newData)
-    const copy = JSON.parse(JSON.stringify(ordered))
-    const order = await this.getTeamOrder()
+    const ordered = this.merge(currentData, newData);
+    const copy = JSON.parse(JSON.stringify(ordered));
+    const order = await this.getTeamOrder();
 
     if (!order) {
-      return ordered
+      return ordered;
     }
 
     for (const item of order) {
       const isPart = newData.find(team => {
-        return team.name === item || team.slug === item
-      })
+        return team.name === item || team.slug === item;
+      });
 
       // If the saved team order contains a team that
       // the user is not a part of, we can ignore it.
       if (!isPart) {
-        return ordered
+        return ordered;
       }
     }
 
     if (isEqual(ordered, currentData)) {
-      return false
+      return false;
     }
 
     // Then order the teams as saved in the config
-    return this.applyTeamOrder(copy, order)
+    return this.applyTeamOrder(copy, order);
   }
 
   async loadTeams(firstLoad) {
-    const data = await loadData(API_TEAMS)
+    const data = await loadData(API_TEAMS);
 
     if (!data || !data.teams || !this.props.currentUser) {
-      return
+      return;
     }
 
-    const teams = data.teams
-    const user = this.props.currentUser
+    const teams = data.teams;
+    const user = this.props.currentUser;
 
     teams.unshift({
       id: user.uid,
       name: user.username
-    })
+    });
 
-    const updated = await this.haveUpdated(teams)
+    const updated = await this.haveUpdated(teams);
 
     const scopeExists = updated.find(team => {
-      return this.state.scope === team.id
-    })
+      return this.state.scope === team.id;
+    });
 
     if (!scopeExists) {
-      this.resetScope()
+      this.resetScope();
     }
 
     if (updated) {
-      this.setState({ teams: updated })
+      this.setState({ teams: updated });
     }
 
     if (this.props.setTeams) {
       // When passing `null`, the feed will only
       // update the events, not the teams
-      await this.props.setTeams(updated || null, firstLoad)
+      await this.props.setTeams(updated || null, firstLoad);
     }
   }
 
   resetScope() {
-    const currentUser = this.props.currentUser
+    const currentUser = this.props.currentUser;
 
     if (!currentUser) {
-      return
+      return;
     }
 
     this.changeScope({
       id: currentUser.uid
-    })
+    });
   }
 
   keyDown(event) {
-    const activeItem = document.activeElement
+    const activeItem = document.activeElement;
 
     if (activeItem && activeItem.tagName === 'INPUT') {
-      return
+      return;
     }
 
-    const code = event.code
-    const number = code.includes('Digit') ? code.split('Digit')[1] : false
+    const code = event.code;
+    const number = code.includes('Digit') ? code.split('Digit')[1] : false;
 
     if (number && number <= 9 && this.state.teams.length > 1) {
       if (this.state.teams[number - 1]) {
-        event.preventDefault()
+        event.preventDefault();
 
-        const relatedTeam = this.state.teams[number - 1]
-        this.changeScope(relatedTeam)
+        const relatedTeam = this.state.teams[number - 1];
+        this.changeScope(relatedTeam);
       }
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { teams, scope } = this.state
+    const { teams, scope } = this.state;
 
-    const teamsChanged = !isEqual(teams, prevState.teams)
-    const scopeChanged = !isEqual(scope, prevState.scope)
+    const teamsChanged = !isEqual(teams, prevState.teams);
+    const scopeChanged = !isEqual(scope, prevState.scope);
 
     if (teamsChanged || scopeChanged) {
       // Update touch bar here
     }
 
     while (this.state.queue.length > 0) {
-      const queue = this.state.queue
+      const queue = this.state.queue;
 
-      queue.shift()()
+      queue.shift()();
 
-      this.setState({ queue })
+      this.setState({ queue });
     }
 
     if (this.state.initialized) {
-      return
+      return;
     }
 
-    const teamsCount = teams.length
+    const teamsCount = teams.length;
 
     if (teamsCount === 0) {
-      return
+      return;
     }
 
-    const when = 100 + 100 * teamsCount + 600
+    const when = 100 + 100 * teamsCount + 600;
 
     setTimeout(() => {
       // Ensure that the animations for the teams
       // fading in works after recovering from offline mode
       if (!this.props.online) {
-        return
+        return;
       }
 
       this.setState({
         initialized: true
-      })
-    }, when)
+      });
+    }, when);
   }
 
   static getDerivedStateFromProps(props) {
@@ -300,22 +300,22 @@ class Switcher extends Component {
     if (!props.online) {
       return {
         initialized: false
-      }
+      };
     }
 
-    return null
+    return null;
   }
 
   async updateConfig(team, updateMessage) {
-    const currentUser = this.props.currentUser
+    const currentUser = this.props.currentUser;
 
     if (!currentUser) {
-      return
+      return;
     }
 
     const info = {
       currentTeam: null
-    }
+    };
 
     // Only add fresh data to config if new scope is team, not user
     // Otherwise just clear it
@@ -325,16 +325,16 @@ class Switcher extends Component {
         id: team.id,
         slug: team.slug,
         name: team.name
-      }
+      };
     }
 
     // And then update the config file
-    await this.saveConfig(info)
+    await this.saveConfig(info);
 
     // Show a notification that the context was updated
     // in the title bar
     if (updateMessage && this.props.titleRef) {
-      this.props.titleRef.scopeUpdated()
+      this.props.titleRef.scopeUpdated();
     }
   }
 
@@ -342,31 +342,31 @@ class Switcher extends Component {
     // If the clicked item in the team switcher is
     // already the active one, don't do anything
     if (this.state.scope === team.id) {
-      return
+      return;
     }
 
     if (!noFeed && this.props.setFeedScope) {
       // Load different messages into the feed
-      this.props.setFeedScope(team.id)
+      this.props.setFeedScope(team.id);
     }
 
     // Make the team/user icon look active by
     // syncing the scope with the feed
-    this.setState({ scope: team.id })
+    this.setState({ scope: team.id });
 
     // Save the new `currentTeam` to the config
     if (saveToConfig) {
       const queueFunction = (fn, context, params) => {
         return () => {
-          fn.apply(context, params)
-        }
-      }
+          fn.apply(context, params);
+        };
+      };
 
       this.setState({
         queue: this.state.queue.concat([
           queueFunction(this.updateConfig, this, [team, byHand])
         ])
-      })
+      });
     }
   }
 
@@ -383,10 +383,10 @@ class Switcher extends Component {
       this.moving ||
       (isEqual(this.state, nextState) && isEqual(this.props, nextProps))
     ) {
-      return false
+      return false;
     }
 
-    return true
+    return true;
   }
 
   openMenu = () => {
@@ -395,26 +395,26 @@ class Switcher extends Component {
     // bubbling up from those, but we need to
     // use `this.menu` to make sure the menu always gets
     // bounds to the parent
-    const { bottom, left, height, width } = this.menu.getBoundingClientRect()
+    const { bottom, left, height, width } = this.menu.getBoundingClientRect();
 
     window.ipc.send('open-menu-request', {
       x: left,
       y: bottom,
       height,
       width
-    })
-  }
+    });
+  };
 
   saveTeamOrder(teams) {
-    const teamOrder = []
+    const teamOrder = [];
 
     for (const team of teams) {
-      teamOrder.push(team.slug || team.name)
+      teamOrder.push(team.slug || team.name);
     }
 
     this.saveConfig({
       desktop: { teamOrder }
-    })
+    });
   }
 
   async saveConfig(newConfig) {
@@ -422,74 +422,74 @@ class Switcher extends Component {
     // event triggered by changes made to the config
     // because the changes were triggered manually
     // inside this app
-    this.savingConfig = true
+    this.savingConfig = true;
 
     // Then update the config file
-    await saveConfig(newConfig, 'config')
+    await saveConfig(newConfig, 'config');
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    document.body.classList.toggle('is-moving')
+    document.body.classList.toggle('is-moving');
 
     // Allow the state to update again
-    this.moving = false
+    this.moving = false;
 
     // Don't update if it was dropped at the same position
     if (oldIndex === newIndex) {
-      return
+      return;
     }
 
-    const teams = arrayMove(this.state.teams, oldIndex, newIndex)
-    this.saveTeamOrder(teams)
+    const teams = arrayMove(this.state.teams, oldIndex, newIndex);
+    this.saveTeamOrder(teams);
 
     // Ensure that we're not dealing with the same
     // objects or array ever again
     this.setState({
       teams: JSON.parse(JSON.stringify(teams))
-    })
-  }
+    });
+  };
 
   onSortStart = () => {
-    document.body.classList.toggle('is-moving')
+    document.body.classList.toggle('is-moving');
 
     // Prevent the state from being updated
-    this.moving = true
-  }
+    this.moving = true;
+  };
 
   scrollToEnd = event => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!this.list) {
-      return
+      return;
     }
 
-    const list = this.list
-    list.scrollLeft = list.offsetWidth
-  }
+    const list = this.list;
+    list.scrollLeft = list.offsetWidth;
+  };
 
   renderItem() {
     // eslint-disable-next-line new-cap
     return SortableElement(({ team }) => {
-      const isActive = this.state.scope === team.id
-      const isUser = team.id && !team.id.includes('team')
-      const index = this.state.teams.indexOf(team)
-      const shouldScale = !this.state.initialized
-      const darkBg = this.props.darkBg
+      const isActive = this.state.scope === team.id;
+      const isUser = team.id && !team.id.includes('team');
+      const index = this.state.teams.indexOf(team);
+      const shouldScale = !this.state.initialized;
+      const darkBg = this.props.darkBg;
 
-      const classes = []
+      const classes = [];
 
       if (isActive) {
-        classes.push('active')
+        classes.push('active');
       }
 
       if (darkBg) {
-        classes.push('dark')
+        classes.push('dark');
       }
 
       const clicked = event => {
-        event.preventDefault()
-        this.changeScope(team, true, true)
-      }
+        event.preventDefault();
+        this.changeScope(team, true, true);
+      };
 
       return (
         <li onClick={clicked} className={classes.join(' ')} key={team.id}>
@@ -503,20 +503,20 @@ class Switcher extends Component {
 
           <style jsx>{itemStyle}</style>
         </li>
-      )
-    })
+      );
+    });
   }
 
   renderTeams() {
-    const Item = this.renderItem()
+    const Item = this.renderItem();
 
     return this.state.teams.map((team, index) => (
       <Item key={team.id} index={index} team={team} />
-    ))
+    ));
   }
 
   renderList() {
-    const teams = this.renderTeams()
+    const teams = this.renderTeams();
 
     // eslint-disable-next-line new-cap
     return SortableContainer(() => (
@@ -524,30 +524,30 @@ class Switcher extends Component {
         {teams}
         <style jsx>{listStyle}</style>
       </ul>
-    ))
+    ));
   }
 
   allowDrag = event => {
     if (process.platform === 'win32') {
-      return !event.ctrlKey
+      return !event.ctrlKey;
     }
 
-    return !event.metaKey
-  }
+    return !event.metaKey;
+  };
 
-  retryUpdate = () => {}
+  retryUpdate = () => {};
 
   closeUpdateMessage = () => {
     this.setState({
       updateFailed: false
-    })
-  }
+    });
+  };
 
   render() {
-    const List = this.renderList()
-    const { updateFailed, teams } = this.state
-    const delay = teams.length
-    const { darkBg, online } = this.props
+    const List = this.renderList();
+    const { updateFailed, teams } = this.state;
+    const delay = teams.length;
+    const { darkBg, online } = this.props;
 
     return (
       <div>
@@ -602,7 +602,7 @@ class Switcher extends Component {
           {helperStyle}
         </style>
       </div>
-    )
+    );
   }
 }
 
@@ -614,6 +614,6 @@ Switcher.propTypes = {
   activeScope: object,
   darkBg: bool,
   online: bool
-}
+};
 
-export default Switcher
+export default Switcher;

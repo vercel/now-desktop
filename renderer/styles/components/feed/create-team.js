@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   a {
@@ -65,4 +65,4 @@ export default css`
     width: 9px;
     height: 1px;
   }
-`
+`;

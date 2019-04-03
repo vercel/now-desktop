@@ -1,31 +1,33 @@
-const { platform } = require('os')
-const path = require('path')
-const electron = require('electron')
-const isDev = require('electron-is-dev')
-const isEqual = require('react-fast-compare')
-const Positioner = require('electron-positioner')
+const { platform } = require('os');
+const path = require('path');
+const electron = require('electron');
+const isDev = require('electron-is-dev');
+const isEqual = require('react-fast-compare');
+const Positioner = require('electron-positioner');
 
 // Check if Windows or Mac
-const isWinOS = process.platform === 'win32'
-const isMacOS = process.platform === 'darwin'
+const isWinOS = process.platform === 'win32';
+const isMacOS = process.platform === 'darwin';
 
-let darkMode = false
-let trayBoundsCache = null
-let displayAreaCache = null
+let darkMode = false;
+let trayBoundsCache = null;
+let displayAreaCache = null;
 
 if (isMacOS) {
-  darkMode = electron.systemPreferences.isDarkMode()
+  darkMode = electron.systemPreferences.isDarkMode();
 } else if (isWinOS) {
-  darkMode = electron.systemPreferences.isInvertedColorScheme()
+  darkMode = electron.systemPreferences.isInvertedColorScheme();
 }
 
 const loadPage = (win, page) => {
   if (isDev) {
-    win.loadURL(`http://localhost:8000/${page}`)
+    win.loadURL(`http://localhost:8000/${page}`);
   } else {
-    win.loadFile(`${electron.app.getAppPath()}/renderer/out/${page}/index.html`)
+    win.loadFile(
+      `${electron.app.getAppPath()}/renderer/out/${page}/index.html`
+    );
   }
-}
+};
 
 const states = {
   hide: false,
@@ -33,37 +35,37 @@ const states = {
   minimize: false,
   restore: true,
   focus: true
-}
+};
 
 const attachTrayState = (win, tray) => {
   if (!tray) {
-    return
+    return;
   }
 
   for (const state of Object.keys(states)) {
-    const highlighted = states[state]
+    const highlighted = states[state];
 
     win.on(state, () => {
       // Highlight the tray or don't
-      tray.setHighlightMode(highlighted ? 'always' : 'selection')
-    })
+      tray.setHighlightMode(highlighted ? 'always' : 'selection');
+    });
   }
 
   electron.app.on('before-quit', () => {
-    win.destroy()
-  })
+    win.destroy();
+  });
 
   win.on('close', event => {
-    event.preventDefault()
-    win.hide()
-  })
-}
+    event.preventDefault();
+    win.hide();
+  });
+};
 
 exports.getWindow = tray => {
-  let windowHeight = 380
+  let windowHeight = 380;
 
   if (isWinOS) {
-    windowHeight -= 12
+    windowHeight -= 12;
   }
 
   const win = new electron.BrowserWindow({
@@ -85,61 +87,61 @@ exports.getWindow = tray => {
       devTools: true,
       preload: path.join(__dirname, './static/preload.js')
     }
-  })
+  });
 
-  win.setVisibleOnAllWorkspaces(true)
+  win.setVisibleOnAllWorkspaces(true);
 
-  exports.positionWindow(tray, win)
+  exports.positionWindow(tray, win);
 
-  loadPage(win, 'feed')
-  attachTrayState(win, tray)
+  loadPage(win, 'feed');
+  attachTrayState(win, tray);
 
   // Hide window if it's not focused anymore
   // This can only happen if the dev tools are not open
   // Otherwise, we won't be able to debug the renderer
   win.on('blur', () => {
     if (win.webContents.isDevToolsOpened()) {
-      return
+      return;
     }
 
     if (!isWinOS) {
-      win.close()
-      return
+      win.close();
+      return;
     }
 
-    const cursor = electron.screen.getCursorScreenPoint()
-    const trayBounds = global.tray.getBounds()
+    const cursor = electron.screen.getCursorScreenPoint();
+    const trayBounds = global.tray.getBounds();
 
-    const xAfter = cursor.x <= trayBounds.x + trayBounds.width
-    const x = cursor.x >= trayBounds.x && xAfter
-    const yAfter = trayBounds.y + trayBounds.height
-    const y = cursor.y >= trayBounds.y && cursor.y <= yAfter
+    const xAfter = cursor.x <= trayBounds.x + trayBounds.width;
+    const x = cursor.x >= trayBounds.x && xAfter;
+    const yAfter = trayBounds.y + trayBounds.height;
+    const y = cursor.y >= trayBounds.y && cursor.y <= yAfter;
 
     // Don't close the window on click on the tray icon
     // Because that will already toggle the window
     if (x && y) {
-      return
+      return;
     }
 
-    win.close()
-  })
+    win.close();
+  });
 
-  return win
-}
+  return win;
+};
 
 exports.toggleWindow = (event, window, tray) => {
-  const isVisible = window.isVisible()
-  const isWin = process.platform === 'win32'
+  const isVisible = window.isVisible();
+  const isWin = process.platform === 'win32';
 
   if (event) {
     // Don't open the menu
-    event.preventDefault()
+    event.preventDefault();
   }
 
   // If window open and not focused, bring it to focus
   if (!isWin && isVisible && !window.isFocused()) {
-    window.focus()
-    return
+    window.focus();
+    return;
   }
 
   // Show or hide onboarding window
@@ -148,21 +150,21 @@ exports.toggleWindow = (event, window, tray) => {
   // listening for in a different// If the "blur" event was triggered when
   // clicking on the tray icon, don't do anything place
   if (isVisible) {
-    window.close()
+    window.close();
   } else {
     // Position main window correctly under the tray icon
-    exports.positionWindow(tray, window)
-    window.show()
+    exports.positionWindow(tray, window);
+    window.show();
   }
-}
+};
 
 exports.positionWindow = (tray, window) => {
-  const { screen } = electron
-  const screenPoint = screen.getCursorScreenPoint()
-  const display = screen.getDisplayNearestPoint(screenPoint)
-  const displayArea = display.workArea
-  const trayBounds = tray.getBounds()
-  const notMacOS = platform() !== 'darwin'
+  const { screen } = electron;
+  const screenPoint = screen.getCursorScreenPoint();
+  const display = screen.getDisplayNearestPoint(screenPoint);
+  const displayArea = display.workArea;
+  const trayBounds = tray.getBounds();
+  const notMacOS = platform() !== 'darwin';
 
   if (trayBoundsCache && displayAreaCache) {
     // Compare only the object props
@@ -170,17 +172,17 @@ exports.positionWindow = (tray, window) => {
       isEqual(trayBoundsCache, trayBounds) &&
       isEqual(displayAreaCache, displayArea)
     ) {
-      return
+      return;
     }
   }
 
-  trayBoundsCache = trayBounds
-  displayAreaCache = displayArea
+  trayBoundsCache = trayBounds;
+  displayAreaCache = displayArea;
 
-  const positioner = new Positioner(window)
-  const windowPosition = notMacOS ? 'trayBottomCenter' : 'trayCenter'
-  const { x, y } = positioner.calculate(windowPosition, trayBoundsCache)
-  const vertical = notMacOS ? y : y + 7
+  const positioner = new Positioner(window);
+  const windowPosition = notMacOS ? 'trayBottomCenter' : 'trayCenter';
+  const { x, y } = positioner.calculate(windowPosition, trayBoundsCache);
+  const vertical = notMacOS ? y : y + 7;
 
-  window.setPosition(x, vertical)
-}
+  window.setPosition(x, vertical);
+};

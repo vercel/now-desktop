@@ -1,37 +1,37 @@
-import { PureComponent } from 'react'
-import { func, bool } from 'prop-types'
-import styles from '../../styles/components/feed/dropzone'
+import { PureComponent } from 'react';
+import { func, bool } from 'prop-types';
+import styles from '../../styles/components/feed/dropzone';
 
 class DropZone extends PureComponent {
   hideDropZone = () => {
     if (this.props.hide) {
-      this.props.hide()
+      this.props.hide();
     }
-  }
+  };
 
   preventDefault(event) {
     // Make the cursor look good
-    event.dataTransfer.effectAllowed = 'copyMove'
-    event.dataTransfer.dropEffect = 'copy'
+    event.dataTransfer.effectAllowed = 'copyMove';
+    event.dataTransfer.dropEffect = 'copy';
 
-    event.preventDefault()
+    event.preventDefault();
   }
 
   droppedFile = event => {
-    this.hideDropZone()
+    this.hideDropZone();
 
     if (!event.dataTransfer || !event.dataTransfer.files) {
-      return
+      return;
     }
 
-    const { files } = event.dataTransfer
-    const list = [...files].map(file => file.path)
+    const { files } = event.dataTransfer;
+    const list = [...files].map(file => file.path);
 
-    console.log(list)
+    console.log(list);
 
     // And prevent the window from loading the file inside it
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   render() {
     return (
@@ -51,13 +51,13 @@ class DropZone extends PureComponent {
 
         <style jsx>{styles}</style>
       </aside>
-    )
+    );
   }
 }
 
 DropZone.propTypes = {
   darkBg: bool,
   hide: func
-}
+};
 
-export default DropZone
+export default DropZone;

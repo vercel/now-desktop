@@ -1,9 +1,9 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class SecretRename extends Message {
   render() {
-    const { event } = this.props
+    const { event } = this.props;
 
     return (
       <p>
@@ -11,6 +11,6 @@ export default class SecretRename extends Message {
         renamed secret <b>{event.payload.oldName}</b> to{' '}
         <b>{event.payload.newName}</b>
       </p>
-    )
+    );
   }
 }

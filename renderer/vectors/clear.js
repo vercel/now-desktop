@@ -1,6 +1,6 @@
 // Packages
-import React from 'react'
-import { string, func } from 'prop-types'
+import React from 'react';
+import { string, func } from 'prop-types';
 
 const Clear = ({ color, onClick }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" onClick={onClick}>
@@ -16,11 +16,11 @@ const Clear = ({ color, onClick }) => (
       </g>
     </g>
   </svg>
-)
+);
 
 Clear.propTypes = {
   color: string,
   onClick: func
-}
+};
 
-export default Clear
+export default Clear;

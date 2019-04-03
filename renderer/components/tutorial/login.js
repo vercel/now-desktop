@@ -1,11 +1,11 @@
-import { stringify as stringifyQuery } from 'query-string'
-import AutoSizeInput from 'react-input-autosize'
-import { PureComponent } from 'react'
-import sleep from 'sleep-promise'
-import { func } from 'prop-types'
-import error from '../../utils/error'
-import emailProviders from '../../utils/email-providers'
-import styles from '../../styles/components/tutorial/login'
+import { stringify as stringifyQuery } from 'query-string';
+import AutoSizeInput from 'react-input-autosize';
+import { PureComponent } from 'react';
+import sleep from 'sleep-promise';
+import { func } from 'prop-types';
+import error from '../../utils/error';
+import emailProviders from '../../utils/email-providers';
+import styles from '../../styles/components/tutorial/login';
 
 const defaultState = {
   value: '',
@@ -13,47 +13,47 @@ const defaultState = {
   classes: [],
   suggestion: '',
   waiting: false
-}
+};
 
 class LoginForm extends PureComponent {
-  state = defaultState
-  initialState = Object.assign({}, defaultState)
+  state = defaultState;
+  initialState = Object.assign({}, defaultState);
 
-  mounted = false
+  mounted = false;
 
   async verify(url, email, token) {
     const query = {
       email,
       token
-    }
+    };
 
-    const apiURL = url + '/now/registration/verify?' + stringifyQuery(query)
+    const apiURL = url + '/now/registration/verify?' + stringifyQuery(query);
 
     const res = await fetch(apiURL, {
       headers: {
         'user-agent': 'Now Desktop'
       }
-    })
+    });
 
-    const body = await res.json()
-    const badRequest = res.status === 400
+    const body = await res.json();
+    const badRequest = res.status === 400;
 
     if (badRequest && body.error && body.error.code === 'invalid_email') {
-      const error = new Error(body.error.message)
-      error.code = 'invalid_email'
-      throw error
+      const error = new Error(body.error.message);
+      error.code = 'invalid_email';
+      throw error;
     }
 
-    return body.token
+    return body.token;
   }
 
   async getVerificationData(url, email) {
     const body = JSON.stringify({
       email,
       tokenName: `Now Desktop`
-    })
+    });
 
-    const apiURL = `${url}/now/registration`
+    const apiURL = `${url}/now/registration`;
 
     const res = await fetch(apiURL, {
       method: 'POST',
@@ -63,61 +63,61 @@ class LoginForm extends PureComponent {
         'user-agent': 'Now Desktop'
       },
       body
-    })
+    });
 
     if (res.status !== 200) {
-      error('Verification error', res.json())
-      return
+      error('Verification error', res.json());
+      return;
     }
 
-    const content = await res.json()
+    const content = await res.json();
 
     return {
       token: content.token,
       securityCode: content.securityCode
-    }
+    };
   }
 
   handleChange = event => {
-    const value = event.target.value
+    const value = event.target.value;
 
     this.setState({
       value
-    })
+    });
 
-    this.prepareSuggestion(value)
-  }
+    this.prepareSuggestion(value);
+  };
 
   showWindow = () => {
     if (!this.loginInput) {
-      return
+      return;
     }
 
-    this.loginInput.focus()
-  }
+    this.loginInput.focus();
+  };
 
   componentDidMount() {
-    this.mounted = true
+    this.mounted = true;
 
     window.addEventListener('beforeunload', () => {
       // Show the window here
-    })
+    });
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
   }
 
   prepareSuggestion(value) {
     if (value === '') {
-      return
+      return;
     }
 
-    const domain = value.match(/@(.*)/)
+    const domain = value.match(/@(.*)/);
 
     if (domain && domain[1].length > 0) {
-      const match = domain[1]
-      let sug
+      const match = domain[1];
+      let sug;
 
       emailProviders.some(dm => {
         // Don't suggest if complete match
@@ -125,66 +125,66 @@ class LoginForm extends PureComponent {
           match.toLowerCase() === dm.substr(0, match.length) &&
           match !== dm
         ) {
-          sug = dm
-          return true
+          sug = dm;
+          return true;
         }
 
-        return false
-      })
+        return false;
+      });
 
       if (sug) {
-        const parts = value.trim().split('@')
-        const suffix = sug.substr(parts[1].length, sug.length)
+        const parts = value.trim().split('@');
+        const suffix = sug.substr(parts[1].length, sug.length);
 
         this.setState({
           suggestion: '<i>' + value + '</i>' + suffix
-        })
+        });
 
-        return
+        return;
       }
     }
 
     this.setState({
       suggestion: ''
-    })
+    });
   }
 
   async tryLogin(email) {
-    const onlineStatus = 'online'
+    const onlineStatus = 'online';
 
     if (onlineStatus === 'offline') {
-      error("You're offline!")
-      return
+      error("You're offline!");
+      return;
     }
 
     if (this.state.waiting) {
-      return
+      return;
     }
 
     this.setState({
       waiting: true
-    })
+    });
 
     this.props.setIntroState({
       sendingMail: true
-    })
+    });
 
     this.setState({
       classes: ['verifying']
-    })
+    });
 
-    const apiURL = 'https://api.zeit.co'
+    const apiURL = 'https://api.zeit.co';
     const { token, securityCode } = await this.getVerificationData(
       apiURL,
       email
-    )
+    );
 
     if (!token) {
       this.setState({
         waiting: false
-      })
+      });
 
-      return
+      return;
     }
 
     this.props.setIntroState({
@@ -193,57 +193,57 @@ class LoginForm extends PureComponent {
         email,
         code: securityCode
       }
-    })
+    });
 
-    let finalToken
+    let finalToken;
 
     do {
-      await sleep(2500)
+      await sleep(2500);
 
       try {
-        finalToken = await this.verify(apiURL, email, token)
+        finalToken = await this.verify(apiURL, email, token);
       } catch (err) {
         if (err.code === 'invalid_email') {
-          error(err.message, err)
+          error(err.message, err);
         } else {
-          error('Failed to verify login. Please retry later.', err)
+          error('Failed to verify login. Please retry later.', err);
         }
 
         this.props.setIntroState({
           classes: [],
           security: null
-        })
+        });
 
-        return
+        return;
       }
 
-      console.log('Waiting for token...')
-    } while (!finalToken)
+      console.log('Waiting for token...');
+    } while (!finalToken);
   }
 
   handleKey = async event => {
     this.setState({
       classes: []
-    })
+    });
 
-    const keyCode = event.keyCode
+    const keyCode = event.keyCode;
 
     // Don't allow using spaces in the input
     if (keyCode === 32) {
-      event.preventDefault()
-      return
+      event.preventDefault();
+      return;
     }
 
-    const isEnter = keyCode === 13
-    const initialValue = this.initialState.value
+    const isEnter = keyCode === 13;
+    const initialValue = this.initialState.value;
 
     if (initialValue === this.state.value && !isEnter) {
       this.setState({
         value: ''
-      })
+      });
     }
 
-    const suggestion = this.state.suggestion
+    const suggestion = this.state.suggestion;
 
     if (
       suggestion &&
@@ -255,53 +255,53 @@ class LoginForm extends PureComponent {
       this.setState({
         value: suggestion.replace(/(<([^>]+)>)/gi, ''),
         suggestion: ''
-      })
+      });
 
-      event.preventDefault()
-      return
+      event.preventDefault();
+      return;
     }
 
     if (!isEnter || this.state.value === '') {
-      return
+      return;
     }
 
-    const value = this.state.value
+    const value = this.state.value;
 
     if (!/^.+@.+\..+$/.test(value)) {
       this.setState({
         classes: ['error']
-      })
+      });
 
-      return
+      return;
     }
 
     // Don't trigger login if placeholder defined as value
     if (value === initialValue) {
-      return
+      return;
     }
 
     try {
-      await this.tryLogin(value.toLowerCase())
+      await this.tryLogin(value.toLowerCase());
     } catch (err) {
-      error('Not able to retrieve verification token', err)
+      error('Not able to retrieve verification token', err);
     }
-  }
+  };
 
   toggleFocus = () => {
     this.setState({
       focus: !this.state.focus
-    })
+    });
 
     // If input is empty, bring placeholder back
     if (this.state.focus && this.state.value === '') {
       this.setState({
         value: this.initialState.value
-      })
+      });
     }
-  }
+  };
 
   render() {
-    const classes = this.state.classes
+    const classes = this.state.classes;
 
     const inputProps = {
       type: 'email',
@@ -312,35 +312,35 @@ class LoginForm extends PureComponent {
       onFocus: this.toggleFocus,
       onBlur: this.toggleFocus,
       ref: item => {
-        window.loginInputElement = item
-        this.loginInput = item
+        window.loginInputElement = item;
+        this.loginInput = item;
       },
       onClick: event => event.stopPropagation()
-    }
+    };
 
     if (classes.indexOf('login') === -1) {
-      classes.push('login')
+      classes.push('login');
     }
 
-    const focusPosition = classes.indexOf('focus')
+    const focusPosition = classes.indexOf('focus');
 
     if (focusPosition > -1) {
-      classes.splice(focusPosition, 1)
+      classes.splice(focusPosition, 1);
     }
 
     if (this.state.focus) {
-      classes.push('focus')
+      classes.push('focus');
     }
 
     const autoCompleteProps = {
       ref: () => {
-        window.loginInput = this
+        window.loginInput = this;
       },
       onClick: () => this.loginInput.focus(),
       className: classes.join(' ')
-    }
+    };
 
-    const suggestionClass = this.state.focus ? '' : 'hidden'
+    const suggestionClass = this.state.focus ? '' : 'hidden';
 
     return (
       <aside {...autoCompleteProps}>
@@ -356,12 +356,12 @@ class LoginForm extends PureComponent {
           {styles}
         </style>
       </aside>
-    )
+    );
   }
 }
 
 LoginForm.propTypes = {
   setIntroState: func
-}
+};
 
-export default LoginForm
+export default LoginForm;

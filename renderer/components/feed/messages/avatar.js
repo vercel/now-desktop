@@ -1,5 +1,5 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class Avatar extends Message {
   render() {
@@ -8,6 +8,6 @@ export default class Avatar extends Message {
         {this.getDisplayName()}
         updated your avatar
       </p>
-    )
+    );
   }
 }

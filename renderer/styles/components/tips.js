@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   .tip {
@@ -43,4 +43,4 @@ export default css`
   .tip .icon.clickable:hover {
     opacity: 1;
   }
-`
+`;

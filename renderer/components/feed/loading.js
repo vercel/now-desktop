@@ -1,8 +1,8 @@
 // Packages
-import { bool } from 'prop-types'
+import { bool } from 'prop-types';
 
 // Styles
-import styles from '../../styles/components/feed/loading'
+import styles from '../../styles/components/feed/loading';
 
 const Loading = ({ offline, darkBg = false }) => (
   <aside className={darkBg ? 'dark' : ''}>
@@ -13,11 +13,11 @@ const Loading = ({ offline, darkBg = false }) => (
 
     <style jsx>{styles}</style>
   </aside>
-)
+);
 
 Loading.propTypes = {
   darkBg: bool,
   offline: bool
-}
+};
 
-export default Loading
+export default Loading;

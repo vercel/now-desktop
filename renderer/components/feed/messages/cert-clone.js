@@ -1,9 +1,9 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class CertClone extends Message {
   render() {
-    const { event } = this.props
+    const { event } = this.props;
 
     return (
       <p>
@@ -12,6 +12,6 @@ export default class CertClone extends Message {
         to
         <b>{event.payload.dst}</b>
       </p>
-    )
+    );
   }
 }

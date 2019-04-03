@@ -1,7 +1,7 @@
 export default (detail, trace) => {
   if (!trace) {
-    trace = null
+    trace = null;
   }
 
-  console.log(detail)
-}
+  console.log(detail);
+};

@@ -1,11 +1,11 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class DnsAdd extends Message {
   render() {
-    const { event } = this.props
-    const { value } = event.payload
-    const v = value.slice(0, 50)
+    const { event } = this.props;
+    const { value } = event.payload;
+    const v = value.slice(0, 50);
 
     return (
       <p>
@@ -17,6 +17,6 @@ export default class DnsAdd extends Message {
           {v + (v.length < value.length ? '…' : '')}
         </code>
       </p>
-    )
+    );
   }
 }

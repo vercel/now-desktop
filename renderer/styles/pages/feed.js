@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const pageStyles = css`
   body {
@@ -8,7 +8,7 @@ export const pageStyles = css`
     margin: 0;
     overflow: hidden;
   }
-`
+`;
 
 export const feedStyles = css`
   main,
@@ -49,7 +49,7 @@ export const feedStyles = css`
   section {
     height: 100vh;
   }
-`
+`;
 
 export const headingStyles = css`
   h1 {
@@ -78,7 +78,7 @@ export const headingStyles = css`
   h1:first-child {
     border-top: 0;
   }
-`
+`;
 
 export const loaderStyles = css`
   aside {
@@ -103,4 +103,4 @@ export const loaderStyles = css`
     height: 17px;
     margin-right: 8px;
   }
-`
+`;

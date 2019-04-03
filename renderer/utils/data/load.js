@@ -1,80 +1,80 @@
-import ms from 'ms'
-import { getConfig } from '../ipc'
+import ms from 'ms';
+import { getConfig } from '../ipc';
 
 const getToken = async () => {
-  let config
+  let config;
 
   try {
-    config = await getConfig()
+    config = await getConfig();
   } catch (err) {
-    console.log(err)
-    return false
+    console.log(err);
+    return false;
   }
 
-  return config.token
-}
+  return config.token;
+};
 
-const NETWORK_ERR_CODE = 'network_error'
-const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry'
+const NETWORK_ERR_CODE = 'network_error';
+const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry';
 
 export default async (path, token = null, opts = {}) => {
-  const headers = opts.headers || {}
+  const headers = opts.headers || {};
 
   // On login, the token isn't saved to the config yet
   // but we need to make another network request to
   // get all the user details before we can save to config there
-  const authToken = token || (await getToken())
+  const authToken = token || (await getToken());
 
   // Without a token, there's no need to continue
   if (!authToken) {
-    return false
+    return false;
   }
 
-  headers.Authorization = `bearer ${authToken}`
-  headers['user-agent'] = 'Now Desktop'
+  headers.Authorization = `bearer ${authToken}`;
+  headers['user-agent'] = 'Now Desktop';
 
   // Accept path to be a full url or a relative path
-  const url = path[0] === '/' ? 'https://zeit.co' + path : path
+  const url = path[0] === '/' ? 'https://zeit.co' + path : path;
 
-  let res
-  let data
-  let error
+  let res;
+  let data;
+  let error;
 
   try {
     res = await fetch(url, {
       ...opts,
       headers,
       timeout: ms('20s')
-    })
+    });
 
     if (res.status === 403) {
       // We need to log out here
-      return false
+      return false;
     }
 
     if (opts.throwOnHTTPError && (res.status < 200 || res.status >= 300)) {
       if (res.headers.get('Content-Type') === 'application/json') {
-        data = await res.json()
+        data = await res.json();
         error = new Error(
           data.error === null ? 'Unexpected Error' : data.error.message
-        )
-        error.res = res
-        error.status = res.status
+        );
+        error.res = res;
+        error.status = res.status;
 
-        error.code = data.error === null ? res.status : data.error.code
+        error.code = data.error === null ? res.status : data.error.code;
       } else {
-        throw new Error('A network error occurred')
+        throw new Error('A network error occurred');
       }
     } else {
-      data = await res.json()
+      data = await res.json();
     }
   } catch (err) {
-    error = new Error(NETWORK_ERR_MESSAGE + ` (${url})`)
-    error.code = NETWORK_ERR_CODE
-    error.res = null
-    error.status = null
+    error = new Error(NETWORK_ERR_MESSAGE + ` (${url})`);
+    error.code = NETWORK_ERR_CODE;
+    error.res = null;
+    error.status = null;
   }
 
-  if (error) throw error
-  return data
-}
+  if (error) throw error;
+  return data;
+};

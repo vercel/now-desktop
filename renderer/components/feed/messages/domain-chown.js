@@ -1,9 +1,9 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class DomainChown extends Message {
   render() {
-    const { event } = this.props
+    const { event } = this.props;
 
     return (
       <p>
@@ -13,6 +13,6 @@ export default class DomainChown extends Message {
           ? ` from {event.payload.oldTeam.name}`
           : ''} to {event.payload.newTeam.name}
       </p>
-    )
+    );
   }
 }

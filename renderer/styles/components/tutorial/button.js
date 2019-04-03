@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   a {
@@ -30,4 +30,4 @@ export default css`
     color: #cccccc;
     border-color: currentColor;
   }
-`
+`;

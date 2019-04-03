@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const mainStyles = css`
   div {
@@ -211,7 +211,7 @@ export const mainStyles = css`
   nav a:last-child:after {
     display: none;
   }
-`
+`;
 
 export const globalStyles = css`
   body {
@@ -225,4 +225,4 @@ export const globalStyles = css`
   ::selection {
     background: #a7d8ff;
   }
-`
+`;

@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export const coreStyles = css`
   figure {
@@ -23,7 +23,7 @@ export const coreStyles = css`
   video {
     width: 500px;
   }
-`
+`;
 
 export const captionStyles = css`
   figcaption {
@@ -46,4 +46,4 @@ export const captionStyles = css`
     margin: 0;
     letter-spacing: 1px;
   }
-`
+`;

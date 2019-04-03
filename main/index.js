@@ -1,163 +1,163 @@
-const electron = require('electron')
-const isDev = require('electron-is-dev')
-const fixPath = require('fix-path')
-const prepareNext = require('electron-next')
-const { resolve: resolvePath } = require('app-root-path')
-const squirrelStartup = require('electron-squirrel-startup')
-const Sentry = require('@sentry/electron')
-const { sentryDsn } = require('../package')
-const firstRun = require('./first-run')
-const getMenu = require('./menu')
-const autoUpdater = require('./updates')
-const { getWindow, toggleWindow } = require('./window')
-const prepareIpc = require('./ipc')
+const electron = require('electron');
+const isDev = require('electron-is-dev');
+const fixPath = require('fix-path');
+const prepareNext = require('electron-next');
+const { resolve: resolvePath } = require('app-root-path');
+const squirrelStartup = require('electron-squirrel-startup');
+const Sentry = require('@sentry/electron');
+const { sentryDsn } = require('../package');
+const firstRun = require('./first-run');
+const getMenu = require('./menu');
+const autoUpdater = require('./updates');
+const { getWindow, toggleWindow } = require('./window');
+const prepareIpc = require('./ipc');
 
 Sentry.init({
   dsn: sentryDsn
-})
+});
 
 // Immediately quit the app if squirrel is launching it
 if (squirrelStartup) {
-  electron.app.quit()
+  electron.app.quit();
 }
 
 // Prevent garbage collection
 // Otherwise the tray icon would randomly hide after some time
-let tray = null
+let tray = null;
 
 // Load the app instance from electron
-const { app } = electron
+const { app } = electron;
 
 // Set the application's name
-app.setName('Now')
+app.setName('Now');
 
 // Handle uncaught exceptions
-process.on('uncaughtException', error => console.log(error))
+process.on('uncaughtException', error => console.log(error));
 
 // Hide dock icon before the app starts
 // This is only required for development because
 // we're setting a property on the bundled app
 // in production, which prevents the icon from flickering
 if (isDev && process.platform === 'darwin') {
-  app.dock.hide()
+  app.dock.hide();
 }
 
-const isFirstRun = firstRun()
+const isFirstRun = firstRun();
 
 // Make Now start automatically on login
 if (!isDev && isFirstRun) {
   app.setLoginItemSettings({
     openAtLogin: true
-  })
+  });
 }
 
 // Makes sure where inheriting the correct path
 // Within the bundled app, the path would otherwise be different
-fixPath()
+fixPath();
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 // Chrome Command Line Switches
-app.commandLine.appendSwitch('disable-renderer-backgrounding')
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
 app.on('ready', async () => {
   try {
     const iconName =
       process.platform === 'win32'
         ? 'iconWhite'
-        : process.platform === 'linux' ? 'iconWhite' : 'iconTemplate'
-    tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`))
+        : process.platform === 'linux' ? 'iconWhite' : 'iconTemplate';
+    tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`));
   } catch (err) {
-    return
+    return;
   }
 
   // Opening the context menu after login should work
-  global.tray = tray
+  global.tray = tray;
 
   // Ensure that `next` works with `electron`
   try {
-    await prepareNext('./renderer')
+    await prepareNext('./renderer');
   } catch (e) {
     // Next has failed to start but context menu should still work
   }
 
   // Generate the browser window
-  const window = getWindow(tray)
+  const window = getWindow(tray);
 
   // Provide application and the CLI with automatic updates
-  autoUpdater(window)
-  console.log('Test')
+  autoUpdater(window);
+  console.log('Test');
 
   // Make the main process listen to requests from the renderer process
-  prepareIpc(app, tray, window, getMenu)
-  console.log('hoho')
+  prepareIpc(app, tray, window, getMenu);
+  console.log('hoho');
 
   if (process.platform === 'darwin') {
     electron.systemPreferences.subscribeNotification(
       'AppleInterfaceThemeChangedNotification',
       () => {
-        const darkMode = electron.systemPreferences.isDarkMode()
+        const darkMode = electron.systemPreferences.isDarkMode();
 
-        window.send('theme-changed', { darkMode })
+        window.send('theme-changed', { darkMode });
       }
-    )
+    );
   }
 
   const toggleActivity = async event => {
-    toggleWindow(event || null, window, tray)
-  }
+    toggleWindow(event || null, window, tray);
+  };
 
   // Only allow one instance of Now running
   // at the same time
-  const gotInstanceLock = app.requestSingleInstanceLock()
+  const gotInstanceLock = app.requestSingleInstanceLock();
 
   if (!gotInstanceLock) {
     // We're using `exit` because `quit` didn't work
     // on Windows (tested by matheus)
-    return app.exit()
+    return app.exit();
   }
 
-  app.on('second-instance', toggleActivity)
+  app.on('second-instance', toggleActivity);
 
-  const { wasOpenedAtLogin } = app.getLoginItemSettings()
+  const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
   if (isFirstRun) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
     if (!wasOpenedAtLogin) {
-      window.once('ready-to-show', toggleActivity)
+      window.once('ready-to-show', toggleActivity);
     }
   } else if (!window.isVisible() && !wasOpenedAtLogin) {
-    window.once('ready-to-show', toggleActivity)
+    window.once('ready-to-show', toggleActivity);
   }
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
-    tray.setContextMenu(await getMenu(app, tray, window))
+    tray.setContextMenu(await getMenu(app, tray, window));
   }
 
   // Define major event listeners for tray
-  tray.on('click', toggleActivity)
-  tray.on('double-click', toggleActivity)
+  tray.on('click', toggleActivity);
+  tray.on('double-click', toggleActivity);
 
-  let submenuShown = false
+  let submenuShown = false;
 
   tray.on('right-click', async event => {
     if (window.isVisible()) {
-      window.hide()
-      return
+      window.hide();
+      return;
     }
 
-    const menu = await getMenu(app, tray, window)
+    const menu = await getMenu(app, tray, window);
 
     // Toggle submenu
-    tray.popUpContextMenu(submenuShown ? null : menu)
-    submenuShown = !submenuShown
+    tray.popUpContextMenu(submenuShown ? null : menu);
+    submenuShown = !submenuShown;
 
-    event.preventDefault()
-  })
-})
+    event.preventDefault();
+  });
+});

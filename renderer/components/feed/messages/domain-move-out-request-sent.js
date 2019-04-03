@@ -1,8 +1,8 @@
-import Message from './message'
+import Message from './message';
 
 export default class DomainMoveOutRequestSent extends Message {
   render() {
-    const { payload } = this.props.event
+    const { payload } = this.props.event;
     return (
       <p>
         {this.getDisplayName()}
@@ -10,6 +10,6 @@ export default class DomainMoveOutRequestSent extends Message {
           ? ` to ${payload.destinationName}`
           : ''}
       </p>
-    )
+    );
   }
 }

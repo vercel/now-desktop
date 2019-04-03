@@ -1,10 +1,10 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class Scale extends Message {
   render() {
-    const { event } = this.props
-    const { instances } = event.payload
+    const { event } = this.props;
+    const { instances } = event.payload;
 
     return (
       <p>
@@ -14,6 +14,6 @@ export default class Scale extends Message {
           {instances} instance{instances > 1 ? 's' : ''}
         </b>
       </p>
-    )
+    );
   }
 }

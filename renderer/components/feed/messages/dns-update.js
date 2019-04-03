@@ -1,11 +1,11 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class DnsUpdate extends Message {
   render() {
-    const { event } = this.props
-    const { value } = event.payload
-    const v = value.slice(0, 50)
+    const { event } = this.props;
+    const { value } = event.payload;
+    const v = value.slice(0, 50);
 
     return (
       <p>
@@ -16,6 +16,6 @@ export default class DnsUpdate extends Message {
           {event.payload.type} {v + (v.length < value.length ? '…' : '')}
         </code>
       </p>
-    )
+    );
   }
 }

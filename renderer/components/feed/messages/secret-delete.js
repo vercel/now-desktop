@@ -1,9 +1,9 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class SecretDelete extends Message {
   render() {
-    const { event } = this.props
+    const { event } = this.props;
 
     return (
       <p>
@@ -11,6 +11,6 @@ export default class SecretDelete extends Message {
         removed secret{' '}
         <b>{event.payload.name ? event.payload.name : event.payload.uid}</b>
       </p>
-    )
+    );
   }
 }

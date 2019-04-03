@@ -1,12 +1,12 @@
 // Packages
-import { Fragment } from 'react'
-import { bool } from 'prop-types'
+import { Fragment } from 'react';
+import { bool } from 'prop-types';
 
 // Styles
-import styles from '../../styles/components/feed/none'
+import styles from '../../styles/components/feed/none';
 
 // Vectors
-import FilterIcon from '../../vectors/filter'
+import FilterIcon from '../../vectors/filter';
 
 const NoEvents = ({ filtered, darkBg = false }) => (
   <div className={darkBg ? 'dark' : ''}>
@@ -30,11 +30,11 @@ const NoEvents = ({ filtered, darkBg = false }) => (
 
     <style jsx>{styles}</style>
   </div>
-)
+);
 
 NoEvents.propTypes = {
   filtered: bool,
   darkBg: bool
-}
+};
 
-export default NoEvents
+export default NoEvents;

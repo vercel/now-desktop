@@ -1,57 +1,57 @@
 // Packages
-import { Component } from 'react'
-import setRef from 'react-refs'
-import { bool, string } from 'prop-types'
+import { Component } from 'react';
+import setRef from 'react-refs';
+import { bool, string } from 'prop-types';
 
 // Styles
 import {
   coreStyles,
   captionStyles
-} from '../../styles/components/tutorial/video'
+} from '../../styles/components/tutorial/video';
 
 class Video extends Component {
   state = {
     playing: false
-  }
+  };
 
-  setRef = setRef.bind(this)
-  os = process.platform === 'darwin' ? 'mac' : 'windows'
+  setRef = setRef.bind(this);
+  os = process.platform === 'darwin' ? 'mac' : 'windows';
 
   componentWillReceiveProps(nextProps) {
-    const already = this.state.playing
+    const already = this.state.playing;
 
     if (!nextProps.playing) {
       if (already) {
         this.setState({
           playing: false
-        })
+        });
       }
 
-      return
+      return;
     }
 
     this.setState({
       playing: true
-    })
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const video = this.video
+    const video = this.video;
 
     if (!video) {
-      return
+      return;
     }
 
     if (!nextState.playing) {
       if (!video.paused) {
-        video.pause()
-        video.currentTime = 0
+        video.pause();
+        video.currentTime = 0;
       }
 
-      return
+      return;
     }
 
-    video.play()
+    video.play();
   }
 
   renderCaption(name) {
@@ -65,7 +65,7 @@ class Video extends Component {
 
           <style jsx>{captionStyles}</style>
         </figcaption>
-      )
+      );
     }
 
     if (name === 'feed') {
@@ -76,12 +76,12 @@ class Video extends Component {
 
           <style jsx>{captionStyles}</style>
         </figcaption>
-      )
+      );
     }
   }
 
   render() {
-    const { name } = this.props
+    const { name } = this.props;
 
     const videoSettings = {
       preload: 'true',
@@ -89,7 +89,7 @@ class Video extends Component {
       src: `/static/tutorial/${this.os}/${name}.webm`,
       ref: this.setRef,
       name: 'video'
-    }
+    };
 
     return (
       <figure>
@@ -98,13 +98,13 @@ class Video extends Component {
         <video {...videoSettings} />
         <style jsx>{coreStyles}</style>
       </figure>
-    )
+    );
   }
 }
 
 Video.propTypes = {
   playing: bool,
   name: string
-}
+};
 
-export default Video
+export default Video;

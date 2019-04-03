@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css'
+import css from 'styled-jsx/css';
 
 export default css`
   div {
@@ -27,4 +27,4 @@ export default css`
   .in-event {
     margin: 8px 10px 0 10px;
   }
-`
+`;

@@ -1,11 +1,11 @@
-import { PureComponent } from 'react'
-import { func } from 'prop-types'
-import introStyles from '../../styles/components/tutorial/intro'
-import Logo from '../../vectors/logo'
-import { getConfig } from '../../utils/ipc'
-import LoginForm from './login'
-import CLI from './cli'
-import Button from './button'
+import { PureComponent } from 'react';
+import { func } from 'prop-types';
+import introStyles from '../../styles/components/tutorial/intro';
+import Logo from '../../vectors/logo';
+import { getConfig } from '../../utils/ipc';
+import LoginForm from './login';
+import CLI from './cli';
+import Button from './button';
 
 class Intro extends PureComponent {
   state = {
@@ -14,66 +14,66 @@ class Intro extends PureComponent {
     done: false,
     tested: false,
     checked: true
-  }
+  };
 
-  setState = this.setState.bind(this)
-  startTutorial = this.moveSlider.bind(this, 1)
+  setState = this.setState.bind(this);
+  startTutorial = this.moveSlider.bind(this, 1);
 
   async loggedIn() {
     if (!this.remote) {
-      return
+      return;
     }
 
     try {
-      await getConfig()
+      await getConfig();
     } catch (err) {
-      return false
+      return false;
     }
 
-    return true
+    return true;
   }
 
   onCheckboxChange = event => {
     this.setState({
       checked: event.target.checked
-    })
-  }
+    });
+  };
 
   showApp = event => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!this.remote) {
-      return
+      return;
     }
 
-    const currentWindow = this.remote.getCurrentWindow()
+    const currentWindow = this.remote.getCurrentWindow();
 
     // Show the event feed
-    currentWindow.emit('open-tray')
-  }
+    currentWindow.emit('open-tray');
+  };
 
   moveSlider(index) {
     if (!this.props.moveSlider) {
-      return
+      return;
     }
 
-    this.props.moveSlider(index)
+    this.props.moveSlider(index);
   }
 
   async componentWillMount() {
     if (!await this.loggedIn()) {
-      return
+      return;
     }
 
     this.setState({
       tested: true,
       done: true
-    })
+    });
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (!this.props.setLoggedIn) {
-      return
+      return;
     }
 
     if (!prevState.done && this.state.done) {
@@ -81,12 +81,12 @@ class Intro extends PureComponent {
       // binary is already installed
       // Let the parent components know that the user
       // is now logged in
-      this.props.setLoggedIn(true)
+      this.props.setLoggedIn(true);
     }
   }
 
   render() {
-    const { sendingMail, security, done, tested } = this.state
+    const { sendingMail, security, done, tested } = this.state;
 
     if (sendingMail) {
       return (
@@ -102,7 +102,7 @@ class Intro extends PureComponent {
 
           <style jsx>{introStyles}</style>
         </article>
-      )
+      );
     }
 
     if (!sendingMail && security) {
@@ -117,7 +117,7 @@ class Intro extends PureComponent {
 
           <style jsx>{introStyles}</style>
         </article>
-      )
+      );
     }
 
     if (done && tested) {
@@ -139,7 +139,7 @@ class Intro extends PureComponent {
 
           <style jsx>{introStyles}</style>
         </article>
-      )
+      );
     }
 
     if (done) {
@@ -161,7 +161,7 @@ class Intro extends PureComponent {
           </span>
           <style jsx>{introStyles}</style>
         </article>
-      )
+      );
     }
 
     return (
@@ -177,13 +177,13 @@ class Intro extends PureComponent {
         />
         <style jsx>{introStyles}</style>
       </article>
-    )
+    );
   }
 }
 
 Intro.propTypes = {
   setLoggedIn: func,
   moveSlider: func
-}
+};
 
-export default Intro
+export default Intro;

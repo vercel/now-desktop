@@ -1,94 +1,94 @@
-import { PureComponent } from 'react'
-import { object, func, string, bool } from 'prop-types'
-import dotProp from 'dot-prop'
-import ms from 'ms'
-import * as Sentry from '@sentry/browser'
-import pkg from '../../../package'
-import { localStyles, globalStyles } from '../../styles/components/feed/event'
-import dateDiff from '../../utils/date-diff'
-import Avatar from './avatar'
+import { PureComponent } from 'react';
+import { object, func, string, bool } from 'prop-types';
+import dotProp from 'dot-prop';
+import ms from 'ms';
+import * as Sentry from '@sentry/browser';
+import pkg from '../../../package';
+import { localStyles, globalStyles } from '../../styles/components/feed/event';
+import dateDiff from '../../utils/date-diff';
+import Avatar from './avatar';
 
 // Check if this is on the client,
 // since the build won't work otherwise
 if (typeof window !== 'undefined') {
   Sentry.init({
     dsn: pkg.sentryDsn
-  })
+  });
 }
 
 class EventMessage extends PureComponent {
   state = {
     url: null,
     hasError: false
-  }
+  };
 
-  menu = null
+  menu = null;
 
   click = () => {
-    const { content, setScopeWithSlug } = this.props
+    const { content, setScopeWithSlug } = this.props;
 
     if (content.type === 'team' && setScopeWithSlug) {
-      setScopeWithSlug(content.payload.slug)
-      return
+      setScopeWithSlug(content.payload.slug);
+      return;
     }
 
-    console.log('haha')
-  }
+    console.log('haha');
+  };
 
   rightClick = event => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!this.menu) {
-      return
+      return;
     }
 
     this.menu.popup({
       x: event.clientX,
       y: event.clientY,
       async: true
-    })
-  }
+    });
+  };
 
   copyToClipboard(text) {
-    console.log(text)
+    console.log(text);
   }
 
   getID() {
-    const info = this.props.content
+    const info = this.props.content;
 
     const props = [
       'payload.deletedUser.username',
       'payload.slug',
       'payload.aliasId',
       'payload.deploymentId'
-    ]
+    ];
 
     for (const prop of props) {
-      const id = dotProp.get(info, prop)
+      const id = dotProp.get(info, prop);
 
       if (id) {
-        return id
+        return id;
       }
     }
 
-    return null
+    return null;
   }
 
   getDashboardURL() {
-    const content = this.props.content
+    const content = this.props.content;
 
     if (content.type !== 'deployment') {
-      return null
+      return null;
     }
 
-    const { deploymentUrl, url } = content.payload
-    const host = deploymentUrl || url
+    const { deploymentUrl, url } = content.payload;
+    const host = deploymentUrl || url;
 
-    return `https://zeit.co/deployments/${host}`
+    return `https://zeit.co/deployments/${host}`;
   }
 
   componentWillMount() {
-    const info = this.props.content
+    const info = this.props.content;
 
     const urlProps = [
       'payload.cn',
@@ -96,21 +96,21 @@ class EventMessage extends PureComponent {
       'payload.url',
       'payload.domain',
       'payload.deploymentUrl'
-    ]
+    ];
 
     for (const prop of urlProps) {
-      const url = dotProp.get(info, prop)
+      const url = dotProp.get(info, prop);
 
       if (url) {
-        this.setState({ url })
-        break
+        this.setState({ url });
+        break;
       }
     }
   }
 
   parseDate(date) {
-    const current = new Date()
-    const difference = dateDiff(current, date, 'milliseconds')
+    const current = new Date();
+    const difference = dateDiff(current, date, 'milliseconds');
 
     const checks = {
       '1 minute': 'seconds',
@@ -119,47 +119,47 @@ class EventMessage extends PureComponent {
       '7 days': 'days',
       '30 days': 'weeks',
       '1 year': 'months'
-    }
+    };
 
     for (const check in checks) {
       if (!{}.hasOwnProperty.call(checks, check)) {
-        continue
+        continue;
       }
 
-      const unit = checks[check]
-      const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0)
+      const unit = checks[check];
+      const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0);
 
       if (difference < ms(check)) {
-        return dateDiff(current, date, unit) + shortUnit
+        return dateDiff(current, date, unit) + shortUnit;
       }
     }
 
-    return null
+    return null;
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Failed to handle event:', error)
-    this.setState({ hasError: true })
+    console.error('Failed to handle event:', error);
+    this.setState({ hasError: true });
 
     Sentry.withScope(scope => {
       Object.keys(errorInfo).forEach(key => {
-        scope.setExtra(key, errorInfo[key])
-      })
-      Sentry.captureException(error)
-    })
+        scope.setExtra(key, errorInfo[key]);
+      });
+      Sentry.captureException(error);
+    });
   }
 
   render() {
     if (this.state.hasError) {
-      return null
+      return null;
     }
 
-    const { message, content, team, group, darkBg } = this.props
-    const avatarHash = content.user && content.user.avatar
-    const classes = ['event']
+    const { message, content, team, group, darkBg } = this.props;
+    const avatarHash = content.user && content.user.avatar;
+    const classes = ['event'];
 
     if (darkBg) {
-      classes.push('dark')
+      classes.push('dark');
     }
 
     return (
@@ -186,7 +186,7 @@ class EventMessage extends PureComponent {
           {globalStyles}
         </style>
       </figure>
-    )
+    );
   }
 }
 
@@ -198,6 +198,6 @@ EventMessage.propTypes = {
   message: object,
   group: string,
   darkBg: bool
-}
+};
 
-export default EventMessage
+export default EventMessage;

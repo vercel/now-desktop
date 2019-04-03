@@ -1,6 +1,6 @@
 // Packages
-import React from 'react'
-import { bool } from 'prop-types'
+import React from 'react';
+import { bool } from 'prop-types';
 
 const Search = ({ darkBg = false }) => (
   <svg width="15" height="15" viewBox="0 0 13 13">
@@ -10,10 +10,10 @@ const Search = ({ darkBg = false }) => (
       fillRule="nonzero"
     />
   </svg>
-)
+);
 
 Search.propTypes = {
   darkBg: bool
-}
+};
 
-export default Search
+export default Search;

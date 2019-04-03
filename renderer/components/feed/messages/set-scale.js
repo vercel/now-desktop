@@ -1,10 +1,10 @@
 // Components
-import Message from './message'
+import Message from './message';
 
 export default class Scale extends Message {
   render() {
-    const { event } = this.props
-    const { min, max } = event.payload
+    const { event } = this.props;
+    const { min, max } = event.payload;
 
     if (min && max) {
       return (
@@ -13,7 +13,7 @@ export default class Scale extends Message {
           updated scale rules for <b>{event.payload.url}</b> to min:{' '}
           <b>{min}</b>, max: <b>{max}</b>
         </p>
-      )
+      );
     }
 
     return (
@@ -21,6 +21,6 @@ export default class Scale extends Message {
         {this.getDisplayName()}
         updated scale rules for <b>{event.payload.url}</b>
       </p>
-    )
+    );
   }
 }

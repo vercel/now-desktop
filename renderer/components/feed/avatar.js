@@ -1,107 +1,107 @@
 // Packages
-import { PureComponent } from 'react'
-import { object, bool, number, string } from 'prop-types'
+import { PureComponent } from 'react';
+import { object, bool, number, string } from 'prop-types';
 
 // Styles
-import styles from '../../styles/components/feed/avatar'
+import styles from '../../styles/components/feed/avatar';
 
 class Avatar extends PureComponent {
   state = {
     url: null,
     title: null,
     scaled: false
-  }
+  };
 
   componentWillMount() {
-    this.setURL()
-    this.setTitle()
+    this.setURL();
+    this.setTitle();
   }
 
   componentDidMount() {
     if (!this.props.scale) {
-      return
+      return;
     }
 
     if (!this.state.scaled) {
-      this.prepareScale(this.props.delay)
+      this.prepareScale(this.props.delay);
     }
   }
 
   async setURL() {
-    const { event, team, isUser, group, hash } = this.props
+    const { event, team, isUser, group, hash } = this.props;
 
     if (group && group === 'system') {
       this.setState({
         url: `/static/geist.png`
-      })
+      });
 
-      return
+      return;
     }
 
-    let validUser = event || isUser
-    let id
+    let validUser = event || isUser;
+    let id;
 
     if (Object.keys(team) > 0) {
-      validUser = false
+      validUser = false;
     }
 
     if (event) {
-      id = event.user ? event.user.uid : event.userId
+      id = event.user ? event.user.uid : event.userId;
     } else {
-      id = team.id
+      id = team.id;
     }
 
-    let imageID = validUser ? id : `?teamId=${team.id}`
-    let separator = validUser ? '?' : '&'
+    let imageID = validUser ? id : `?teamId=${team.id}`;
+    let separator = validUser ? '?' : '&';
 
     if (hash) {
-      imageID = hash
-      separator = '?'
+      imageID = hash;
+      separator = '?';
     }
 
     this.setState({
       url: `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
-    })
+    });
   }
 
   async setTitle() {
-    const { event, team, isUser } = this.props
-    let title
+    const { event, team, isUser } = this.props;
+    let title;
 
     if ((team && !isUser) || (!event && isUser)) {
-      title = team.name || 'You'
+      title = team.name || 'You';
     }
 
     if (event && event.user) {
-      title = event.user.username || event.user.email
+      title = event.user.username || event.user.email;
     }
 
-    this.setState({ title })
+    this.setState({ title });
   }
 
   prepareScale(delay) {
-    const when = 100 + 100 * delay
+    const when = 100 + 100 * delay;
 
     setTimeout(() => {
       this.setState({
         scaled: true
-      })
-    }, when)
+      });
+    }, when);
   }
 
   render() {
-    let classes = this.props.event ? 'in-event' : ''
+    let classes = this.props.event ? 'in-event' : '';
 
     if (this.props.scale) {
-      classes += ' scale'
+      classes += ' scale';
     }
 
     if (this.state.scaled) {
-      classes += ' scaled'
+      classes += ' scaled';
     }
 
     if (this.state.darkBg) {
-      classes += ' dark'
+      classes += ' dark';
     }
 
     return (
@@ -115,7 +115,7 @@ class Avatar extends PureComponent {
 
         <style jsx>{styles}</style>
       </div>
-    )
+    );
   }
 }
 
@@ -127,6 +127,6 @@ Avatar.propTypes = {
   delay: number,
   group: string,
   hash: string
-}
+};
 
-export default Avatar
+export default Avatar;
