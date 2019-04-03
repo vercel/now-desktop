@@ -88,7 +88,6 @@ exports.getWindow = tray => {
   })
 
   win.setVisibleOnAllWorkspaces(true)
-  win.webContents.openDevTools()
 
   exports.positionWindow(tray, win)
 
