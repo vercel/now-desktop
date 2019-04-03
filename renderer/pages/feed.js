@@ -17,10 +17,9 @@ import EventMessage from '../components/feed/event';
 import NoEvents from '../components/feed/none';
 import Loading from '../components/feed/loading';
 import messageComponents from '../components/feed/messages';
-import isDarkMode from '../utils/dark-mode';
 import loadData from '../utils/data/load';
 import { API_EVENTS, API_USER } from '../utils/data/endpoints';
-import { getConfig } from '../utils/ipc';
+import { getConfig, getDarkModeStatus } from '../utils/ipc';
 import {
   feedStyles,
   headingStyles,
@@ -423,7 +422,7 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: isDarkMode(),
+      darkMode: getDarkModeStatus(),
       hasLoaded: true
     });
 

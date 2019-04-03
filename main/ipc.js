@@ -1,8 +1,12 @@
-const { ipcMain, shell } = require('electron');
+const { ipcMain, shell, systemPreferences } = require('electron');
 const { getConfig, saveConfig } = require('./config');
 const getMenu = require('./menu');
 
 module.exports = (app, tray, window) => {
+  const { platform } = process;
+  const isWindows = platform === 'win32';
+  const isMacOS = platform === 'darwin';
+
   ipcMain.on('config-get-request', async event => {
     let config = null;
 
@@ -44,5 +48,17 @@ module.exports = (app, tray, window) => {
         y: bounds.y
       });
     }
+  });
+
+  ipcMain.on('dark-mode-request', async event => {
+    let isEnabled = null;
+
+    if (isMacOS) {
+      isEnabled = systemPreferences.isDarkMode();
+    } else if (isWindows) {
+      isEnabled = systemPreferences.isInvertedColorScheme();
+    }
+
+    event.sender.send('dark-mode-response', isEnabled);
   });
 };

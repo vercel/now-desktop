@@ -31,3 +31,17 @@ export const saveConfig = (data, type, firstSave) => {
 export const openURL = url => {
   window.ipc.send('url-request', url);
 };
+
+export const getDarkModeStatus = () => {
+  return timeout(
+    new Promise((resolve, reject) => {
+      window.ipc.once(
+        'dark-mode-response',
+        (event, arg) => (arg instanceof Error ? reject(arg) : resolve())
+      );
+
+      window.ipc.send('dark-mode-request');
+    }),
+    1000
+  );
+};
