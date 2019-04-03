@@ -131,7 +131,7 @@ app.on('ready', async () => {
     electron.shell.openExternal(url)
   })
 
-  electron.ipcMain.on('open-menu', async (event, bounds) => {
+  electron.ipcMain.on('open-menu-request', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2

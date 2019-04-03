@@ -395,6 +395,14 @@ class Switcher extends Component {
     // bubbling up from those, but we need to
     // use `this.menu` to make sure the menu always gets
     // bounds to the parent
+    const { bottom, left, height, width } = this.menu.getBoundingClientRect()
+
+    window.ipc.send('open-menu-request', {
+      x: left,
+      y: bottom,
+      height,
+      width
+    })
   }
 
   saveTeamOrder(teams) {
