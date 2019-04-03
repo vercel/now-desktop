@@ -90,11 +90,9 @@ app.on('ready', async () => {
 
   // Provide application and the CLI with automatic updates
   autoUpdater(window);
-  console.log('Test');
 
   // Make the main process listen to requests from the renderer process
   prepareIpc(app, tray, window, getMenu);
-  console.log('hoho');
 
   if (process.platform === 'darwin') {
     electron.systemPreferences.subscribeNotification(
