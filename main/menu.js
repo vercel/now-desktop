@@ -53,7 +53,7 @@ exports.innerMenu = async function(app, tray, window, inRenderer) {
               type: 'separator'
             },
             {
-              label: 'Set Username',
+              label: 'Change Username',
               click() {
                 shell.openExternal('https://zeit.co/account')
               }
