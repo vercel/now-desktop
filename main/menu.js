@@ -2,7 +2,7 @@ const { Menu: { buildFromTemplate }, shell } = require('electron')
 const isDev = require('electron-is-dev')
 const binaryUtils = require('./binary')
 
-exports.innerMenu = async function(app, tray, window, inRenderer) {
+module.exports = async function(app, tray, window, inRenderer) {
   const { openAtLogin } = app.getLoginItemSettings()
   const desktop = {}
   const isCanary = true
@@ -164,30 +164,3 @@ exports.innerMenu = async function(app, tray, window, inRenderer) {
     )
   )
 }
-
-exports.outerMenu = (app, window) =>
-  buildFromTemplate([
-    {
-      label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
-      click() {
-        console.log('test')
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Open Developer Tools',
-      click() {
-        window.webContents.openDevTools()
-      },
-      accelerator: 'Cmd+I'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      role: 'quit',
-      accelerator: 'Cmd+Q'
-    }
-  ])

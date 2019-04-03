@@ -7,10 +7,10 @@ const squirrelStartup = require('electron-squirrel-startup')
 const Sentry = require('@sentry/electron')
 const { sentryDsn } = require('../package')
 const firstRun = require('./first-run')
-const { innerMenu, outerMenu } = require('./menu')
+const getMenu = require('./menu')
 const autoUpdater = require('./updates')
 const { getWindow, toggleWindow } = require('./window')
-const { getConfig, saveConfig } = require('./config')
+const prepareIpc = require('./ipc')
 
 Sentry.init({
   dsn: sentryDsn
@@ -61,14 +61,6 @@ app.on('window-all-closed', () => {
   }
 })
 
-const contextMenu = async (window, inRenderer) => {
-  if (process.env.CONNECTION === 'offline') {
-    return outerMenu(app, window)
-  }
-
-  return innerMenu(app, tray, window, inRenderer)
-}
-
 // Chrome Command Line Switches
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
@@ -98,52 +90,11 @@ app.on('ready', async () => {
 
   // Provide application and the CLI with automatic updates
   autoUpdater(window)
+  console.log('Test')
 
-  electron.ipcMain.on('config-get-request', async event => {
-    let config = null
-
-    try {
-      config = await getConfig()
-    } catch (err) {
-      config = err
-    }
-
-    event.sender.send('config-get-response', config)
-  })
-
-  electron.ipcMain.on(
-    'config-save-request',
-    async (event, data, type, firstSave) => {
-      let reply = null
-
-      try {
-        await saveConfig(data, type, firstSave)
-      } catch (err) {
-        console.log(err)
-        reply = err
-      }
-
-      event.sender.send('config-save-response', reply)
-    }
-  )
-
-  electron.ipcMain.on('url-request', async (event, url) => {
-    electron.shell.openExternal(url)
-  })
-
-  electron.ipcMain.on('open-menu-request', async (event, bounds) => {
-    if (bounds && bounds.x && bounds.y) {
-      bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2
-      bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2
-
-      const menu = await contextMenu(window, true)
-
-      menu.popup({
-        x: bounds.x,
-        y: bounds.y
-      })
-    }
-  })
+  // Make the main process listen to requests from the renderer process
+  prepareIpc(app, tray, window, getMenu)
+  console.log('hoho')
 
   if (process.platform === 'darwin') {
     electron.systemPreferences.subscribeNotification(
@@ -186,7 +137,7 @@ app.on('ready', async () => {
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
-    tray.setContextMenu(await contextMenu(window))
+    tray.setContextMenu(await getMenu(app, tray, window))
   }
 
   // Define major event listeners for tray
@@ -201,7 +152,7 @@ app.on('ready', async () => {
       return
     }
 
-    const menu = await contextMenu(window)
+    const menu = await getMenu(app, tray, window)
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu)
