@@ -8,7 +8,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import strip from 'strip';
 import parseHTML from 'html-to-react';
 import retry from 'async-retry';
-import ms from 'ms';
 import makeUnique from 'make-unique';
 import Title from '../components/title';
 import Switcher from '../components/feed/switcher';
@@ -19,7 +18,7 @@ import Loading from '../components/feed/loading';
 import messageComponents from '../components/feed/messages';
 import loadData from '../utils/data/load';
 import { API_EVENTS, API_USER } from '../utils/data/endpoints';
-import { getConfig, getDarkModeStatus } from '../utils/ipc';
+import { hideWindow, getConfig, getDarkModeStatus } from '../utils/ipc';
 import {
   feedStyles,
   headingStyles,
@@ -304,6 +303,10 @@ class Feed extends Component {
   onKeyDown = event => {
     const { keyCode, metaKey } = event;
 
+    if (keyCode === 86 && metaKey) {
+      console.log('Trigger deploy from clipboard');
+    }
+
     console.log(keyCode);
     console.log(metaKey);
 
@@ -312,33 +315,15 @@ class Feed extends Component {
     }
 
     event.preventDefault();
-    /* Const activeItem = document.activeElement
+
+    const activeItem = document.activeElement;
 
     if (activeItem && activeItem.tagName === 'INPUT') {
-      return
+      return;
     }
-    */
 
-    // Hide window
+    hideWindow();
   };
-
-  listenThemeChange() {
-    if (!this.ipcRenderer) {
-      return;
-    }
-
-    this.ipcRenderer.on('theme-changed', this.onThemeChanged);
-  }
-
-  listenToUserChange() {
-    if (!this.ipcRenderer) {
-      return;
-    }
-
-    // Update the `currentUser` state to reflect
-    // switching the account using `now login`
-    this.ipcRenderer.on('config-changed', this.onConfigChanged);
-  }
 
   clearScroll = () => {
     if (!this.scrollingSection) {
@@ -356,13 +341,6 @@ class Feed extends Component {
     // Ensure that scrolling position only gets
     // resetted if the window was closed for 5 seconds
     clearTimeout(this.scrollTimer);
-  };
-
-  hideWindow = () => {
-    this.setOnlineState();
-
-    // Clear scrolling position if window closed for 5 seconds
-    this.scrollTimer = setTimeout(this.clearScroll, ms('5s'));
   };
 
   onConfigChanged = async (event, config) => {
@@ -387,12 +365,6 @@ class Feed extends Component {
       eventFilter: null,
       typeFilter: 'team'
     });
-  };
-
-  onThemeChanged = (event, config) => {
-    const { darkMode } = config;
-
-    this.setState({ darkMode });
   };
 
   async componentDidMount() {
@@ -426,16 +398,8 @@ class Feed extends Component {
       hasLoaded: true
     });
 
-    // Listen to system darkMode system change
-    this.listenThemeChange();
-
-    // Switch the `currentUser` property if config changes
-    this.listenToUserChange();
-
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown);
-
-    // Do remaining stuff
   }
 
   componentWillUnmount() {
@@ -448,9 +412,6 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown);
-
-    this.ipcRenderer.removeListener('config-changed', this.onConfigChanged);
-    this.ipcRenderer.removeListener('theme-changed', this.onThemeChanged);
   }
 
   setOnlineState = async () => {

@@ -28,9 +28,8 @@ export const saveConfig = (data, type, firstSave) => {
   );
 };
 
-export const openURL = url => {
-  window.ipc.send('url-request', url);
-};
+export const openURL = url => window.ipc.send('url-request', url);
+export const hideWindow = () => window.ipc.send('hide-window-request');
 
 export const getDarkModeStatus = () => {
   return timeout(

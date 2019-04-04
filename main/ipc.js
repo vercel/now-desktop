@@ -36,6 +36,10 @@ module.exports = (app, tray, window) => {
     shell.openExternal(url);
   });
 
+  ipcMain.on('hide-window-request', async () => {
+    window.hide();
+  });
+
   ipcMain.on('open-menu-request', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2;

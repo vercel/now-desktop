@@ -11,8 +11,6 @@ import CertDelete from './cert-delete';
 import CertRenew from './cert-renew';
 import CertReplace from './cert-replace';
 import Deployment from './deployment';
-import DeploymentFreeze from './deployment-freeze';
-import DeploymentUnfreeze from './deployment-unfreeze';
 import DeploymentChown from './deployment-chown';
 import DeploymentDelete from './deployment-delete';
 import DnsAdd from './dns-add';
@@ -68,8 +66,6 @@ export default new Map([
   ['dns-update', DnsUpdate],
   ['domain', Domain],
   ['domain-buy', DomainBuy],
-  ['deployment-freeze', DeploymentFreeze],
-  ['deployment-unfreeze', DeploymentUnfreeze],
   ['domain-chown', DomainChown],
   ['domain-delete', DomainDelete],
   ['domain-move-in', DomainMoveIn],
