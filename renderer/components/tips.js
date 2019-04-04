@@ -1,9 +1,9 @@
-import { Component } from 'react';
-import { bool } from 'prop-types';
+import { useState } from 'react';
+import { bool, object } from 'prop-types';
 import styles from '../styles/components/tips';
 import Bulb from '../vectors/bulb';
 import Clear from '../vectors/clear';
-import { getConfig, saveConfig } from '../utils/ipc';
+import { saveConfig } from '../utils/ipc';
 
 const tips = [];
 
@@ -29,73 +29,55 @@ if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel') {
   });
 }
 
-class Tips extends Component {
-  state = {
-    tip: null
-  };
-
-  async componentDidMount() {
-    let shownTips = {};
-
-    try {
-      const config = await getConfig();
-      shownTips = (config.desktop && config.desktop.shownTips) || {};
-    } catch (err) {
-      // Nothing to do here, as there is a default
-    }
-
-    this.setState({
-      tip: tips.find(({ id }) => !shownTips[id])
-    });
-  }
-
-  closeTip = async () => {
-    try {
-      await saveConfig(
-        {
-          desktop: {
-            shownTips: { [this.state.tip.id]: true }
-          }
-        },
-        'config'
-      );
-    } catch (err) {
-      // Nothing to do here, as there is a default
-    }
-
-    this.setState({
-      tip: null
-    });
-  };
-
-  render() {
-    return (
-      <div>
-        {this.state.tip && (
-          <section
-            className={`tip${this.props.darkBg ? ' dark' : ''}`}
-            key={this.state.tip.id}
-          >
-            <span className="icon">
-              <Bulb />
-            </span>
-            <p>
-              <b>Tip:</b> {this.state.tip.component}
-            </p>
-            <span className="icon clickable close" onClick={this.closeTip}>
-              <Clear color={this.props.darkBg ? '#999' : '#4e4e4e'} />
-            </span>
-          </section>
-        )}
-
-        <style jsx>{styles}</style>
-      </div>
+const closeTip = async setTip => {
+  try {
+    await saveConfig(
+      {
+        desktop: {
+          shownTips: { [this.state.tip.id]: true }
+        }
+      },
+      'config'
     );
+  } catch (err) {
+    // Nothing to do here, as there is a default
   }
-}
+
+  setTip(null);
+};
+
+const Tips = ({ darkBg, config }) => {
+  const shownTips =
+    (config && config.desktop && config.desktop.shownTips) || {};
+  const defaultTip = tips.find(({ id }) => !shownTips[id]);
+  const [tip, setTip] = useState(defaultTip);
+
+  if (!tip) {
+    return null;
+  }
+
+  return (
+    <div>
+      <section className={`tip${darkBg ? ' dark' : ''}`} key={tip.id}>
+        <span className="icon">
+          <Bulb />
+        </span>
+        <p>
+          <b>Tip:</b> {tip.component}
+        </p>
+        <span className="icon clickable close" onClick={() => closeTip(setTip)}>
+          <Clear color={darkBg ? '#999' : '#4e4e4e'} />
+        </span>
+      </section>
+
+      <style jsx>{styles}</style>
+    </div>
+  );
+};
 
 Tips.propTypes = {
-  darkBg: bool
+  darkBg: bool,
+  config: object
 };
 
 export default Tips;

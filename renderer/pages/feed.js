@@ -392,7 +392,8 @@ class Feed extends Component {
       scope: user.uid,
       currentUser: user,
       darkMode: await getDarkModeStatus(),
-      hasLoaded: true
+      hasLoaded: true,
+      config
     });
 
     // And then allow hiding the windows using the keyboard
@@ -436,7 +437,8 @@ class Feed extends Component {
     this.setState({
       online,
       currentUser,
-      scope: config.currentTeam ? config.currentTeam : currentUser.uid
+      scope: config.currentTeam ? config.currentTeam : currentUser.uid,
+      config
     });
   };
 
@@ -753,6 +755,7 @@ class Feed extends Component {
             isUser={isUser}
             setTypeFilter={this.setTypeFilter}
             darkBg={this.state.darkMode}
+            config={this.state.config}
           >
             {activeScope ? activeScope.name : 'Now'}
           </Title>

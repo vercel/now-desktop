@@ -104,7 +104,8 @@ class Title extends PureComponent {
 
   render() {
     const classes = [];
-    const { darkBg, light, isUser, searchShown, showTips } = this.props;
+
+    const { darkBg, light, isUser, searchShown, showTips, config } = this.props;
 
     if (darkBg) {
       classes.push('dark');
@@ -167,7 +168,7 @@ class Title extends PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        {showTips && <Tips darkBg={darkBg} />}
+        {showTips && <Tips darkBg={darkBg} config={config} />}
 
         {this.renderTypeFilter()}
 
@@ -189,7 +190,8 @@ Title.propTypes = {
   searchShown: PropTypes.bool,
   setTypeFilter: PropTypes.func,
   isUser: PropTypes.bool,
-  showTips: PropTypes.bool
+  showTips: PropTypes.bool,
+  config: PropTypes.object
 };
 
 Title.defaultProps = {
