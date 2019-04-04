@@ -3,11 +3,11 @@ import { bool } from 'prop-types';
 import styles from '../styles/components/tips';
 import Bulb from '../vectors/bulb';
 import Clear from '../vectors/clear';
-import { getConfig } from '../utils/ipc';
+import { getConfig, saveConfig } from '../utils/ipc';
 
 const tips = [];
 
-if (process.platform === 'darwin') {
+if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel') {
   tips.push({
     id: 'pasteFromClipboard',
     component: (
@@ -50,6 +50,19 @@ class Tips extends Component {
   }
 
   closeTip = async () => {
+    try {
+      await saveConfig(
+        {
+          desktop: {
+            shownTips: { [this.state.tip.id]: true }
+          }
+        },
+        'config'
+      );
+    } catch (err) {
+      // Nothing to do here, as there is a default
+    }
+
     this.setState({
       tip: null
     });
