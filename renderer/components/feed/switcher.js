@@ -17,7 +17,7 @@ import {
 import loadData from '../../utils/data/load';
 import { API_TEAMS } from '../../utils/data/endpoints';
 import Clear from '../../vectors/clear';
-import { getConfig, saveConfig } from '../../utils/ipc';
+import { openMainMenu, getConfig, saveConfig } from '../../utils/ipc';
 import Avatar from './avatar';
 import CreateTeam from './create-team';
 
@@ -397,7 +397,7 @@ class Switcher extends Component {
     // bounds to the parent
     const { bottom, left, height, width } = this.menu.getBoundingClientRect();
 
-    window.ipc.send('open-menu-request', {
+    openMainMenu({
       x: left,
       y: bottom,
       height,

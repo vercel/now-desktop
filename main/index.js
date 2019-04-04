@@ -7,7 +7,7 @@ const squirrelStartup = require('electron-squirrel-startup');
 const Sentry = require('@sentry/electron');
 const { sentryDsn } = require('../package');
 const firstRun = require('./first-run');
-const getMenu = require('./menu');
+const { getMainMenu } = require('./menu');
 const autoUpdater = require('./updates');
 const { getWindow, toggleWindow } = require('./window');
 const prepareIpc = require('./ipc');
@@ -92,7 +92,7 @@ app.on('ready', async () => {
   autoUpdater(window);
 
   // Make the main process listen to requests from the renderer process
-  prepareIpc(app, tray, window, getMenu);
+  prepareIpc(app, tray, window);
 
   if (process.platform === 'darwin') {
     electron.systemPreferences.subscribeNotification(
@@ -135,7 +135,7 @@ app.on('ready', async () => {
 
   // Linux requires setContextMenu to be called in order for the context menu to populate correctly
   if (process.platform === 'linux') {
-    tray.setContextMenu(await getMenu(app, tray, window));
+    tray.setContextMenu(await getMainMenu(app, tray, window));
   }
 
   // Define major event listeners for tray
@@ -150,7 +150,7 @@ app.on('ready', async () => {
       return;
     }
 
-    const menu = await getMenu(app, tray, window);
+    const menu = await getMainMenu(app, tray, window);
 
     // Toggle submenu
     tray.popUpContextMenu(submenuShown ? null : menu);

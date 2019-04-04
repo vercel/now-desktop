@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/browser';
 import pkg from '../../../package';
 import { localStyles, globalStyles } from '../../styles/components/feed/event';
 import dateDiff from '../../utils/date-diff';
-import { openURL } from '../../utils/ipc';
+import { openEventMenu, openURL } from '../../utils/ipc';
 import Avatar from './avatar';
 
 // Check if this is on the client,
@@ -22,8 +22,6 @@ class EventMessage extends PureComponent {
     url: null,
     hasError: false
   };
-
-  menu = null;
 
   click = () => {
     const { content, setScopeWithSlug } = this.props;
@@ -44,20 +42,14 @@ class EventMessage extends PureComponent {
   rightClick = event => {
     event.preventDefault();
 
-    if (!this.menu) {
-      return;
-    }
-
-    this.menu.popup({
-      x: event.clientX,
-      y: event.clientY,
-      async: true
-    });
+    openEventMenu(
+      {
+        x: event.clientX,
+        y: event.clientY
+      },
+      this.menuSpec
+    );
   };
-
-  copyToClipboard(text) {
-    console.log(text);
-  }
 
   getID() {
     const info = this.props.content;
@@ -112,6 +104,16 @@ class EventMessage extends PureComponent {
         break;
       }
     }
+  }
+
+  componentDidMount() {
+    const { url } = this.state;
+
+    this.menuSpec = {
+      url,
+      id: this.getID(),
+      dashboardUrl: this.getDashboardURL()
+    };
   }
 
   parseDate(date) {

@@ -1,5 +1,21 @@
 import { timeout } from 'promise-timeout';
 
+export const openURL = url => {
+  return window.ipc.send('url-request', url);
+};
+
+export const hideWindow = () => {
+  return window.ipc.send('hide-window-request');
+};
+
+export const openMainMenu = bounds => {
+  return window.ipc.send('open-main-menu-request', bounds);
+};
+
+export const openEventMenu = (bounds, spec) => {
+  return window.ipc.send('open-event-menu-request', bounds, spec);
+};
+
 export const getConfig = () => {
   return timeout(
     new Promise((resolve, reject) => {
@@ -27,9 +43,6 @@ export const saveConfig = (data, type, firstSave) => {
     1000
   );
 };
-
-export const openURL = url => window.ipc.send('url-request', url);
-export const hideWindow = () => window.ipc.send('hide-window-request');
 
 export const getDarkModeStatus = () => {
   return timeout(

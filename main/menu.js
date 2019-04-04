@@ -1,8 +1,8 @@
-const { Menu: { buildFromTemplate }, shell } = require('electron');
+const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
 
-module.exports = async function(app, tray, window, inRenderer) {
+exports.getMainMenu = async (app, tray, window, inRenderer) => {
   const { openAtLogin } = app.getLoginItemSettings();
   const desktop = {};
   const isCanary = true;
@@ -163,4 +163,48 @@ module.exports = async function(app, tray, window, inRenderer) {
       ].filter(Boolean)
     )
   );
+};
+
+exports.getEventMenu = (url, id, dashboardUrl) => {
+  const menuContent = [];
+
+  if (url) {
+    menuContent.push({
+      label: 'Copy URL',
+      click() {
+        const link = `https://${url}`;
+        clipboard.writeText(link);
+      }
+    });
+  }
+
+  if (id) {
+    menuContent.push({
+      label: 'Copy ID',
+      click() {
+        clipboard.writeText(id);
+      }
+    });
+  }
+
+  if (dashboardUrl) {
+    if (menuContent.length > 0) {
+      menuContent.push({
+        type: 'separator'
+      });
+    }
+
+    menuContent.push({
+      label: 'Open in Dashboard',
+      click() {
+        shell.openExternal(dashboardUrl);
+      }
+    });
+  }
+
+  if (menuContent.length === 0) {
+    return null;
+  }
+
+  return buildFromTemplate(menuContent);
 };

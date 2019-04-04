@@ -1,6 +1,6 @@
 const { ipcMain, shell, systemPreferences } = require('electron');
 const { getConfig, saveConfig } = require('./config');
-const getMenu = require('./menu');
+const { getMainMenu, getEventMenu } = require('./menu');
 
 module.exports = (app, tray, window) => {
   const { platform } = process;
@@ -40,12 +40,29 @@ module.exports = (app, tray, window) => {
     window.hide();
   });
 
-  ipcMain.on('open-menu-request', async (event, bounds) => {
+  ipcMain.on('open-main-menu-request', async (event, bounds) => {
     if (bounds && bounds.x && bounds.y) {
       bounds.x = parseInt(bounds.x.toFixed(), 10) + bounds.width / 2;
       bounds.y = parseInt(bounds.y.toFixed(), 10) - bounds.height / 2;
 
-      const menu = await getMenu(app, tray, window, true);
+      const menu = await getMainMenu(app, tray, window, true);
+
+      menu.popup({
+        x: bounds.x,
+        y: bounds.y
+      });
+    }
+  });
+
+  ipcMain.on('open-event-menu-request', async (event, bounds, spec) => {
+    const { url, id, dashboardUrl } = spec;
+
+    if (bounds && bounds.x && bounds.y) {
+      const menu = await getEventMenu(url, id, dashboardUrl);
+
+      if (!menu) {
+        return;
+      }
 
       menu.popup({
         x: bounds.x,
