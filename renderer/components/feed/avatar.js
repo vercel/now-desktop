@@ -1,8 +1,5 @@
-// Packages
 import { PureComponent } from 'react';
 import { object, bool, number, string } from 'prop-types';
-
-// Styles
 import styles from '../../styles/components/feed/avatar';
 
 class Avatar extends PureComponent {
@@ -15,6 +12,12 @@ class Avatar extends PureComponent {
   componentWillMount() {
     this.setURL();
     this.setTitle();
+  }
+
+  componentWillUnmount() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
   }
 
   componentDidMount() {
@@ -82,7 +85,7 @@ class Avatar extends PureComponent {
   prepareScale(delay) {
     const when = 100 + 100 * delay;
 
-    setTimeout(() => {
+    this.timeout = setTimeout(() => {
       this.setState({
         scaled: true
       });
