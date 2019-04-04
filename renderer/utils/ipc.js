@@ -49,7 +49,7 @@ export const getDarkModeStatus = () => {
     new Promise((resolve, reject) => {
       window.ipc.once(
         'dark-mode-response',
-        (event, arg) => (arg instanceof Error ? reject(arg) : resolve())
+        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
       );
 
       window.ipc.send('dark-mode-request');

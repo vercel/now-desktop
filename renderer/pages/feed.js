@@ -391,7 +391,7 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: getDarkModeStatus(),
+      darkMode: await getDarkModeStatus(),
       hasLoaded: true
     });
 
