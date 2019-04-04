@@ -307,9 +307,6 @@ class Feed extends Component {
       console.log('Trigger deploy from clipboard');
     }
 
-    console.log(keyCode);
-    console.log(metaKey);
-
     if (event.keyCode !== 27) {
       return;
     }
