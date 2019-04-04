@@ -72,7 +72,7 @@ module.exports = (app, tray, window) => {
   });
 
   ipcMain.on('dark-mode-request', async event => {
-    let isEnabled = null;
+    let isEnabled = false;
 
     if (isMacOS) {
       isEnabled = systemPreferences.isDarkMode();
