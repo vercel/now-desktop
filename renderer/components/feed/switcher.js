@@ -72,29 +72,6 @@ class Switcher extends Component {
     document.removeEventListener('keydown', this.keyDown.bind(this));
   };
 
-  componentWillReceiveProps({ currentUser, activeScope }) {
-    if (activeScope) {
-      this.changeScope(activeScope, true, true, true);
-      return;
-    }
-
-    if (!currentUser) {
-      return;
-    }
-
-    if (this.state.scope !== null) {
-      return;
-    }
-
-    this.setState({
-      scope: currentUser.uid
-    });
-  }
-
-  componentWillMount() {
-    // Support SSR
-  }
-
   listTimer = () => {
     // Test
   };
