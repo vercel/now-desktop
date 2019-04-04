@@ -47,8 +47,8 @@ const closeTip = async setTip => {
 };
 
 const Tips = ({ darkBg, config }) => {
-  const shownTips =
-    (config && config.desktop && config.desktop.shownTips) || {};
+  const desktopConfig = config && config.desktop;
+  const shownTips = (desktopConfig && config.desktop.shownTips) || {};
   const defaultTip = tips.find(({ id }) => !shownTips[id]);
   const [tip, setTip] = useState(defaultTip);
 
