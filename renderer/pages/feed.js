@@ -749,7 +749,6 @@ class Feed extends Component {
             setFilter={this.setFilter}
             setSearchRef={this.setReference}
             ref={this.setReference}
-            light
             name="title"
             searchShown={Boolean(activeScope)}
             isUser={isUser}

@@ -104,15 +104,10 @@ class Title extends PureComponent {
 
   render() {
     const classes = [];
-
-    const { darkBg, light, isUser, searchShown, showTips, config } = this.props;
+    const { darkBg, isUser, searchShown, config } = this.props;
 
     if (darkBg) {
       classes.push('dark');
-    }
-
-    if (light) {
-      classes.push('light');
     }
 
     if (process.platform === 'win32') {
@@ -130,37 +125,33 @@ class Title extends PureComponent {
     return (
       <aside className={classes.join(' ')}>
         <div>
-          {this.props.light &&
-            this.props.searchShown && (
-              <Search
-                hideDeployIcon={this.hideDeployIcon}
-                showDeployIcon={this.showDeployIcon}
-                setFeedFilter={this.props.setFilter || false}
-                setSearchRef={this.props.setSearchRef || false}
-                darkBg={darkBg}
-              />
-            )}
+          {this.props.searchShown && (
+            <Search
+              hideDeployIcon={this.hideDeployIcon}
+              showDeployIcon={this.showDeployIcon}
+              setFeedFilter={this.props.setFilter || false}
+              setSearchRef={this.props.setSearchRef || false}
+              darkBg={darkBg}
+            />
+          )}
 
           <h1>{this.props.children}</h1>
 
-          {light &&
-            searchShown &&
+          {searchShown &&
             !isUser && (
               <span className="toggle-filter" onClick={this.toggleFilter}>
                 <Filter darkBg={darkBg} />
               </span>
             )}
 
-          {light && (
-            <span
-              className="deploy"
-              onClick={this.selectToDeploy}
-              ref={this.setReference}
-              name="deployIcon"
-            >
-              <Deploy darkBg={darkBg} />
-            </span>
-          )}
+          <span
+            className="deploy"
+            onClick={this.selectToDeploy}
+            ref={this.setReference}
+            name="deployIcon"
+          >
+            <Deploy darkBg={darkBg} />
+          </span>
         </div>
 
         <section className="update-message">
@@ -168,7 +159,7 @@ class Title extends PureComponent {
           <p>Context updated for Now CLI!</p>
         </section>
 
-        {showTips && <Tips darkBg={darkBg} config={config} />}
+        <Tips darkBg={darkBg} config={config} />
 
         {this.renderTypeFilter()}
 
@@ -183,19 +174,13 @@ Title.propTypes = {
     PropTypes.string,
     PropTypes.element.isRequired
   ]),
-  light: PropTypes.bool,
   darkBg: PropTypes.bool,
   setFilter: PropTypes.func,
   setSearchRef: PropTypes.func,
   searchShown: PropTypes.bool,
   setTypeFilter: PropTypes.func,
   isUser: PropTypes.bool,
-  showTips: PropTypes.bool,
   config: PropTypes.object
-};
-
-Title.defaultProps = {
-  showTips: true
 };
 
 export default Title;

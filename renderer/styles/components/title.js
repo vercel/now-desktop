@@ -2,9 +2,9 @@ import css from 'styled-jsx/css';
 
 export default css`
   aside {
-    height: 38px;
-    display: flex;
-    position: fixed;
+    height: 35px;
+    display: block;
+    position: relative;
     justify-content: center;
     align-items: center;
     top: 0;
@@ -14,6 +14,11 @@ export default css`
     z-index: 5;
     user-select: none;
     cursor: default;
+    border-bottom: 1px solid #d6d6d6;
+    overflow: hidden;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    flex-shrink: 0;
   }
 
   aside.dark {
@@ -23,6 +28,7 @@ export default css`
       rgba(64, 64, 64, 1) 0%,
       rgba(51, 51, 51, 1) 100%
     );
+    border-bottom: 1px solid #000;
   }
 
   aside.filter-visible {
@@ -32,43 +38,17 @@ export default css`
   h1 {
     margin: 0;
     color: #000000;
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    font-weight: 500;
-  }
-
-  aside.dark h1 {
-    color: #e1e1e1;
-  }
-
-  .light {
-    height: 35px;
-    border-bottom: 1px solid #d6d6d6;
-    background: #fff;
-    position: relative;
-    overflow: hidden;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    flex-shrink: 0;
-    display: block;
-  }
-
-  .dark.light {
-    border-bottom: 1px solid #000;
-  }
-
-  .light h1 {
-    color: #000;
     font-size: 13px;
+    letter-spacing: 0.02em;
     font-weight: 600;
   }
 
-  .dark.light h1 {
+  aside.dark h1 {
     color: #fff;
   }
 
-  .light .toggle-filter,
-  .light .deploy {
+  .toggle-filter,
+  .deploy {
     position: absolute;
     height: 36px;
     width: 36px;
@@ -79,23 +59,23 @@ export default css`
     transition: opacity 0.2s ease;
   }
 
-  .light .toggle-filter {
+  .toggle-filter {
     opacity: 0.35;
     right: 36px;
   }
 
-  .light .toggle-filter:hover,
-  .light .deploy:hover,
-  .light.filter-visible .toggle-filter {
+  .toggle-filter:hover,
+  .deploy:hover,
+  .filter-visible .toggle-filter {
     opacity: 1;
   }
 
-  .light .deploy {
+  .deploy {
     opacity: 0.5;
     right: 0;
   }
 
-  .light .deploy.hidden {
+  .deploy.hidden {
     opacity: 0;
   }
 
@@ -135,9 +115,6 @@ export default css`
 
   div {
     transition: opacity 0.5s ease;
-  }
-
-  .light div {
     height: 36px;
     width: 100vw;
     position: relative;
