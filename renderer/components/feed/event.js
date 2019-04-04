@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/browser';
 import pkg from '../../../package';
 import { localStyles, globalStyles } from '../../styles/components/feed/event';
 import dateDiff from '../../utils/date-diff';
+import { openURL } from '../../utils/ipc';
 import Avatar from './avatar';
 
 // Check if this is on the client,
@@ -26,13 +27,18 @@ class EventMessage extends PureComponent {
 
   click = () => {
     const { content, setScopeWithSlug } = this.props;
+    const { url } = this.state;
 
     if (content.type === 'team' && setScopeWithSlug) {
       setScopeWithSlug(content.payload.slug);
       return;
     }
 
-    console.log('haha');
+    if (!url) {
+      return;
+    }
+
+    openURL(`https://${url}`);
   };
 
   rightClick = event => {
