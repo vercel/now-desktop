@@ -72,6 +72,9 @@ module.exports = (app, tray, window) => {
   });
 
   ipcMain.on('dark-mode-request', async event => {
+    // The components in the renderer only allows boolean as the
+    // type for the property that decides whether the
+    // dark mode is enabled, so we cannot default to `null`.
     let isEnabled = false;
 
     if (isMacOS) {
