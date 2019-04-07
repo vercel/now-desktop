@@ -35,7 +35,6 @@ class Feed extends Component {
     teams: [],
     eventFilter: null,
     online: typeof navigator === 'undefined' ? true : navigator.onLine,
-    typeFilter: 'team',
     darkMode: false,
     hasLoaded: false
   };
@@ -44,16 +43,6 @@ class Feed extends Component {
   isWindows = process.platform === 'win32';
   eventTypes = new Set(messageComponents.keys());
   setReference = setRef.bind(this);
-
-  getCurrentGroup() {
-    const { typeFilter } = this.state;
-
-    if (this.isUser() && typeFilter === 'team') {
-      return 'me';
-    }
-
-    return typeFilter;
-  }
 
   isUser(activeScope) {
     const { currentUser, scope } = this.state;
@@ -129,27 +118,8 @@ class Feed extends Component {
     return events;
   }
 
-  getGroups(isTeam, until) {
-    // Can't be a `Set` because we need to pick per index
-    // down in the code later
-    let groups = ['me', 'team'];
-
-    if (!isTeam) {
-      groups.splice(1, 1);
-    }
-
-    // When scrolling down, only update the
-    // current group of events
-    if (until) {
-      const currentGroup = this.getCurrentGroup();
-      groups = [currentGroup];
-    }
-
-    return groups;
-  }
-
   async cacheEvents(scope, until, track) {
-    const { teams, currentUser, scope: activeScope } = this.state;
+    const { teams, scope: activeScope } = this.state;
 
     if (until) {
       track = true;
@@ -163,34 +133,27 @@ class Feed extends Component {
     const lastUpdate = relatedCache.lastUpdate;
     const isTeam = Boolean(relatedCache.slug);
 
-    const groups = this.getGroups(isTeam);
     const loaders = new Set();
 
-    for (const group of groups) {
-      const query = {
-        types: this.eventTypes
-      };
+    const query = {
+      types: this.eventTypes
+    };
 
-      if (until) {
-        query.until = until;
-      } else if (lastUpdate && lastUpdate[group]) {
-        // Ensure that we only load events that were created
-        // after the most recent one, so that we don't get the most
-        // recent one included
-        const startDate = Date.parse(lastUpdate[group]) + 1;
-        query.since = new Date(startDate).toISOString();
-      }
-
-      if (isTeam) {
-        query.teamId = scope;
-
-        if (group === 'me') {
-          query.userId = currentUser.uid;
-        }
-      }
-
-      loaders.add(this.loadEvents(query));
+    if (until) {
+      query.until = until;
+    } else if (lastUpdate) {
+      // Ensure that we only load events that were created
+      // after the most recent one, so that we don't get the most
+      // recent one included
+      const startDate = Date.parse(lastUpdate) + 1;
+      query.since = new Date(startDate).toISOString();
     }
+
+    if (isTeam) {
+      query.teamId = scope;
+    }
+
+    loaders.add(this.loadEvents(query));
 
     let results;
 
@@ -204,24 +167,15 @@ class Feed extends Component {
       return;
     }
 
-    const newEvents = {};
     const events = Object.assign({}, this.state.events);
     const relatedCacheIndex = teams.indexOf(relatedCache);
 
-    if (!teams[relatedCacheIndex].allCached) {
-      teams[relatedCacheIndex].allCached = {};
-    }
-
     for (const result of results) {
-      const index = results.indexOf(result);
-      const group = groups[index];
       const hasEvents = result && result.length > 0;
 
-      newEvents[group] = result;
-
-      if (!hasEvents && events[scope] && events[scope][group]) {
+      if (!hasEvents && events[scope]) {
         if (until) {
-          teams[relatedCacheIndex].allCached[group] = true;
+          teams[relatedCacheIndex].allCached = true;
 
           this.setState({ teams }, () => {
             this.loading.delete(scope);
@@ -243,30 +197,23 @@ class Feed extends Component {
         newLastUpdate = new Date().toISOString();
       }
 
-      if (!teams[relatedCacheIndex].lastUpdate) {
-        teams[relatedCacheIndex].lastUpdate = {};
-      }
-
-      teams[relatedCacheIndex].lastUpdate[group] = newLastUpdate;
+      teams[relatedCacheIndex].lastUpdate = newLastUpdate;
 
       const scopedEvents = events[scope];
-      let groupedEvents;
 
-      if (scopedEvents) {
-        groupedEvents = scopedEvents[group];
-      } else {
+      if (!scopedEvents) {
         events[scope] = {};
       }
 
-      if (hasEvents && scopedEvents && groupedEvents) {
+      if (hasEvents && scopedEvents) {
         let merged;
 
         // When using infinite scrolling, we need to
         // add the events to the end, otherwise before
         if (until) {
-          merged = groupedEvents.concat(result);
+          merged = scopedEvents.concat(result);
         } else {
-          merged = result.concat(groupedEvents);
+          merged = result.concat(scopedEvents);
         }
 
         const unique = makeUnique(merged, (a, b) => a.id === b.id);
@@ -281,9 +228,9 @@ class Feed extends Component {
           shouldKeep = true;
         }
 
-        events[scope][group] = shouldKeep ? unique : unique.slice(0, 50);
+        events[scope] = shouldKeep ? unique : unique.slice(0, 50);
       } else {
-        events[scope][group] = result;
+        events[scope] = result;
       }
     }
 
@@ -359,8 +306,7 @@ class Feed extends Component {
       currentUser: user,
       events: {},
       teams: [],
-      eventFilter: null,
-      typeFilter: 'team'
+      eventFilter: null
     });
   };
 
@@ -450,10 +396,6 @@ class Feed extends Component {
     this.setState({ dropZone: false });
   };
 
-  setTypeFilter = type => {
-    this.setState({ typeFilter: type });
-  };
-
   setScope = scope => {
     this.clearScroll();
 
@@ -516,7 +458,7 @@ class Feed extends Component {
     this.setState({ eventFilter });
   };
 
-  filterEvents(list, scopedTeam, group) {
+  filterEvents(list, scopedTeam) {
     const { eventFilter } = this.state;
     const filtering = Boolean(eventFilter);
     const HTML = parseHTML.Parser;
@@ -529,13 +471,11 @@ class Feed extends Component {
       keywords = this.state.eventFilter.match(/[^ ]+/g);
     }
 
-    // If the event group doesn't exist, we don't need
-    // to try rendering into it
-    if (!list[group]) {
+    if (!list) {
       return [];
     }
 
-    const events = list[group].map(item => {
+    const events = list.map(item => {
       const MessageComponent = messageComponents.get(item.type);
 
       if (!MessageComponent) {
@@ -611,14 +551,13 @@ class Feed extends Component {
     const section = event.target;
     const offset = section.offsetHeight + this.loadingIndicator.offsetHeight;
     const distance = section.scrollHeight - section.scrollTop;
-    const group = this.getCurrentGroup();
 
-    if (!events || !events[scope] || !events[scope][group]) {
+    if (!events || !events[scope]) {
       return;
     }
 
     if (distance < offset + 300) {
-      const scopedEvents = events[scope][group];
+      const scopedEvents = events[scope];
       const lastEvent = scopedEvents[scopedEvents.length - 1];
 
       retry(() => this.cacheEvents(scope, lastEvent.created), {
@@ -642,8 +581,7 @@ class Feed extends Component {
       return <Loading darkBg={darkMode} />;
     }
 
-    const group = this.getCurrentGroup();
-    const filteredEvents = this.filterEvents(scopedEvents, team, group);
+    const filteredEvents = this.filterEvents(scopedEvents, team);
 
     if (filteredEvents.length === 0) {
       return (
@@ -675,7 +613,6 @@ class Feed extends Component {
           team,
           setScopeWithSlug: this.setScopeWithSlug,
           message: content.message,
-          group,
           darkBg: this.state.darkMode
         };
 
@@ -703,15 +640,13 @@ class Feed extends Component {
     }
 
     const events = eventList[scope];
-    const group = this.getCurrentGroup();
 
-    if (!events || !events[group] || events[group].length < 30) {
+    if (!events || events.length < 30) {
       return;
     }
 
     const teams = this.state.teams;
     const relatedTeam = teams.find(item => item.id === scope);
-    const allCached = relatedTeam.allCached && relatedTeam.allCached[group];
 
     return (
       <aside
@@ -720,7 +655,7 @@ class Feed extends Component {
         }}
         className={darkMode ? 'dark' : ''}
       >
-        {allCached ? (
+        {relatedTeam.allCached ? (
           <span key="description">{`That's it. No events left to show!`}</span>
         ) : (
           <Fragment>
@@ -752,7 +687,6 @@ class Feed extends Component {
             name="title"
             searchShown={Boolean(activeScope)}
             isUser={isUser}
-            setTypeFilter={this.setTypeFilter}
             darkBg={this.state.darkMode}
             config={this.state.config}
           >

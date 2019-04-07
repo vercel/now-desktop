@@ -4,15 +4,12 @@ import setRef from 'react-refs';
 import styles from '../styles/components/title';
 import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
-import Filter from '../vectors/filter';
 import Search from './feed/search';
 import Tips from './tips';
 
 class Title extends PureComponent {
   state = {
-    updateMessage: false,
-    typeFilter: false,
-    filteredType: 'team'
+    updateMessage: false
   };
 
   setReference = setRef.bind(this);
@@ -27,12 +24,6 @@ class Title extends PureComponent {
 
   showDeployIcon = () => {
     this.deployIcon.classList.remove('hidden');
-  };
-
-  toggleFilter = () => {
-    this.setState({
-      typeFilter: !this.state.typeFilter
-    });
   };
 
   scopeUpdated() {
@@ -51,60 +42,9 @@ class Title extends PureComponent {
     }, 1000);
   }
 
-  updateTypeFilter(type) {
-    if (type === this.state.filteredType) {
-      return;
-    }
-
-    const { setTypeFilter } = this.props;
-
-    if (setTypeFilter) {
-      setTypeFilter(type);
-    }
-
-    this.setState({ filteredType: type });
-  }
-
-  renderTypeFilter() {
-    const { isUser } = this.props;
-    const types = isUser ? [] : ['Me', 'Team'];
-    const { filteredType } = this.state;
-
-    return (
-      <section className="filter">
-        <nav>
-          {types.map((item, index) => {
-            const classes = [];
-            const handle = item.toLowerCase();
-
-            if (filteredType === handle) {
-              classes.push('active');
-            }
-
-            if (isUser && filteredType === 'team' && index === 0) {
-              classes.push('active');
-            }
-
-            return (
-              <a
-                className={classes.join(' ')}
-                key={item}
-                onClick={this.updateTypeFilter.bind(this, handle)}
-              >
-                {item}
-              </a>
-            );
-          })}
-        </nav>
-
-        <style jsx>{styles}</style>
-      </section>
-    );
-  }
-
   render() {
     const classes = [];
-    const { darkBg, isUser, searchShown, config } = this.props;
+    const { darkBg, config } = this.props;
 
     if (darkBg) {
       classes.push('dark');
@@ -116,10 +56,6 @@ class Title extends PureComponent {
 
     if (this.state.updateMessage) {
       classes.push('scope-updated');
-    }
-
-    if (this.state.typeFilter) {
-      classes.push('filter-visible');
     }
 
     return (
@@ -136,13 +72,6 @@ class Title extends PureComponent {
           )}
 
           <h1>{this.props.children}</h1>
-
-          {searchShown &&
-            !isUser && (
-              <span className="toggle-filter" onClick={this.toggleFilter}>
-                <Filter darkBg={darkBg} />
-              </span>
-            )}
 
           <span
             className="deploy"
@@ -161,8 +90,6 @@ class Title extends PureComponent {
 
         <Tips darkBg={darkBg} config={config} />
 
-        {this.renderTypeFilter()}
-
         <style jsx>{styles}</style>
       </aside>
     );
@@ -178,7 +105,6 @@ Title.propTypes = {
   setFilter: PropTypes.func,
   setSearchRef: PropTypes.func,
   searchShown: PropTypes.bool,
-  setTypeFilter: PropTypes.func,
   isUser: PropTypes.bool,
   config: PropTypes.object
 };

@@ -1,12 +1,6 @@
-// Packages
 import { Fragment } from 'react';
 import { bool } from 'prop-types';
-
-// Styles
 import styles from '../../styles/components/feed/none';
-
-// Vectors
-import FilterIcon from '../../vectors/filter';
 
 const NoEvents = ({ filtered, darkBg = false }) => (
   <div className={darkBg ? 'dark' : ''}>
@@ -22,8 +16,8 @@ const NoEvents = ({ filtered, darkBg = false }) => (
       <Fragment>
         <h1>No Events Found</h1>
         <p>
-          You can pick a different category of events using the{' '}
-          <FilterIcon darkBg={darkBg} background="#F5F5F5" /> filter on the top.
+          Deploy something or create a new alias in order to trigger a new
+          event.
         </p>
       </Fragment>
     )}

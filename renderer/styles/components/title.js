@@ -31,10 +31,6 @@ export default css`
     border-bottom: 1px solid #000;
   }
 
-  aside.filter-visible {
-    height: auto;
-  }
-
   h1 {
     margin: 0;
     color: #000000;
@@ -47,7 +43,6 @@ export default css`
     color: #fff;
   }
 
-  .toggle-filter,
   .deploy {
     position: absolute;
     height: 36px;
@@ -59,14 +54,7 @@ export default css`
     transition: opacity 0.2s ease;
   }
 
-  .toggle-filter {
-    opacity: 0.35;
-    right: 36px;
-  }
-
-  .toggle-filter:hover,
-  .deploy:hover,
-  .filter-visible .toggle-filter {
+  .deploy:hover {
     opacity: 1;
   }
 
@@ -125,67 +113,5 @@ export default css`
 
   .scope-updated div {
     opacity: 0;
-  }
-
-  .filter {
-    display: none;
-    justify-content: center;
-    padding-bottom: 16px;
-    padding-top: 5px;
-  }
-
-  .filter a {
-    color: #999999;
-    text-decoration: none;
-    font-size: 11px;
-    display: block;
-    flex: 1;
-    text-align: center;
-    padding: 3px 0 4px 0;
-    cursor: default;
-  }
-
-  .filter a.active {
-    color: #000;
-  }
-
-  .dark .filter a {
-    color: #999999;
-  }
-
-  .dark .filter a.active {
-    color: #fff;
-  }
-
-  .filter a:nth-child(1) {
-    border-right: 1px solid #eaeaea;
-  }
-
-  .filter a:nth-child(3) {
-    border-left: 1px solid #eaeaea;
-  }
-
-  .dark .filter a:nth-child(1) {
-    border-right: 1px solid #555;
-  }
-
-  .dark .filter a:nth-child(3) {
-    border-left: 1px solid #555;
-  }
-
-  .filter nav {
-    border: 1px solid #eaeaea;
-    display: flex;
-    border-radius: 3px;
-    width: 190px;
-    justify-content: space-between;
-  }
-
-  .dark .filter nav {
-    border: 1px solid #555;
-  }
-
-  .filter-visible .filter {
-    display: flex;
   }
 `;
