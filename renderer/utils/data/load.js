@@ -1,11 +1,11 @@
 import ms from 'ms';
-import { getConfig } from '../ipc';
+import ipc from '../ipc';
 
 const getToken = async () => {
   let config;
 
   try {
-    config = await getConfig();
+    config = await ipc.getConfig();
   } catch (err) {
     console.log(err);
     return false;

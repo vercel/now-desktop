@@ -67,13 +67,17 @@ module.exports = (app, tray, window) => {
     }
   });
 
-  systemPreferences.subscribeNotification(
-    'AppleInterfaceThemeChangedNotification',
-    () => {
-      const isEnabled = getDarkModeStatus();
-      ipcMain.emit('dark-mode-status-changed', isEnabled);
-    }
-  );
+  // We need to wait until the window is loaded before assigning the
+  // events that are triggered from the main process.
+  window.webContents.on('did-finish-load', () => {
+    systemPreferences.subscribeNotification(
+      'AppleInterfaceThemeChangedNotification',
+      () => {
+        const isEnabled = getDarkModeStatus();
+        window.webContents.send('dark-mode-status-changed', isEnabled);
+      }
+    );
+  });
 
   ipcMain.on('dark-mode-request', async event => {
     const isEnabled = getDarkModeStatus();

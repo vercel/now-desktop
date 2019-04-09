@@ -17,7 +17,7 @@ import {
 import loadData from '../../utils/data/load';
 import { API_TEAMS } from '../../utils/data/endpoints';
 import Clear from '../../vectors/clear';
-import { openMainMenu, getConfig, saveConfig } from '../../utils/ipc';
+import ipc from '../../utils/ipc';
 import Avatar from './avatar';
 import CreateTeam from './create-team';
 
@@ -105,7 +105,7 @@ class Switcher extends Component {
     let config;
 
     try {
-      config = await getConfig();
+      config = await ipc.getConfig();
     } catch (err) {}
 
     if (!config || !config.desktop || !config.desktop.teamOrder) {
@@ -374,7 +374,7 @@ class Switcher extends Component {
     // bounds to the parent
     const { bottom, left, height, width } = this.menu.getBoundingClientRect();
 
-    openMainMenu({
+    ipc.openMainMenu({
       x: left,
       y: bottom,
       height,
@@ -402,7 +402,7 @@ class Switcher extends Component {
     this.savingConfig = true;
 
     // Then update the config file
-    await saveConfig(newConfig, 'config');
+    await ipc.saveConfig(newConfig, 'config');
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {

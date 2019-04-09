@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/browser';
 import pkg from '../../../package';
 import { localStyles, globalStyles } from '../../styles/components/feed/event';
 import dateDiff from '../../utils/date-diff';
-import { openEventMenu, openURL } from '../../utils/ipc';
+import ipc from '../../utils/ipc';
 import Avatar from './avatar';
 
 // Check if this is on the client,
@@ -36,13 +36,13 @@ class EventMessage extends PureComponent {
       return;
     }
 
-    openURL(`https://${url}`);
+    ipc.openURL(`https://${url}`);
   };
 
   rightClick = event => {
     event.preventDefault();
 
-    openEventMenu(
+    ipc.openEventMenu(
       {
         x: event.clientX,
         y: event.clientY

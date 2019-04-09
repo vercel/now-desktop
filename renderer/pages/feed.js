@@ -18,7 +18,7 @@ import Loading from '../components/feed/loading';
 import messageComponents from '../components/feed/messages';
 import loadData from '../utils/data/load';
 import { API_EVENTS, API_USER } from '../utils/data/endpoints';
-import { hideWindow, getConfig, getDarkModeStatus } from '../utils/ipc';
+import ipc from '../utils/ipc';
 import {
   feedStyles,
   headingStyles,
@@ -266,7 +266,7 @@ class Feed extends Component {
       return;
     }
 
-    hideWindow();
+    ipc.hideWindow();
   };
 
   clearScroll = () => {
@@ -310,6 +310,12 @@ class Feed extends Component {
     });
   };
 
+  darkModeStatusChanged(event, status) {
+    this.setState({
+      darkMode: status
+    });
+  }
+
   async componentDidMount() {
     // Support SSR
     if (typeof window === 'undefined') {
@@ -324,7 +330,7 @@ class Feed extends Component {
     let user = {};
 
     try {
-      config = await getConfig();
+      config = await ipc.getConfig();
     } catch (err) {
       // Nothing to do here, as there is a default
     }
@@ -337,13 +343,16 @@ class Feed extends Component {
     this.setState({
       scope: user.uid,
       currentUser: user,
-      darkMode: await getDarkModeStatus(),
+      darkMode: await ipc.getDarkModeStatus(),
       hasLoaded: true,
       config
     });
 
     // And then allow hiding the windows using the keyboard
     document.addEventListener('keydown', this.onKeyDown);
+
+    // Track the enabling and disabling of the dark mode
+    ipc.onDarkModeStatusChange(this.darkModeStatusChanged.bind(this));
   }
 
   componentWillUnmount() {
@@ -356,6 +365,9 @@ class Feed extends Component {
     }
 
     document.removeEventListener('keydown', this.onKeyDown);
+
+    // Stop tracking enabling and disabling of dark mode
+    ipc.clearDarkModeStatusChange(this.darkModeStatusChanged.bind(this));
   }
 
   setOnlineState = async () => {
@@ -373,7 +385,7 @@ class Feed extends Component {
     let config = null;
 
     try {
-      config = await getConfig();
+      config = await ipc.getConfig();
     } catch (err) {
       return;
     }

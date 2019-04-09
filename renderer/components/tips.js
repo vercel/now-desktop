@@ -3,7 +3,7 @@ import { bool, object } from 'prop-types';
 import styles from '../styles/components/tips';
 import Bulb from '../vectors/bulb';
 import Clear from '../vectors/clear';
-import { saveConfig } from '../utils/ipc';
+import ipc from '../utils/ipc';
 
 const tips = [];
 
@@ -31,7 +31,7 @@ if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel') {
 
 const closeTip = async setTip => {
   try {
-    await saveConfig(
+    await ipc.saveConfig(
       {
         desktop: {
           shownTips: { [this.state.tip.id]: true }

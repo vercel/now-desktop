@@ -1,22 +1,30 @@
 import { timeout } from 'promise-timeout';
 
-export const openURL = url => {
+const openURL = url => {
   return window.ipc.send('url-request', url);
 };
 
-export const hideWindow = () => {
+const hideWindow = () => {
   return window.ipc.send('hide-window-request');
 };
 
-export const openMainMenu = bounds => {
+const openMainMenu = bounds => {
   return window.ipc.send('open-main-menu-request', bounds);
 };
 
-export const openEventMenu = (bounds, spec) => {
+const openEventMenu = (bounds, spec) => {
   return window.ipc.send('open-event-menu-request', bounds, spec);
 };
 
-export const getConfig = () => {
+const onDarkModeStatusChange = invoke => {
+  window.ipc.on('dark-mode-status-changed', invoke);
+};
+
+const clearDarkModeStatusChange = invoke => {
+  window.ipc.removeListener('dark-mode-status-changed', invoke);
+};
+
+const getConfig = () => {
   return timeout(
     new Promise((resolve, reject) => {
       window.ipc.once(
@@ -30,7 +38,7 @@ export const getConfig = () => {
   );
 };
 
-export const saveConfig = (data, type, firstSave) => {
+const saveConfig = (data, type, firstSave) => {
   return timeout(
     new Promise((resolve, reject) => {
       window.ipc.once(
@@ -44,7 +52,7 @@ export const saveConfig = (data, type, firstSave) => {
   );
 };
 
-export const getDarkModeStatus = () => {
+const getDarkModeStatus = () => {
   return timeout(
     new Promise((resolve, reject) => {
       window.ipc.once(
@@ -56,4 +64,16 @@ export const getDarkModeStatus = () => {
     }),
     1000
   );
+};
+
+export default {
+  openURL,
+  hideWindow,
+  openMainMenu,
+  openEventMenu,
+  onDarkModeStatusChange,
+  clearDarkModeStatusChange,
+  getConfig,
+  saveConfig,
+  getDarkModeStatus
 };
