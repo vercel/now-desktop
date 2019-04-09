@@ -3,7 +3,11 @@ import { object } from 'prop-types';
 
 class Message extends PureComponent {
   getDisplayName() {
-    const { event } = this.props;
+    const { event, user } = this.props;
+
+    if (!event.user && event.userId === user.uid) {
+      event.user = user;
+    }
 
     if (event.user.username) {
       return [<b key="username">{event.user.username}</b>, ' '];

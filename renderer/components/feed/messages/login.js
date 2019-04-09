@@ -63,7 +63,7 @@ export default class Login extends Message {
 
     return (
       <p>
-        <b>You</b> {message}
+        <b>{this.getDisplayName()}</b> {message}
       </p>
     );
   }
