@@ -1,5 +1,6 @@
 const path = require('path');
 const { homedir } = require('os');
+const { systemPreferences } = require('electron');
 const fs = require('fs-extra');
 const groom = require('groom');
 const deepExtend = require('deep-extend');
@@ -8,6 +9,10 @@ const paths = {
   auth: '.now/auth.json',
   config: '.now/config.json'
 };
+
+const { platform } = process;
+const isWindows = platform === 'win32';
+const isMacOS = platform === 'darwin';
 
 for (const file in paths) {
   if (!{}.hasOwnProperty.call(paths, file)) {
@@ -135,4 +140,19 @@ exports.saveConfig = async (data, type) => {
   await fs.writeJSON(destination, currentContent, {
     spaces: 2
   });
+};
+
+exports.getDarkModeStatus = () => {
+  // The components in the renderer only allows boolean as the
+  // type for the property that decides whether the
+  // dark mode is enabled, so we cannot default to `null`.
+  let isEnabled = false;
+
+  if (isMacOS) {
+    isEnabled = systemPreferences.isDarkMode();
+  } else if (isWindows) {
+    isEnabled = systemPreferences.isInvertedColorScheme();
+  }
+
+  return isEnabled;
 };

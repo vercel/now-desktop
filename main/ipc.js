@@ -1,12 +1,8 @@
 const { ipcMain, shell, systemPreferences } = require('electron');
-const { getConfig, saveConfig } = require('./config');
+const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
 
 module.exports = (app, tray, window) => {
-  const { platform } = process;
-  const isWindows = platform === 'win32';
-  const isMacOS = platform === 'darwin';
-
   ipcMain.on('config-get-request', async event => {
     let config = null;
 
@@ -71,18 +67,16 @@ module.exports = (app, tray, window) => {
     }
   });
 
-  ipcMain.on('dark-mode-request', async event => {
-    // The components in the renderer only allows boolean as the
-    // type for the property that decides whether the
-    // dark mode is enabled, so we cannot default to `null`.
-    let isEnabled = false;
-
-    if (isMacOS) {
-      isEnabled = systemPreferences.isDarkMode();
-    } else if (isWindows) {
-      isEnabled = systemPreferences.isInvertedColorScheme();
+  systemPreferences.subscribeNotification(
+    'AppleInterfaceThemeChangedNotification',
+    () => {
+      const isEnabled = getDarkModeStatus();
+      ipcMain.emit('dark-mode-status-changed', isEnabled);
     }
+  );
 
+  ipcMain.on('dark-mode-request', async event => {
+    const isEnabled = getDarkModeStatus();
     event.sender.send('dark-mode-response', isEnabled);
   });
 };
