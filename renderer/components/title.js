@@ -15,7 +15,7 @@ class Title extends PureComponent {
   setReference = setRef.bind(this);
 
   selectToDeploy = () => {
-    this.dialogs.deploy();
+    // Select file or directory to be deployed
   };
 
   hideDeployIcon = () => {
