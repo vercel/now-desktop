@@ -341,7 +341,7 @@ class Feed extends Component {
     }
 
     this.setState({
-      scope: user.uid,
+      scope: config.currentTeam || user.uid,
       currentUser: user,
       darkMode: await ipc.getDarkModeStatus(),
       hasLoaded: true,
