@@ -1,18 +1,4 @@
 import ms from 'ms';
-import ipc from '../ipc';
-
-const getToken = async () => {
-  let config;
-
-  try {
-    config = await ipc.getConfig();
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-
-  return config.token;
-};
 
 const NETWORK_ERR_CODE = 'network_error';
 const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry';
@@ -20,17 +6,12 @@ const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry';
 export default async (path, token = null, opts = {}) => {
   const headers = opts.headers || {};
 
-  // On login, the token isn't saved to the config yet
-  // but we need to make another network request to
-  // get all the user details before we can save to config there
-  const authToken = token || (await getToken());
-
   // Without a token, there's no need to continue
-  if (!authToken) {
+  if (!token) {
     return false;
   }
 
-  headers.Authorization = `bearer ${authToken}`;
+  headers.Authorization = `bearer ${token}`;
   headers['user-agent'] = 'Now Desktop';
 
   // Accept path to be a full url or a relative path

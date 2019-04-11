@@ -1,3 +1,4 @@
+/* A
 import queryString from 'query-string';
 import { Fragment, Component } from 'react';
 import parse from 'date-fns/parse';
@@ -740,3 +741,60 @@ class Feed extends Component {
 }
 
 export default Feed;
+*/
+
+import { useState, useEffect } from 'react';
+import Title from '../components/title';
+import Switcher from '../components/feed/switcher';
+import onlineEffect from '../effects/online';
+import configEffect from '../effects/config';
+import darkModeEffect from '../effects/dark-mode';
+import scopesEffect from '../effects/scopes';
+
+const Main = () => {
+  const [scopes, setScopes] = useState(null);
+  const [active, setActive] = useState(null);
+  const [darkMode, setDarkMode] = useState(null);
+  const [config, setConfig] = useState(null);
+  const [online, setOnline] = useState(null);
+
+  useEffect(() => {
+    return onlineEffect(online, setOnline);
+  });
+
+  useEffect(() => {
+    return configEffect(config, setConfig);
+  });
+
+  useEffect(() => {
+    return darkModeEffect(darkMode, setDarkMode);
+  });
+
+  useEffect(() => {
+    if (Array.isArray(scopes)) {
+      return;
+    }
+
+    return scopesEffect(config, active, setActive, scopes, setScopes);
+  });
+
+  return (
+    <main>
+      <Title config={config} active={active} darkMode={darkMode} />
+
+      <Switcher online={online} darkMode={darkMode} active={active} />
+
+      <style jsx global>{`
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Helvetica Neue, sans-serif;
+          -webkit-font-smoothing: antialiased;
+          margin: 0;
+          overflow: hidden;
+        }
+      `}</style>
+    </main>
+  );
+};
+
+export default Main;

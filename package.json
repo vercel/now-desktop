@@ -67,6 +67,7 @@
       "import/no-unresolved": 0,
       "import/no-extraneous-dependencies": 0,
       "complexity": 0,
+      "max-params": 0,
       "lines-between-class-members": 0,
       "semi": [2, "always"]
     },

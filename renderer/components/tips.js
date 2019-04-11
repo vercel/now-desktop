@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { bool, object } from 'prop-types';
 import styles from '../styles/components/tips';
 import Bulb from '../vectors/bulb';
@@ -29,13 +29,15 @@ if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel') {
   });
 }
 
-const closeTip = async setTip => {
+const closeTip = async (tip, setShownTips) => {
+  const desktop = {
+    shownTips: { [tip.id]: true }
+  };
+
   try {
     await ipc.saveConfig(
       {
-        desktop: {
-          shownTips: { [this.state.tip.id]: true }
-        }
+        desktop
       },
       'config'
     );
@@ -43,14 +45,24 @@ const closeTip = async setTip => {
     // Nothing to do here, as there is a default
   }
 
-  setTip(null);
+  setShownTips(desktop.shownTips);
 };
 
-const Tips = ({ darkBg, config }) => {
-  const desktopConfig = config && config.desktop;
-  const shownTips = (desktopConfig && config.desktop.shownTips) || {};
-  const defaultTip = tips.find(({ id }) => !shownTips[id]);
-  const [tip, setTip] = useState(defaultTip);
+const Tips = ({ darkMode, config }) => {
+  const [shownTips, setShownTips] = useState(null);
+
+  useEffect(() => {
+    if (!config || shownTips !== null) {
+      return;
+    }
+
+    const desktopConfig = config && config.desktop;
+    const alreadyShown = (desktopConfig && config.desktop.shownTips) || {};
+
+    setShownTips(alreadyShown);
+  });
+
+  const tip = tips.find(({ id }) => shownTips && !shownTips[id]);
 
   if (!tip) {
     return null;
@@ -58,15 +70,18 @@ const Tips = ({ darkBg, config }) => {
 
   return (
     <div>
-      <section className={`tip${darkBg ? ' dark' : ''}`} key={tip.id}>
+      <section className={`tip${darkMode ? ' dark' : ''}`} key={tip.id}>
         <span className="icon">
           <Bulb />
         </span>
         <p>
           <b>Tip:</b> {tip.component}
         </p>
-        <span className="icon clickable close" onClick={() => closeTip(setTip)}>
-          <Clear color={darkBg ? '#999' : '#4e4e4e'} />
+        <span
+          className="icon clickable close"
+          onClick={() => closeTip(tip, setShownTips)}
+        >
+          <Clear color={darkMode ? '#999' : '#4e4e4e'} />
         </span>
       </section>
 
@@ -76,7 +91,7 @@ const Tips = ({ darkBg, config }) => {
 };
 
 Tips.propTypes = {
-  darkBg: bool,
+  darkMode: bool,
   config: object
 };
 
