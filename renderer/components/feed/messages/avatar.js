@@ -6,7 +6,7 @@ export default class Avatar extends Message {
     return (
       <p>
         {this.getDisplayName()}
-        updated your avatar
+        updated their avatar
       </p>
     );
   }
