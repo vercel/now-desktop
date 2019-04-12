@@ -758,25 +758,40 @@ const Main = () => {
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(null);
 
+  // This effect (and read below)...
   useEffect(() => {
     return onlineEffect(online, setOnline);
   });
 
-  useEffect(() => {
-    return configEffect(config, setConfig);
-  });
-
+  // And this effect do not depend on each other, so they
+  // can run at the same time.
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
   });
 
   useEffect(() => {
-    if (Array.isArray(scopes)) {
+    // Wait until dark mode and online state are set
+    // before pulling config.
+    if (darkMode === null || online === null) {
       return;
     }
 
-    return scopesEffect(config, active, setActive, scopes, setScopes);
+    return configEffect(config, setConfig);
   });
+
+  useEffect(
+    () => {
+      // Wait until the config is defined.
+      if (config === null) {
+        return;
+      }
+
+      return scopesEffect(config, active, setActive, scopes, setScopes);
+
+      // Only re-invoke this effect if the config changes.
+    },
+    [config && config.lastUpdate]
+  );
 
   return (
     <main>

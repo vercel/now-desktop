@@ -9,7 +9,7 @@ const { sentryDsn } = require('../package');
 const firstRun = require('./first-run');
 const { getMainMenu } = require('./menu');
 const autoUpdater = require('./updates');
-const { getWindow, toggleWindow } = require('./window');
+const { getWindow } = require('./window');
 const prepareIpc = require('./ipc');
 
 Sentry.init({
@@ -94,19 +94,20 @@ app.on('ready', async () => {
   // Make the main process listen to requests from the renderer process
   prepareIpc(app, tray, window);
 
-  if (process.platform === 'darwin') {
-    electron.systemPreferences.subscribeNotification(
-      'AppleInterfaceThemeChangedNotification',
-      () => {
-        const darkMode = electron.systemPreferences.isDarkMode();
+  const toggleActivity = async () => {
+    const isVisible = window.isVisible();
+    const isWin = process.platform === 'win32';
 
-        window.send('theme-changed', { darkMode });
-      }
-    );
-  }
+    if (!isWin && isVisible && !window.isFocused()) {
+      window.focus();
+      return;
+    }
 
-  const toggleActivity = async event => {
-    toggleWindow(event || null, window, tray);
+    if (isVisible) {
+      window.close();
+    } else {
+      window.webContents.send('prepare-opening');
+    }
   };
 
   // Only allow one instance of Now running

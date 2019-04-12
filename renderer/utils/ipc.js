@@ -8,6 +8,10 @@ const hideWindow = () => {
   return window.ipc.send('hide-window-request');
 };
 
+const showWindow = () => {
+  return window.ipc.send('show-window-request');
+};
+
 const openMainMenu = bounds => {
   return window.ipc.send('open-main-menu-request', bounds);
 };
@@ -22,6 +26,14 @@ const onDarkModeStatusChange = invoke => {
 
 const clearDarkModeStatusChange = invoke => {
   window.ipc.removeListener('dark-mode-status-changed', invoke);
+};
+
+const onPrepareOpening = invoke => {
+  window.ipc.on('prepare-opening', invoke);
+};
+
+const clearPrepareOpening = invoke => {
+  window.ipc.removeListener('prepare-opening', invoke);
 };
 
 const getConfig = () => {
@@ -69,10 +81,13 @@ const getDarkModeStatus = () => {
 export default {
   openURL,
   hideWindow,
+  showWindow,
   openMainMenu,
   openEventMenu,
   onDarkModeStatusChange,
   clearDarkModeStatusChange,
+  onPrepareOpening,
+  clearPrepareOpening,
   getConfig,
   saveConfig,
   getDarkModeStatus

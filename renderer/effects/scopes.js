@@ -2,11 +2,9 @@ import loadData from '../utils/data/load';
 import { API_TEAMS, API_USER } from '../utils/data/endpoints';
 
 export default (config, active, setActive, scopes, setScopes) => {
-  if (!config) {
-    return;
-  }
-
   const { token, currentTeam } = config;
+
+  console.time('Loaded fresh user and teams');
 
   loadData(API_TEAMS, token)
     .then(data => {
@@ -49,6 +47,8 @@ export default (config, active, setActive, scopes, setScopes) => {
           if (!relatedScope) {
             relatedScope = scopes[0];
           }
+
+          console.timeEnd('Loaded fresh user and teams');
 
           setScopes(scopes);
           setActive(relatedScope);
