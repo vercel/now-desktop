@@ -61,8 +61,9 @@ const Tips = ({ darkMode, config }) => {
       const alreadyShown = (desktopConfig && config.desktop.shownTips) || {};
 
       setShownTips(alreadyShown);
-      // Only execute if the config has changed
     },
+
+    // Only execute if the config has changed
     [config && config.lastUpdate]
   );
 
