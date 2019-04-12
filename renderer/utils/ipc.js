@@ -55,7 +55,7 @@ const saveConfig = (data, type, firstSave) => {
     new Promise((resolve, reject) => {
       window.ipc.once(
         'config-save-response',
-        (event, arg) => (arg instanceof Error ? reject(arg) : resolve())
+        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
       );
 
       window.ipc.send('config-save-request', data, type, firstSave);

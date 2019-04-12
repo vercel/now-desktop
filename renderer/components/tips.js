@@ -51,16 +51,20 @@ const closeTip = async (tip, setShownTips) => {
 const Tips = ({ darkMode, config }) => {
   const [shownTips, setShownTips] = useState(null);
 
-  useEffect(() => {
-    if (!config || shownTips !== null) {
-      return;
-    }
+  useEffect(
+    () => {
+      if (config === null) {
+        return;
+      }
 
-    const desktopConfig = config && config.desktop;
-    const alreadyShown = (desktopConfig && config.desktop.shownTips) || {};
+      const desktopConfig = config && config.desktop;
+      const alreadyShown = (desktopConfig && config.desktop.shownTips) || {};
 
-    setShownTips(alreadyShown);
-  });
+      setShownTips(alreadyShown);
+      // Only execute if the config has changed
+    },
+    [config && config.lastUpdate]
+  );
 
   const tip = tips.find(({ id }) => shownTips && !shownTips[id]);
 

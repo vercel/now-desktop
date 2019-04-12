@@ -17,16 +17,15 @@ module.exports = (app, tray, window) => {
   });
 
   ipcMain.on('config-save-request', async (event, data, type, firstSave) => {
-    let reply = null;
+    let config = null;
 
     try {
-      await saveConfig(data, type, firstSave);
+      config = await saveConfig(data, type, firstSave);
     } catch (err) {
-      console.log(err);
-      reply = err;
+      config = err;
     }
 
-    event.sender.send('config-save-response', reply);
+    event.sender.send('config-save-response', config);
   });
 
   ipcMain.on('url-request', async (event, url) => {

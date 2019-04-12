@@ -6,13 +6,9 @@ const loadFreshConfig = (setConfig, preparingOpening) => {
   ipc
     .getConfig()
     .then(config => {
-      const copy = Object.assign({}, config, {
-        lastUpdate: Date.now()
-      });
-
       console.timeEnd('Loaded fresh config');
 
-      setConfig(copy);
+      setConfig(config);
 
       if (preparingOpening) {
         ipc.showWindow();

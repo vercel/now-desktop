@@ -22,6 +22,11 @@ for (const file in paths) {
   paths[file] = path.join(homedir(), paths[file]);
 }
 
+const assignUpdate = (...parts) =>
+  Object.assign({}, ...parts, {
+    lastUpdate: Date.now()
+  });
+
 exports.getConfig = async () => {
   const authContent = await fs.readJSON(paths.auth);
   const config = await fs.readJSON(paths.config);
@@ -32,7 +37,7 @@ exports.getConfig = async () => {
     token = authContent.token;
   }
 
-  return Object.assign({}, config || {}, { token });
+  return assignUpdate(config || {}, { token });
 };
 
 exports.removeConfig = async () => {
@@ -134,6 +139,8 @@ exports.saveConfig = async (data, type) => {
   await fs.writeJSON(destination, currentContent, {
     spaces: 2
   });
+
+  return assignUpdate(currentContent);
 };
 
 exports.getDarkModeStatus = () => {
