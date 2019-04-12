@@ -743,7 +743,7 @@ class Feed extends Component {
 export default Feed;
 */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Title from '../components/title';
 import Switcher from '../components/feed/switcher';
 import onlineEffect from '../effects/online';
@@ -751,7 +751,7 @@ import configEffect from '../effects/config';
 import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
-import scopeOrderEffect from '../effects/scope-order';
+import scopeOrderMemo from '../memos/scope-order';
 
 const Main = () => {
   const [scopes, setScopes] = useState(null);
@@ -805,18 +805,20 @@ const Main = () => {
     [config && config.lastUpdate, JSON.stringify(scopes)]
   );
 
-  useEffect(
+  const scopeOrder = config && config.desktop && config.desktop.scopeOrder;
+
+  const orderedScopes = useMemo(
     () => {
-      // Wait until the scopes and config are defined.
+      // Wait until the config and scopes are defined.
       if (config === null || scopes === null) {
-        return;
+        return scopes;
       }
 
-      return scopeOrderEffect(config, scopes, setScopes);
+      return scopeOrderMemo(scopeOrder, scopes);
     },
 
-    // Only re-invoke this effect if the scopes or config change.
-    [config && config.lastUpdate, JSON.stringify(scopes)]
+    // Only re-invoke this effect if the scopes or scope order change.
+    [JSON.stringify(scopeOrder), JSON.stringify(scopes)]
   );
 
   return (
@@ -828,7 +830,7 @@ const Main = () => {
         online={online}
         darkMode={darkMode}
         active={active}
-        scopes={scopes}
+        scopes={orderedScopes}
         setConfig={setConfig}
       />
 
