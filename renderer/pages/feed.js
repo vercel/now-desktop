@@ -750,6 +750,8 @@ import onlineEffect from '../effects/online';
 import configEffect from '../effects/config';
 import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
+import activeEffect from '../effects/active';
+import scopeOrderEffect from '../effects/scope-order';
 
 const Main = () => {
   const [scopes, setScopes] = useState(null);
@@ -770,7 +772,7 @@ const Main = () => {
   useEffect(
     () => {
       return configEffect(config, setConfig);
-      // Never re-invoke this effect
+      // Never re-invoke this effect.
     },
     [false]
   );
@@ -782,18 +784,53 @@ const Main = () => {
         return;
       }
 
-      return scopesEffect(config, active, setActive, scopes, setScopes);
+      return scopesEffect(config, setScopes);
     },
 
     // Only re-invoke this effect if the config changes.
     [config && config.lastUpdate]
   );
 
+  useEffect(
+    () => {
+      // Wait until the scopes are defined.
+      if (scopes === null || scopes.length === 0) {
+        return;
+      }
+
+      return activeEffect(config, scopes, setActive);
+    },
+
+    // Only re-invoke this effect if the scopes or config change.
+    [config && config.lastUpdate, JSON.stringify(scopes)]
+  );
+
+  useEffect(
+    () => {
+      // Wait until the scopes and config are defined.
+      if (config === null || scopes === null) {
+        return;
+      }
+
+      return scopeOrderEffect(config, scopes, setScopes);
+    },
+
+    // Only re-invoke this effect if the scopes or config change.
+    [config && config.lastUpdate, JSON.stringify(scopes)]
+  );
+
   return (
     <main>
       <Title config={config} active={active} darkMode={darkMode} />
 
-      <Switcher online={online} darkMode={darkMode} active={active} />
+      <Switcher
+        config={config}
+        online={online}
+        darkMode={darkMode}
+        active={active}
+        scopes={scopes}
+        setConfig={setConfig}
+      />
 
       <style jsx global>{`
         body {

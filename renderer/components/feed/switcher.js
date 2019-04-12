@@ -1,457 +1,37 @@
-import { Component } from 'react';
-import { func, object, bool } from 'prop-types';
-import isEqual from 'react-fast-compare';
-import setRef from 'react-refs';
-import {
-  SortableContainer,
-  SortableElement,
-  arrayMove
-} from 'react-sortable-hoc';
-import makeUnique from 'make-unique';
-import {
-  wrapStyle,
-  listStyle,
-  itemStyle,
-  helperStyle
-} from '../../styles/components/feed/switcher';
-import loadData from '../../utils/data/load';
-import { API_TEAMS } from '../../utils/data/endpoints';
-import Clear from '../../vectors/clear';
+import { useRef, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import * as sortable from 'react-sortable-hoc';
 import ipc from '../../utils/ipc';
-import Avatar from './avatar';
 import CreateTeam from './create-team';
+import Avatar from './avatar';
 
-class Switcher extends Component {
-  state = {
-    teams: [],
-    scope: null,
-    updateFailed: false,
-    initialized: false,
-    syncInterval: '5s',
-    queue: []
-  };
-
-  setReference = setRef.bind(this);
-
-  // Don't update state when dragging teams
-  moving = false;
-
-  // Ensure that config doesn't get checked when the
-  // file is updated from this component
-  savingConfig = false;
-
-  showWindow = () => {
-    if (this.timer && this.state.syncInterval !== '5s') {
-      clearInterval(this.timer);
-
-      // Refresh the teams and events when the window gets
-      // shown, so that they're always up-to-date
-      this.loadTeams();
-
-      // Restart the timer so we keep everything in sync every 5s
-      this.listTimer();
-      this.setState({ syncInterval: '5s' });
-    }
-
-    document.addEventListener('keydown', this.keyDown.bind(this));
-  };
-
-  componentDidMount() {
-    this.loadTeams();
-  }
-
-  hideWindow = () => {
-    if (this.timer && this.state.syncInterval !== '5m') {
-      clearInterval(this.timer);
-
-      // Restart the timer so we keep everything in sync every 5m
-      this.listTimer();
-      this.setState({ syncInterval: '5m' });
-    }
-
-    document.removeEventListener('keydown', this.keyDown.bind(this));
-  };
-
-  listTimer = () => {
-    // Test
-  };
-
-  async applyTeamOrder(list, order) {
-    const newList = [];
-
-    if (!order) {
-      return list;
-    }
-
-    for (const position of order) {
-      const index = order.indexOf(position);
-
-      newList[index] = list.find(item => {
-        const name = item.slug || item.name;
-        return name === position;
-      });
-    }
-
-    // Apply the new data at the end, but keep order
-    return this.merge(newList, list);
-  }
-
-  merge(first, second) {
-    const merged = first.concat(second);
-    return makeUnique(merged, (a, b) => a.id === b.id);
-  }
-
-  async getTeamOrder() {
-    let config;
-
-    try {
-      config = await ipc.getConfig();
-    } catch (err) {}
-
-    if (!config || !config.desktop || !config.desktop.teamOrder) {
-      return false;
-    }
-
-    const order = config.desktop.teamOrder;
-
-    if (!Array.isArray(order) || order.length === 0) {
-      return false;
-    }
-
-    return order;
-  }
-
-  async haveUpdated(data) {
-    const newData = JSON.parse(JSON.stringify(data));
-    let currentData = JSON.parse(JSON.stringify(this.state.teams));
-
-    if (currentData.length > 0) {
-      // Remove teams that the user has left
-      currentData = currentData.filter(team => {
-        return Boolean(newData.find(item => item.id === team.id));
-      });
-    }
-
-    const ordered = this.merge(currentData, newData);
-    const copy = JSON.parse(JSON.stringify(ordered));
-    const order = await this.getTeamOrder();
-
-    if (!order) {
-      return ordered;
-    }
-
-    for (const item of order) {
-      const isPart = newData.find(team => {
-        return team.name === item || team.slug === item;
+const updateScope = (scope, config, setConfig) => {
+  ipc
+    .saveConfig(
+      {
+        currentTeam: scope.isCurrentUser ? undefined : scope.id
+      },
+      'config'
+    )
+    .then(newConfig => {
+      const freshConfig = Object.assign({}, newConfig, {
+        token: config.token
       });
 
-      // If the saved team order contains a team that
-      // the user is not a part of, we can ignore it.
-      if (!isPart) {
-        return ordered;
-      }
-    }
-
-    if (isEqual(ordered, currentData)) {
-      return false;
-    }
-
-    // Then order the teams as saved in the config
-    return this.applyTeamOrder(copy, order);
-  }
-
-  async loadTeams(firstLoad) {
-    const data = await loadData(API_TEAMS);
-
-    if (!data || !data.teams || !this.props.currentUser) {
-      return;
-    }
-
-    const teams = data.teams;
-    const user = this.props.currentUser;
-
-    teams.unshift({
-      id: user.uid,
-      name: user.username
+      setConfig(freshConfig);
+    })
+    .catch(err => {
+      console.error(`Failed to update scope: ${err}`);
     });
+};
 
-    const updated = await this.haveUpdated(teams);
-
-    const scopeExists = updated.find(team => {
-      return this.state.scope === team.id;
-    });
-
-    if (!scopeExists) {
-      this.resetScope();
-    }
-
-    if (updated) {
-      this.setState({ teams: updated });
-    }
-
-    if (this.props.setTeams) {
-      // When passing `null`, the feed will only
-      // update the events, not the teams
-      await this.props.setTeams(updated || null, firstLoad);
-    }
-  }
-
-  resetScope() {
-    const currentUser = this.props.currentUser;
-
-    if (!currentUser) {
-      return;
-    }
-
-    this.changeScope({
-      id: currentUser.uid
-    });
-  }
-
-  keyDown(event) {
-    const activeItem = document.activeElement;
-
-    if (activeItem && activeItem.tagName === 'INPUT') {
-      return;
-    }
-
-    const code = event.code;
-    const number = code.includes('Digit') ? code.split('Digit')[1] : false;
-
-    if (number && number <= 9 && this.state.teams.length > 1) {
-      if (this.state.teams[number - 1]) {
-        event.preventDefault();
-
-        const relatedTeam = this.state.teams[number - 1];
-        this.changeScope(relatedTeam);
-      }
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { teams, scope } = this.state;
-
-    const teamsChanged = !isEqual(teams, prevState.teams);
-    const scopeChanged = !isEqual(scope, prevState.scope);
-
-    if (teamsChanged || scopeChanged) {
-      // Update touch bar here
-    }
-
-    while (this.state.queue.length > 0) {
-      const queue = this.state.queue;
-
-      queue.shift()();
-
-      this.setState({ queue });
-    }
-
-    if (this.state.initialized) {
-      return;
-    }
-
-    const teamsCount = teams.length;
-
-    if (teamsCount === 0) {
-      return;
-    }
-
-    const when = 100 + 100 * teamsCount + 600;
-
-    setTimeout(() => {
-      // Ensure that the animations for the teams
-      // fading in works after recovering from offline mode
-      if (!this.props.online) {
-        return;
-      }
-
-      this.setState({
-        initialized: true
-      });
-    }, when);
-  }
-
-  static getDerivedStateFromProps(props) {
-    // Ensure that the animations for the teams
-    // fading in works after recovering from offline mode.
-    if (!props.online) {
-      return {
-        initialized: false
-      };
-    }
-
-    return null;
-  }
-
-  async updateConfig(team, updateMessage) {
-    const currentUser = this.props.currentUser;
-
-    if (!currentUser) {
-      return;
-    }
-
-    const info = {
-      currentTeam: null
-    };
-
-    // Only add fresh data to config if new scope is team, not user
-    // Otherwise just clear it
-    if (currentUser.uid !== team.id) {
-      // Only save the data we need, not the entire object
-      info.currentTeam = {
-        id: team.id,
-        slug: team.slug,
-        name: team.name
-      };
-    }
-
-    // And then update the config file
-    await this.saveConfig(info);
-
-    // Show a notification that the context was updated
-    // in the title bar
-    if (updateMessage && this.props.titleRef) {
-      this.props.titleRef.scopeUpdated();
-    }
-  }
-
-  changeScope(team, saveToConfig, byHand, noFeed) {
-    // If the clicked item in the team switcher is
-    // already the active one, don't do anything
-    if (this.state.scope === team.id) {
-      return;
-    }
-
-    if (!noFeed && this.props.setFeedScope) {
-      // Load different messages into the feed
-      this.props.setFeedScope(team.id);
-    }
-
-    // Make the team/user icon look active by
-    // syncing the scope with the feed
-    this.setState({ scope: team.id });
-
-    // Save the new `currentTeam` to the config
-    if (saveToConfig) {
-      const queueFunction = (fn, context, params) => {
-        return () => {
-          fn.apply(context, params);
-        };
-      };
-
-      this.setState({
-        queue: this.state.queue.concat([
-          queueFunction(this.updateConfig, this, [team, byHand])
-        ])
-      });
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    // There are two cases in which we do not want to re-render:
-    //
-    // - Someone is dragging something around in the UI (this.moving)
-    // - The state and/or props didn't change (rest of the statement)
-    //
-    // It is extremely important to understand that `shouldComponentUpdate` will
-    // be called even if the state AND props did not change. Because that is exactly
-    // the purpose of this function: To decide whether something changed.
-    if (
-      this.moving ||
-      (isEqual(this.state, nextState) && isEqual(this.props, nextProps))
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  openMenu = () => {
-    // The menu toggler element has children
-    // we have the ability to prevent the event from
-    // bubbling up from those, but we need to
-    // use `this.menu` to make sure the menu always gets
-    // bounds to the parent
-    const { bottom, left, height, width } = this.menu.getBoundingClientRect();
-
-    ipc.openMainMenu({
-      x: left,
-      y: bottom,
-      height,
-      width
-    });
-  };
-
-  saveTeamOrder(teams) {
-    const teamOrder = [];
-
-    for (const team of teams) {
-      teamOrder.push(team.slug || team.name);
-    }
-
-    this.saveConfig({
-      desktop: { teamOrder }
-    });
-  }
-
-  async saveConfig(newConfig) {
-    // Ensure that we're not handling the
-    // event triggered by changes made to the config
-    // because the changes were triggered manually
-    // inside this app
-    this.savingConfig = true;
-
-    // Then update the config file
-    await ipc.saveConfig(newConfig, 'config');
-  }
-
-  onSortEnd = ({ oldIndex, newIndex }) => {
-    document.body.classList.toggle('is-moving');
-
-    // Allow the state to update again
-    this.moving = false;
-
-    // Don't update if it was dropped at the same position
-    if (oldIndex === newIndex) {
-      return;
-    }
-
-    const teams = arrayMove(this.state.teams, oldIndex, newIndex);
-    this.saveTeamOrder(teams);
-
-    // Ensure that we're not dealing with the same
-    // objects or array ever again
-    this.setState({
-      teams: JSON.parse(JSON.stringify(teams))
-    });
-  };
-
-  onSortStart = () => {
-    document.body.classList.toggle('is-moving');
-
-    // Prevent the state from being updated
-    this.moving = true;
-  };
-
-  scrollToEnd = event => {
-    event.preventDefault();
-
-    if (!this.list) {
-      return;
-    }
-
-    const list = this.list;
-    list.scrollLeft = list.offsetWidth;
-  };
-
-  renderItem() {
-    // eslint-disable-next-line new-cap
-    return SortableElement(({ team }) => {
-      const isActive = this.state.scope === team.id;
-      const isUser = team.id && !team.id.includes('team');
-      const index = this.state.teams.indexOf(team);
-      const shouldScale = !this.state.initialized;
-      const darkBg = this.props.darkBg;
+const renderItem = () => {
+  // eslint-disable-next-line new-cap
+  return sortable.SortableElement(
+    ({ scopes, active, scope, darkMode, initialized, config, setConfig }) => {
+      const isActive = active.id === scope.id;
+      const index = scopes.indexOf(scope);
+      const shouldScale = !initialized;
 
       const classes = [];
 
@@ -459,138 +39,450 @@ class Switcher extends Component {
         classes.push('active');
       }
 
-      if (darkBg) {
+      if (darkMode) {
         classes.push('dark');
       }
 
       const clicked = event => {
         event.preventDefault();
-        this.changeScope(team, true, true);
+        updateScope(scope, config, setConfig);
       };
 
       return (
-        <li onClick={clicked} className={classes.join(' ')} key={team.id}>
+        <li onClick={clicked} className={classes.join(' ')} key={scope.id}>
           <Avatar
-            team={team}
-            isUser={isUser}
+            team={scope}
+            isUser={scope.isCurrentUser}
             scale={shouldScale}
             delay={index}
-            hash={team.avatar}
+            hash={scope.avatar}
           />
 
-          <style jsx>{itemStyle}</style>
+          <style jsx>{`
+            li {
+              width: 23px;
+              height: 23px;
+              border-radius: 100%;
+              margin-right: 10px;
+              opacity: 0.3;
+              filter: grayscale(1);
+              transition-duration: 300ms;
+            }
+
+            li:hover {
+              filter: grayscale(0);
+              opacity: 1;
+            }
+
+            li.dark {
+              border: 1px solid #666;
+            }
+
+            li:last-child {
+              margin-right: 0;
+            }
+
+            li.active {
+              opacity: 1;
+              cursor: default;
+              filter: grayscale(0);
+            }
+          `}</style>
         </li>
       );
-    });
-  }
-
-  renderTeams() {
-    const Item = this.renderItem();
-
-    return this.state.teams.map((team, index) => (
-      <Item key={team.id} index={index} team={team} />
-    ));
-  }
-
-  renderList() {
-    const teams = this.renderTeams();
-
-    // eslint-disable-next-line new-cap
-    return SortableContainer(() => (
-      <ul>
-        {teams}
-        <style jsx>{listStyle}</style>
-      </ul>
-    ));
-  }
-
-  allowDrag = event => {
-    if (process.platform === 'win32') {
-      return !event.ctrlKey;
     }
+  );
+};
 
+const renderScopes = (
+  scopes,
+  active,
+  darkMode,
+  initialized,
+  config,
+  setConfig
+) => {
+  const Item = renderItem();
+
+  return scopes.map((scope, index) => (
+    <Item
+      key={scope.id}
+      index={index}
+      scope={scope}
+      active={active}
+      scopes={scopes}
+      darkMode={darkMode}
+      initialized={initialized}
+      config={config}
+      setConfig={setConfig}
+    />
+  ));
+};
+
+const renderList = (
+  scopes,
+  active,
+  darkMode,
+  initialized,
+  config,
+  setConfig
+) => {
+  const list = renderScopes(
+    scopes,
+    active,
+    darkMode,
+    initialized,
+    config,
+    setConfig
+  );
+
+  // eslint-disable-next-line new-cap
+  return sortable.SortableContainer(() => (
+    <ul>
+      {list}
+      <style jsx>{`
+        ul {
+          margin: 0;
+          list-style: none;
+          display: flex;
+          flex-direction: row;
+          padding: 0;
+          height: inherit;
+          align-items: center;
+          position: relative;
+        }
+      `}</style>
+    </ul>
+  ));
+};
+
+const shouldCancelStart = event => {
+  if (navigator.platform === 'MacIntel') {
     return !event.metaKey;
-  };
-
-  retryUpdate = () => {};
-
-  closeUpdateMessage = () => {
-    this.setState({
-      updateFailed: false
-    });
-  };
-
-  render() {
-    const List = this.renderList();
-    const { updateFailed, teams } = this.state;
-    const delay = teams.length;
-    const { darkBg, online } = this.props;
-
-    return (
-      <div>
-        {updateFailed && (
-          <span className="update-failed">
-            <p>
-              The app failed to update! &mdash;{' '}
-              <a onClick={this.retryUpdate}>Retry?</a>
-            </p>
-            <Clear onClick={this.closeUpdateMessage} color="#fff" />
-          </span>
-        )}
-        <aside className={darkBg ? 'dark' : ''}>
-          {online ? (
-            <div className="list-container" ref={this.setReference} name="list">
-              <div className="list-scroll">
-                <List
-                  axis="x"
-                  lockAxis="x"
-                  shouldCancelStart={this.allowDrag}
-                  onSortEnd={this.onSortEnd}
-                  onSortStart={this.onSortStart}
-                  helperClass="switcher-helper"
-                  lockToContainerEdges={true}
-                  lockOffset="0%"
-                />
-                <CreateTeam delay={delay} darkBg={darkBg} />
-              </div>
-
-              <span className="shadow" onClick={this.scrollToEnd} />
-            </div>
-          ) : (
-            <p className="offline">{'You are offline'}</p>
-          )}
-
-          <a
-            className="toggle-menu"
-            onClick={this.openMenu}
-            onContextMenu={this.openMenu}
-            ref={this.setReference}
-            name="menu"
-          >
-            <i />
-            <i />
-            <i />
-          </a>
-        </aside>
-
-        <style jsx>{wrapStyle}</style>
-
-        <style jsx global>
-          {helperStyle}
-        </style>
-      </div>
-    );
   }
-}
+
+  return !event.ctrlKey;
+};
+
+const scrollToEnd = (list, event) => {
+  event.preventDefault();
+
+  if (!list || !list.current) {
+    return;
+  }
+
+  const element = list.current;
+  element.scrollLeft = element.offsetWidth;
+};
+
+const saveScopeOrder = (scopes, config, setConfig) => {
+  const scopeOrder = scopes.map(scope => scope.slug);
+
+  ipc
+    .saveConfig(
+      {
+        desktop: { scopeOrder }
+      },
+      'config'
+    )
+    .then(newConfig => {
+      const freshConfig = Object.assign({}, newConfig, {
+        token: config.token
+      });
+
+      setConfig(freshConfig);
+
+      console.log('Updated scope order');
+    })
+    .catch(err => {
+      console.log(`Failed to update scope order: ${err}`);
+    });
+};
+
+const onSortStart = () => {
+  document.body.classList.toggle('is-moving');
+};
+
+const onSortEnd = (scopes, config, setConfig, { oldIndex, newIndex }) => {
+  document.body.classList.toggle('is-moving');
+
+  // Don't update if it was dropped at the same position
+  if (oldIndex === newIndex) {
+    return;
+  }
+
+  const final = sortable.arrayMove(scopes, oldIndex, newIndex);
+
+  saveScopeOrder(final, config, setConfig);
+  console.log(final);
+};
+
+const onKeyDown = (event, scopes, config, setConfig) => {
+  const code = event.code;
+  const number = code.includes('Digit') ? code.split('Digit')[1] : false;
+
+  if (number && number <= 9 && scopes.length > 1) {
+    if (scopes[number - 1]) {
+      event.preventDefault();
+
+      const relatedScope = scopes[number - 1];
+      updateScope(relatedScope, config, setConfig);
+    }
+  }
+};
+
+const openMenu = menu => {
+  // The menu toggler element has children
+  // we have the ability to prevent the event from
+  // bubbling up from those, but we need to
+  // use `this.menu` to make sure the menu always gets
+  // bounds to the parent
+  const { bottom, left, height, width } = menu.current.getBoundingClientRect();
+
+  ipc.openMainMenu({
+    x: left,
+    y: bottom,
+    height,
+    width
+  });
+};
+
+const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
+  if (active === null || scopes === null) {
+    return null;
+  }
+
+  const [initialized, setInitialized] = useState(false);
+
+  const menu = useRef(null);
+  const list = useRef(null);
+
+  const Scopes = renderList(
+    scopes,
+    active,
+    darkMode,
+    initialized,
+    config,
+    setConfig
+  );
+
+  useEffect(
+    () => {
+      if (scopes.length === 0) {
+        return;
+      }
+
+      const when = 100 + 100 * scopes.length + 600;
+
+      setTimeout(() => {
+        // Ensure that the animations for the teams
+        // fading in works after recovering from offline mode
+        if (!online) {
+          return;
+        }
+
+        setInitialized(true);
+      }, when);
+    },
+    [false]
+  );
+
+  useEffect(
+    () => {
+      const handleOnKeyDown = event => {
+        onKeyDown(event, scopes, config, setConfig);
+      };
+
+      document.addEventListener('keydown', handleOnKeyDown);
+
+      return () => {
+        document.removeEventListener('keydown', handleOnKeyDown);
+      };
+    },
+    [false]
+  );
+
+  return (
+    <span>
+      <aside className={darkMode ? 'dark' : ''}>
+        {online ? (
+          <div className="list-container" ref={list}>
+            <div className="list-scroll">
+              <Scopes
+                axis="x"
+                lockAxis="x"
+                shouldCancelStart={shouldCancelStart}
+                onSortEnd={onSortEnd.bind(this, scopes, config, setConfig)}
+                onSortStart={onSortStart}
+                helperClass="switcher-helper"
+                lockToContainerEdges={true}
+                lockOffset="0%"
+              />
+              <CreateTeam delay={scopes.length} darkMode={darkMode} />
+            </div>
+
+            <span className="shadow" onClick={scrollToEnd.bind(this, list)} />
+          </div>
+        ) : (
+          <p className="offline">{'You are offline'}</p>
+        )}
+
+        <a
+          className="toggle-menu"
+          onClick={openMenu.bind(this, menu)}
+          onContextMenu={openMenu.bind(this, menu)}
+          ref={menu}
+        >
+          <i />
+          <i />
+          <i />
+        </a>
+      </aside>
+
+      <style jsx>{`
+        aside {
+          height: 40px;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          flex-shrink: 0;
+          flex-grow: 0;
+          border-top: 1px solid #d6d6d6;
+          display: flex;
+          background: #fff;
+          user-select: none;
+          justify-content: space-between;
+        }
+
+        aside.dark {
+          border-top: 1px solid #000;
+          background: #2c2c2c;
+        }
+
+        aside .toggle-menu {
+          display: block;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          flex-shrink: 0;
+          z-index: 2000;
+          background: #fff;
+        }
+
+        aside.dark .toggle-menu {
+          background: #2c2c2c;
+        }
+
+        aside .toggle-menu i {
+          width: 18px;
+          height: 1px;
+          background: #4e4e4e;
+          display: block;
+          opacity: 0.5;
+          transition: opacity 0.2s ease;
+        }
+
+        aside.dark .toggle-menu i {
+          background: #b3b3b3;
+        }
+
+        aside .toggle-menu i:nth-child(2) {
+          margin: 3px 0;
+        }
+
+        aside .toggle-menu:hover i {
+          opacity: 1;
+        }
+
+        .list-scroll {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .list-container {
+          flex-shrink: 1;
+          flex-grow: 1;
+          display: flex;
+          height: inherit;
+          flex-direction: row;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding-left: 10px;
+          position: relative;
+        }
+
+        .list-container::-webkit-scrollbar {
+          display: none;
+        }
+
+        .shadow {
+          display: block;
+          height: 40px;
+          width: 20px;
+          background: linear-gradient(to right, transparent, #fff);
+          position: fixed;
+          left: calc(290px - 20px);
+          bottom: 0;
+          z-index: 2000;
+        }
+
+        .dark .shadow {
+          background: linear-gradient(to right, transparent, #2c2c2c);
+        }
+
+        .offline {
+          margin: 0;
+          line-height: 40px;
+          padding-left: 10px;
+          font-size: 12px;
+          color: #4e4e4e;
+        }
+      `}</style>
+
+      <style jsx global>{`
+        .switcher-helper {
+          position: relative;
+          opacity: 1 !important;
+          z-index: 1000;
+          overflow: visible;
+        }
+
+        .switcher-helper div {
+          position: absolute;
+          top: 0;
+          left: 0;
+          animation: scale 0.4s forwards;
+        }
+
+        body.is-moving {
+          cursor: move;
+        }
+
+        @keyframes scale {
+          0% {
+            transform: scale(1);
+          }
+
+          100% {
+            transform: scale(1.15);
+          }
+        }
+      `}</style>
+    </span>
+  );
+};
 
 Switcher.propTypes = {
-  setFeedScope: func,
-  currentUser: object,
-  setTeams: func,
-  titleRef: object,
-  activeScope: object,
-  darkBg: bool,
-  online: bool
+  online: PropTypes.bool,
+  darkMode: PropTypes.bool,
+  active: PropTypes.object,
+  config: PropTypes.object,
+  scopes: PropTypes.array,
+  setConfig: PropTypes.func
 };
 
 export default Switcher;

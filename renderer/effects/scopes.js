@@ -1,15 +1,13 @@
 import loadData from '../utils/data/load';
 import { API_TEAMS, API_USER } from '../utils/data/endpoints';
 
-export default (config, active, setActive, scopes, setScopes) => {
-  const { token, currentTeam } = config;
-
+export default ({ token }, setScopes) => {
   console.time('Loaded fresh user and teams');
 
   loadData(API_TEAMS, token)
     .then(data => {
       if (!data || !data.teams) {
-        console.error('Failed to load teams');
+        console.error(`Failed to load teams: ${data}`);
         return;
       }
 
@@ -37,21 +35,9 @@ export default (config, active, setActive, scopes, setScopes) => {
             currentUser: true
           });
 
-          let relatedScope = null;
-
-          if (currentTeam) {
-            relatedScope = scopes.find(scope => scope.id === currentTeam);
-          }
-
-          // If no current team is defined, fall back to the user
-          if (!relatedScope) {
-            relatedScope = scopes[0];
-          }
-
           console.timeEnd('Loaded fresh user and teams');
 
           setScopes(scopes);
-          setActive(relatedScope);
         })
         .catch(err => {
           console.error(`Failed to load user: ${err}`);
