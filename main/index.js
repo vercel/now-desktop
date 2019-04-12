@@ -94,7 +94,7 @@ app.on('ready', async () => {
   // Make the main process listen to requests from the renderer process
   prepareIpc(app, tray, window);
 
-  const toggleActivity = () => toggleWindow(window);
+  const toggleActivity = () => toggleWindow(tray, window);
   const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
   // Only allow one instance of Now running

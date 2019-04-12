@@ -1,19 +1,13 @@
 import ipc from '../utils/ipc';
 
-const loadFreshConfig = (setConfig, preparingOpening) => {
+const loadFreshConfig = setConfig => {
   console.time('Loaded fresh config');
 
   ipc
     .getConfig()
     .then(config => {
       console.timeEnd('Loaded fresh config');
-
       setConfig(config);
-
-      if (preparingOpening) {
-        ipc.showWindow();
-        console.log('[a] Opened window');
-      }
     })
     .catch(err => {
       console.error(`Failed to retrieve config: ${err}`);
@@ -26,8 +20,7 @@ export default (config, setConfig) => {
   }
 
   const prepareOpening = () => {
-    console.log('[a] Triggered opening preparation');
-    loadFreshConfig(setConfig, true);
+    loadFreshConfig(setConfig);
   };
 
   ipc.onPrepareOpening(prepareOpening);

@@ -1,7 +1,6 @@
 const { ipcMain, shell, systemPreferences } = require('electron');
 const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
-const { positionWindow } = require('./window');
 
 module.exports = (app, tray, window) => {
   ipcMain.on('config-get-request', async event => {
@@ -34,11 +33,6 @@ module.exports = (app, tray, window) => {
 
   ipcMain.on('hide-window-request', async () => {
     window.hide();
-  });
-
-  ipcMain.on('show-window-request', async () => {
-    positionWindow(tray, window);
-    window.show();
   });
 
   ipcMain.on('open-main-menu-request', async (event, bounds) => {

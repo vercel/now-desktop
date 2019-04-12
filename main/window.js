@@ -129,7 +129,7 @@ exports.getWindow = tray => {
   return win;
 };
 
-exports.toggleWindow = window => {
+exports.toggleWindow = (tray, window) => {
   const isVisible = window.isVisible();
   const isWin = process.platform === 'win32';
 
@@ -141,7 +141,8 @@ exports.toggleWindow = window => {
   if (isVisible) {
     window.close();
   } else {
-    window.webContents.send('prepare-opening');
+    exports.positionWindow(tray, window);
+    window.show();
   }
 };
 
