@@ -763,21 +763,17 @@ const Main = () => {
     return onlineEffect(online, setOnline);
   });
 
-  // And this effect do not depend on each other, so they
-  // can run at the same time.
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
   });
 
-  useEffect(() => {
-    // Wait until dark mode and online state are set
-    // before pulling config.
-    if (darkMode === null || online === null) {
-      return;
-    }
-
-    return configEffect(config, setConfig);
-  });
+  useEffect(
+    () => {
+      return configEffect(config, setConfig);
+      // Never re-invoke this effect
+    },
+    [false]
+  );
 
   useEffect(
     () => {
@@ -787,7 +783,6 @@ const Main = () => {
       }
 
       return scopesEffect(config, active, setActive, scopes, setScopes);
-
       // Only re-invoke this effect if the config changes.
     },
     [config && config.lastUpdate]
