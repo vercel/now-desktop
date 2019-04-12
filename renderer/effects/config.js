@@ -23,9 +23,9 @@ export default (config, setConfig) => {
     loadFreshConfig(setConfig);
   };
 
-  ipc.onPrepareOpening(prepareOpening);
+  ipc.onWindowOpening(prepareOpening);
 
   return () => {
-    ipc.clearPrepareOpening(prepareOpening);
+    ipc.clearWindowOpening(prepareOpening);
   };
 };

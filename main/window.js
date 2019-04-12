@@ -141,6 +141,7 @@ exports.toggleWindow = (tray, window) => {
   if (isVisible) {
     window.close();
   } else {
+    window.webContents.send('window-opening');
     exports.positionWindow(tray, window);
     window.show();
   }
