@@ -783,8 +783,9 @@ const Main = () => {
       }
 
       return scopesEffect(config, active, setActive, scopes, setScopes);
-      // Only re-invoke this effect if the config changes.
     },
+
+    // Only re-invoke this effect if the config changes.
     [config && config.lastUpdate]
   );
 
