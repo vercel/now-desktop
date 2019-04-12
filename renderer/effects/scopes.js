@@ -32,7 +32,7 @@ export default ({ token }, setScopes) => {
             avatar: user.avatar,
             slug: user.username,
             name: user.name || user.username,
-            currentUser: true
+            isCurrentUser: true
           });
 
           console.timeEnd('Loaded fresh user and teams');

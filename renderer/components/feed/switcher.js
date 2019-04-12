@@ -214,7 +214,6 @@ const onSortEnd = (scopes, config, setConfig, { oldIndex, newIndex }) => {
   const final = sortable.arrayMove(scopes, oldIndex, newIndex);
 
   saveScopeOrder(final, config, setConfig);
-  console.log(final);
 };
 
 const onKeyDown = (event, scopes, config, setConfig) => {
