@@ -32,13 +32,7 @@ exports.getConfig = async () => {
     token = authContent.token;
   }
 
-  const content = Object.assign({}, config || {}, { token });
-
-  if (!content.token) {
-    throw new Error('No user token defined');
-  }
-
-  return content;
+  return Object.assign({}, config || {}, { token });
 };
 
 exports.removeConfig = async () => {

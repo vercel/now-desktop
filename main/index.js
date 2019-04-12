@@ -9,7 +9,7 @@ const { sentryDsn } = require('../package');
 const firstRun = require('./first-run');
 const { getMainMenu } = require('./menu');
 const autoUpdater = require('./updates');
-const { getWindow } = require('./window');
+const { getWindow, toggleWindow } = require('./window');
 const prepareIpc = require('./ipc');
 
 Sentry.init({
@@ -94,21 +94,8 @@ app.on('ready', async () => {
   // Make the main process listen to requests from the renderer process
   prepareIpc(app, tray, window);
 
-  const toggleActivity = async () => {
-    const isVisible = window.isVisible();
-    const isWin = process.platform === 'win32';
-
-    if (!isWin && isVisible && !window.isFocused()) {
-      window.focus();
-      return;
-    }
-
-    if (isVisible) {
-      window.close();
-    } else {
-      window.webContents.send('prepare-opening');
-    }
-  };
+  const toggleActivity = () => toggleWindow(window);
+  const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
   // Only allow one instance of Now running
   // at the same time
@@ -121,8 +108,6 @@ app.on('ready', async () => {
   }
 
   app.on('second-instance', toggleActivity);
-
-  const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
   if (isFirstRun) {
     // Show the tutorial as soon as the content has finished rendering

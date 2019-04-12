@@ -129,6 +129,22 @@ exports.getWindow = tray => {
   return win;
 };
 
+exports.toggleWindow = window => {
+  const isVisible = window.isVisible();
+  const isWin = process.platform === 'win32';
+
+  if (!isWin && isVisible && !window.isFocused()) {
+    window.focus();
+    return;
+  }
+
+  if (isVisible) {
+    window.close();
+  } else {
+    window.webContents.send('prepare-opening');
+  }
+};
+
 exports.positionWindow = (tray, window) => {
   const { screen } = electron;
   const screenPoint = screen.getCursorScreenPoint();
