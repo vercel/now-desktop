@@ -283,7 +283,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         setInitialized(true);
       }, when);
     },
-    [false]
+    [JSON.stringify(scopes)]
   );
 
   useEffect(

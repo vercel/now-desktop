@@ -1,11 +1,8 @@
-// Packages
 import { bool } from 'prop-types';
-
-// Styles
 import styles from '../../styles/components/feed/loading';
 
-const Loading = ({ offline, darkBg = false }) => (
-  <aside className={darkBg ? 'dark' : ''}>
+const Loading = ({ offline, darkMode = false }) => (
+  <aside className={darkMode ? 'dark' : ''}>
     <section>
       <img src="/static/loading.gif" />
       <p>{offline ? 'Waiting for a Connection...' : 'Loading Events...'}</p>
@@ -16,7 +13,7 @@ const Loading = ({ offline, darkBg = false }) => (
 );
 
 Loading.propTypes = {
-  darkBg: bool,
+  darkMode: bool,
   offline: bool
 };
 

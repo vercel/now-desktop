@@ -162,11 +162,11 @@ class EventMessage extends PureComponent {
       return null;
     }
 
-    const { message, content, team, group, darkBg } = this.props;
+    const { message, content, team, group, darkMode } = this.props;
     const avatarHash = content.user && content.user.avatar;
     const classes = ['event'];
 
-    if (darkBg) {
+    if (darkMode) {
       classes.push('dark');
     }
 
@@ -181,7 +181,7 @@ class EventMessage extends PureComponent {
           team={team}
           group={group}
           hash={avatarHash}
-          darkBg={darkBg}
+          darkMode={darkMode}
         />
 
         <figcaption>
@@ -205,7 +205,7 @@ EventMessage.propTypes = {
   setScopeWithSlug: func,
   message: object,
   group: string,
-  darkBg: bool
+  darkMode: bool
 };
 
 export default EventMessage;
