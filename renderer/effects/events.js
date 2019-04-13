@@ -35,15 +35,25 @@ const loadEvents = (scope, dispatchEvents, { token }) => {
 };
 
 export default (scopes, active, events, dispatchEvents, config) => {
-  const scopesWithoutActive = scopes.filter(scope => {
-    return scope.id !== active.id;
-  });
+  // Make sure the currently active scope is
+  // always first pulled.
+  const toPull = [active];
 
-  // Bring the currently active scope to the front.
-  const orderedScopes = [active, ...scopesWithoutActive];
+  // If there are no events for the active scope yet, it means
+  // we're loading events for the first time. In that case, we want to
+  // pre-fill all the scopes with events.
+  if (!events[active.id]) {
+    const left = scopes.filter(scope => {
+      return scope.id !== active.id;
+    });
+
+    for (const scope of left) {
+      toPull.push(scope);
+    }
+  }
 
   Promise.all(
-    orderedScopes.map(scope => {
+    toPull.map(scope => {
       return loadEvents(scope, dispatchEvents, config);
     })
   );
