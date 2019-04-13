@@ -51,8 +51,7 @@ const renderItem = () => {
       return (
         <li onClick={clicked} className={classes.join(' ')} key={scope.id}>
           <Avatar
-            team={scope}
-            isUser={scope.isCurrentUser}
+            scope={scope}
             scale={shouldScale}
             delay={index}
             hash={scope.avatar}

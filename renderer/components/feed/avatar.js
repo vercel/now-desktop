@@ -1,135 +1,117 @@
-import { PureComponent } from 'react';
-import { object, bool, number, string } from 'prop-types';
-import styles from '../../styles/components/feed/avatar';
+import classNames from 'classnames';
+import { useState, useMemo, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-class Avatar extends PureComponent {
-  state = {
-    url: null,
-    title: null,
-    scaled: false
+const urlPrefix = 'https://zeit.co/api/www/avatar/';
+
+const avatarMemo = hash => {
+  if (hash) {
+    return `${urlPrefix}${hash}?s=80`;
+  }
+};
+
+const titleEffect = (event, scope, setTitle) => {
+  let title = null;
+
+  if (event && event.user) {
+    title = event.user.name || event.user.username;
+  }
+
+  if (scope) {
+    title = scope.name || scope.slug || scope.username;
+  }
+
+  setTitle(title);
+};
+
+const scaleEffect = (delay, setScaled) => {
+  const when = 100 + 100 * delay;
+
+  const timeout = setTimeout(() => {
+    setScaled(true);
+  }, when);
+
+  return () => {
+    clearTimeout(timeout);
   };
+};
 
-  componentWillMount() {
-    this.setURL();
-    this.setTitle();
-  }
+const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
+  const [title, setTitle] = useState(null);
+  const [scaled, setScaled] = useState(null);
 
-  componentWillUnmount() {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-    }
-  }
+  const url = useMemo(() => avatarMemo(hash), [hash]);
 
-  componentDidMount() {
-    if (!this.props.scale) {
-      return;
-    }
+  const classes = classNames({
+    inEvent: Boolean(event),
+    darkMode,
+    scale,
+    scaled
+  });
 
-    if (!this.state.scaled) {
-      this.prepareScale(this.props.delay);
-    }
-  }
+  useEffect(
+    () => {
+      return titleEffect(event, scope, setTitle);
+    },
 
-  async setURL() {
-    const { event, team, isUser, group, hash } = this.props;
+    [false]
+  );
 
-    if (group && group === 'system') {
-      this.setState({
-        url: `/static/geist.png`
-      });
+  useEffect(
+    () => {
+      if (!scale) {
+        return;
+      }
 
-      return;
-    }
+      return scaleEffect(delay, setScaled);
+    },
 
-    let validUser = event || isUser;
-    let id;
+    [false]
+  );
 
-    if (Object.keys(team) > 0) {
-      validUser = false;
-    }
+  return (
+    <div>
+      <img src={url} title={title} className={classes} draggable={false} />
 
-    if (event) {
-      id = event.user ? event.user.uid : event.userId;
-    } else {
-      id = team.id;
-    }
+      <style jsx>{`
+        div {
+          flex-shrink: 0;
+        }
 
-    let imageID = validUser ? id : `?teamId=${team.id}`;
-    let separator = validUser ? '?' : '&';
+        img {
+          height: 23px;
+          width: 23px;
+          border-radius: 23px;
+        }
 
-    if (hash) {
-      imageID = hash;
-      separator = '?';
-    }
+        .darkMode {
+          border: 1px solid #fff;
+        }
 
-    this.setState({
-      url: `https://zeit.co/api/www/avatar/${imageID}${separator}s=80`
-    });
-  }
+        .scale {
+          transform: scale(0);
+          transition: all 0.6s;
+        }
 
-  async setTitle() {
-    const { event, team, isUser } = this.props;
-    let title;
+        .scaled {
+          transform: scale(1);
+        }
 
-    if ((team && !isUser) || (!event && isUser)) {
-      title = team.name || 'You';
-    }
-
-    if (event && event.user) {
-      title = event.user.username || event.user.email;
-    }
-
-    this.setState({ title });
-  }
-
-  prepareScale(delay) {
-    const when = 100 + 100 * delay;
-
-    this.timeout = setTimeout(() => {
-      this.setState({
-        scaled: true
-      });
-    }, when);
-  }
-
-  render() {
-    let classes = this.props.event ? 'in-event' : '';
-
-    if (this.props.scale) {
-      classes += ' scale';
-    }
-
-    if (this.state.scaled) {
-      classes += ' scaled';
-    }
-
-    if (this.state.darkBg) {
-      classes += ' dark';
-    }
-
-    return (
-      <div>
-        <img
-          src={this.state.url}
-          title={this.state.title}
-          draggable="false"
-          className={classes}
-        />
-
-        <style jsx>{styles}</style>
-      </div>
-    );
-  }
-}
+        .inEvent {
+          margin: 8px 10px 0 10px;
+        }
+      `}</style>
+    </div>
+  );
+};
 
 Avatar.propTypes = {
-  team: object,
-  event: object,
-  isUser: bool,
-  scale: bool,
-  delay: number,
-  group: string,
-  hash: string
+  hash: PropTypes.string,
+  event: PropTypes.object,
+  scope: PropTypes.object,
+  scale: PropTypes.bool,
+  delay: PropTypes.number,
+  darkMode: PropTypes.bool
 };
 
 export default Avatar;
