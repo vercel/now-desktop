@@ -173,36 +173,6 @@ class Feed extends Component {
       });
     }
   };
-  loadingOlder() {
-    const { events: eventList, eventFilter, scope, darkMode } = this.state;
-    if (eventFilter) {
-      return;
-    }
-    const events = eventList[scope];
-    if (!events || events.length < 30) {
-      return;
-    }
-    const teams = this.state.teams;
-    const relatedTeam = teams.find(item => item.id === scope);
-    return (
-      <aside
-        ref={item => {
-          this.loadingIndicator = item;
-        }}
-        className={darkMode ? 'dark' : ''}
-      >
-        {relatedTeam.allCached ? (
-          <span key="description">{`That's it. No events left to show!`}</span>
-        ) : (
-          <Fragment>
-            <img key="animation" src="/static/loading.gif" />
-            <span key="description">Loading Older Events...</span>
-          </Fragment>
-        )}
-        <style jsx>{loaderStyles}</style>
-      </aside>
-    );
-  }
   render() {
     const activeScope = this.detectScope('id', this.state.scope);
     const isUser = this.isUser(activeScope);
@@ -254,13 +224,68 @@ export default Feed;
 */
 
 import PropTypes from 'prop-types';
-import { useRef, useReducer, useEffect } from 'react';
+import { useRef, useReducer, useEffect, Fragment } from 'react';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import makeUnique from 'make-unique';
 import Loading from '../components/feed/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
+
+const loadingOlder = (loadingIndicator, events, active, darkMode) => {
+  // If no active scope has been chosen yet,
+  // there's no need for this component to show.
+  if (!active) {
+    return null;
+  }
+
+  // If there are no events in total, no events for this shope
+  // or less than 30 events for this scope (which is the number of
+  // events we're loading in one pull), we already know
+  // that there is no need for loading more.
+  if (!events || !events[active.id] || events[active.id].length < 30) {
+    return null;
+  }
+
+  const haha = false;
+
+  return (
+    <aside ref={loadingIndicator} className={darkMode ? 'dark' : ''}>
+      {haha ? (
+        <span key="description">{`That's it. No events left to show!`}</span>
+      ) : (
+        <Fragment>
+          <img key="animation" src="/static/loading.gif" />
+          <span key="description">Loading Older Events...</span>
+        </Fragment>
+      )}
+      <style jsx>{`
+        aside {
+          font-size: 12px;
+          color: #666666;
+          text-align: center;
+          background: #f5f5f5;
+          border-top: 1px solid #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 42px;
+        }
+
+        aside.dark {
+          border-top-color: #1f1f1f;
+          background: #333;
+          color: #999;
+        }
+
+        img {
+          height: 17px;
+          margin-right: 8px;
+        }
+      `}</style>
+    </aside>
+  );
+};
 
 const renderEvents = (user, events, active, online, darkMode) => {
   if (!online) {
@@ -361,6 +386,7 @@ const Events = ({ online, darkMode, scopes, active, config }) => {
   const user = scopes && scopes.find(scope => scope.isCurrentUser);
 
   const scrollingSection = useRef(null);
+  const loadingIndicator = useRef(null);
   const [events, dispatchEvents] = useReducer(eventReducer, {});
 
   useEffect(
@@ -388,6 +414,8 @@ const Events = ({ online, darkMode, scopes, active, config }) => {
       onScroll={() => {}}
     >
       {renderEvents(user, events, active, online, darkMode)}
+      {loadingOlder(loadingIndicator, events, active, darkMode)}
+
       <style jsx>{`
         section {
           overflow-y: auto;
