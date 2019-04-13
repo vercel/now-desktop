@@ -2,12 +2,18 @@ import queryString from 'query-string';
 import loadData from '../utils/data/load';
 import { API_EVENTS } from '../utils/data/endpoints';
 
-const loadEvents = (scope, dispatchEvents, { token }) => {
+const loadEvents = (scope, events, dispatchEvents, { token }) => {
   const defaults = { limit: 30 };
   const query = Object.assign(defaults, {});
+  const existing = events[scope.id];
 
   if (!scope.isCurrentUser) {
     query.teamId = scope.id;
+  }
+
+  if (Array.isArray(existing) && existing.length > 0) {
+    const start = Date.parse(existing[0].created) + 1;
+    query.since = new Date(start).toISOString();
   }
 
   if (query.types) {
@@ -55,7 +61,7 @@ export default (scopes, active, events, dispatchEvents, config) => {
 
   Promise.all(
     toPull.map(scope => {
-      return loadEvents(scope, dispatchEvents, config);
+      return loadEvents(scope, events, dispatchEvents, config);
     })
   );
 };
