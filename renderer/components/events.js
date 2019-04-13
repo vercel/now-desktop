@@ -33,77 +33,6 @@ class Feed extends Component {
     }
     this.scrollingSection.scrollTop = 0;
   };
-  scrolled = event => {
-    if (!this.loadingIndicator) {
-      return;
-    }
-    const { scope, events } = this.state;
-    // Check if we're already pulling data
-    if (this.loading.has(scope)) {
-      return;
-    }
-    const section = event.target;
-    const offset = section.offsetHeight + this.loadingIndicator.offsetHeight;
-    const distance = section.scrollHeight - section.scrollTop;
-    if (!events || !events[scope]) {
-      return;
-    }
-    if (distance < offset + 300) {
-      const scopedEvents = events[scope];
-      const lastEvent = scopedEvents[scopedEvents.length - 1];
-      retry(() => this.cacheEvents(scope, lastEvent.created), {
-        retries: 5,
-        factor: 2,
-        maxTimeout: 5000
-      });
-    }
-  };
-  render() {
-    const activeScope = this.detectScope('id', this.state.scope);
-    const isUser = this.isUser(activeScope);
-    if (!this.state.hasLoaded) {
-      return null;
-    }
-    return (
-      <main>
-        <div onDragEnter={this.showDropZone}>
-          <Title
-            setFilter={this.setFilter}
-            setSearchRef={this.setReference}
-            ref={this.setReference}
-            name="title"
-            searchShown={Boolean(activeScope)}
-            isUser={isUser}
-            darkBg={this.state.darkMode}
-            config={this.state.config}
-          >
-            {activeScope ? activeScope.name : 'Now'}
-          </Title>
-          {this.state.dropZone && (
-            <DropZone darkBg={this.state.darkMode} hide={this.hideDropZone} />
-          )}
-          <section
-            className={this.state.darkMode ? 'dark' : ''}
-            ref={this.setReference}
-            onScroll={this.scrolled}
-            name="scrollingSection"
-          >
-            {this.renderEvents(activeScope)}
-            {this.loadingOlder()}
-          </section>
-          <Switcher
-            setFeedScope={this.setScope}
-            setTeams={this.setTeams}
-            currentUser={this.state.currentUser}
-            titleRef={this.title}
-            online={this.state.online}
-            activeScope={activeScope}
-            darkBg={this.state.darkMode}
-          />
-        </div>
-      </main>
-    );
-  }
 }
 export default Feed;
 */
@@ -264,6 +193,50 @@ const renderEvents = (
   ]);
 };
 
+const scrolled = (
+  setLoading,
+  scopes,
+  events,
+  dispatchEvents,
+  config,
+  loading,
+  active,
+  loadingIndicator,
+  scrollingSection
+) => {
+  if (!loadingIndicator || !loadingIndicator.current) {
+    return;
+  }
+
+  if (!scrollingSection || !scrollingSection.current) {
+    return;
+  }
+
+  // If there are already events being loaded for the
+  // currently active scope, we do not want to trigger
+  // loading even more now.
+  if (loading.has(active.id)) {
+    return;
+  }
+
+  const section = scrollingSection.current;
+  const indicator = loadingIndicator.current;
+  const offset = section.offsetHeight + indicator.offsetHeight;
+  const distance = section.scrollHeight - section.scrollTop;
+
+  if (distance < offset + 300) {
+    eventsEffect(
+      setLoading,
+      scopes,
+      active,
+      events,
+      dispatchEvents,
+      config,
+      'append'
+    );
+  }
+};
+
 const eventReducer = (state, action) => {
   const existing = state[action.scope] || [];
   let updated = null;
@@ -284,12 +257,31 @@ const eventReducer = (state, action) => {
   });
 };
 
+const loadingReducer = (state, action) => {
+  const existing = new Set(state);
+
+  switch (action.type) {
+    case 'add':
+      existing.add(action.scope);
+      break;
+    case 'remove':
+      existing.delete(action.scope);
+      break;
+    default:
+      throw new Error('Action type not allowed');
+  }
+
+  return existing;
+};
+
 const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
   const user = scopes && scopes.find(scope => scope.isCurrentUser);
 
   const scrollingSection = useRef(null);
   const loadingIndicator = useRef(null);
+
   const [events, dispatchEvents] = useReducer(eventReducer, {});
+  const [loading, setLoading] = useReducer(loadingReducer, new Set());
 
   useEffect(
     () => {
@@ -298,7 +290,15 @@ const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
         return;
       }
 
-      return eventsEffect(scopes, active, events, dispatchEvents, config);
+      return eventsEffect(
+        setLoading,
+        scopes,
+        active,
+        events,
+        dispatchEvents,
+        config,
+        'prepend'
+      );
     },
 
     // Only run again if scopes or config change.
@@ -313,7 +313,24 @@ const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
     <section
       className={darkMode ? 'dark' : ''}
       ref={scrollingSection}
-      onScroll={() => {}}
+      onScroll={() => {
+        // Wait until the active scope and all scopes are defined.
+        if (scopes === null || active === null) {
+          return;
+        }
+
+        scrolled(
+          setLoading,
+          scopes,
+          events,
+          dispatchEvents,
+          config,
+          loading,
+          active,
+          loadingIndicator,
+          scrollingSection
+        );
+      }}
     >
       {renderEvents(scopes, setActive, user, events, active, online, darkMode)}
       {loadingOlder(loadingIndicator, events, active, darkMode)}

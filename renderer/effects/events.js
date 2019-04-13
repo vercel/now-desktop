@@ -2,7 +2,21 @@ import queryString from 'query-string';
 import loadData from '../utils/data/load';
 import { API_EVENTS } from '../utils/data/endpoints';
 
-const loadEvents = (scope, events, dispatchEvents, { token }) => {
+const loadEvents = (
+  setLoading,
+  scope,
+  events,
+  dispatchEvents,
+  { token },
+  type
+) => {
+  // It's extremely important that this fires early, otherwise
+  // there are multiple loaders being created for loading when scrolling.
+  setLoading({
+    type: 'add',
+    scope: scope.id
+  });
+
   const defaults = { limit: 30 };
   const query = Object.assign(defaults, {});
   const existing = events[scope.id];
@@ -12,8 +26,13 @@ const loadEvents = (scope, events, dispatchEvents, { token }) => {
   }
 
   if (Array.isArray(existing) && existing.length > 0) {
-    const start = Date.parse(existing[0].created) + 1;
-    query.since = new Date(start).toISOString();
+    if (type === 'prepend') {
+      const start = Date.parse(existing[0].created) + 1;
+      query.since = new Date(start).toISOString();
+    } else if (type === 'append') {
+      const end = Date.parse(existing[existing.length - 1].created) + 1;
+      query.until = new Date(end).toISOString();
+    }
   }
 
   if (query.types) {
@@ -25,23 +44,45 @@ const loadEvents = (scope, events, dispatchEvents, { token }) => {
 
   console.time(timeMessage);
 
-  loadData(`${API_EVENTS}?${params}`, token).then(data => {
-    if (!data || !data.events) {
-      console.error(`Failed to load events: ${data}`);
-      return;
-    }
+  loadData(`${API_EVENTS}?${params}`, token)
+    .then(data => {
+      if (!data || !data.events) {
+        console.error(`Failed to load events: ${data}`);
+        return;
+      }
 
-    dispatchEvents({
-      type: 'prepend',
-      scope: scope.id,
-      events: data.events
+      dispatchEvents({
+        type,
+        scope: scope.id,
+        events: data.events
+      });
+
+      setLoading({
+        type: 'remove',
+        scope: scope.id
+      });
+
+      console.timeEnd(timeMessage);
+    })
+    .catch(err => {
+      setLoading({
+        type: 'remove',
+        scope: scope.id
+      });
+
+      console.error(`Failed to load events: ${err}`);
     });
-
-    console.timeEnd(timeMessage);
-  });
 };
 
-export default (scopes, active, events, dispatchEvents, config) => {
+export default (
+  setLoading,
+  scopes,
+  active,
+  events,
+  dispatchEvents,
+  config,
+  type
+) => {
   // Make sure the currently active scope is
   // always first pulled.
   const toPull = [active];
@@ -49,7 +90,7 @@ export default (scopes, active, events, dispatchEvents, config) => {
   // If there are no events for the active scope yet, it means
   // we're loading events for the first time. In that case, we want to
   // pre-fill all the scopes with events.
-  if (!events[active.id]) {
+  if (!events[active.id] && type !== 'append') {
     const left = scopes.filter(scope => {
       return scope.id !== active.id;
     });
@@ -61,7 +102,14 @@ export default (scopes, active, events, dispatchEvents, config) => {
 
   Promise.all(
     toPull.map(scope => {
-      return loadEvents(scope, events, dispatchEvents, config);
+      return loadEvents(
+        setLoading,
+        scope,
+        events,
+        dispatchEvents,
+        config,
+        type
+      );
     })
   );
 };
