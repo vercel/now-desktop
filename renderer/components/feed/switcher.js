@@ -9,7 +9,7 @@ const updateScope = (scope, config, setConfig) => {
   ipc
     .saveConfig(
       {
-        currentTeam: scope.isCurrentUser ? undefined : scope.id
+        currentTeam: scope.isCurrentUser ? null : scope.id
       },
       'config'
     )
