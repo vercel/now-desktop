@@ -27,126 +27,11 @@ import {
   pageStyles
 } from '../styles/pages/feed';
 class Feed extends Component {
-  async cacheEvents(scope, until, track) {
-    const { teams, scope: activeScope } = this.state;
-    if (until) {
-      track = true;
-    }
-    if (track) {
-      this.loading.add(scope);
-    }
-    const relatedCache = teams.find(item => item.id === scope);
-    const lastUpdate = relatedCache.lastUpdate;
-    const isTeam = Boolean(relatedCache.slug);
-    const loaders = new Set();
-    const query = {
-      types: this.eventTypes
-    };
-    if (until) {
-      query.until = until;
-    } else if (lastUpdate) {
-      // Ensure that we only load events that were created
-      // after the most recent one, so that we don't get the most
-      // recent one included
-      const startDate = Date.parse(lastUpdate) + 1;
-      query.since = new Date(startDate).toISOString();
-    }
-    if (isTeam) {
-      query.teamId = scope;
-    }
-    loaders.add(this.loadEvents(query));
-    let results;
-    try {
-      results = await Promise.all(loaders);
-    } catch (err) {
-      if (track) {
-        this.loading.delete(scope);
-      }
-      return;
-    }
-    const events = Object.assign({}, this.state.events);
-    const relatedCacheIndex = teams.indexOf(relatedCache);
-    for (const result of results) {
-      const hasEvents = result && result.length > 0;
-      if (!hasEvents && events[scope]) {
-        if (until) {
-          teams[relatedCacheIndex].allCached = true;
-          this.setState({ teams }, () => {
-            this.loading.delete(scope);
-          });
-        }
-        // We had `return` here before, which was most
-        // likely causing the event stream to get stuck if
-        // there were no new ones in a certain group,
-        // although the other groups might still have had new events.
-        continue;
-      }
-      let newLastUpdate;
-      if (hasEvents) {
-        newLastUpdate = result[0].created;
-      } else {
-        newLastUpdate = new Date().toISOString();
-      }
-      teams[relatedCacheIndex].lastUpdate = newLastUpdate;
-      const scopedEvents = events[scope];
-      if (!scopedEvents) {
-        events[scope] = {};
-      }
-      if (hasEvents && scopedEvents) {
-        let merged;
-        // When using infinite scrolling, we need to
-        // add the events to the end, otherwise before
-        if (until) {
-          merged = scopedEvents.concat(result);
-        } else {
-          merged = result.concat(scopedEvents);
-        }
-        const unique = makeUnique(merged, (a, b) => a.id === b.id);
-        const isCurrent = relatedCache.id === activeScope;
-        const scrollPosition = this.scrollingSection.scrollTop;
-        let shouldKeep;
-        // Ensure that never more than 50 events are cached. But only
-        // if infinite scrolling is not being used.
-        if (until || (isCurrent && scrollPosition > 0)) {
-          shouldKeep = true;
-        }
-        events[scope] = shouldKeep ? unique : unique.slice(0, 50);
-      } else {
-        events[scope] = result;
-      }
-    }
-    this.setState(
-      {
-        events,
-        teams
-      },
-      () => {
-        if (track) {
-          this.loading.delete(scope);
-        }
-      }
-    );
-  }
   clearScroll = () => {
     if (!this.scrollingSection) {
       return;
     }
     this.scrollingSection.scrollTop = 0;
-  };
-  setScope = scope => {
-    this.clearScroll();
-    // Update the scope
-    this.setState({ scope }, () => {
-      if (this.state.teams.length === 0) {
-        return;
-      }
-      // And then pull events for it
-      this.cacheEvents(scope);
-    });
-    // Hide search field when switching team scope
-    if (this.searchField) {
-      this.searchField.hide(true);
-    }
   };
   scrolled = event => {
     if (!this.loadingIndicator) {
@@ -287,7 +172,15 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   );
 };
 
-const renderEvents = (user, events, active, online, darkMode) => {
+const renderEvents = (
+  scopes,
+  setActive,
+  user,
+  events,
+  active,
+  online,
+  darkMode
+) => {
   if (!online) {
     return <Loading darkMode={darkMode} offline />;
   }
@@ -314,6 +207,14 @@ const renderEvents = (user, events, active, online, darkMode) => {
 
     months[month].push(message);
   }
+
+  const setScopeWithSlug = slug => {
+    const related = scopes.find(scope => scope.slug === slug);
+
+    if (related) {
+      setActive(related);
+    }
+  };
 
   // We can't just use `month` as the ID for each heading,
   // because they would glitch around in that case (as
@@ -357,6 +258,7 @@ const renderEvents = (user, events, active, online, darkMode) => {
         active={active}
         user={user}
         key={event.id}
+        setScopeWithSlug={setScopeWithSlug}
       />
     ))
   ]);
@@ -382,7 +284,7 @@ const eventReducer = (state, action) => {
   });
 };
 
-const Events = ({ online, darkMode, scopes, active, config }) => {
+const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
   const user = scopes && scopes.find(scope => scope.isCurrentUser);
 
   const scrollingSection = useRef(null);
@@ -413,7 +315,7 @@ const Events = ({ online, darkMode, scopes, active, config }) => {
       ref={scrollingSection}
       onScroll={() => {}}
     >
-      {renderEvents(user, events, active, online, darkMode)}
+      {renderEvents(scopes, setActive, user, events, active, online, darkMode)}
       {loadingOlder(loadingIndicator, events, active, darkMode)}
 
       <style jsx>{`
@@ -450,7 +352,8 @@ Events.propTypes = {
   darkMode: PropTypes.bool,
   scopes: PropTypes.array,
   active: PropTypes.object,
-  config: PropTypes.object
+  config: PropTypes.object,
+  setActive: PropTypes.func
 };
 
 export default Events;

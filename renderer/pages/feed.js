@@ -89,6 +89,7 @@ const Main = () => {
           scopes={scopes}
           active={active}
           darkMode={darkMode}
+          setActive={setActive}
         />
 
         <Switcher
