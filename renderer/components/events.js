@@ -1,42 +1,3 @@
-/* A
-import queryString from 'query-string';
-import { Fragment, Component } from 'react';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
-import isEqual from 'react-fast-compare';
-import setRef from 'react-refs';
-import { renderToStaticMarkup } from 'react-dom/server';
-import strip from ';
-import parseHTML from 'html-to-react';
-import retry from 'async-retry';
-import makeUnique from 'make-unique';
-import Title from '../components/title';
-import Switcher from '../components/feed/switcher';
-import DropZone from '../components/feed/dropzone';
-import EventMessage from '../components/feed/event';
-import NoEvents from '../components/feed/none';
-import Loading from '../components/feed/loading';
-import messageComponents from '../components/feed/messages';
-import loadData from '../utils/data/load';
-import { API_EVENTS, API_USER } from '../utils/data/endpoints';
-import ipc from '../utils/ipc';
-import {
-  feedStyles,
-  headingStyles,
-  loaderStyles,
-  pageStyles
-} from '../styles/pages/feed';
-class Feed extends Component {
-  clearScroll = () => {
-    if (!this.scrollingSection) {
-      return;
-    }
-    this.scrollingSection.scrollTop = 0;
-  };
-}
-export default Feed;
-*/
-
 import PropTypes from 'prop-types';
 import { useRef, useReducer, useEffect, Fragment } from 'react';
 import parse from 'date-fns/parse';
@@ -45,6 +6,7 @@ import makeUnique from 'make-unique';
 import Loading from '../components/feed/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
+import scrollClearEffect from '../effects/clear-scroll';
 
 const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   // If no active scope has been chosen yet,
@@ -307,6 +269,15 @@ const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
       JSON.stringify(scopes),
       JSON.stringify(active)
     ]
+  );
+
+  useEffect(
+    () => {
+      return scrollClearEffect(scrollingSection);
+    },
+
+    // Trigger again if the active scope changes.
+    [JSON.stringify(active)]
   );
 
   return (
