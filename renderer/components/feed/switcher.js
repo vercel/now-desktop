@@ -127,6 +127,10 @@ const renderList = (
   config,
   setConfig
 ) => {
+  if (scopes === null || active === null) {
+    return null;
+  }
+
   const list = renderScopes(
     scopes,
     active,
@@ -247,10 +251,6 @@ const openMenu = menu => {
 };
 
 const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
-  if (active === null || scopes === null) {
-    return null;
-  }
-
   const [initialized, setInitialized] = useState(false);
 
   const menu = useRef(null);
@@ -267,7 +267,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
 
   useEffect(
     () => {
-      if (scopes.length === 0) {
+      if (scopes === null) {
         return;
       }
 
@@ -304,7 +304,9 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
   return (
     <span>
       <aside className={darkMode ? 'dark' : ''}>
-        {online ? (
+        {scopes === null || active === null ? (
+          <p className="spacer" />
+        ) : online ? (
           <div className="list-container" ref={list}>
             <div className="list-scroll">
               <Scopes
@@ -317,13 +319,13 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
                 lockToContainerEdges={true}
                 lockOffset="0%"
               />
-              <CreateTeam delay={scopes.length} darkMode={darkMode} />
+              <CreateTeam delay={scopes && scopes.length} darkMode={darkMode} />
             </div>
 
             <span className="shadow" onClick={scrollToEnd.bind(this, list)} />
           </div>
         ) : (
-          <p className="offline">{'You are offline'}</p>
+          <p className="spacer">{'You are offline'}</p>
         )}
 
         <a
@@ -433,7 +435,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           background: linear-gradient(to right, transparent, #2c2c2c);
         }
 
-        .offline {
+        .spacer {
           margin: 0;
           line-height: 40px;
           padding-left: 10px;
