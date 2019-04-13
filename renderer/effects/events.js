@@ -15,6 +15,9 @@ const loadEvents = (scope, dispatchEvents, { token }) => {
   }
 
   const params = queryString.stringify(query);
+  const timeMessage = `Loaded events for ${scope.slug}`;
+
+  console.time(timeMessage);
 
   loadData(`${API_EVENTS}?${params}`, token).then(data => {
     if (!data || !data.events) {
@@ -26,6 +29,8 @@ const loadEvents = (scope, dispatchEvents, { token }) => {
       scope: scope.id,
       events: data.events
     });
+
+    console.timeEnd(timeMessage);
   });
 };
 
