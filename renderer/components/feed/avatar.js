@@ -59,7 +59,8 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
       return titleEffect(event, scope, setTitle);
     },
 
-    [false]
+    // Never re-invoke this effect.
+    []
   );
 
   useEffect(
@@ -71,7 +72,8 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
       return scaleEffect(delay, setScaled);
     },
 
-    [false]
+    // Never re-invoke this effect.
+    []
   );
 
   return (

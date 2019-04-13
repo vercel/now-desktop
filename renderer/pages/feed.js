@@ -28,9 +28,10 @@ const Main = () => {
   useEffect(
     () => {
       return configEffect(config, setConfig);
-      // Never re-invoke this effect.
     },
-    [false]
+
+    // Never re-invoke this effect.
+    []
   );
 
   useEffect(

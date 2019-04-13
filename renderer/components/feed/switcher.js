@@ -297,7 +297,9 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         document.removeEventListener('keydown', handleOnKeyDown);
       };
     },
-    [false]
+
+    // Never re-invoke this effect
+    []
   );
 
   return (
