@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const urlPrefix = 'https://zeit.co/api/www/avatar/';
 
-const avatarMemo = (event, hash) => {
+const avatarMemo = (event, hash, scope) => {
   if (hash) {
     return `${urlPrefix}${hash}?s=80`;
   }
@@ -13,6 +13,16 @@ const avatarMemo = (event, hash) => {
     const id = event.user ? event.user.uid : event.userId;
     return `${urlPrefix}${id}?s=80`;
   }
+
+  if (!scope) {
+    return null;
+  }
+
+  if (scope.isCurrentUser) {
+    return `${urlPrefix}${scope.id}?s=80`;
+  }
+
+  return `${urlPrefix}?teamId=${scope.id}&s=80`;
 };
 
 const titleEffect = (event, scope, setTitle) => {
@@ -45,7 +55,12 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
   const [title, setTitle] = useState(null);
   const [scaled, setScaled] = useState(null);
 
-  const url = useMemo(() => avatarMemo(event, hash), [hash]);
+  const url = useMemo(
+    () => {
+      return avatarMemo(event, hash, scope);
+    },
+    [event, hash, scope]
+  );
 
   const classes = classNames({
     inEvent: Boolean(event),
