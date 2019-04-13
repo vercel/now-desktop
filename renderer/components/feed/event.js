@@ -1,5 +1,5 @@
 import { PureComponent } from 'react';
-import { object, func, string, bool } from 'prop-types';
+import { object, func, bool } from 'prop-types';
 import dotProp from 'dot-prop';
 import ms from 'ms';
 import * as Sentry from '@sentry/browser';
@@ -7,6 +7,7 @@ import pkg from '../../../package';
 import dateDiff from '../../utils/date-diff';
 import ipc from '../../utils/ipc';
 import Avatar from '../avatar';
+import messageComponents from './messages';
 
 // Check if this is on the client,
 // since the build won't work otherwise
@@ -161,8 +162,14 @@ class EventMessage extends PureComponent {
       return null;
     }
 
-    const { message, event, team, group, darkMode } = this.props;
+    const { event, active, user, darkMode } = this.props;
     const avatarHash = event.user && event.user.avatar;
+    const Message = messageComponents.get(event.type);
+
+    if (!Message) {
+      return null;
+    }
+
     const classes = ['event'];
 
     if (darkMode) {
@@ -177,14 +184,13 @@ class EventMessage extends PureComponent {
       >
         <Avatar
           event={event}
-          team={team}
-          group={group}
+          scope={active}
           hash={avatarHash}
           darkMode={darkMode}
         />
 
         <figcaption>
-          {message}
+          <Message user={user} event={event} active={active} />
           <span>{this.parseDate(event.created)}</span>
         </figcaption>
 
@@ -291,11 +297,10 @@ class EventMessage extends PureComponent {
 
 EventMessage.propTypes = {
   event: object,
-  currentUser: object,
-  team: object,
+  active: object,
+  user: object,
   setScopeWithSlug: func,
   message: object,
-  group: string,
   darkMode: bool
 };
 

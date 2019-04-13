@@ -261,7 +261,6 @@ import makeUnique from 'make-unique';
 import Loading from '../components/feed/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
-import messageComponents from '../components/feed/messages';
 
 const renderEvents = (user, events, active, online, darkMode) => {
   if (!online) {
@@ -290,32 +289,6 @@ const renderEvents = (user, events, active, online, darkMode) => {
 
     months[month].push(message);
   }
-
-  const eventList = month => {
-    return months[month].map(event => {
-      const MessageComponent = messageComponents.get(event.type);
-
-      if (!MessageComponent) {
-        return null;
-      }
-
-      const messageArgs = {
-        event,
-        user,
-        active
-      };
-
-      return (
-        <EventMessage
-          event={event}
-          active={active}
-          darkMode={darkMode}
-          message={<MessageComponent {...messageArgs} />}
-          key={event.id}
-        />
-      );
-    });
-  };
 
   // We can't just use `month` as the ID for each heading,
   // because they would glitch around in that case (as
@@ -352,7 +325,15 @@ const renderEvents = (user, events, active, online, darkMode) => {
         }
       `}</style>
     </h1>,
-    eventList(month)
+    months[month].map(event => (
+      <EventMessage
+        event={event}
+        darkMode={darkMode}
+        active={active}
+        user={user}
+        key={event.id}
+      />
+    ))
   ]);
 };
 
