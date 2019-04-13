@@ -490,8 +490,12 @@ const Events = ({ online, darkMode, scopes, active, config }) => {
       return eventsEffect(scopes, active, events, dispatchEvents, config);
     },
 
-    // Only run again if scopes change
-    [JSON.stringify(scopes), JSON.stringify(active)]
+    // Only run again if scopes or config change.
+    [
+      config && config.lastUpdate,
+      JSON.stringify(scopes),
+      JSON.stringify(active)
+    ]
   );
 
   return (
