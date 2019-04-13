@@ -27,64 +27,6 @@ import {
   pageStyles
 } from '../styles/pages/feed';
 class Feed extends Component {
-  state = {
-    dropZone: false,
-    events: {},
-    scope: null,
-    currentUser: null,
-    teams: [],
-    eventFilter: null,
-    online: typeof navigator === 'undefined' ? true : navigator.onLine,
-    darkMode: false,
-    hasLoaded: false
-  };
-  async updateEvents(firstLoad) {
-    const { teams, scope } = this.state;
-    if (!teams || Object.keys(teams).length === 0 || !scope) {
-      return;
-    }
-    // Load the focused team first
-    const focusedTeam = teams.find(team => {
-      return team.id === this.state.scope;
-    });
-    const focusedIndex = teams.indexOf(focusedTeam);
-    // It's important that this is being `await`ed
-    try {
-      await this.cacheEvents(focusedTeam.id);
-    } catch (err) {
-      console.log(err);
-    }
-    if (!firstLoad) {
-      return;
-    }
-    // Update the feed of events for each team
-    for (const team of teams) {
-      const index = teams.indexOf(team);
-      // Don't load the focused team, because we updated
-      // that one already above. We need to test for `undefined` here
-      // because checking if falsy is not ok since the value might
-      // be `0` (beginning of `teams` array)
-      if (focusedIndex !== undefined && index === focusedIndex) {
-        continue;
-      }
-      // It's important that this is being `await`ed
-      try {
-        await this.cacheEvents(team.id);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
-  async loadEvents(customParams) {
-    const defaults = { limit: 30 };
-    const query = Object.assign(defaults, customParams);
-    if (query.types) {
-      query.types = Array.from(query.types).join(',');
-    }
-    const params = queryString.stringify(query);
-    const { events } = await loadData(`${API_EVENTS}?${params}`);
-    return events;
-  }
   async cacheEvents(scope, until, track) {
     const { teams, scope: activeScope } = this.state;
     if (until) {
@@ -231,57 +173,6 @@ class Feed extends Component {
       });
     }
   };
-  renderEvents(team) {
-    const { scope, events, online, eventFilter, darkMode } = this.state;
-    if (!online) {
-      return <Loading darkBg={darkMode} offline />;
-    }
-    const scopedEvents = events[scope];
-    if (!scopedEvents) {
-      return <Loading darkBg={darkMode} />;
-    }
-    const filteredEvents = this.filterEvents(scopedEvents, team);
-    if (filteredEvents.length === 0) {
-      return (
-        <NoEvents
-          filtered={Boolean(eventFilter)}
-          darkBg={this.state.darkMode}
-        />
-      );
-    }
-    const months = {};
-    for (const message of filteredEvents) {
-      const created = parse(message.created);
-      const month = format(created, 'MMMM YYYY');
-      if (!months[month]) {
-        months[month] = [];
-      }
-      months[month].push(message);
-    }
-    const eventList = month => {
-      return months[month].map(content => {
-        const args = {
-          content,
-          currentUser: this.state.currentUser,
-          team,
-          setScopeWithSlug: this.setScopeWithSlug,
-          message: content.message,
-          darkBg: this.state.darkMode
-        };
-        return <EventMessage {...args} key={content.id} />;
-      });
-    };
-    // We can't just use `month` as the ID for each heading,
-    // because they would glitch around in that case (as
-    // the month is the same across scopes)
-    return Object.keys(months).map(month => [
-      <h1 className={this.state.darkMode ? 'dark' : ''} key={scope + month}>
-        {month}
-        <style jsx>{headingStyles}</style>
-      </h1>,
-      eventList(month)
-    ]);
-  }
   loadingOlder() {
     const { events: eventList, eventFilter, scope, darkMode } = this.state;
     if (eventFilter) {
@@ -355,10 +246,6 @@ class Feed extends Component {
             darkBg={this.state.darkMode}
           />
         </div>
-        <style jsx>{feedStyles}</style>
-        <style jsx global>
-          {pageStyles}
-        </style>
       </main>
     );
   }
@@ -370,12 +257,13 @@ import PropTypes from 'prop-types';
 import { useRef, useReducer, useEffect } from 'react';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
+import makeUnique from 'make-unique';
 import Loading from '../components/feed/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
 import messageComponents from '../components/feed/messages';
 
-const renderEvents = (events, active, online, darkMode) => {
+const renderEvents = (user, events, active, online, darkMode) => {
   if (!online) {
     return <Loading darkMode={darkMode} offline />;
   }
@@ -404,30 +292,28 @@ const renderEvents = (events, active, online, darkMode) => {
   }
 
   const eventList = month => {
-    return months[month].map(content => {
-      const MessageComponent = messageComponents.get(content.type);
+    return months[month].map(event => {
+      const MessageComponent = messageComponents.get(event.type);
 
       if (!MessageComponent) {
         return null;
       }
 
       const messageArgs = {
-        event: content,
-        user: {
-          uid: '7XNKD0B2VF1ITHWKcmxut8CH',
-          username: 'leo'
-        },
-        team: active
+        event,
+        user,
+        active
       };
 
-      const args = {
-        content,
-        active,
-        message: <MessageComponent {...messageArgs} />,
-        darkMode
-      };
-
-      return <EventMessage {...args} key={content.id} />;
+      return (
+        <EventMessage
+          event={event}
+          active={active}
+          darkMode={darkMode}
+          message={<MessageComponent {...messageArgs} />}
+          key={event.id}
+        />
+      );
     });
   };
 
@@ -471,12 +357,28 @@ const renderEvents = (events, active, online, darkMode) => {
 };
 
 const eventReducer = (state, action) => {
+  const existing = state[action.scope] || [];
+  let updated = null;
+
+  switch (action.type) {
+    case 'prepend':
+      updated = action.events.concat(existing).slice(0, 50);
+      break;
+    case 'append':
+      updated = existing.concat(action.events);
+      break;
+    default:
+      throw new Error('Action type not allowed');
+  }
+
   return Object.assign({}, state, {
-    [action.scope]: action.events
+    [action.scope]: makeUnique(updated, (a, b) => a.id === b.id)
   });
 };
 
 const Events = ({ online, darkMode, scopes, active, config }) => {
+  const user = scopes && scopes.find(scope => scope.isCurrentUser);
+
   const scrollingSection = useRef(null);
   const [events, dispatchEvents] = useReducer(eventReducer, {});
 
@@ -504,7 +406,7 @@ const Events = ({ online, darkMode, scopes, active, config }) => {
       ref={scrollingSection}
       onScroll={() => {}}
     >
-      {renderEvents(events, active, online, darkMode)}
+      {renderEvents(user, events, active, online, darkMode)}
       <style jsx>{`
         section {
           overflow-y: auto;

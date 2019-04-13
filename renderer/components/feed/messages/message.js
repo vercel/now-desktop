@@ -5,7 +5,7 @@ class Message extends PureComponent {
   getDisplayName() {
     const { event, user } = this.props;
 
-    if (!event.user && event.userId === user.uid) {
+    if (!event.user && event.userId === user.id) {
       event.user = user;
     }
 

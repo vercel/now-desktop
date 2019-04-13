@@ -1,12 +1,11 @@
-// Components
 import Message from './message';
 
 export default class Team extends Message {
   render() {
-    const { event, team } = this.props;
+    const { event, active } = this.props;
     const teamSlug = event.payload.slug;
 
-    if (teamSlug === team.slug) {
+    if (teamSlug === active.slug) {
       return (
         <p>
           {this.getDisplayName()}

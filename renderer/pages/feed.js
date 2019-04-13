@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import Title from '../components/title';
-import Switcher from '../components/feed/switcher';
+import Switcher from '../components/switcher';
 import Events from '../components/events';
 import onlineEffect from '../effects/online';
 import configEffect from '../effects/config';

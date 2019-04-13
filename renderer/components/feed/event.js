@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/browser';
 import pkg from '../../../package';
 import dateDiff from '../../utils/date-diff';
 import ipc from '../../utils/ipc';
-import Avatar from './avatar';
+import Avatar from '../avatar';
 
 // Check if this is on the client,
 // since the build won't work otherwise
@@ -23,11 +23,11 @@ class EventMessage extends PureComponent {
   };
 
   click = () => {
-    const { content, setScopeWithSlug } = this.props;
+    const { event, setScopeWithSlug } = this.props;
     const { url } = this.state;
 
-    if (content.type === 'team' && setScopeWithSlug) {
-      setScopeWithSlug(content.payload.slug);
+    if (event.type === 'team' && setScopeWithSlug) {
+      setScopeWithSlug(event.payload.slug);
       return;
     }
 
@@ -51,7 +51,7 @@ class EventMessage extends PureComponent {
   };
 
   getID() {
-    const info = this.props.content;
+    const info = this.props.event;
 
     const props = [
       'payload.deletedUser.username',
@@ -72,20 +72,20 @@ class EventMessage extends PureComponent {
   }
 
   getDashboardURL() {
-    const content = this.props.content;
+    const event = this.props.event;
 
-    if (content.type !== 'deployment') {
+    if (event.type !== 'deployment') {
       return null;
     }
 
-    const { deploymentUrl, url } = content.payload;
+    const { deploymentUrl, url } = event.payload;
     const host = deploymentUrl || url;
 
     return `https://zeit.co/deployments/${host}`;
   }
 
   componentWillMount() {
-    const info = this.props.content;
+    const info = this.props.event;
 
     const urlProps = [
       'payload.cn',
@@ -161,8 +161,8 @@ class EventMessage extends PureComponent {
       return null;
     }
 
-    const { message, content, team, group, darkMode } = this.props;
-    const avatarHash = content.user && content.user.avatar;
+    const { message, event, team, group, darkMode } = this.props;
+    const avatarHash = event.user && event.user.avatar;
     const classes = ['event'];
 
     if (darkMode) {
@@ -176,7 +176,7 @@ class EventMessage extends PureComponent {
         onContextMenu={this.rightClick}
       >
         <Avatar
-          event={content}
+          event={event}
           team={team}
           group={group}
           hash={avatarHash}
@@ -185,7 +185,7 @@ class EventMessage extends PureComponent {
 
         <figcaption>
           {message}
-          <span>{this.parseDate(content.created)}</span>
+          <span>{this.parseDate(event.created)}</span>
         </figcaption>
 
         <style jsx>{`
@@ -290,7 +290,7 @@ class EventMessage extends PureComponent {
 }
 
 EventMessage.propTypes = {
-  content: object,
+  event: object,
   currentUser: object,
   team: object,
   setScopeWithSlug: func,

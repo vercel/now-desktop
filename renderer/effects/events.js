@@ -26,6 +26,7 @@ const loadEvents = (scope, dispatchEvents, { token }) => {
     }
 
     dispatchEvents({
+      type: 'prepend',
       scope: scope.id,
       events: data.events
     });
