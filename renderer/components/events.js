@@ -23,11 +23,12 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
     return null;
   }
 
-  const haha = false;
+  const last = events[active.id][events[active.id].length - 1];
+  const isEnd = last && last.id === 'end';
 
   return (
     <aside ref={loadingIndicator} className={darkMode ? 'dark' : ''}>
-      {haha ? (
+      {isEnd ? (
         <span key="description">{`That's it. No events left to show!`}</span>
       ) : (
         <Fragment>
@@ -89,6 +90,12 @@ const renderEvents = (
   const months = {};
 
   for (const message of scopedEvents) {
+    // This is a placeholder that we are adding to
+    // the end to know that we reached the end.
+    if (message.id === 'end') {
+      continue;
+    }
+
     const created = parse(message.created);
     const month = format(created, 'MMMM YYYY');
 
@@ -178,6 +185,14 @@ const scrolled = (
   // currently active scope, we do not want to trigger
   // loading even more now.
   if (loading.has(active.id)) {
+    return;
+  }
+
+  const last = events[active.id][events[active.id].length - 1];
+  const isEnd = last && last.id === 'end';
+
+  // We have reached the end, so stop pulling more.
+  if (isEnd) {
     return;
   }
 

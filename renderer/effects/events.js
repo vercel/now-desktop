@@ -51,10 +51,22 @@ const loadEvents = (
         return;
       }
 
+      const events = data.events;
+      const { length } = events;
+
+      // If there are no (0) or less than 30 (batch size)
+      // events available in the response, we know that
+      // we reached the end.
+      if (type === 'append' && length < 30) {
+        events.push({
+          id: 'end'
+        });
+      }
+
       dispatchEvents({
         type,
         scope: scope.id,
-        events: data.events
+        events
       });
 
       setLoading({
