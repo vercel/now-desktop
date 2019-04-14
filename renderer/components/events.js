@@ -7,6 +7,7 @@ import Loading from '../components/feed/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
 import scrollClearEffect from '../effects/clear-scroll';
+import ipc from '../utils/ipc';
 
 const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   // If no active scope has been chosen yet,
@@ -66,7 +67,8 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
 
 const renderEvents = (
   scopes,
-  setActive,
+  setConfig,
+  config,
   user,
   events,
   active,
@@ -110,7 +112,23 @@ const renderEvents = (
     const related = scopes.find(scope => scope.slug === slug);
 
     if (related) {
-      setActive(related);
+      ipc
+        .saveConfig(
+          {
+            currentTeam: related.isCurrentUser ? null : related.id
+          },
+          'config'
+        )
+        .then(newConfig => {
+          const freshConfig = Object.assign({}, newConfig, {
+            token: config.token
+          });
+
+          setConfig(freshConfig);
+        })
+        .catch(err => {
+          console.error(`Failed to update config: ${err}`);
+        });
     }
   };
 
@@ -251,7 +269,7 @@ const loadingReducer = (state, action) => {
   return existing;
 };
 
-const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
+const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
   const user = scopes && scopes.find(scope => scope.isCurrentUser);
 
   const scrollingSection = useRef(null);
@@ -318,7 +336,16 @@ const Events = ({ online, darkMode, scopes, setActive, active, config }) => {
         );
       }}
     >
-      {renderEvents(scopes, setActive, user, events, active, online, darkMode)}
+      {renderEvents(
+        scopes,
+        setConfig,
+        config,
+        user,
+        events,
+        active,
+        online,
+        darkMode
+      )}
       {loadingOlder(loadingIndicator, events, active, darkMode)}
 
       <style jsx>{`
@@ -356,7 +383,7 @@ Events.propTypes = {
   scopes: PropTypes.array,
   active: PropTypes.object,
   config: PropTypes.object,
-  setActive: PropTypes.func
+  setConfig: PropTypes.func
 };
 
 export default Events;

@@ -85,6 +85,7 @@ const Main = () => {
 
         <Events
           config={config}
+          setConfig={setConfig}
           online={online}
           scopes={scopes}
           active={active}
