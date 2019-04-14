@@ -1,7 +1,4 @@
-// Utilities
-import parseUA from '../../../utils/user-agent';
-
-// Components
+import parseUA from '../../utils/user-agent';
 import Message from './message';
 
 const osNames = {

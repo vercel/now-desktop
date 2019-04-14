@@ -6,7 +6,7 @@ import ms from 'ms';
 import dateDiff from '../utils/date-diff';
 import ipc from '../utils/ipc';
 import Avatar from './avatar';
-import messageComponents from './feed/messages';
+import messageComponents from './messages';
 
 const parseDate = date => {
   const current = new Date();
