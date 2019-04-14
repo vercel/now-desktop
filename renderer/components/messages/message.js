@@ -13,6 +13,10 @@ class Message extends PureComponent {
       return [<b key="username">{event.user.username}</b>, ' '];
     }
 
+    if (event.user.slug) {
+      return [<b key="username">{event.user.slug}</b>, ' '];
+    }
+
     return [<b key="username">{event.user.email}</b>, ' '];
   }
 }
