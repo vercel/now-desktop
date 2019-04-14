@@ -4,10 +4,10 @@ import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import makeUnique from 'make-unique';
 import Loading from '../components/loading';
-import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
 import scrollClearEffect from '../effects/clear-scroll';
 import ipc from '../utils/ipc';
+import Event from './event';
 
 const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   // If no active scope has been chosen yet,
@@ -168,7 +168,7 @@ const renderEvents = (
       `}</style>
     </h1>,
     months[month].map(event => (
-      <EventMessage
+      <Event
         event={event}
         darkMode={darkMode}
         active={active}
