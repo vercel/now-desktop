@@ -3,7 +3,7 @@ import { useRef, useReducer, useEffect, Fragment } from 'react';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import makeUnique from 'make-unique';
-import Loading from '../components/feed/loading';
+import Loading from '../components/loading';
 import EventMessage from '../components/feed/event';
 import eventsEffect from '../effects/events';
 import scrollClearEffect from '../effects/clear-scroll';
