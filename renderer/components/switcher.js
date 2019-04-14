@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as sortable from 'react-sortable-hoc';
 import ipc from '../utils/ipc';
-import CreateTeam from './feed/create-team';
+import CreateTeam from './create-team';
 import Avatar from './avatar';
 
 const updateScope = (scope, config, setConfig) => {
