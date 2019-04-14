@@ -1,5 +1,5 @@
-import loadData from '../utils/data/load';
-import { API_TEAMS, API_USER } from '../utils/data/endpoints';
+import loadData from '../utils/load';
+import { API_TEAMS, API_USER } from '../utils/endpoints';
 
 export default ({ token }, setScopes) => {
   console.time('Loaded fresh user and teams');

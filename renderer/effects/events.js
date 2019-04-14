@@ -1,6 +1,6 @@
 import queryString from 'query-string';
-import loadData from '../utils/data/load';
-import { API_EVENTS } from '../utils/data/endpoints';
+import loadData from '../utils/load';
+import { API_EVENTS } from '../utils/endpoints';
 
 const loadEvents = (
   setLoading,
