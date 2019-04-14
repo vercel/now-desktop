@@ -8,6 +8,7 @@ import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
 import scopeOrderMemo from '../memos/scope-order';
+import DropZone from '../components/dropzone';
 
 const Main = () => {
   const [scopes, setScopes] = useState(null);
@@ -15,6 +16,7 @@ const Main = () => {
   const [darkMode, setDarkMode] = useState(null);
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
+  const [showDropZone, setShowDropZone] = useState(false);
 
   // This effect (and read below)...
   useEffect(() => {
@@ -80,8 +82,12 @@ const Main = () => {
 
   return (
     <main>
-      <div onDragEnter={() => {}}>
+      <div onDragEnter={() => setShowDropZone(true)}>
         <Title config={config} active={active} darkMode={darkMode} />
+
+        {showDropZone && (
+          <DropZone darkMode={darkMode} hide={() => setShowDropZone(false)} />
+        )}
 
         <Events
           config={config}
