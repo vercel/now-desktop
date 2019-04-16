@@ -8,7 +8,7 @@ import {
   differenceInWeeks,
   differenceInMonths,
   differenceInYears
-} from 'date-fns'
+} from 'date-fns';
 
 export default (dateLeft, dateRight, unit) => {
   const func = {
@@ -20,7 +20,7 @@ export default (dateLeft, dateRight, unit) => {
     weeks: differenceInWeeks,
     months: differenceInMonths,
     years: differenceInYears
-  }
+  };
 
-  return func[unit](dateLeft, dateRight)
-}
+  return func[unit](dateLeft, dateRight);
+};

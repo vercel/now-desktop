@@ -1,51 +1,18 @@
-// Packages
-const { Menu: { buildFromTemplate }, shell } = require('electron')
-const isDev = require('electron-is-dev')
+const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
+const isDev = require('electron-is-dev');
+const binaryUtils = require('./binary');
 
-// Utilities
-const logout = require('./utils/logout')
-const toggleWindow = require('./utils/frames/toggle')
-const { getConfig, saveConfig } = require('./utils/config')
-const binaryUtils = require('./utils/binary')
-const { error: handleError } = require('./utils/error')
-const loadData = require('./utils/data/load')
+exports.getMainMenu = async (app, tray, window, inRenderer) => {
+  const { openAtLogin } = app.getLoginItemSettings();
+  const desktop = {};
+  const isCanary = true;
 
-// Cache the user for fast open
-let user = null
-
-const openDeveloperTools = windows => {
-  if (!windows || Object.keys(windows).length === 0) {
-    return
-  }
-
-  const list = Object.values(windows)
-
-  for (const item of list) {
-    item.webContents.openDevTools()
-  }
-}
-
-exports.innerMenu = async function(app, tray, windows, inRenderer) {
-  const config = await getConfig()
-  const { openAtLogin } = app.getLoginItemSettings()
-  const { updateChannel, desktop } = config
-  const isCanary = updateChannel && updateChannel === 'canary'
-
-  let updateCLI = true
+  let updateCLI = true;
 
   // This check needs to be explicit (updates should be
   // enabled by default if the config property is not set)
   if (desktop && desktop.updateCLI === false) {
-    updateCLI = false
-  }
-
-  if (!user) {
-    try {
-      ;({ user } = await loadData('/api/www/user', config.token))
-    } catch (err) {
-      // The token was revoked, the effect is caught elsewhere
-      // Or the user is offline
-    }
+    updateCLI = false;
   }
 
   // We have to explicitly add a "Main" item on linux, otherwise
@@ -56,11 +23,11 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           {
             label: 'Main',
             click() {
-              toggleWindow(null, windows.main, tray)
+              console.log('test');
             }
           }
         ]
-      : []
+      : [];
 
   return buildFromTemplate(
     prependItems.concat(
@@ -69,7 +36,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           label:
             process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
           click() {
-            toggleWindow(null, windows.about)
+            console.log('test');
           }
         },
         {
@@ -79,42 +46,35 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           label: 'Account',
           submenu: [
             {
-              label: user ? user.username || user.email : 'Your Account',
+              label: 'Your Account',
               enabled: false
             },
             {
               type: 'separator'
             },
             {
-              label: user && user.username ? 'Change Username' : 'Set Username',
+              label: 'Change Username',
               click() {
-                shell.openExternal('https://zeit.co/account')
+                shell.openExternal('https://zeit.co/account');
               }
             },
             {
               label: 'Billing',
               click() {
-                shell.openExternal('https://zeit.co/account/billing')
+                shell.openExternal('https://zeit.co/account/billing');
               }
             },
             {
               label: 'Plan',
               click() {
-                shell.openExternal('https://zeit.co/account/plan')
+                shell.openExternal('https://zeit.co/account/plan');
               }
             },
             {
               label: 'API Tokens',
               click() {
-                shell.openExternal('https://zeit.co/account/tokens')
+                shell.openExternal('https://zeit.co/account/tokens');
               }
-            },
-            {
-              type: 'separator'
-            },
-            {
-              label: 'Logout',
-              click: logout
             }
           ]
         },
@@ -124,13 +84,13 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
         {
           label: 'Support',
           click() {
-            shell.openExternal('https://zeit.chat')
+            shell.openExternal('https://zeit.chat');
           }
         },
         {
           label: 'Documentation',
           click() {
-            shell.openExternal('https://zeit.co/docs')
+            shell.openExternal('https://zeit.co/docs');
           }
         },
         {
@@ -147,7 +107,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               click() {
                 app.setLoginItemSettings({
                   openAtLogin: !openAtLogin
-                })
+                });
               }
             },
             {
@@ -158,12 +118,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               type: 'checkbox',
               checked: isCanary,
               click() {
-                saveConfig(
-                  {
-                    updateChannel: isCanary ? 'stable' : 'canary'
-                  },
-                  'config'
-                )
+                console.log('test');
               }
             },
             {
@@ -173,18 +128,11 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
               click() {
                 if (updateCLI === false) {
                   binaryUtils.install().catch(err => {
-                    handleError('Not able to install Now CLI', err)
-                  })
+                    console.error(err);
+                  });
                 }
 
-                saveConfig(
-                  {
-                    desktop: {
-                      updateCLI: !updateCLI
-                    }
-                  },
-                  'config'
-                )
+                console.log('test');
               }
             }
           ]
@@ -201,7 +149,7 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
           : {
               label: 'Open Developer Tools',
               click() {
-                openDeveloperTools(windows)
+                window.webContents.openDevTools();
               },
               accelerator: 'Cmd+I'
             },
@@ -214,32 +162,49 @@ exports.innerMenu = async function(app, tray, windows, inRenderer) {
         }
       ].filter(Boolean)
     )
-  )
-}
+  );
+};
 
-exports.outerMenu = (app, windows) =>
-  buildFromTemplate([
-    {
-      label: process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
+exports.getEventMenu = (url, id, dashboardUrl) => {
+  const menuContent = [];
+
+  if (url) {
+    menuContent.push({
+      label: 'Copy URL',
       click() {
-        toggleWindow(null, windows.about)
+        const link = `https://${url}`;
+        clipboard.writeText(link);
       }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Open Developer Tools',
+    });
+  }
+
+  if (id) {
+    menuContent.push({
+      label: 'Copy ID',
       click() {
-        openDeveloperTools(windows)
-      },
-      accelerator: 'Cmd+I'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      role: 'quit',
-      accelerator: 'Cmd+Q'
+        clipboard.writeText(id);
+      }
+    });
+  }
+
+  if (dashboardUrl) {
+    if (menuContent.length > 0) {
+      menuContent.push({
+        type: 'separator'
+      });
     }
-  ])
+
+    menuContent.push({
+      label: 'Open in Dashboard',
+      click() {
+        shell.openExternal(dashboardUrl);
+      }
+    });
+  }
+
+  if (menuContent.length === 0) {
+    return null;
+  }
+
+  return buildFromTemplate(menuContent);
+};
