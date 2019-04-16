@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
+import ipc from '../utils/ipc';
 import Tips from './tips';
 
 const Title = ({ darkMode, active, config }) => {
@@ -19,7 +20,7 @@ const Title = ({ darkMode, active, config }) => {
       <div>
         {active && <h1>{active.name}</h1>}
 
-        <span className="deploy" onClick={() => console.log('test')}>
+        <span className="deploy" onClick={() => ipc.openDeployDialog()}>
           <Deploy darkBg={darkMode} />
         </span>
       </div>

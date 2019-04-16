@@ -1,4 +1,4 @@
-const { ipcMain, shell, systemPreferences } = require('electron');
+const { ipcMain, shell, systemPreferences, dialog } = require('electron');
 const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
 
@@ -33,6 +33,17 @@ module.exports = (app, tray, window) => {
 
   ipcMain.on('hide-window-request', async () => {
     window.hide();
+  });
+
+  ipcMain.on('open-deploy-dialog', async () => {
+    dialog.showMessageBox({
+      type: 'info',
+      detail:
+        'For now, the canary channel of Now Desktop does not ' +
+        'support deploying. We are working hard to make this possible ' +
+        'again. If you need to deploy, please use the stable channel for now.',
+      message: 'Temporarily Disabled'
+    });
   });
 
   ipcMain.on('open-main-menu-request', async (event, bounds) => {

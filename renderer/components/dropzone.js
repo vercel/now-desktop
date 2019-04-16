@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import ipc from '../utils/ipc';
 
 const droppedFile = (hide, event) => {
   hide();
@@ -12,6 +13,7 @@ const droppedFile = (hide, event) => {
   const list = [...files].map(file => file.path);
 
   console.log(list);
+  ipc.openDeployDialog();
 
   // And prevent the window from loading the file inside it
   event.preventDefault();
