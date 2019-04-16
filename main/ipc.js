@@ -80,6 +80,10 @@ module.exports = (app, tray, window) => {
   // We need to wait until the window is loaded before assigning the
   // events that are triggered from the main process.
   window.webContents.on('did-finish-load', () => {
+    if (process.platform === 'win32') {
+      return;
+    }
+
     systemPreferences.subscribeNotification(
       'AppleInterfaceThemeChangedNotification',
       () => {
