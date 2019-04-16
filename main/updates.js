@@ -9,9 +9,10 @@ const exists = require('path-exists');
 const { version } = require('../package');
 const notify = require('./notify');
 const binaryUtils = require('./binary');
+const { getConfig, saveConfig } = require('./config');
 
 const isCanary = async () => {
-  const { updateChannel } = {};
+  const { updateChannel } = await getConfig();
   return updateChannel && updateChannel === 'canary';
 };
 
@@ -129,7 +130,11 @@ const updateBinary = async config => {
 const startBinaryUpdates = () => {
   const binaryUpdateTimer = time =>
     setTimeout(async () => {
-      const config = {};
+      let config = {};
+
+      try {
+        config = await getConfig();
+      } catch (err) {}
 
       // This needs to be explicit
       if (config.desktop && config.desktop.updateCLI === false) {
@@ -182,12 +187,25 @@ const checkForUpdates = async () => {
   autoUpdater.checkForUpdates();
 };
 
-const deleteUpdateConfig = () => {
-  console.log('test');
-};
+const deleteUpdateConfig = () =>
+  saveConfig(
+    {
+      desktop: {
+        updatedFrom: null
+      }
+    },
+    'config'
+  );
 
 const startAppUpdates = async mainWindow => {
-  const config = {};
+  let config;
+
+  try {
+    config = await getConfig();
+  } catch (err) {
+    config = {};
+  }
+
   const updatedFrom = config.desktop && config.desktop.updatedFrom;
   const appVersion = isDev ? version : app.getVersion();
 
@@ -223,6 +241,18 @@ const startAppUpdates = async mainWindow => {
     // the app for this update. The `await` prefix is
     // important, because we need to save to config
     // before the app quits.
+
+    // Here, we also ensure that failed update
+    // installations result in a UI change that lets
+    // the user retry manually.
+    await saveConfig(
+      {
+        desktop: {
+          updatedFrom: appVersion
+        }
+      },
+      'config'
+    );
 
     // Then restart the application
     autoUpdater.quitAndInstall();
