@@ -1,6 +1,6 @@
 // Packages
-import React from 'react'
-import { bool } from 'prop-types'
+import React from 'react';
+import { bool } from 'prop-types';
 
 const Deploy = ({ darkBg = false }) => (
   <svg width="17" height="17" viewBox="0 0 18 18">
@@ -10,10 +10,10 @@ const Deploy = ({ darkBg = false }) => (
       fillRule="nonzero"
     />
   </svg>
-)
+);
 
 Deploy.propTypes = {
   darkBg: bool
-}
+};
 
-export default Deploy
+export default Deploy;

@@ -1,8 +1,7 @@
-// Packages
-const { shell, Notification } = require('electron')
-const { resolve } = require('app-root-path')
+const { shell, Notification } = require('electron');
+const { resolve } = require('app-root-path');
 
-const icon = resolve('./main/static/icons/windows.ico')
+const icon = resolve('./main/static/icons/windows.ico');
 
 module.exports = ({ title, body, url, onClick }) => {
   const specs = {
@@ -10,20 +9,20 @@ module.exports = ({ title, body, url, onClick }) => {
     body,
     icon,
     silent: true
-  }
+  };
 
-  const notification = new Notification(specs)
+  const notification = new Notification(specs);
 
   if (url || onClick) {
     notification.on('click', () => {
       if (onClick) {
-        return onClick()
+        return onClick();
       }
 
-      shell.openExternal(url)
-    })
+      shell.openExternal(url);
+    });
   }
 
-  notification.show()
-  console.log(`[Notification] ${title}: ${body}`)
-}
+  notification.show();
+  console.log(`[Notification] ${title}: ${body}`);
+};

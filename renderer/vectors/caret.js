@@ -1,6 +1,6 @@
 // Packages
-import React from 'react'
-import { bool } from 'prop-types'
+import React from 'react';
+import { bool } from 'prop-types';
 
 const Caret = ({ darkBg = false }) => (
   <svg
@@ -15,10 +15,10 @@ const Caret = ({ darkBg = false }) => (
       fillRule="evenodd"
     />
   </svg>
-)
+);
 
 Caret.propTypes = {
   darkBg: bool
-}
+};
 
-export default Caret
+export default Caret;

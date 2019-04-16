@@ -1,217 +1,160 @@
-// Packages
-import electron from 'electron'
-import { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import setRef from 'react-refs'
+import PropTypes from 'prop-types';
+import Done from '../vectors/done';
+import Deploy from '../vectors/deploy';
+import ipc from '../utils/ipc';
+import Tips from './tips';
 
-// Styles
-import styles from '../styles/components/title'
+const Title = ({ darkMode, active, config }) => {
+  const classes = [];
 
-// Components
-import Done from '../vectors/done'
-import Deploy from '../vectors/deploy'
-import Filter from '../vectors/filter'
-import Search from './feed/search'
-import Tips from './tips'
-
-class Title extends PureComponent {
-  state = {
-    updateMessage: false,
-    typeFilter: false,
-    filteredType: 'team'
+  if (darkMode) {
+    classes.push('dark');
   }
 
-  setReference = setRef.bind(this)
-
-  componentDidMount() {
-    const remote = electron.remote || false
-
-    if (!remote) {
-      return
-    }
-
-    this.dialogs = remote.require('./dialogs')
+  if (process.platform === 'win32') {
+    classes.push('windows');
   }
 
-  selectToDeploy = () => {
-    this.dialogs.deploy()
-  }
+  return (
+    <aside className={classes.join(' ')}>
+      <div>
+        {active && <h1>{active.name}</h1>}
 
-  hideDeployIcon = () => {
-    this.deployIcon.classList.add('hidden')
-  }
+        <span className="deploy" onClick={() => ipc.openDeployDialog()}>
+          <Deploy darkBg={darkMode} />
+        </span>
+      </div>
 
-  showDeployIcon = () => {
-    this.deployIcon.classList.remove('hidden')
-  }
-
-  toggleFilter = () => {
-    this.setState({
-      typeFilter: !this.state.typeFilter
-    })
-  }
-
-  scopeUpdated() {
-    if (this.state.updateMessage) {
-      return
-    }
-
-    this.setState({
-      updateMessage: true
-    })
-
-    setTimeout(() => {
-      this.setState({
-        updateMessage: false
-      })
-    }, 1000)
-  }
-
-  updateTypeFilter(type) {
-    if (type === this.state.filteredType) {
-      return
-    }
-
-    const { setTypeFilter } = this.props
-
-    if (setTypeFilter) {
-      setTypeFilter(type)
-    }
-
-    this.setState({ filteredType: type })
-  }
-
-  renderTypeFilter() {
-    const types = ['Me', 'Team', 'System']
-    const { isUser } = this.props
-    const { filteredType } = this.state
-
-    if (isUser) {
-      types.splice(1, 1)
-    }
-
-    return (
-      <section className="filter">
-        <nav>
-          {types.map((item, index) => {
-            const classes = []
-            const handle = item.toLowerCase()
-
-            if (filteredType === handle) {
-              classes.push('active')
-            }
-
-            if (isUser && filteredType === 'team' && index === 0) {
-              classes.push('active')
-            }
-
-            return (
-              <a
-                className={classes.join(' ')}
-                key={item}
-                onClick={this.updateTypeFilter.bind(this, handle)}
-              >
-                {item}
-              </a>
-            )
-          })}
-        </nav>
-
-        <style jsx>{styles}</style>
+      <section className="update-message">
+        <Done />
+        <p>Context updated for Now CLI!</p>
       </section>
-    )
-  }
 
-  render() {
-    const classes = []
+      <Tips darkMode={darkMode} config={config} />
 
-    if (this.props.darkBg) {
-      classes.push('dark')
-    }
+      <style jsx>{`
+        aside {
+          height: 35px;
+          display: block;
+          position: relative;
+          justify-content: center;
+          align-items: center;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: #fff;
+          z-index: 5;
+          user-select: none;
+          cursor: default;
+          border-bottom: 1px solid #d6d6d6;
+          overflow: hidden;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          flex-shrink: 0;
+        }
 
-    if (this.props.light) {
-      classes.push('light')
-    }
+        aside.dark {
+          background: #2c2c2c;
+          background: linear-gradient(
+            180deg,
+            rgba(64, 64, 64, 1) 0%,
+            rgba(51, 51, 51, 1) 100%
+          );
+          border-bottom: 1px solid #000;
+        }
 
-    if (process.platform === 'win32') {
-      classes.push('windows')
-    }
+        h1 {
+          margin: 0;
+          color: #000000;
+          font-size: 13px;
+          letter-spacing: 0.02em;
+          font-weight: 600;
+        }
 
-    if (this.state.updateMessage) {
-      classes.push('scope-updated')
-    }
+        aside.dark h1 {
+          color: #fff;
+        }
 
-    if (this.state.typeFilter) {
-      classes.push('filter-visible')
-    }
+        .deploy {
+          position: absolute;
+          height: 36px;
+          width: 36px;
+          top: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: opacity 0.2s ease;
+        }
 
-    return (
-      <aside className={classes.join(' ')}>
-        <div>
-          {this.props.light &&
-            this.props.searchShown && (
-              <Search
-                hideDeployIcon={this.hideDeployIcon}
-                showDeployIcon={this.showDeployIcon}
-                setFeedFilter={this.props.setFilter || false}
-                setSearchRef={this.props.setSearchRef || false}
-                darkBg={this.props.darkBg}
-              />
-            )}
+        .deploy:hover {
+          opacity: 1;
+        }
 
-          <h1>{this.props.children}</h1>
+        .deploy {
+          opacity: 0.5;
+          right: 0;
+        }
 
-          {this.props.light &&
-            this.props.searchShown && (
-              <span className="toggle-filter" onClick={this.toggleFilter}>
-                <Filter darkBg={this.props.darkBg} />
-              </span>
-            )}
+        .deploy.hidden {
+          opacity: 0;
+        }
 
-          {this.props.light && (
-            <span
-              className="deploy"
-              onClick={this.selectToDeploy}
-              ref={this.setReference}
-              name="deployIcon"
-            >
-              <Deploy darkBg={this.props.darkBg} />
-            </span>
-          )}
-        </div>
+        .windows {
+          border-radius: 0;
+        }
 
-        <section className="update-message">
-          <Done />
-          <p>Context updated for Now CLI!</p>
-        </section>
+        .update-message {
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          background: #fff;
+          font-size: 12px;
+          align-items: center;
+          display: flex;
+          padding-left: 17px;
+          pointer-events: none;
+          height: 35px;
+        }
 
-        {this.props.showTips && <Tips darkBg={this.props.darkBg} />}
+        .dark .update-message {
+          color: #fff;
+          background: #2c2c2c;
+        }
 
-        {this.renderTypeFilter()}
+        .update-message p {
+          margin-left: 12px;
+        }
 
-        <style jsx>{styles}</style>
-      </aside>
-    )
-  }
-}
+        .scope-updated .update-message {
+          opacity: 1;
+        }
+
+        div {
+          transition: opacity 0.5s ease;
+          height: 36px;
+          width: 100vw;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .scope-updated div {
+          opacity: 0;
+        }
+      `}</style>
+    </aside>
+  );
+};
 
 Title.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.element.isRequired
-  ]),
-  light: PropTypes.bool,
-  darkBg: PropTypes.bool,
-  setFilter: PropTypes.func,
-  setSearchRef: PropTypes.func,
-  searchShown: PropTypes.bool,
-  setTypeFilter: PropTypes.func,
-  isUser: PropTypes.bool,
-  showTips: PropTypes.bool
-}
+  darkMode: PropTypes.bool,
+  active: PropTypes.object,
+  config: PropTypes.object
+};
 
-Title.defaultProps = {
-  showTips: true
-}
-
-export default Title
+export default Title;
