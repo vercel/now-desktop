@@ -161,10 +161,6 @@ const renderEvents = (
           border-bottom: 1px solid #000;
           border-top: 1px solid #000;
         }
-
-        h1:first-child {
-          border-top: 0;
-        }
       `}</style>
     </h1>,
     months[month].map(event => (
@@ -357,6 +353,7 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
           cursor: default;
           flex-shrink: 1;
           position: relative;
+          margin-top: -1px;
         }
 
         section.dark {
