@@ -5,7 +5,7 @@ import ipc from '../utils/ipc';
 import CreateTeam from './create-team';
 import Avatar from './avatar';
 
-const updateScope = (scope, config, setConfig, onChange) => {
+const updateScope = (scope, config, setConfig) => {
   ipc
     .saveConfig(
       {
@@ -19,14 +19,13 @@ const updateScope = (scope, config, setConfig, onChange) => {
       });
 
       setConfig(freshConfig);
-      onChange();
     })
     .catch(err => {
       console.error(`Failed to update scope: ${err}`);
     });
 };
 
-const renderItem = onChange => {
+const renderItem = () => {
   // eslint-disable-next-line new-cap
   return sortable.SortableElement(
     ({ scopes, active, scope, darkMode, initialized, config, setConfig }) => {
@@ -46,7 +45,7 @@ const renderItem = onChange => {
 
       const clicked = event => {
         event.preventDefault();
-        updateScope(scope, config, setConfig, onChange);
+        updateScope(scope, config, setConfig);
       };
 
       return (
@@ -100,10 +99,9 @@ const renderScopes = (
   darkMode,
   initialized,
   config,
-  setConfig,
-  onChange
+  setConfig
 ) => {
-  const Item = renderItem(onChange);
+  const Item = renderItem();
 
   return scopes.map((scope, index) => (
     <Item
@@ -126,8 +124,7 @@ const renderList = (
   darkMode,
   initialized,
   config,
-  setConfig,
-  onChange
+  setConfig
 ) => {
   if (scopes === null || active === null) {
     return null;
@@ -139,8 +136,7 @@ const renderList = (
     darkMode,
     initialized,
     config,
-    setConfig,
-    onChange
+    setConfig
   );
 
   // eslint-disable-next-line new-cap
@@ -253,15 +249,7 @@ const openMenu = menu => {
   });
 };
 
-const Switcher = ({
-  online,
-  darkMode,
-  scopes,
-  active,
-  config,
-  setConfig,
-  onChange
-}) => {
+const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
   const [initialized, setInitialized] = useState(false);
 
   const menu = useRef(null);
@@ -273,8 +261,7 @@ const Switcher = ({
     darkMode,
     initialized,
     config,
-    setConfig,
-    onChange
+    setConfig
   );
 
   useEffect(
@@ -495,8 +482,7 @@ Switcher.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   scopes: PropTypes.array,
-  setConfig: PropTypes.func,
-  onChange: PropTypes.func
+  setConfig: PropTypes.func
 };
 
 export default Switcher;

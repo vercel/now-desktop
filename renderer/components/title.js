@@ -1,10 +1,37 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
-const Title = ({ darkMode, active, config, contextChanged }) => {
+let contextMessageTimeout;
+let lastActive = null;
+
+const Title = ({ darkMode, active, config }) => {
+  const [contextChanged, setContextChanged] = useState(false);
+
+  const onContextChange = () => {
+    if (!contextMessageTimeout) {
+      setContextChanged(true);
+      contextMessageTimeout = setTimeout(() => {
+        setContextChanged(false);
+        contextMessageTimeout = null;
+      }, 1200);
+    }
+  };
+
+  useEffect(
+    () => {
+      if (!active || (active && !lastActive) || active.id === lastActive.id) {
+        lastActive = active;
+        return;
+      }
+
+      onContextChange();
+    },
+    [active]
+  );
   const classes = [];
 
   if (darkMode) {
