@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
@@ -6,7 +6,6 @@ import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
-let lastActive = null;
 
 const Title = ({ darkMode, active, config }) => {
   const [contextChanged, setContextChanged] = useState(false);
@@ -21,10 +20,20 @@ const Title = ({ darkMode, active, config }) => {
     }
   };
 
+  const getPrevious = active => {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = active;
+    });
+
+    return ref.current;
+  };
+  const lastActive = getPrevious(active);
+
   useEffect(
     () => {
-      if (!active || (active && !lastActive) || active.id === lastActive.id) {
-        lastActive = active;
+      if (!active || (active && !lastActive)) {
         return;
       }
 
