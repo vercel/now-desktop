@@ -1,10 +1,49 @@
+import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
+let contextMessageTimeout;
+
 const Title = ({ darkMode, active, config }) => {
+  const [contextChanged, setContextChanged] = useState(false);
+
+  const onContextChange = () => {
+    if (!contextMessageTimeout) {
+      setContextChanged(true);
+
+      contextMessageTimeout = setTimeout(() => {
+        setContextChanged(false);
+        contextMessageTimeout = null;
+      }, 1200);
+    }
+  };
+
+  const getPrevious = active => {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = active;
+    });
+
+    return ref.current;
+  };
+
+  const lastActive = getPrevious(active);
+
+  useEffect(
+    () => {
+      if (!active || (active && !lastActive)) {
+        return;
+      }
+
+      onContextChange();
+    },
+    [active]
+  );
+
   const classes = [];
 
   if (darkMode) {
@@ -17,18 +56,21 @@ const Title = ({ darkMode, active, config }) => {
 
   return (
     <aside className={classes.join(' ')}>
-      <div>
-        {active && <h1>{active.name}</h1>}
+      <div className="title-top-container">
+        {active && (
+          <h1 className={contextChanged ? 'hide' : ''}>{active.name}</h1>
+        )}
+        {contextChanged && (
+          <div className="context-changed">
+            <Done />
+            <p>Context updated for Now CLI</p>
+          </div>
+        )}
 
         <span className="deploy" onClick={() => ipc.openDeployDialog()}>
           <Deploy darkBg={darkMode} />
         </span>
       </div>
-
-      <section className="update-message">
-        <Done />
-        <p>Context updated for Now CLI!</p>
-      </section>
 
       <Tips darkMode={darkMode} config={config} />
 
@@ -71,6 +113,10 @@ const Title = ({ darkMode, active, config }) => {
           font-weight: 600;
         }
 
+        h1.hide {
+          animation: 1.2s header-hide ease forwards;
+        }
+
         aside.dark h1 {
           color: #fff;
         }
@@ -103,36 +149,6 @@ const Title = ({ darkMode, active, config }) => {
           border-radius: 0;
         }
 
-        .update-message {
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          position: absolute;
-          left: 0;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          background: #fff;
-          font-size: 12px;
-          align-items: center;
-          display: flex;
-          padding-left: 17px;
-          pointer-events: none;
-          height: 35px;
-        }
-
-        .dark .update-message {
-          color: #fff;
-          background: #2c2c2c;
-        }
-
-        .update-message p {
-          margin-left: 12px;
-        }
-
-        .scope-updated .update-message {
-          opacity: 1;
-        }
-
         div {
           transition: opacity 0.5s ease;
           height: 36px;
@@ -141,10 +157,68 @@ const Title = ({ darkMode, active, config }) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          position: relative;
         }
 
         .scope-updated div {
           opacity: 0;
+        }
+
+        .context-changed {
+          width: 100%;
+          height: 100%;
+          font-size: 12px;
+          opacity: 0;
+          animation: 1.2s context-change ease forwards;
+          position: absolute;
+          width: 240px;
+          left: calc(50% - 120px);
+        }
+
+        .context-changed p {
+          margin-left: 5px;
+        }
+
+        aside.dark .context-changed {
+          color: #fff;
+        }
+
+        @keyframes context-change {
+          0% {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+          }
+          30% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+          70% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+          }
+        }
+
+        @keyframes header-hide {
+          0% {
+            opacity: 1;
+            transform: translate3d(0, 0px, 0);
+          }
+          30% {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+          }
+          70% {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+          }
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
         }
       `}</style>
     </aside>
@@ -154,7 +228,8 @@ const Title = ({ darkMode, active, config }) => {
 Title.propTypes = {
   darkMode: PropTypes.bool,
   active: PropTypes.object,
-  config: PropTypes.object
+  config: PropTypes.object,
+  contextChanged: PropTypes.bool
 };
 
 export default Title;
