@@ -1,6 +1,7 @@
 const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
+const { removeConfig } = require('./config');
 
 exports.getMainMenu = async (app, tray, window, inRenderer) => {
   const { openAtLogin } = app.getLoginItemSettings();
@@ -74,6 +75,14 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               label: 'API Tokens',
               click() {
                 shell.openExternal('https://zeit.co/account/tokens');
+              }
+            },
+            {
+              label: 'Log out',
+              click() {
+                removeConfig().then(() => {
+                  window.webContents.send('logged-out');
+                });
               }
             }
           ]

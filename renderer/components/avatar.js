@@ -10,7 +10,7 @@ const avatarMemo = (event, hash, scope) => {
   }
 
   if (event) {
-    const id = event.user ? event.user.uid : event.userId;
+    const id = event.user ? event.user.uid || event.user.id : event.userId;
     return `${urlPrefix}${id}?s=80`;
   }
 

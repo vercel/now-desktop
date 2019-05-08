@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
-const Title = ({ darkMode, active, config }) => {
+const Title = ({ darkMode, active, config, isLogin }) => {
   const classes = [];
 
   if (darkMode) {
@@ -20,17 +19,16 @@ const Title = ({ darkMode, active, config }) => {
       <div>
         {active && <h1>{active.name}</h1>}
 
-        <span className="deploy" onClick={() => ipc.openDeployDialog()}>
-          <Deploy darkBg={darkMode} />
-        </span>
+        {isLogin ? (
+          <h1>Welcome to Now</h1>
+        ) : (
+          <span className="deploy" onClick={() => ipc.openDeployDialog()}>
+            <Deploy darkBg={darkMode} />
+          </span>
+        )}
       </div>
 
-      <section className="update-message">
-        <Done />
-        <p>Context updated for Now CLI!</p>
-      </section>
-
-      <Tips darkMode={darkMode} config={config} />
+      {!isLogin && <Tips darkMode={darkMode} config={config} />}
 
       <style jsx>{`
         aside {
@@ -153,6 +151,7 @@ const Title = ({ darkMode, active, config }) => {
 
 Title.propTypes = {
   darkMode: PropTypes.bool,
+  isLogin: PropTypes.bool,
   active: PropTypes.object,
   config: PropTypes.object
 };

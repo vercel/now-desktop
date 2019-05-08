@@ -1,0 +1,203 @@
+import Router from 'next/router';
+import React, { useState, useEffect } from 'react';
+import Title from '../components/title';
+import LoginInput, { EMAIL_RX } from '../components/login-input';
+import darkModeEffect from '../effects/dark-mode';
+import Logo from '../vectors/logo';
+import loadData from '../utils/load';
+import ipc from '../utils/ipc';
+import { API_REGISTRATION } from '../utils/endpoints';
+
+const getHost = () => {
+  const { platform } = navigator;
+  if (!platform) {
+    return '';
+  }
+
+  if (platform.toLowerCase().includes('mac')) {
+    return ' on macOS';
+  }
+  if (platform.toLowerCase().includes('win')) {
+    return ' on Windows';
+  }
+
+  return '';
+};
+
+const Login = () => {
+  const [darkMode, setDarkMode] = useState(null);
+
+  const [inputValue, setInput] = useState('');
+  const [inputDisabled, setInputDisabled] = useState(false);
+  const [inputError, setInputError] = useState(false);
+  const [securityCode, setSecurityCode] = useState(false);
+
+  useEffect(() => {
+    return darkModeEffect(darkMode, setDarkMode);
+  });
+
+  const handleInput = value => {
+    setInputError(false);
+    setInput(value);
+  };
+
+  const handleSubmit = async () => {
+    if (!EMAIL_RX.test(inputValue)) {
+      return setInputError('Please enter a valid email');
+    }
+    setInputDisabled(true);
+
+    const { token: preauthToken, securityCode: code } = await loadData(
+      API_REGISTRATION,
+      null,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          email: inputValue,
+          tokenName: 'Now Desktop' + getHost()
+        })
+      }
+    );
+
+    if (!preauthToken) {
+      setInputDisabled(false);
+      setInputError("We couldn't find this email");
+      return;
+    }
+
+    setSecurityCode(code);
+    setInputDisabled(false);
+
+    const checker = setInterval(async () => {
+      const { token } = await loadData(
+        `${API_REGISTRATION}/verify?email=${inputValue}&token=${preauthToken}`
+      );
+      if (token) {
+        clearInterval(checker);
+        await ipc.saveConfig({ token }, 'auth');
+        Router.replace('/feed');
+      }
+    }, 3000);
+  };
+
+  return (
+    <main className={darkMode ? 'dark' : ''}>
+      <Title darkMode={darkMode} isLogin />
+
+      <section>
+        <Logo darkMode={darkMode} />
+        {securityCode ? (
+          <>
+            <h3>Awaiting confirmation</h3>
+            <span className="notice">
+              We sent an email to <b>{inputValue}</b>
+              <br />
+              <br />
+              Please follow the steps provided and make sure security code
+              matches the following:
+            </span>
+            <span className="code">{securityCode}</span>
+          </>
+        ) : (
+          <>
+            <span className="start">
+              To start using the app, enter your email address below:
+            </span>
+            <LoginInput
+              darkMode={darkMode}
+              value={inputValue}
+              onChange={handleInput}
+              onSubmit={handleSubmit}
+              disabled={inputDisabled}
+              error={inputError}
+            />
+            <span className={`error ${inputError ? 'visible' : ''}`}>
+              {inputError}
+            </span>
+          </>
+        )}
+      </section>
+
+      <style jsx>{`
+        main,
+        div {
+          display: flex;
+          flex-direction: column;
+        }
+
+        main {
+          height: 100vh;
+        }
+
+        section {
+          width: 90%;
+          height: 100%;
+          margin: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          font-size: 14px;
+          text-align: center;
+          line-height: 20px;
+        }
+
+        .start {
+          margin-top: 15px;
+        }
+
+        .error {
+          opacity: 0;
+          transition: opacity 0.1s ease;
+          color: red;
+          font-size: 12px;
+          height: 12px;
+          margin-top: 5px;
+        }
+        .error.visible {
+          opacity: 1;
+        }
+
+        .notice {
+          font-size: 12px;
+          line-height: 16px;
+        }
+
+        .code {
+          display: flex;
+          width: 80%;
+          color: black;
+          background-color: #f7f7f7;
+          justify-content: center;
+          align-items: center;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          margin-top: 20px;
+          border-radius: 4px;
+          font-weight: 600;
+          font-size: 16px;
+        }
+
+        .dark .code {
+          color: white;
+          background-color: #202020;
+        }
+      `}</style>
+
+      <style jsx global>{`
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Helvetica Neue, sans-serif;
+          -webkit-font-smoothing: antialiased;
+          margin: 0;
+          overflow: hidden;
+          text-rendering: optimizeLegibility;
+          -webkit-font-smoothing: antialiased;
+          user-select: none;
+        }
+      `}</style>
+    </main>
+  );
+};
+
+export default Login;
