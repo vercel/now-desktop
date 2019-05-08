@@ -10,6 +10,8 @@ import activeEffect from '../effects/active';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 
+let contextMessageTimeout;
+
 const Main = () => {
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
@@ -17,6 +19,7 @@ const Main = () => {
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
+  const [contextChangedVisible, setContextChanged] = useState(false);
 
   // This effect (and read below)...
   useEffect(() => {
@@ -80,10 +83,25 @@ const Main = () => {
     [JSON.stringify(scopeOrder), JSON.stringify(scopes)]
   );
 
+  const onContextChange = () => {
+    if (!contextMessageTimeout) {
+      setContextChanged(true);
+      contextMessageTimeout = setTimeout(() => {
+        setContextChanged(false);
+        contextMessageTimeout = null;
+      }, 1200);
+    }
+  };
+
   return (
     <main>
       <div onDragEnter={() => setShowDropZone(true)}>
-        <Title config={config} active={active} darkMode={darkMode} />
+        <Title
+          config={config}
+          active={active}
+          darkMode={darkMode}
+          contextChanged={contextChangedVisible}
+        />
 
         {showDropZone && (
           <DropZone darkMode={darkMode} hide={() => setShowDropZone(false)} />
@@ -106,6 +124,7 @@ const Main = () => {
           active={active}
           scopes={orderedScopes}
           setConfig={setConfig}
+          onChange={onContextChange}
         />
       </div>
 

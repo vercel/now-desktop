@@ -4,7 +4,7 @@ import Deploy from '../vectors/deploy';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
-const Title = ({ darkMode, active, config }) => {
+const Title = ({ darkMode, active, config, contextChanged }) => {
   const classes = [];
 
   if (darkMode) {
@@ -17,8 +17,13 @@ const Title = ({ darkMode, active, config }) => {
 
   return (
     <aside className={classes.join(' ')}>
-      <div>
-        {active && <h1>{active.name}</h1>}
+      <div className="title-top-container">
+        {active && (
+          <h1 className={contextChanged ? 'hide' : ''}>{active.name}</h1>
+        )}
+        {contextChanged && (
+          <div className="context-changed">Context updated for Now CLI</div>
+        )}
 
         <span className="deploy" onClick={() => ipc.openDeployDialog()}>
           <Deploy darkBg={darkMode} />
@@ -69,6 +74,10 @@ const Title = ({ darkMode, active, config }) => {
           font-size: 13px;
           letter-spacing: 0.02em;
           font-weight: 600;
+        }
+
+        h1.hide {
+          animation: 1.2s header-hide ease forwards;
         }
 
         aside.dark h1 {
@@ -141,10 +150,57 @@ const Title = ({ darkMode, active, config }) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          position: relative;
         }
 
         .scope-updated div {
           opacity: 0;
+        }
+        .context-changed {
+          width: 100%;
+          height: 100%;
+          font-size: 12px;
+          opacity: 0;
+          animation: 1.2s context-change ease forwards;
+          position: absolute;
+          width: 240px;
+          left: calc(50% - 120px);
+        }
+        @keyframes context-change {
+          0% {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+          }
+          30% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+          70% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+          }
+        }
+        @keyframes header-hide {
+          0% {
+            opacity: 1;
+            transform: translate3d(0, 0px, 0);
+          }
+          30% {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+          }
+          70% {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+          }
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
         }
       `}</style>
     </aside>
@@ -154,7 +210,8 @@ const Title = ({ darkMode, active, config }) => {
 Title.propTypes = {
   darkMode: PropTypes.bool,
   active: PropTypes.object,
-  config: PropTypes.object
+  config: PropTypes.object,
+  contextChanged: PropTypes.bool
 };
 
 export default Title;

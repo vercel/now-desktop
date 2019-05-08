@@ -5,7 +5,7 @@ import ipc from '../utils/ipc';
 import CreateTeam from './create-team';
 import Avatar from './avatar';
 
-const updateScope = (scope, config, setConfig) => {
+const updateScope = (scope, config, setConfig, onChange) => {
   ipc
     .saveConfig(
       {
@@ -19,13 +19,14 @@ const updateScope = (scope, config, setConfig) => {
       });
 
       setConfig(freshConfig);
+      onChange();
     })
     .catch(err => {
       console.error(`Failed to update scope: ${err}`);
     });
 };
 
-const renderItem = () => {
+const renderItem = onChange => {
   // eslint-disable-next-line new-cap
   return sortable.SortableElement(
     ({ scopes, active, scope, darkMode, initialized, config, setConfig }) => {
@@ -45,7 +46,7 @@ const renderItem = () => {
 
       const clicked = event => {
         event.preventDefault();
-        updateScope(scope, config, setConfig);
+        updateScope(scope, config, setConfig, onChange);
       };
 
       return (
@@ -99,9 +100,10 @@ const renderScopes = (
   darkMode,
   initialized,
   config,
-  setConfig
+  setConfig,
+  onChange
 ) => {
-  const Item = renderItem();
+  const Item = renderItem(onChange);
 
   return scopes.map((scope, index) => (
     <Item
@@ -124,7 +126,8 @@ const renderList = (
   darkMode,
   initialized,
   config,
-  setConfig
+  setConfig,
+  onChange
 ) => {
   if (scopes === null || active === null) {
     return null;
@@ -136,7 +139,8 @@ const renderList = (
     darkMode,
     initialized,
     config,
-    setConfig
+    setConfig,
+    onChange
   );
 
   // eslint-disable-next-line new-cap
@@ -249,7 +253,15 @@ const openMenu = menu => {
   });
 };
 
-const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
+const Switcher = ({
+  online,
+  darkMode,
+  scopes,
+  active,
+  config,
+  setConfig,
+  onChange
+}) => {
   const [initialized, setInitialized] = useState(false);
 
   const menu = useRef(null);
@@ -261,7 +273,8 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
     darkMode,
     initialized,
     config,
-    setConfig
+    setConfig,
+    onChange
   );
 
   useEffect(
@@ -482,7 +495,8 @@ Switcher.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   scopes: PropTypes.array,
-  setConfig: PropTypes.func
+  setConfig: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 export default Switcher;
