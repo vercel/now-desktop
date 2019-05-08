@@ -6,6 +6,7 @@ import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
+let lastActive = null;
 
 const Title = ({ darkMode, active, config }) => {
   const [contextChanged, setContextChanged] = useState(false);
@@ -20,16 +21,16 @@ const Title = ({ darkMode, active, config }) => {
     }
   };
 
-  const activeId = active ? active.id : null;
   useEffect(
     () => {
-      if (!activeId || !active.manual) {
+      if (!active || (active && !lastActive) || active.id === lastActive.id) {
+        lastActive = active;
         return;
       }
 
       onContextChange();
     },
-    [activeId]
+    [active]
   );
   const classes = [];
 

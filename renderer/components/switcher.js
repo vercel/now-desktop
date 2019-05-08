@@ -15,8 +15,7 @@ const updateScope = (scope, config, setConfig) => {
     )
     .then(newConfig => {
       const freshConfig = Object.assign({}, newConfig, {
-        token: config.token,
-        manual: true
+        token: config.token
       });
 
       setConfig(freshConfig);

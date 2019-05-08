@@ -57,9 +57,7 @@ const Main = () => {
         return;
       }
 
-      return activeEffect(config, scopes, active =>
-        setActive({ ...active, manual: config.manual })
-      );
+      return activeEffect(config, scopes, setActive);
     },
 
     // Only re-invoke this effect if the scopes or config change.
