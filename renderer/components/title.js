@@ -22,18 +22,16 @@ const Title = ({ darkMode, active, config, contextChanged }) => {
           <h1 className={contextChanged ? 'hide' : ''}>{active.name}</h1>
         )}
         {contextChanged && (
-          <div className="context-changed">Context updated for Now CLI</div>
+          <div className="context-changed">
+            <Done />
+            <p>Context updated for Now CLI!</p>
+          </div>
         )}
 
         <span className="deploy" onClick={() => ipc.openDeployDialog()}>
           <Deploy darkBg={darkMode} />
         </span>
       </div>
-
-      <section className="update-message">
-        <Done />
-        <p>Context updated for Now CLI!</p>
-      </section>
 
       <Tips darkMode={darkMode} config={config} />
 
@@ -112,36 +110,6 @@ const Title = ({ darkMode, active, config, contextChanged }) => {
           border-radius: 0;
         }
 
-        .update-message {
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          position: absolute;
-          left: 0;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          background: #fff;
-          font-size: 12px;
-          align-items: center;
-          display: flex;
-          padding-left: 17px;
-          pointer-events: none;
-          height: 35px;
-        }
-
-        .dark .update-message {
-          color: #fff;
-          background: #2c2c2c;
-        }
-
-        .update-message p {
-          margin-left: 12px;
-        }
-
-        .scope-updated .update-message {
-          opacity: 1;
-        }
-
         div {
           transition: opacity 0.5s ease;
           height: 36px;
@@ -165,6 +133,9 @@ const Title = ({ darkMode, active, config, contextChanged }) => {
           position: absolute;
           width: 240px;
           left: calc(50% - 120px);
+        }
+        .context-changed p {
+          margin-left: 5px;
         }
         aside.dark .context-changed {
           color: #fff;
