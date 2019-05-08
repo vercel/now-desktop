@@ -13,6 +13,7 @@ const Title = ({ darkMode, active, config }) => {
   const onContextChange = () => {
     if (!contextMessageTimeout) {
       setContextChanged(true);
+
       contextMessageTimeout = setTimeout(() => {
         setContextChanged(false);
         contextMessageTimeout = null;
@@ -29,6 +30,7 @@ const Title = ({ darkMode, active, config }) => {
 
     return ref.current;
   };
+
   const lastActive = getPrevious(active);
 
   useEffect(
@@ -41,6 +43,7 @@ const Title = ({ darkMode, active, config }) => {
     },
     [active]
   );
+
   const classes = [];
 
   if (darkMode) {
@@ -60,7 +63,7 @@ const Title = ({ darkMode, active, config }) => {
         {contextChanged && (
           <div className="context-changed">
             <Done />
-            <p>Context updated for Now CLI!</p>
+            <p>Context updated for Now CLI</p>
           </div>
         )}
 
@@ -160,6 +163,7 @@ const Title = ({ darkMode, active, config }) => {
         .scope-updated div {
           opacity: 0;
         }
+
         .context-changed {
           width: 100%;
           height: 100%;
@@ -170,12 +174,15 @@ const Title = ({ darkMode, active, config }) => {
           width: 240px;
           left: calc(50% - 120px);
         }
+
         .context-changed p {
           margin-left: 5px;
         }
+
         aside.dark .context-changed {
           color: #fff;
         }
+
         @keyframes context-change {
           0% {
             opacity: 0;
@@ -194,6 +201,7 @@ const Title = ({ darkMode, active, config }) => {
             transform: translate3d(0, -10px, 0);
           }
         }
+
         @keyframes header-hide {
           0% {
             opacity: 1;
