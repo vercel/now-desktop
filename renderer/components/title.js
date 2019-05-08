@@ -21,27 +21,28 @@ const Title = ({ darkMode, active, config }) => {
     }
   };
 
-  const getPrevious = active => {
+  const getPrevious = currentActive => {
     const ref = useRef();
 
     useEffect(() => {
-      ref.current = active;
+      ref.current = currentActive;
     });
 
     return ref.current;
   };
 
-  const lastActive = getPrevious(active);
+  const activeId = active ? active.id : null;
+  const lastActive = getPrevious(activeId);
 
   useEffect(
     () => {
-      if (!active || (active && !lastActive)) {
+      if (!activeId || (activeId && !lastActive)) {
         return;
       }
 
       onContextChange();
     },
-    [active]
+    [activeId]
   );
 
   const classes = [];
