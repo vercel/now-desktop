@@ -166,6 +166,9 @@ const Title = ({ darkMode, active, config, contextChanged }) => {
           width: 240px;
           left: calc(50% - 120px);
         }
+        aside.dark .context-changed {
+          color: #fff;
+        }
         @keyframes context-change {
           0% {
             opacity: 0;
