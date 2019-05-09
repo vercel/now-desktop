@@ -3,20 +3,7 @@ import loadData from '../utils/load';
 import { API_EVENTS } from '../utils/endpoints';
 import Messages from '../components/messages';
 
-const AUTO_EVENT_TYPES = new Set([
-  'scale',
-  'scale-auto',
-  'cert-autorenew',
-  'custom-suffix-clear',
-  'custom-suffix-pending',
-  'custom-suffix-ready',
-  'alias-system',
-  'domain-transfer-in-canceled',
-  'domain-transfer-in-completed'
-]);
-
-const ALL_EVENT_TYPES = new Set(Messages.keys());
-const types = [...ALL_EVENT_TYPES].filter(t => !AUTO_EVENT_TYPES.has(t));
+const types = [...new Set(Messages.keys())];
 
 const loadEvents = (
   setLoading,
