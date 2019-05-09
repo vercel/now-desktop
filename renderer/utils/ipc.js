@@ -32,6 +32,10 @@ const onLoggedOut = invoke => {
   window.ipc.on('logged-out', invoke);
 };
 
+const clearLoggedOut = invoke => {
+  window.ipc.removeListener('logged-out', invoke);
+};
+
 const onWindowOpening = invoke => {
   window.ipc.on('window-opening', invoke);
 };
@@ -90,6 +94,7 @@ export default {
   openDeployDialog,
   onDarkModeStatusChange,
   onLoggedOut,
+  clearLoggedOut,
   clearDarkModeStatusChange,
   onWindowOpening,
   clearWindowOpening,
