@@ -1,6 +1,9 @@
 import queryString from 'query-string';
 import loadData from '../utils/load';
 import { API_EVENTS } from '../utils/endpoints';
+import Messages from '../components/messages';
+
+const types = [...new Set(Messages.keys())];
 
 const loadEvents = (
   setLoading,
@@ -17,7 +20,7 @@ const loadEvents = (
     scope: scope.id
   });
 
-  const defaults = { limit: 30 };
+  const defaults = { limit: 30, types };
   const query = Object.assign(defaults, {});
   const existing = events[scope.id];
 
@@ -36,7 +39,7 @@ const loadEvents = (
   }
 
   if (query.types) {
-    query.types = Array.from(query.types).join(',');
+    query.types = query.types.join(',');
   }
 
   const params = queryString.stringify(query);
