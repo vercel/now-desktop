@@ -73,9 +73,9 @@ const Title = ({ darkMode, active, config, title }) => {
         {title ? (
           <h1>{title}</h1>
         ) : (
-          <span className="deploy" onClick={() => ipc.openDeployDialog()}>
+          <button className="deploy" onClick={() => ipc.openDeployDialog()}>
             <Deploy darkBg={darkMode} />
-          </span>
+          </button>
         )}
         {title === 'About' && (
           <Link href="/feed">
@@ -146,10 +146,15 @@ const Title = ({ darkMode, active, config, title }) => {
           align-items: center;
           transition: opacity 0.2s ease;
           color: black;
+          border: 0;
+          background: 0;
+          outline: 0;
         }
 
         .deploy:hover,
-        .close:hover {
+        .deploy:focus,
+        .close:hover,
+        .close:focus {
           opacity: 1;
         }
 

@@ -28,13 +28,15 @@ const AuthorLink = ({ name, link, darkMode }) => (
       {`
         a {
           font-size: 12px;
-          color: #444;
+          color: #333;
           text-decoration: none;
           margin-left: 10px;
           line-height: 18px;
+          outline: 0;
         }
 
-        a:hover {
+        a:hover,
+        a:focus {
           color: black;
         }
         a:last-child {
@@ -45,7 +47,8 @@ const AuthorLink = ({ name, link, darkMode }) => (
           color: #ccc;
         }
 
-        a.dark:hover {
+        a.dark:hover,
+        a.dark:focus {
           color: white;
         }
       `}
@@ -70,10 +73,11 @@ const About = () => {
     Router.replace('/feed');
   };
 
-  // eslint-disable-next-line no-undef
+  /* eslint-disable no-undef */
   const ago = BUILD_DATE.includes('not released yet')
     ? BUILD_DATE
     : `${ms(Date.now() - new Date(BUILD_DATE).getTime())} ago`;
+  /* eslint-enable no-undef */
 
   return (
     <main className={darkMode ? 'dark' : ''}>
@@ -203,6 +207,12 @@ const About = () => {
           color: #444;
           line-height: 18px;
           font-weight: 700;
+          outline: 0;
+        }
+
+        footer a:hover,
+        footer a:focus {
+          color: black;
         }
 
         nav {
@@ -227,6 +237,11 @@ const About = () => {
         .dark *,
         .dark .authors h3 {
           color: #ccc;
+        }
+
+        .dark footer a:hover,
+        .dark footer a:focus {
+          color: white;
         }
 
         .dark .authors {
