@@ -10,7 +10,7 @@ import pkg from '../../package.json'; // eslint-disable-line import/extensions
 const AUTHORS = [
   { name: 'Leo Lamprecht', link: 'https://twitter.com/notquiteleo' },
   { name: 'Evil Rabbit', link: 'https://twitter.com/evilrabbit_' },
-  { name: 'Guillermo Rauch', link: 'https://twitter.com/rauchg' },
+  { name: 'Max Rovensky', link: 'https://twitter.com/MaxRovensky' },
   { name: 'Matheus Fernandes', link: 'https://twitter.com/matheusfrndes' }
 ];
 
