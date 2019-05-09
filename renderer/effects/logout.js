@@ -4,6 +4,6 @@ export default (_, handleLogout) => {
   ipc.onLoggedOut(handleLogout);
 
   return () => {
-    ipc.clearLoggedOutListener(handleLogout);
+    ipc.clearLoggedOut(handleLogout);
   };
 };
