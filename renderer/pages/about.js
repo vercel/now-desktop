@@ -21,6 +21,7 @@ const AuthorLink = ({ name, link, darkMode }) => (
     onClick={e => {
       e.preventDefault();
       ipc.openURL(link);
+      e.target.blur();
     }}
   >
     {name}
@@ -114,6 +115,7 @@ const About = () => {
             onClick={e => {
               e.preventDefault();
               ipc.openURL('https://zeit.co');
+              e.target.blur();
             }}
           >
             ZEIT
@@ -125,9 +127,21 @@ const About = () => {
             onClick={e => {
               e.preventDefault();
               ipc.openURL('https://zeit.co/docs');
+              e.target.blur();
             }}
           >
             Docs
+          </a>
+          <div className="divider" />
+          <a
+            href="https://zeit.co/guides"
+            onClick={e => {
+              e.preventDefault();
+              ipc.openURL('https://zeit.co/guides');
+              e.target.blur();
+            }}
+          >
+            Guides
           </a>
           <div className="divider" />
           <a
@@ -135,6 +149,7 @@ const About = () => {
             onClick={e => {
               e.preventDefault();
               ipc.openURL('https://github.com/zeit/now-desktop');
+              e.target.blur();
             }}
           >
             Source
@@ -211,8 +226,7 @@ const About = () => {
           outline: 0;
         }
 
-        footer a:hover,
-        footer a:focus {
+        footer a:hover {
           color: black;
         }
 

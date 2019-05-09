@@ -4,6 +4,6 @@ export default (_, handleAboutScreen) => {
   ipc.onAboutScreen(handleAboutScreen);
 
   return () => {
-    ipc.onAboutScreen(handleAboutScreen);
+    ipc.clearAboutScreen(handleAboutScreen);
   };
 };
