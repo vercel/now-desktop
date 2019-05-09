@@ -133,10 +133,10 @@ const Login = () => {
                 style={{ marginTop: 2, marginRight: 3 }}
                 onChange={(event, checked) => setUpdateCLI(checked)}
               />{' '}
-              Keep Now command line interface up to date
+              Install Now command line interface
             </span>
             <span className="auto-update-permissions">
-              This may require additional permissions
+              May require extra permissions
             </span>
           </>
         )}
