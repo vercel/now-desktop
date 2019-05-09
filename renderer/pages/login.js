@@ -97,7 +97,7 @@ const Login = () => {
 
   return (
     <main className={darkMode ? 'dark' : ''}>
-      <Title darkMode={darkMode} isLogin />
+      <Title darkMode={darkMode} title="Welcome to Now" />
 
       <section>
         <Logo darkMode={darkMode} />

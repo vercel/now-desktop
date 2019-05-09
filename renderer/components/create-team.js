@@ -38,12 +38,17 @@ const CreateTeam = ({ darkMode, delay }) => {
   });
 
   return (
-    <a onClick={open} title="Create a Team" className={classes}>
+    <button
+      onClick={open}
+      tabIndex={1}
+      title="Create a Team"
+      className={classes}
+    >
       <i />
       <i />
 
       <style jsx>{`
-        a {
+        button {
           height: 23px;
           width: 23px;
           border-radius: 100%;
@@ -55,22 +60,26 @@ const CreateTeam = ({ darkMode, delay }) => {
           display: block;
           transition: all 0.2s ease;
           transform: scale(0);
+          outline: 0;
+          background: 0;
         }
 
-        a.scaled {
+        button.scaled {
           transform: scale(1);
         }
 
-        a.darkMode,
-        a:hover {
+        button.darkMode,
+        button:hover,
+        button:focus {
           border-color: #333;
         }
 
-        a.darkMode:hover {
+        button.darkMode:hover,
+        button.darkMode:focus {
           border-color: #666;
         }
 
-        a i {
+        button i {
           display: block;
           transition: all 0.2s ease;
           display: flex;
@@ -83,32 +92,32 @@ const CreateTeam = ({ darkMode, delay }) => {
           top: 0;
         }
 
-        a i:before {
+        button i:before {
           content: '';
           display: block;
           background: #666;
         }
 
-        a.darkMode i:before,
-        a:hover i:before {
+        button.darkMode i:before,
+        button:hover i:before {
           background: #666;
         }
 
-        a.darkMode:hover i:before {
+        button.darkMode:hover i:before {
           background: #fff;
         }
 
-        a i:first-child:before {
+        button i:first-child:before {
           height: 9px;
           width: 1px;
         }
 
-        a i:last-child:before {
+        button i:last-child:before {
           width: 9px;
           height: 1px;
         }
       `}</style>
-    </a>
+    </button>
   );
 };
 
