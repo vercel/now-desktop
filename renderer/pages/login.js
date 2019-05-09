@@ -47,6 +47,7 @@ const Login = () => {
     if (!EMAIL_RX.test(inputValue)) {
       return setInputError('Please enter a valid email');
     }
+
     setInputDisabled(true);
 
     const { token: preauthToken, securityCode: code } = await loadData(
@@ -64,6 +65,7 @@ const Login = () => {
     if (!preauthToken) {
       setInputDisabled(false);
       setInputError("We couldn't find this email");
+
       return;
     }
 
@@ -74,12 +76,16 @@ const Login = () => {
       const { token } = await loadData(
         `${API_REGISTRATION}/verify?email=${inputValue}&token=${preauthToken}`
       );
+
       if (token) {
         clearInterval(checker);
+
         await ipc.saveConfig({ token }, 'auth');
+
         if (!updateCLI) {
           await ipc.disableCLIUpdates();
         }
+
         Router.replace('/feed');
       }
     }, 3000);
@@ -212,9 +218,11 @@ const Login = () => {
           align-items: center;
           margin-top: 10px;
         }
+
         .dark .auto-update-cli {
           color: white;
         }
+
         .auto-update-permissions {
           font-size: 12px;
           color: #999;
