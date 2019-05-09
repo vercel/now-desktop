@@ -31,7 +31,7 @@ const Login = () => {
   const [inputValue, setInput] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);
   const [inputError, setInputError] = useState(false);
-  const [securityCode, setSecurityCode] = useState(false);
+  const [securityCode, setSecurityCode] = useState(null);
   const [updateCLI, setUpdateCLI] = useState(true);
 
   useEffect(() => {
@@ -212,7 +212,7 @@ const Login = () => {
 
         .dark .code {
           color: white;
-          background-color: #202020;
+          background-color: #333;
         }
 
         .auto-update-cli {
@@ -223,7 +223,9 @@ const Login = () => {
           margin-top: 10px;
         }
 
-        .dark .auto-update-cli {
+        .dark .auto-update-cli,
+        .dark .notice,
+        .dark h3 {
           color: white;
         }
 
