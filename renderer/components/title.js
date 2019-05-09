@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Deploy from '../vectors/deploy';
 import Done from '../vectors/done';
+import Close from '../vectors/close-window';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({ darkMode, active, config, isLogin }) => {
+const Title = ({ darkMode, active, config, title }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -68,16 +70,23 @@ const Title = ({ darkMode, active, config, isLogin }) => {
           </div>
         )}
 
-        {isLogin ? (
-          <h1>Welcome to Now</h1>
+        {title ? (
+          <h1>{title}</h1>
         ) : (
           <span className="deploy" onClick={() => ipc.openDeployDialog()}>
             <Deploy darkBg={darkMode} />
           </span>
         )}
+        {title === 'About' && (
+          <Link href="/feed">
+            <a className="close">
+              <Close darkBg={darkMode} />
+            </a>
+          </Link>
+        )}
       </div>
 
-      {!isLogin && <Tips darkMode={darkMode} config={config} />}
+      {!title && <Tips darkMode={darkMode} config={config} />}
 
       <style jsx>{`
         aside {
@@ -126,7 +135,8 @@ const Title = ({ darkMode, active, config, isLogin }) => {
           color: #fff;
         }
 
-        .deploy {
+        .deploy,
+        .close {
           position: absolute;
           height: 36px;
           width: 36px;
@@ -135,18 +145,23 @@ const Title = ({ darkMode, active, config, isLogin }) => {
           justify-content: center;
           align-items: center;
           transition: opacity 0.2s ease;
+          color: black;
         }
 
-        .deploy:hover {
+        .deploy:hover,
+        .close:hover {
           opacity: 1;
         }
 
-        .deploy {
+        .deploy,
+        .close {
           opacity: 0.5;
           right: 0;
+          cursor: default;
         }
 
-        .deploy.hidden {
+        .deploy.hidden,
+        .close.hidden {
           opacity: 0;
         }
 
@@ -186,6 +201,11 @@ const Title = ({ darkMode, active, config, isLogin }) => {
 
         aside.dark .context-changed {
           color: #fff;
+        }
+
+        aside.dark .deploy,
+        aside.dark .close {
+          color: white;
         }
 
         @keyframes context-change {
@@ -232,7 +252,7 @@ const Title = ({ darkMode, active, config, isLogin }) => {
 
 Title.propTypes = {
   darkMode: PropTypes.bool,
-  isLogin: PropTypes.bool,
+  title: PropTypes.string,
   active: PropTypes.object,
   config: PropTypes.object,
   contextChanged: PropTypes.bool
