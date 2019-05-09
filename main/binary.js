@@ -18,7 +18,7 @@ const retry = require('async-retry');
 const sudo = require('sudo-prompt');
 const { resolve: resolvePath } = require('app-root-path');
 const notify = require('./notify');
-const { saveConfig } = require('./config');
+const { saveConfig, getConfig } = require('./config');
 
 // Ensures that the `now.exe` directory is on the user's `PATH`
 const ensurePath = async () => {
@@ -170,7 +170,7 @@ const platformName = () => {
 };
 
 const canaryCheck = async () => {
-  const config = {};
+  const config = await getConfig();
 
   const { updateChannel } = config;
   return updateChannel && updateChannel === 'canary';
