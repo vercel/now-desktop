@@ -74,9 +74,10 @@ const About = () => {
   };
 
   /* eslint-disable no-undef */
-  const ago = BUILD_DATE.includes('not released yet')
-    ? BUILD_DATE
-    : `${ms(Date.now() - new Date(BUILD_DATE).getTime())} ago`;
+  const ago =
+    typeof BUILD_DATE === 'string'
+      ? BUILD_DATE
+      : `${ms(Date.now() - new Date(BUILD_DATE).getTime())} ago`;
   /* eslint-enable no-undef */
 
   return (
