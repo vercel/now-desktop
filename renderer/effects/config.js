@@ -1,3 +1,4 @@
+import Router from 'next/router';
 import ipc from '../utils/ipc';
 
 const loadFreshConfig = setConfig => {
@@ -7,6 +8,11 @@ const loadFreshConfig = setConfig => {
     .getConfig()
     .then(config => {
       console.timeEnd('Loaded fresh config');
+
+      if (!config || !config.token) {
+        Router.replace('/login');
+      }
+
       setConfig(config);
     })
     .catch(err => {

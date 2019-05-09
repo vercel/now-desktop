@@ -1,14 +1,15 @@
 // Packages
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const Logo = () => (
+const Logo = ({ darkMode }) => (
   <svg
     width="43"
     height="40"
     viewBox="0 0 43 40"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g stroke="#000" fill="none" fillRule="evenodd">
+    <g stroke={darkMode ? 'white' : 'black'} fill="none" fillRule="evenodd">
       <path
         strokeWidth="2.1875"
         d="M21.331521 3.05101328L40.663042 37.9972047H2z"
@@ -20,5 +21,9 @@ const Logo = () => (
     </g>
   </svg>
 );
+
+Logo.propTypes = {
+  darkMode: PropTypes.bool
+};
 
 export default Logo;

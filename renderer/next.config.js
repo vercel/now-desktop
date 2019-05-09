@@ -1,7 +1,8 @@
 module.exports = {
   exportPathMap() {
     return {
-      '/feed': { page: '/feed' }
+      '/feed': { page: '/feed' },
+      '/login': { page: '/login' }
     };
   }
 };
