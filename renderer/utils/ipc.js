@@ -82,6 +82,20 @@ const getDarkModeStatus = () => {
   );
 };
 
+const disableCLIUpdates = () => {
+  return timeout(
+    new Promise((resolve, reject) => {
+      window.ipc.once(
+        'disable-cli-updates-response',
+        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
+      );
+
+      window.ipc.send('disable-cli-updates');
+    }),
+    1000
+  );
+};
+
 export default {
   openURL,
   hideWindow,
@@ -95,5 +109,6 @@ export default {
   clearWindowOpening,
   getConfig,
   saveConfig,
-  getDarkModeStatus
+  getDarkModeStatus,
+  disableCLIUpdates
 };

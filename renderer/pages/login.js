@@ -2,6 +2,7 @@ import Router from 'next/router';
 import React, { useState, useEffect } from 'react';
 import Title from '../components/title';
 import LoginInput, { EMAIL_RX } from '../components/login-input';
+import Checkbox from '../components/checkbox';
 import darkModeEffect from '../effects/dark-mode';
 import Logo from '../vectors/logo';
 import loadData from '../utils/load';
@@ -31,6 +32,7 @@ const Login = () => {
   const [inputDisabled, setInputDisabled] = useState(false);
   const [inputError, setInputError] = useState(false);
   const [securityCode, setSecurityCode] = useState(false);
+  const [updateCLI, setUpdateCLI] = useState(true);
 
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
@@ -75,6 +77,9 @@ const Login = () => {
       if (token) {
         clearInterval(checker);
         await ipc.saveConfig({ token }, 'auth');
+        if (!updateCLI) {
+          await ipc.disableCLIUpdates();
+        }
         Router.replace('/feed');
       }
     }, 3000);
@@ -113,6 +118,19 @@ const Login = () => {
             />
             <span className={`error ${inputError ? 'visible' : ''}`}>
               {inputError}
+            </span>
+            <span className="auto-update-cli">
+              <Checkbox
+                checked={updateCLI}
+                label="Auto-Update Now CLI"
+                name="Auto-Update Now CLI"
+                style={{ marginTop: 2, marginRight: 3 }}
+                onChange={(event, checked) => setUpdateCLI(checked)}
+              />{' '}
+              Keep Now command line interface up to date
+            </span>
+            <span className="auto-update-permissions">
+              This may require additional permissions
             </span>
           </>
         )}
@@ -181,6 +199,17 @@ const Login = () => {
         .dark .code {
           color: white;
           background-color: #202020;
+        }
+
+        .auto-update-cli {
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+        }
+        .auto-update-permissions {
+          font-size: 12px;
+          color: #999;
         }
       `}</style>
 

@@ -77,6 +77,17 @@ module.exports = (app, tray, window) => {
     }
   });
 
+  ipcMain.on('disable-cli-updates', async event => {
+    const configUpdate = {
+      desktop: {
+        updateCLI: false
+      }
+    };
+
+    await saveConfig(configUpdate, 'config');
+    event.sender.send('disable-cli-updates-response');
+  });
+
   // We need to wait until the window is loaded before assigning the
   // events that are triggered from the main process.
   window.webContents.on('did-finish-load', () => {
