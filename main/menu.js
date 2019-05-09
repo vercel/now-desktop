@@ -84,7 +84,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               }
             },
             {
-              label: 'Log out',
+              label: 'Log Out',
               click() {
                 removeConfig().then(() => {
                   window.webContents.send('logged-out');
