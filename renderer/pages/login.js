@@ -80,12 +80,15 @@ const Login = () => {
       if (token) {
         clearInterval(checker);
 
-        const configData = {
-          desktop: { updateCLI },
-          token
-        };
-
-        await ipc.saveConfig(configData, 'auth');
+        await ipc.saveConfig({ token }, 'auth');
+        await ipc.saveConfig(
+          {
+            desktop: {
+              updateCLI
+            }
+          },
+          'config'
+        );
 
         Router.replace('/feed');
       }

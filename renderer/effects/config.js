@@ -8,9 +8,11 @@ const loadFreshConfig = setConfig => {
     .getConfig()
     .then(config => {
       console.timeEnd('Loaded fresh config');
+
       if (!config || !config.token) {
         Router.replace('/login');
       }
+
       setConfig(config);
     })
     .catch(err => {
