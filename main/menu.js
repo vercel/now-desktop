@@ -12,7 +12,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
   } catch (e) {}
 
   const desktop = config.desktop || {};
-  const isCanary = true;
+  const isCanary = config.updateChannel === 'canary';
 
   let updateCLI = true;
 
@@ -133,7 +133,10 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               type: 'checkbox',
               checked: isCanary,
               click() {
-                console.log('test');
+                saveConfig(
+                  { updateChannel: isCanary ? 'stable' : 'canary' },
+                  'config'
+                );
               }
             },
             {
