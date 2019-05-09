@@ -1,6 +1,22 @@
 import queryString from 'query-string';
 import loadData from '../utils/load';
 import { API_EVENTS } from '../utils/endpoints';
+import Messages from '../components/messages';
+
+const AUTO_EVENT_TYPES = new Set([
+  'scale',
+  'scale-auto',
+  'cert-autorenew',
+  'custom-suffix-clear',
+  'custom-suffix-pending',
+  'custom-suffix-ready',
+  'alias-system',
+  'domain-transfer-in-canceled',
+  'domain-transfer-in-completed'
+]);
+
+const ALL_EVENT_TYPES = new Set(Messages.keys());
+const types = [...ALL_EVENT_TYPES].filter(t => !AUTO_EVENT_TYPES.has(t));
 
 const loadEvents = (
   setLoading,
@@ -17,7 +33,7 @@ const loadEvents = (
     scope: scope.id
   });
 
-  const defaults = { limit: 30 };
+  const defaults = { limit: 30, types };
   const query = Object.assign(defaults, {});
   const existing = events[scope.id];
 
@@ -36,7 +52,7 @@ const loadEvents = (
   }
 
   if (query.types) {
-    query.types = Array.from(query.types).join(',');
+    query.types = query.types.join(',');
   }
 
   const params = queryString.stringify(query);
