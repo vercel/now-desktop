@@ -50,7 +50,7 @@ const Login = () => {
 
     setInputDisabled(true);
 
-    const { token: preauthToken, securityCode: code } = await loadData(
+    const { token: preauthToken, securityCode: code, error } = await loadData(
       API_REGISTRATION,
       null,
       {
@@ -64,7 +64,7 @@ const Login = () => {
 
     if (!preauthToken) {
       setInputDisabled(false);
-      setInputError("We couldn't find this email");
+      setInputError(error || 'The email you entered is invalid');
 
       return;
     }

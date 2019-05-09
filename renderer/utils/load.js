@@ -34,6 +34,10 @@ export default async (path, token = null, opts = {}) => {
       return false;
     }
 
+    if (res.status === 500) {
+      return { error: 'An error has occurred. Please try again' };
+    }
+
     if (opts.throwOnHTTPError && (res.status < 200 || res.status >= 300)) {
       if (res.headers.get('Content-Type') === 'application/json') {
         data = await res.json();

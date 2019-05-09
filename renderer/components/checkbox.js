@@ -116,7 +116,7 @@ Checkbox.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   onChange: PropTypes.func,
-  darkMode: PropTypes.boolean
+  darkMode: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
