@@ -43,7 +43,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
           label:
             process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
           click() {
-            console.log('test');
+            window.webContents.send('open-about-screen');
           }
         },
         {

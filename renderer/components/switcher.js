@@ -327,8 +327,9 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           <p className="spacer">{'You are offline'}</p>
         )}
 
-        <a
+        <button
           className="toggle-menu"
+          tabIndex={1}
           onClick={openMenu.bind(this, menu)}
           onContextMenu={openMenu.bind(this, menu)}
           ref={menu}
@@ -336,7 +337,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           <i />
           <i />
           <i />
-        </a>
+        </button>
       </aside>
 
       <style jsx>{`
@@ -369,7 +370,9 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           flex-direction: column;
           flex-shrink: 0;
           z-index: 2000;
-          background: #fff;
+          background: 0;
+          outline: 0;
+          border: 0;
         }
 
         aside.dark .toggle-menu {
@@ -393,7 +396,8 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           margin: 3px 0;
         }
 
-        aside .toggle-menu:hover i {
+        aside .toggle-menu:hover i,
+        aside .toggle-menu:focus i {
           opacity: 1;
         }
 
