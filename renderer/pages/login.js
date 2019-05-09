@@ -162,6 +162,10 @@ const Login = () => {
 
         .start {
           margin-top: 15px;
+          color: black;
+        }
+        .dark .start {
+          color: white;
         }
 
         .error {
@@ -202,14 +206,21 @@ const Login = () => {
         }
 
         .auto-update-cli {
+          color: black;
           font-size: 12px;
           display: flex;
           align-items: center;
           margin-top: 10px;
         }
+        .dark .auto-update-cli {
+          color: white;
+        }
         .auto-update-permissions {
           font-size: 12px;
           color: #999;
+        }
+        .dark .auto-update-permissions {
+          color: #666;
         }
       `}</style>
 

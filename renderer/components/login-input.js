@@ -63,7 +63,7 @@ const LoginInput = ({
 
           input.dark {
             color: white;
-            border-bottom-color: #444;
+            border-bottom-color: #666;
           }
           input.dark:active,
           input.dark:focus {
