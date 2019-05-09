@@ -1,7 +1,7 @@
 const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
-const { getConfig, saveConfig } = require('./config');
+const { removeConfig, getConfig, saveConfig } = require('./config');
 
 exports.getMainMenu = async (app, tray, window, inRenderer) => {
   const { openAtLogin } = app.getLoginItemSettings();
@@ -82,6 +82,14 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               click() {
                 shell.openExternal('https://zeit.co/account/tokens');
               }
+            },
+            {
+              label: 'Log Out',
+              click() {
+                removeConfig().then(() => {
+                  window.webContents.send('logged-out');
+                });
+              }
             }
           ]
         },
@@ -142,7 +150,13 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
                   });
                 }
 
-                console.log('test');
+                const configUpdate = {
+                  desktop: {
+                    updateCLI: !updateCLI
+                  }
+                };
+
+                saveConfig(configUpdate, 'config');
               }
             }
           ]

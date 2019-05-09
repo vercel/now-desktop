@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import Done from '../vectors/done';
 import Deploy from '../vectors/deploy';
+import Done from '../vectors/done';
 import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({ darkMode, active, config }) => {
+const Title = ({ darkMode, active, config, isLogin }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -68,12 +68,16 @@ const Title = ({ darkMode, active, config }) => {
           </div>
         )}
 
-        <span className="deploy" onClick={() => ipc.openDeployDialog()}>
-          <Deploy darkBg={darkMode} />
-        </span>
+        {isLogin ? (
+          <h1>Welcome to Now</h1>
+        ) : (
+          <span className="deploy" onClick={() => ipc.openDeployDialog()}>
+            <Deploy darkBg={darkMode} />
+          </span>
+        )}
       </div>
 
-      <Tips darkMode={darkMode} config={config} />
+      {!isLogin && <Tips darkMode={darkMode} config={config} />}
 
       <style jsx>{`
         aside {
@@ -228,6 +232,7 @@ const Title = ({ darkMode, active, config }) => {
 
 Title.propTypes = {
   darkMode: PropTypes.bool,
+  isLogin: PropTypes.bool,
   active: PropTypes.object,
   config: PropTypes.object,
   contextChanged: PropTypes.bool

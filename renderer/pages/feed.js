@@ -1,3 +1,4 @@
+import Router from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
@@ -7,6 +8,7 @@ import configEffect from '../effects/config';
 import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
+import logoutEffect from '../effects/logout';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 
@@ -25,6 +27,12 @@ const Main = () => {
 
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
+  });
+
+  useEffect(() => {
+    return logoutEffect(null, () => {
+      Router.replace('/login');
+    });
   });
 
   useEffect(
@@ -133,6 +141,8 @@ const Main = () => {
           -webkit-font-smoothing: antialiased;
           margin: 0;
           overflow: hidden;
+          text-rendering: optimizeLegibility;
+          -webkit-font-smoothing: antialiased;
         }
       `}</style>
     </main>

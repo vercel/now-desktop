@@ -1,4 +1,5 @@
 import ms from 'ms';
+import { API_REGISTRATION } from './endpoints';
 
 const NETWORK_ERR_CODE = 'network_error';
 const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry';
@@ -7,7 +8,7 @@ export default async (path, token = null, opts = {}) => {
   const headers = opts.headers || {};
 
   // Without a token, there's no need to continue
-  if (!token) {
+  if (!token && !path.includes(API_REGISTRATION)) {
     return false;
   }
 
@@ -31,6 +32,10 @@ export default async (path, token = null, opts = {}) => {
     if (res.status === 403) {
       // We need to log out here
       return false;
+    }
+
+    if (res.status === 500) {
+      return { error: 'An error has occurred. Please try again' };
     }
 
     if (opts.throwOnHTTPError && (res.status < 200 || res.status >= 300)) {
