@@ -1,11 +1,18 @@
 const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
+const { getConfig, saveConfig } = require('./config');
 
 exports.getMainMenu = async (app, tray, window, inRenderer) => {
   const { openAtLogin } = app.getLoginItemSettings();
-  const desktop = {};
-  const isCanary = true;
+  let config = {};
+
+  try {
+    config = await getConfig();
+  } catch (e) {}
+
+  const desktop = config.desktop || {};
+  const isCanary = config.updateChannel === 'canary';
 
   let updateCLI = true;
 
@@ -118,7 +125,10 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               type: 'checkbox',
               checked: isCanary,
               click() {
-                console.log('test');
+                saveConfig(
+                  { updateChannel: isCanary ? 'stable' : 'canary' },
+                  'config'
+                );
               }
             },
             {
