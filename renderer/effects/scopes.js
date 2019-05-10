@@ -27,6 +27,13 @@ export default ({ token }, setScopes) => {
 
           const { user } = data;
 
+          scopes.sort((a, b) => {
+            if (a.slug < b.slug) return -1;
+            if (a.slug > b.slug) return 1;
+
+            return 0;
+          });
+
           scopes.unshift({
             id: user.uid,
             avatar: user.avatar,
