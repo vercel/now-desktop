@@ -36,6 +36,14 @@ const clearLoggedOut = invoke => {
   window.ipc.removeListener('logged-out', invoke);
 };
 
+const onAboutScreen = invoke => {
+  window.ipc.on('open-about-screen', invoke);
+};
+
+const clearAboutScreen = invoke => {
+  window.ipc.removeListener('open-about-screen', invoke);
+};
+
 const onWindowOpening = invoke => {
   window.ipc.on('window-opening', invoke);
 };
@@ -95,6 +103,8 @@ export default {
   onDarkModeStatusChange,
   onLoggedOut,
   clearLoggedOut,
+  onAboutScreen,
+  clearAboutScreen,
   clearDarkModeStatusChange,
   onWindowOpening,
   clearWindowOpening,

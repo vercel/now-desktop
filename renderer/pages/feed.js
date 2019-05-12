@@ -9,6 +9,7 @@ import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
 import logoutEffect from '../effects/logout';
+import aboutScreenEffect from '../effects/about-screen';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 
@@ -32,6 +33,12 @@ const Main = () => {
   useEffect(() => {
     return logoutEffect(null, () => {
       Router.replace('/login');
+    });
+  });
+
+  useEffect(() => {
+    return aboutScreenEffect(null, () => {
+      Router.replace('/about');
     });
   });
 

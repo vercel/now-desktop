@@ -107,7 +107,7 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
         }
 
         .darkMode {
-          border: 1px solid #fff;
+          border: 1px solid #444;
         }
 
         .scale {
