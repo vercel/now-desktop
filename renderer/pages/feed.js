@@ -1,5 +1,7 @@
 import Router from 'next/router';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import Deployment from 'now-client';
+import * as idb from 'idb-keyval';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
 import Events from '../components/events';
@@ -12,6 +14,7 @@ import logoutEffect from '../effects/logout';
 import aboutScreenEffect from '../effects/about-screen';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
+import DeploymentBar from '../components/deployment-bar';
 
 const Main = () => {
   const [scopes, setScopes] = useState(null);
@@ -20,10 +23,28 @@ const Main = () => {
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
+  const [activeDeployment, setActiveDeployment] = useState(null);
+  const [activeDeploymentBuilds, setActiveDeploymentBuilds] = useState([]);
+  const [deploymentError, setDeploymentError] = useState(null);
+
+  const fileInput = useRef();
 
   // This effect (and read below)...
   useEffect(() => {
     return onlineEffect(online, setOnline);
+  });
+
+  useEffect(() => {
+    idb.get('last-state').then(lastState => {
+      if (lastState) {
+        setScopes(lastState.scopes);
+        setActive(lastState.active);
+        setDarkMode(lastState.darkMode);
+        setConfig(lastState.config);
+
+        idb.set('last-state', null);
+      }
+    });
   });
 
   useEffect(() => {
@@ -38,6 +59,13 @@ const Main = () => {
 
   useEffect(() => {
     return aboutScreenEffect(null, () => {
+      idb.set('last-state', {
+        scopes,
+        active,
+        darkMode,
+        config
+      });
+
       Router.replace('/about');
     });
   });
@@ -95,13 +123,51 @@ const Main = () => {
     [JSON.stringify(scopeOrder), JSON.stringify(scopes)]
   );
 
+  const createDeployment = async files => {
+    const deployment = new Deployment(files, config.token);
+    setActiveDeployment(deployment);
+
+    const handleError = err => {
+      setActiveDeployment(null);
+      setActiveDeploymentBuilds([]);
+      setDeploymentError(err);
+    };
+
+    deployment.on('error', handleError);
+
+    deployment.on('created', setActiveDeployment);
+    deployment.on('deployment-state-changed', setActiveDeployment);
+    deployment.on('build-state-changed', build => {
+      const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
+      nextBuilds.push(build);
+      setActiveDeploymentBuilds(nextBuilds);
+    });
+    deployment.on('ready', () => {
+      setActiveDeployment({ ready: true });
+      setActiveDeploymentBuilds([]);
+
+      setTimeout(() => setActiveDeployment(null), 3000);
+    });
+
+    deployment.deploy();
+  };
+
   return (
     <main>
       <div onDragEnter={() => setShowDropZone(true)}>
-        <Title config={config} active={active} darkMode={darkMode} />
+        <Title
+          config={config}
+          active={active}
+          darkMode={darkMode}
+          fileInput={fileInput.current}
+        />
 
         {showDropZone && (
-          <DropZone darkMode={darkMode} hide={() => setShowDropZone(false)} />
+          <DropZone
+            darkMode={darkMode}
+            hide={() => setShowDropZone(false)}
+            onDrop={files => createDeployment(files)}
+          />
         )}
 
         <Events
@@ -114,6 +180,12 @@ const Main = () => {
           setActive={setActive}
         />
 
+        <DeploymentBar
+          activeDeployment={activeDeployment}
+          activeDeploymentBuilds={activeDeploymentBuilds}
+          error={deploymentError}
+        />
+
         <Switcher
           config={config}
           online={online}
@@ -123,6 +195,14 @@ const Main = () => {
           setConfig={setConfig}
         />
       </div>
+
+      <input
+        type="file"
+        ref={fileInput}
+        className="file-input"
+        onChange={e => createDeployment(e.target.files)}
+        multiple
+      />
 
       <style jsx>{`
         main,
@@ -138,6 +218,12 @@ const Main = () => {
         div {
           flex-shrink: 1;
           position: relative;
+        }
+
+        .file-input {
+          position: absolute;
+          left: -999px;
+          top: -999px;
         }
       `}</style>
 

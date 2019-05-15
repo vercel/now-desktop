@@ -4,12 +4,11 @@ import PropTypes from 'prop-types';
 import Deploy from '../vectors/deploy';
 import Done from '../vectors/done';
 import Close from '../vectors/close-window';
-import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({ darkMode, active, config, title }) => {
+const Title = ({ darkMode, active, config, title, fileInput }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -73,9 +72,18 @@ const Title = ({ darkMode, active, config, title }) => {
         {title ? (
           <h1>{title}</h1>
         ) : (
-          <button className="deploy" onClick={() => ipc.openDeployDialog()}>
-            <Deploy darkBg={darkMode} />
-          </button>
+          <>
+            <button
+              className="deploy"
+              onClick={() => {
+                if (fileInput) {
+                  fileInput.click();
+                }
+              }}
+            >
+              <Deploy darkBg={darkMode} />
+            </button>
+          </>
         )}
         {title === 'About' && (
           <Link href="/feed">
@@ -102,7 +110,6 @@ const Title = ({ darkMode, active, config, title }) => {
           z-index: 5;
           user-select: none;
           cursor: default;
-          border-bottom: 1px solid #d6d6d6;
           overflow: hidden;
           border-top-left-radius: 5px;
           border-top-right-radius: 5px;
@@ -110,13 +117,7 @@ const Title = ({ darkMode, active, config, title }) => {
         }
 
         aside.dark {
-          background: #2c2c2c;
-          background: linear-gradient(
-            180deg,
-            rgba(64, 64, 64, 1) 0%,
-            rgba(51, 51, 51, 1) 100%
-          );
-          border-bottom: 1px solid #000;
+          background: #3a3a3a;
         }
 
         h1 {
@@ -260,7 +261,8 @@ Title.propTypes = {
   title: PropTypes.string,
   active: PropTypes.object,
   config: PropTypes.object,
-  contextChanged: PropTypes.bool
+  contextChanged: PropTypes.bool,
+  fileInput: PropTypes.object
 };
 
 export default Title;

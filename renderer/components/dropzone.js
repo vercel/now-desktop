@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import ipc from '../utils/ipc';
 
-const droppedFile = (hide, event) => {
+const droppedFile = (event, hide, onDrop) => {
   hide();
 
   if (!event.dataTransfer || !event.dataTransfer.files) {
@@ -10,10 +9,9 @@ const droppedFile = (hide, event) => {
   }
 
   const { files } = event.dataTransfer;
-  const list = [...files].map(file => file.path);
-
-  console.log(list);
-  ipc.openDeployDialog();
+  if (onDrop) {
+    onDrop(files);
+  }
 
   // And prevent the window from loading the file inside it
   event.preventDefault();
@@ -27,14 +25,14 @@ const preventDefault = event => {
   event.preventDefault();
 };
 
-const DropZone = ({ darkMode, hide }) => {
+const DropZone = ({ darkMode, hide, onDrop }) => {
   const classes = classNames({ darkMode });
 
   return (
     <aside
       onDragLeave={hide}
       onDragOver={preventDefault}
-      onDrop={droppedFile.bind(this, hide)}
+      onDrop={e => droppedFile(e, hide, onDrop)}
     >
       <section className={classes}>
         <span>
@@ -113,7 +111,8 @@ const DropZone = ({ darkMode, hide }) => {
 
 DropZone.propTypes = {
   darkMode: PropTypes.bool,
-  hide: PropTypes.func
+  hide: PropTypes.func,
+  onDrop: PropTypes.func
 };
 
 export default DropZone;

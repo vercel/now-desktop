@@ -53,7 +53,7 @@ const CreateTeam = ({ darkMode, delay }) => {
           width: 23px;
           border-radius: 100%;
           box-sizing: border-box;
-          border: 1px solid #e8e8e8;
+          border: 1px solid #eaeaea;
           position: relative;
           flex-shrink: 0;
           margin: 0 20px 0 10px;
@@ -68,10 +68,17 @@ const CreateTeam = ({ darkMode, delay }) => {
           transform: scale(1);
         }
 
-        button.darkMode,
+        button.darkMode {
+          border-color: #3a3a3a;
+        }
+
         button:hover,
         button:focus {
-          border-color: #333;
+          border-color: #999;
+        }
+        button.darkMode:hover,
+        button.darkMode:focus {
+          border-color: #eee;
         }
 
         button.darkMode:hover,
@@ -95,12 +102,12 @@ const CreateTeam = ({ darkMode, delay }) => {
         button i:before {
           content: '';
           display: block;
-          background: #666;
+          background: #999;
         }
 
         button.darkMode i:before,
         button:hover i:before {
-          background: #666;
+          background: #999;
         }
 
         button.darkMode:hover i:before {

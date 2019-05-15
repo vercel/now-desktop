@@ -8,10 +8,6 @@ const hideWindow = () => {
   return window.ipc.send('hide-window-request');
 };
 
-const openDeployDialog = () => {
-  return window.ipc.send('open-deploy-dialog');
-};
-
 const openMainMenu = bounds => {
   return window.ipc.send('open-main-menu-request', bounds);
 };
@@ -99,7 +95,6 @@ export default {
   hideWindow,
   openMainMenu,
   openEventMenu,
-  openDeployDialog,
   onDarkModeStatusChange,
   onLoggedOut,
   clearLoggedOut,

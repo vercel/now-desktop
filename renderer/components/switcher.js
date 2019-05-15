@@ -336,7 +336,6 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         >
           <i />
           <i />
-          <i />
         </button>
       </aside>
 
@@ -348,7 +347,6 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           right: 0;
           flex-shrink: 0;
           flex-grow: 0;
-          border-top: 1px solid #d6d6d6;
           display: flex;
           background: #fff;
           user-select: none;
@@ -356,8 +354,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         }
 
         aside.dark {
-          border-top: 1px solid #000;
-          background: #2c2c2c;
+          background: #3a3a3a;
         }
 
         aside .toggle-menu {
@@ -376,29 +373,33 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         }
 
         aside.dark .toggle-menu {
-          background: #2c2c2c;
+          background: #3a3a3a;
         }
 
         aside .toggle-menu i {
           width: 18px;
           height: 1px;
-          background: #4e4e4e;
+          background: #999;
           display: block;
-          opacity: 0.5;
-          transition: opacity 0.2s ease;
+          transition: background 0.2s ease;
         }
 
         aside.dark .toggle-menu i {
-          background: #b3b3b3;
+          background: #999;
         }
 
         aside .toggle-menu i:nth-child(2) {
-          margin: 3px 0;
+          margin-top: 6px;
         }
 
         aside .toggle-menu:hover i,
         aside .toggle-menu:focus i {
-          opacity: 1;
+          background: #333;
+        }
+
+        aside.dark .toggle-menu:hover i,
+        aside.dark .toggle-menu:focus i {
+          background: #ccc;
         }
 
         .list-scroll {
@@ -435,7 +436,7 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
         }
 
         .dark .shadow {
-          background: linear-gradient(to right, transparent, #2c2c2c);
+          background: linear-gradient(to right, transparent, #3a3a3a);
         }
 
         .spacer {
