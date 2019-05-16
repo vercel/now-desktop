@@ -19,12 +19,12 @@ if (isMacOS) {
   darkMode = electron.systemPreferences.isInvertedColorScheme();
 }
 
-const loadPage = (win, page, query) => {
+const loadPage = (win, page) => {
   if (isDev) {
-    win.loadURL(`http://localhost:8000/${page}${query}`);
+    win.loadURL(`http://localhost:8000/${page}`);
   } else {
     win.loadFile(
-      `${electron.app.getAppPath()}/renderer/out/${page}/index.html${query}`
+      `${electron.app.getAppPath()}/renderer/out/${page}/index.html`
     );
   }
 };
@@ -93,7 +93,7 @@ exports.getWindow = tray => {
 
   exports.positionWindow(tray, win);
 
-  loadPage(win, 'feed', `?init=1`);
+  loadPage(win, 'feed');
   attachTrayState(win, tray);
 
   // Hide window if it's not focused anymore

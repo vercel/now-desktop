@@ -44,6 +44,10 @@ const Main = () => {
   });
 
   useEffect(() => {
+    if (Router.query.disableScopesAnimation) {
+      Router.replace('/feed', '/feed', { shallow: true });
+    }
+
     return aboutScreenEffect(null, () => {
       Router.replace('/about');
     });

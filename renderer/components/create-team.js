@@ -8,8 +8,8 @@ const open = event => {
   ipc.openURL('https://zeit.co/teams/create');
 };
 
-const CreateTeam = ({ darkMode, delay }) => {
-  const [scaled, setScaled] = useState(false);
+const CreateTeam = ({ darkMode, delay, disableScale = false }) => {
+  const [scaled, setScaled] = useState(disableScale);
 
   useEffect(
     () => {
@@ -130,7 +130,8 @@ const CreateTeam = ({ darkMode, delay }) => {
 
 CreateTeam.propTypes = {
   delay: PropTypes.number,
-  darkMode: PropTypes.bool
+  darkMode: PropTypes.bool,
+  disableScale: PropTypes.bool
 };
 
 export default CreateTeam;

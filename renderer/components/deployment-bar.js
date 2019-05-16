@@ -31,19 +31,24 @@ const DeploymentBar = ({
   onErrorClick
 }) => {
   const [hiding, setHiding] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
     if (!activeDeployment && !error) {
       setHiding(true);
+      setTimeout(() => {
+        setHidden(true);
+      }, 200);
     } else {
       setHiding(false);
+      setHidden(false);
     }
   });
 
   const readyBuilds = builds.filter(build => build.readyState).length;
   const progress = builds && builds > 0 ? readyBuilds / builds.length * 100 : 0;
 
-  return (
+  return hidden ? null : (
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
       {error ? (
         <div className="content" onClick={() => onErrorClick()}>

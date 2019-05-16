@@ -252,7 +252,8 @@ const openMenu = menu => {
 
 const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
   const [initialized, setInitialized] = useState(
-    typeof window !== 'undefined' && !Router.query.init
+    typeof window !== 'undefined' &&
+      Boolean(Router.query.disableScopesAnimation)
   );
 
   const menu = useRef(null);
@@ -321,7 +322,11 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
                 lockToContainerEdges={true}
                 lockOffset="0%"
               />
-              <CreateTeam delay={scopes && scopes.length} darkMode={darkMode} />
+              <CreateTeam
+                delay={scopes && scopes.length}
+                darkMode={darkMode}
+                disableScale={initialized}
+              />
             </div>
 
             <span className="shadow" onClick={scrollToEnd.bind(this, list)} />
