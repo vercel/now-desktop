@@ -340,6 +340,10 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
       </aside>
 
       <style jsx>{`
+        span {
+          z-index: 1;
+        }
+
         aside {
           height: 40px;
           bottom: 0;

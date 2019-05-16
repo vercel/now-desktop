@@ -124,6 +124,10 @@ const Main = () => {
   );
 
   const createDeployment = async files => {
+    if (!files || files.length === 0) {
+      return;
+    }
+
     const deployment = new Deployment(files, config.token);
     setActiveDeployment(deployment);
 
@@ -145,6 +149,10 @@ const Main = () => {
     deployment.on('ready', () => {
       setActiveDeployment({ ready: true });
       setActiveDeploymentBuilds([]);
+
+      if (fileInput.current) {
+        fileInput.current.value = null;
+      }
 
       setTimeout(() => setActiveDeployment(null), 3000);
     });
@@ -184,6 +192,7 @@ const Main = () => {
           activeDeployment={activeDeployment}
           activeDeploymentBuilds={activeDeploymentBuilds}
           error={deploymentError}
+          onErrorClick={() => setDeploymentError(null)}
         />
 
         <Switcher
