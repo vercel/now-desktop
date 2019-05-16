@@ -1,7 +1,6 @@
 import Router from 'next/router';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Deployment from 'now-client';
-import * as idb from 'idb-keyval';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
 import Events from '../components/events';
@@ -35,19 +34,6 @@ const Main = () => {
   });
 
   useEffect(() => {
-    idb.get('last-state').then(lastState => {
-      if (lastState) {
-        setScopes(lastState.scopes);
-        setActive(lastState.active);
-        setDarkMode(lastState.darkMode);
-        setConfig(lastState.config);
-
-        idb.set('last-state', null);
-      }
-    });
-  });
-
-  useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
   });
 
@@ -59,13 +45,6 @@ const Main = () => {
 
   useEffect(() => {
     return aboutScreenEffect(null, () => {
-      idb.set('last-state', {
-        scopes,
-        active,
-        darkMode,
-        config
-      });
-
       Router.replace('/about');
     });
   });

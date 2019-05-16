@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import * as sortable from 'react-sortable-hoc';
 import ipc from '../utils/ipc';
 import CreateTeam from './create-team';
@@ -250,7 +251,9 @@ const openMenu = menu => {
 };
 
 const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
-  const [initialized, setInitialized] = useState(false);
+  const [initialized, setInitialized] = useState(
+    typeof window !== 'undefined' && !Router.query.init
+  );
 
   const menu = useRef(null);
   const list = useRef(null);
