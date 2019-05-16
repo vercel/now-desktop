@@ -96,7 +96,7 @@ const Main = () => {
   useEffect(
     () => {
       // Wait until the scopes are defined.
-      if (scopes === null || scopes.length === 0) {
+      if (!config || scopes === null || scopes.length === 0) {
         return;
       }
 
