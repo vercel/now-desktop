@@ -33,7 +33,6 @@ const DeploymentBar = ({
   const [hiding, setHiding] = useState(false);
 
   useEffect(() => {
-    console.log(activeDeployment, error);
     if (!activeDeployment && !error) {
       setHiding(true);
     } else {
