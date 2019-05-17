@@ -120,6 +120,7 @@ const Main = () => {
     const deployment = new Deployment(files, config.token, {
       teamId: config.currentTeam
     });
+
     setDeploymentError(null);
     setActiveDeployment(deployment);
 
@@ -133,11 +134,13 @@ const Main = () => {
 
     deployment.on('created', setActiveDeployment);
     deployment.on('deployment-state-changed', setActiveDeployment);
+
     deployment.on('build-state-changed', build => {
       const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
       nextBuilds.push(build);
       setActiveDeploymentBuilds(nextBuilds);
     });
+
     deployment.on('ready', dpl => {
       setActiveDeployment({ ready: true });
       setActiveDeploymentBuilds([]);

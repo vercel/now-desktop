@@ -9,6 +9,7 @@ const droppedFile = (event, hide, onDrop) => {
   }
 
   const { files } = event.dataTransfer;
+
   if (onDrop) {
     onDrop(files);
   }
