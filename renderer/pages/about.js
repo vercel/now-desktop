@@ -1,4 +1,3 @@
-import Router from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import ms from 'ms';
@@ -70,10 +69,6 @@ const About = () => {
     return darkModeEffect(darkMode, setDarkMode);
   });
 
-  const onClose = () => {
-    Router.replace('/feed');
-  };
-
   /* eslint-disable no-undef */
   const ago =
     typeof BUILD_DATE === 'string'
@@ -83,7 +78,7 @@ const About = () => {
 
   return (
     <main className={darkMode ? 'dark' : ''}>
-      <Title darkMode={darkMode} title="About" onClose={onClose} />
+      <Title darkMode={darkMode} title="About" />
 
       <section>
         <img

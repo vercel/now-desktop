@@ -1,8 +1,17 @@
+import * as idb from 'idb-keyval';
 import loadData from '../utils/load';
 import { API_TEAMS, API_USER } from '../utils/endpoints';
 
 export default ({ token }, setScopes) => {
   console.time('Loaded fresh user and teams');
+
+  idb.get('last-scopes').then(lastScopes => {
+    if (lastScopes) {
+      setScopes(lastScopes);
+
+      idb.set('last-scopes', null);
+    }
+  });
 
   loadData(API_TEAMS, token)
     .then(data => {
@@ -45,6 +54,8 @@ export default ({ token }, setScopes) => {
           console.timeEnd('Loaded fresh user and teams');
 
           setScopes(scopes);
+
+          idb.set('last-scopes', scopes);
         })
         .catch(err => {
           console.error(`Failed to load user: ${err}`);

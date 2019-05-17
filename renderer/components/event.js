@@ -177,10 +177,15 @@ const Event = ({ event, active, user, setScopeWithSlug, darkMode }) => {
           margin: 0;
           display: flex;
           justify-content: space-between;
+          background: #ffffff;
+        }
+
+        figure.darkMode {
+          background: #1f1f1f;
         }
 
         figure:hover {
-          background: #f5f5f5;
+          background: #f0f0f0;
         }
 
         figure.darkMode:hover {

@@ -43,7 +43,6 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
           color: #666666;
           text-align: center;
           background: #f5f5f5;
-          border-top: 1px solid #fff;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -51,7 +50,6 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
         }
 
         aside.dark {
-          border-top-color: #1f1f1f;
           background: #333;
           color: #999;
         }
@@ -140,26 +138,22 @@ const renderEvents = (
       {month}
       <style jsx>{`
         h1 {
-          background: #f5f5f5;
+          background: #e1e1e1;
           font-size: 10px;
           height: 23px;
           line-height: 23px;
           padding: 0 10px;
-          color: #000;
+          color: #666;
           margin: 0;
           position: sticky;
           top: 0;
           text-transform: uppercase;
           font-weight: 200;
-          border-bottom: 1px solid #fff;
-          border-top: 1px solid #fff;
         }
 
         h1.dark {
-          background: #161616;
-          color: #9c9c9c;
-          border-bottom: 1px solid #000;
-          border-top: 1px solid #000;
+          background: #2e2e2e;
+          color: #999999;
         }
       `}</style>
     </h1>,
