@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+import * as idb from 'idb-keyval';
 import loadData from '../utils/load';
 import { API_EVENTS } from '../utils/endpoints';
 import Messages from '../components/messages';
@@ -13,6 +14,17 @@ const loadEvents = (
   { token },
   type
 ) => {
+  idb.get(`last-events-${scope.id}`).then(lastEvents => {
+    if (lastEvents) {
+      dispatchEvents({
+        type,
+        scope: scope.id,
+        events: lastEvents
+      });
+
+      idb.set(`last-events-${scope.id}`, null);
+    }
+  });
   // It's extremely important that this fires early, otherwise
   // there are multiple loaders being created for loading when scrolling.
   setLoading({
@@ -78,6 +90,8 @@ const loadEvents = (
       });
 
       console.timeEnd(timeMessage);
+
+      idb.set(`last-events-${scope.id}`, events);
     })
     .catch(err => {
       setLoading({

@@ -8,10 +8,6 @@ const hideWindow = () => {
   return window.ipc.send('hide-window-request');
 };
 
-const openDeployDialog = () => {
-  return window.ipc.send('open-deploy-dialog');
-};
-
 const openMainMenu = bounds => {
   return window.ipc.send('open-main-menu-request', bounds);
 };
@@ -50,6 +46,14 @@ const onWindowOpening = invoke => {
 
 const clearWindowOpening = invoke => {
   window.ipc.removeListener('window-opening', invoke);
+};
+
+const onTrayDrag = invoke => {
+  window.ipc.on('open-dropzone', invoke);
+};
+
+const clearTrayDrag = invoke => {
+  window.ipc.removeListener('open-dropzone', invoke);
 };
 
 const getConfig = () => {
@@ -99,7 +103,6 @@ export default {
   hideWindow,
   openMainMenu,
   openEventMenu,
-  openDeployDialog,
   onDarkModeStatusChange,
   onLoggedOut,
   clearLoggedOut,
@@ -108,6 +111,8 @@ export default {
   clearDarkModeStatusChange,
   onWindowOpening,
   clearWindowOpening,
+  onTrayDrag,
+  clearTrayDrag,
   getConfig,
   saveConfig,
   getDarkModeStatus
