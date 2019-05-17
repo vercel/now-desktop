@@ -48,6 +48,14 @@ const clearWindowOpening = invoke => {
   window.ipc.removeListener('window-opening', invoke);
 };
 
+const onTrayDrag = invoke => {
+  window.ipc.on('open-dropzone', invoke);
+};
+
+const clearTrayDrag = invoke => {
+  window.ipc.removeListener('open-dropzone', invoke);
+};
+
 const getConfig = () => {
   return timeout(
     new Promise((resolve, reject) => {
@@ -103,6 +111,8 @@ export default {
   clearDarkModeStatusChange,
   onWindowOpening,
   clearWindowOpening,
+  onTrayDrag,
+  clearTrayDrag,
   getConfig,
   saveConfig,
   getDarkModeStatus

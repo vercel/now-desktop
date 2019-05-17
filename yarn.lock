@@ -5997,10 +5997,10 @@ normalize-path@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-now-client@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.2.1.tgz#d4a7db41384b9616f201e46ab0c7fd39190eab6f"
-  integrity sha512-q+bYiQ2FJntgS92NH4xYEaGvWDpkLl6gL+hP+IP6SADPaWVi3Mvae2Pwu2K1fEYva7R0jIrr//MKgsC8l3wCkg==
+now-client@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.2.2.tgz#44fdc5d3cd134322cc949221fb9972d5ee3f89a8"
+  integrity sha512-+m9pNxs7X2CkPqQql20ZKhsPwpsvJqdsoFQCJCrntdwwd9V38JdXUdf+YWJ91cf1eE4eFoMn4mLw+jLU8+80GQ==
   dependencies:
     js-sha1 "^0.6.0"
 

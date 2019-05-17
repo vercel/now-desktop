@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Deployment from 'now-client';
+import ipc from '../utils/ipc';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
 import Events from '../components/events';
@@ -10,6 +11,7 @@ import darkModeEffect from '../effects/dark-mode';
 import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
 import logoutEffect from '../effects/logout';
+import trayDragEffect from '../effects/tray-drag';
 import aboutScreenEffect from '../effects/about-screen';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
@@ -41,6 +43,10 @@ const Main = () => {
     return logoutEffect(null, () => {
       Router.replace('/login');
     });
+  });
+
+  useEffect(() => {
+    return trayDragEffect(null, () => setShowDropZone(true));
   });
 
   useEffect(() => {
@@ -114,6 +120,7 @@ const Main = () => {
     const deployment = new Deployment(files, config.token, {
       teamId: config.currentTeam
     });
+    setDeploymentError(null);
     setActiveDeployment(deployment);
 
     const handleError = err => {
@@ -131,7 +138,7 @@ const Main = () => {
       nextBuilds.push(build);
       setActiveDeploymentBuilds(nextBuilds);
     });
-    deployment.on('ready', () => {
+    deployment.on('ready', dpl => {
       setActiveDeployment({ ready: true });
       setActiveDeploymentBuilds([]);
 
@@ -139,6 +146,15 @@ const Main = () => {
         fileInput.current.value = null;
       }
 
+      const notification = new Notification('Copied URL to Clipboard', {
+        body: 'Opening the deployment in your browser...'
+      });
+
+      notification.addEventListener('click', () => {
+        ipc.openURL(`https://${dpl.url}`);
+      });
+
+      ipc.openURL(`https://${dpl.url}`);
       setTimeout(() => setActiveDeployment(null), 3000);
     });
 

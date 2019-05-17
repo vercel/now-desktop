@@ -144,4 +144,9 @@ app.on('ready', async () => {
 
     event.preventDefault();
   });
+
+  tray.on('drag-enter', () => {
+    window.show();
+    window.webContents.send('open-dropzone');
+  });
 });
