@@ -111,7 +111,9 @@ const Main = () => {
       return;
     }
 
-    const deployment = new Deployment(files, config.token);
+    const deployment = new Deployment(files, config.token, {
+      teamId: config.currentTeam
+    });
     setActiveDeployment(deployment);
 
     const handleError = err => {
