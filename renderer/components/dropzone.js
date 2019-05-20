@@ -58,7 +58,7 @@ const DropZone = ({ darkMode, hide, onDrop }) => {
 
         section {
           display: block;
-          height: 303px;
+          height: 304px;
           background: #fff;
           padding: 20px;
           box-sizing: border-box;

@@ -86,7 +86,7 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
           </>
         )}
         {title === 'About' && (
-          <Link href="/feed?disableScopesAnimation=1">
+          <Link href={`/feed?disableScopesAnimation=1&darkMode=${darkMode}`}>
             <a className="close">
               <Close darkBg={darkMode} />
             </a>

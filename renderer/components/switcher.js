@@ -340,6 +340,11 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           tabIndex={1}
           onClick={openMenu.bind(this, menu)}
           onContextMenu={openMenu.bind(this, menu)}
+          onMouseLeave={() => {
+            if (menu.current) {
+              menu.current.blur();
+            }
+          }}
           ref={menu}
         >
           <i />

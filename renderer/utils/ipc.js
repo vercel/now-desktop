@@ -56,6 +56,14 @@ const clearTrayDrag = invoke => {
   window.ipc.removeListener('open-dropzone', invoke);
 };
 
+const onLatestVersionCheck = invoke => {
+  window.ipc.on('latest-version-check', invoke);
+};
+
+const clearLatestVersionCheck = invoke => {
+  window.ipc.removeListener('latest-version-check', invoke);
+};
+
 const getConfig = () => {
   return timeout(
     new Promise((resolve, reject) => {
@@ -98,6 +106,17 @@ const getDarkModeStatus = () => {
   );
 };
 
+const checkLatestVersion = () => {
+  return new Promise((resolve, reject) => {
+    window.ipc.once(
+      'latest-version-response',
+      (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
+    );
+
+    window.ipc.send('latest-version-request');
+  });
+};
+
 export default {
   openURL,
   hideWindow,
@@ -113,7 +132,10 @@ export default {
   clearWindowOpening,
   onTrayDrag,
   clearTrayDrag,
+  onLatestVersionCheck,
+  clearLatestVersionCheck,
   getConfig,
   saveConfig,
-  getDarkModeStatus
+  getDarkModeStatus,
+  checkLatestVersion
 };

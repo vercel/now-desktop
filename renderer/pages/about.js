@@ -1,69 +1,22 @@
+import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import ms from 'ms';
+import semVer from 'semver';
 import darkModeEffect from '../effects/dark-mode';
+import versionEffect from '../effects/version';
 import Title from '../components/title';
+import Spinner from '../components/spinner';
 import ipc from '../utils/ipc';
 import pkg from '../../package.json'; // eslint-disable-line import/extensions
 
-const AUTHORS = [
-  { name: 'Leo Lamprecht', link: 'https://twitter.com/notquiteleo' },
-  { name: 'Evil Rabbit', link: 'https://twitter.com/evilrabbit_' },
-  { name: 'Max Rovensky', link: 'https://twitter.com/MaxRovensky' },
-  { name: 'Matheus Fernandes', link: 'https://twitter.com/matheusfrndes' }
-];
+const About = ({ router }) => {
+  const [darkMode, setDarkMode] = useState(router.query.darkMode);
+  const [latestVersion, setLatestVersion] = useState(null);
 
-const AuthorLink = ({ name, link, darkMode }) => (
-  <a
-    href={link}
-    className={darkMode ? 'dark' : ''}
-    onClick={e => {
-      e.preventDefault();
-      ipc.openURL(link);
-      e.target.blur();
-    }}
-  >
-    {name}
-    <style jsx>
-      {`
-        a {
-          font-size: 12px;
-          color: #333;
-          text-decoration: none;
-          margin-left: 10px;
-          line-height: 18px;
-          outline: 0;
-        }
-
-        a:hover,
-        a:focus {
-          color: black;
-        }
-        a:last-child {
-          margin-bottom: 10px;
-        }
-
-        a.dark {
-          color: #ccc;
-        }
-
-        a.dark:hover,
-        a.dark:focus {
-          color: white;
-        }
-      `}
-    </style>
-  </a>
-);
-
-AuthorLink.propTypes = {
-  name: PropTypes.string,
-  link: PropTypes.string,
-  darkMode: PropTypes.bool
-};
-
-const About = () => {
-  const [darkMode, setDarkMode] = useState(null);
+  useEffect(() => {
+    return versionEffect(latestVersion, setLatestVersion);
+  });
 
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
@@ -76,6 +29,11 @@ const About = () => {
       : `${ms(Date.now() - new Date(BUILD_DATE).getTime())} ago`;
   /* eslint-enable no-undef */
 
+  const checking = !latestVersion;
+  const hasLatest = latestVersion
+    ? semVer.gt(latestVersion, pkg.version)
+    : false;
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <Title darkMode={darkMode} title="About" />
@@ -87,19 +45,30 @@ const About = () => {
           height="90px"
           alt="Now Desktop Logo"
           style={{ marginTop: 10 }}
+          draggable={false}
         />
 
         <h1>Now</h1>
         <h2>
-          Version <b>{pkg.version}</b> ({ago})
+          Version <b>{pkg.version}</b>
+          {checking ? (
+            <Spinner darkBg={darkMode} width={14} style={{ marginTop: 4 }} />
+          ) : hasLatest ? (
+            `Update available: ${latestVersion}`
+          ) : (
+            `Latest (${ago})`
+          )}
         </h2>
-      </section>
-
-      <section className="authors">
-        <h3>AUTHORS</h3>
-        {AUTHORS.map(author => (
-          <AuthorLink key={author.link} darkMode={darkMode} {...author} />
-        ))}
+        <br />
+        <button
+          className="check-updates"
+          onClick={() => {
+            setLatestVersion(null);
+            ipc.checkLatestVersion();
+          }}
+        >
+          Check for updates
+        </button>
       </section>
 
       <footer>
@@ -160,6 +129,10 @@ const About = () => {
           background-color: #ececec;
         }
 
+        main > section {
+          margin-top: 20px;
+        }
+
         h1 {
           font-size: 16px;
           color: #444;
@@ -170,6 +143,11 @@ const About = () => {
           font-weight: 400;
           color: #444;
           margin-top: 0;
+          text-align: center;
+          line-height: 18px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         main {
@@ -183,22 +161,18 @@ const About = () => {
           flex-direction: column;
         }
 
-        .authors {
+        .check-updates {
+          text-decoration: none;
+          color: #111;
           font-size: 12px;
-          background-color: white;
-          text-align: left;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          border-top: 1px solid #ccc;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .authors h3 {
-          font-size: 12px;
-          color: #444;
-          margin-left: 10px;
+          font-weight: 500;
+          line-height: 18px;
+          outline: 0;
+          border: 0;
+          background: 0;
+          padding: 0;
+          margin: 0;
+          cursor: pointer;
         }
 
         footer {
@@ -211,6 +185,8 @@ const About = () => {
           font-size: 12px;
           color: #444;
           font-weight: 500;
+          justify-content: flex-end;
+          padding-bottom: 20px;
         }
 
         footer a {
@@ -244,8 +220,7 @@ const About = () => {
           background-color: #333;
         }
 
-        .dark *,
-        .dark .authors h3 {
+        .dark * {
           color: #ccc;
         }
 
@@ -254,13 +229,12 @@ const About = () => {
           color: white;
         }
 
-        .dark .authors {
-          background-color: #1f1f1f;
-          border-color: #444;
-        }
-
         .dark .divider {
           border-color: #666;
+        }
+
+        .dark .check-updates {
+          color: #eee;
         }
       `}</style>
 
@@ -280,4 +254,8 @@ const About = () => {
   );
 };
 
-export default About;
+About.propTypes = {
+  router: PropTypes.object
+};
+
+export default withRouter(About);

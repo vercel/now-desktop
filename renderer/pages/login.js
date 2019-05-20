@@ -90,7 +90,7 @@ const Login = () => {
           'config'
         );
 
-        Router.replace('/feed');
+        Router.replace(`/feed?darkMode=${darkMode}`);
       }
     }, 3000);
   };
