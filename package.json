@@ -105,7 +105,7 @@
     "mkdirp": "0.5.1",
     "ms": "2.1.1",
     "node-fetch": "2.1.2",
-    "now-client": "3.2.3",
+    "now-client": "3.3.0",
     "path-exists": "3.0.0",
     "promisepipe": "2.1.2",
     "react-fast-compare": "1.0.0",
