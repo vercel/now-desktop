@@ -1,12 +1,6 @@
 const { ipcMain, shell, systemPreferences, dialog } = require('electron');
-const fetch = require('node-fetch');
 const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
-
-const isCanary = async () => {
-  const { updateChannel } = await getConfig();
-  return updateChannel && updateChannel === 'canary';
-};
 
 module.exports = (app, tray, window) => {
   ipcMain.on('config-get-request', async event => {
@@ -14,8 +8,8 @@ module.exports = (app, tray, window) => {
 
     try {
       config = await getConfig();
-    } catch (err) {
-      config = err;
+    } catch (error) {
+      config = error;
     }
 
     event.sender.send('config-get-response', config);
@@ -26,8 +20,8 @@ module.exports = (app, tray, window) => {
 
     try {
       config = await saveConfig(data, type, firstSave);
-    } catch (err) {
-      config = err;
+    } catch (error) {
+      config = error;
     }
 
     event.sender.send('config-save-response', config);
@@ -102,21 +96,5 @@ module.exports = (app, tray, window) => {
   ipcMain.on('dark-mode-request', async event => {
     const isEnabled = getDarkModeStatus();
     event.sender.send('dark-mode-response', isEnabled);
-  });
-
-  ipcMain.on('latest-version-request', async event => {
-    const { platform } = process;
-
-    const channel = (await isCanary()) ? 'releases-canary' : 'releases';
-    const feedURL = `https://now-desktop-${channel}.zeit.sh/update/${platform}`;
-    const currentVersion = app.getVersion();
-
-    const res = await fetch(`${feedURL}/${currentVersion}`);
-    const latestVersion = await res.json();
-
-    event.sender.send(
-      'latest-version-response',
-      latestVersion ? latestVersion.name : null
-    );
   });
 };

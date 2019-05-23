@@ -66,7 +66,7 @@ const loadEvents = (
         return;
       }
 
-      const events = data.events;
+      const { events } = data;
       const { length } = events;
 
       // If there are no (0) or less than 30 (batch size)
@@ -93,13 +93,13 @@ const loadEvents = (
 
       idb.set(`last-events-${scope.id}`, events);
     })
-    .catch(err => {
+    .catch(error => {
       setLoading({
         type: 'remove',
         scope: scope.id
       });
 
-      console.error(`Failed to load events: ${err}`);
+      console.error(`Failed to load events: ${error}`);
     });
 };
 

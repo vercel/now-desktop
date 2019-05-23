@@ -56,20 +56,11 @@ const clearTrayDrag = invoke => {
   window.ipc.removeListener('open-dropzone', invoke);
 };
 
-const onLatestVersionCheck = invoke => {
-  window.ipc.on('latest-version-check', invoke);
-};
-
-const clearLatestVersionCheck = invoke => {
-  window.ipc.removeListener('latest-version-check', invoke);
-};
-
 const getConfig = () => {
   return timeout(
     new Promise((resolve, reject) => {
-      window.ipc.once(
-        'config-get-response',
-        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
+      window.ipc.once('config-get-response', (event, arg) =>
+        arg instanceof Error ? reject(arg) : resolve(arg)
       );
 
       window.ipc.send('config-get-request');
@@ -81,9 +72,8 @@ const getConfig = () => {
 const saveConfig = (data, type, firstSave) => {
   return timeout(
     new Promise((resolve, reject) => {
-      window.ipc.once(
-        'config-save-response',
-        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
+      window.ipc.once('config-save-response', (event, arg) =>
+        arg instanceof Error ? reject(arg) : resolve(arg)
       );
 
       window.ipc.send('config-save-request', data, type, firstSave);
@@ -95,26 +85,14 @@ const saveConfig = (data, type, firstSave) => {
 const getDarkModeStatus = () => {
   return timeout(
     new Promise((resolve, reject) => {
-      window.ipc.once(
-        'dark-mode-response',
-        (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
+      window.ipc.once('dark-mode-response', (event, arg) =>
+        arg instanceof Error ? reject(arg) : resolve(arg)
       );
 
       window.ipc.send('dark-mode-request');
     }),
     1000
   );
-};
-
-const checkLatestVersion = () => {
-  return new Promise((resolve, reject) => {
-    window.ipc.once(
-      'latest-version-response',
-      (event, arg) => (arg instanceof Error ? reject(arg) : resolve(arg))
-    );
-
-    window.ipc.send('latest-version-request');
-  });
 };
 
 export default {
@@ -132,10 +110,7 @@ export default {
   clearWindowOpening,
   onTrayDrag,
   clearTrayDrag,
-  onLatestVersionCheck,
-  clearLatestVersionCheck,
   getConfig,
   saveConfig,
-  getDarkModeStatus,
-  checkLatestVersion
+  getDarkModeStatus
 };

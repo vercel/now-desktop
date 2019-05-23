@@ -2,8 +2,18 @@ const electron = require('electron');
 
 window.ipc = electron.ipcRenderer;
 
+try {
+  window.appPath = electron.remote.app.getAppPath();
+} catch (error) {}
+
+try {
+  window.appVersion = electron.remote.app.getVersion();
+} catch (error) {}
+
 (function() {
   const { info, warn } = console;
+
+  /* eslint-disable prefer-rest-params */
 
   // Hide suggestion for React DevTools, because we don't want
   // to bundle them in the application.
@@ -20,4 +30,6 @@ window.ipc = electron.ipcRenderer;
       warn.apply(console, arguments);
     }
   };
+
+  /* eslint-enable prefer-rest-params */
 })();

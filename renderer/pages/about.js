@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import ms from 'ms';
 import semVer from 'semver';
 import darkModeEffect from '../effects/dark-mode';
+import configEffect from '../effects/config';
 import versionEffect from '../effects/version';
 import Title from '../components/title';
 import Spinner from '../components/spinner';
@@ -11,11 +12,21 @@ import ipc from '../utils/ipc';
 import pkg from '../../package.json'; // eslint-disable-line import/extensions
 
 const About = ({ router }) => {
-  const [darkMode, setDarkMode] = useState(router.query.darkMode);
+  const [config, setConfig] = useState(null);
+  const [darkMode, setDarkMode] = useState(Boolean(router.query.darkMode));
   const [latestVersion, setLatestVersion] = useState(null);
 
+  useEffect(
+    () => {
+      return configEffect(config, setConfig);
+    },
+
+    // Never re-invoke this effect.
+    []
+  );
+
   useEffect(() => {
-    return versionEffect(latestVersion, setLatestVersion);
+    return versionEffect(config, setLatestVersion);
   });
 
   useEffect(() => {
@@ -50,7 +61,9 @@ const About = ({ router }) => {
 
         <h1>Now</h1>
         <h2>
-          Version <b>{pkg.version}</b>
+          <span>
+            Version <b>{pkg.version}</b>
+          </span>
           {checking ? (
             <Spinner darkBg={darkMode} width={14} style={{ marginTop: 4 }} />
           ) : hasLatest ? (

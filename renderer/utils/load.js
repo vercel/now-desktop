@@ -54,7 +54,7 @@ export default async (path, token = null, opts = {}) => {
     } else {
       data = await res.json();
     }
-  } catch (err) {
+  } catch (error2) {
     error = new Error(NETWORK_ERR_MESSAGE + ` (${url})`);
     error.code = NETWORK_ERR_CODE;
     error.res = null;

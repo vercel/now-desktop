@@ -143,7 +143,7 @@ const setPermissions = async target => {
 
   try {
     await fs.chmod(nowPath, mode);
-  } catch (err) {
+  } catch (error) {
     const command = `chmod ${mode} ${nowPath}`;
     const why = 'To make Now CLI executable.';
 
@@ -191,8 +191,8 @@ const installedWithNPM = async () => {
 
   try {
     packages = await globalPackages();
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
     return false;
   }
 
@@ -264,7 +264,7 @@ exports.handleExisting = async next => {
 
   try {
     await fs.ensureDir(parent);
-  } catch (err) {
+  } catch (error) {
     const dirCommand = `${isWin ? 'md' : 'mkdir -p'} ${parent}`;
     const commands = [dirCommand, copyCommand];
 
@@ -284,7 +284,7 @@ exports.handleExisting = async next => {
     // We don't use the programmatic Node API here
     // because we want to allow the `-p` flag.
     await exec(copyCommand);
-  } catch (err) {
+  } catch (error) {
     await runAsRoot(copyCommand, why);
   }
 
@@ -392,9 +392,16 @@ exports.download = async (url, binaryName) => {
 
   if (isCompressed) {
     const gunzip = createGunzip();
-    await pipe(body, gunzip, writeStream);
+    await pipe(
+      body,
+      gunzip,
+      writeStream
+    );
   } else {
-    await pipe(body, writeStream);
+    await pipe(
+      body,
+      writeStream
+    );
   }
 
   return {
@@ -412,15 +419,15 @@ exports.installBundleTemp = async () => {
       if (checked) {
         try {
           await exports.testBinary(tempLocation.path);
-        } catch (err) {
+        } catch (error) {
           await tempLocation.cleanup();
-          throw err;
+          throw error;
         }
 
         try {
           await exports.handleExisting(tempLocation.path);
-        } catch (err) {
-          console.error(err);
+        } catch (error) {
+          console.error(error);
           throw new Error('Not able to move binary');
         }
 
@@ -443,10 +450,11 @@ exports.installBundleTemp = async () => {
       downloadURL.url,
       downloadURL.binaryName
     );
-  } catch (err) {
-    if (err instanceof Error && err.name && err.name === 'offline') {
-      throw new Error(err.message);
+  } catch (error) {
+    if (error instanceof Error && error.name && error.name === 'offline') {
+      throw new Error(error.message);
     }
+
     throw new Error('Could not download binary');
   }
 };
@@ -471,24 +479,25 @@ exports.install = async () => {
       downloadURL.url,
       downloadURL.binaryName
     );
-  } catch (err) {
-    if (err instanceof Error && err.name && err.name === 'offline') {
-      throw new Error(err.message);
+  } catch (error) {
+    if (error instanceof Error && error.name && error.name === 'offline') {
+      throw new Error(error.message);
     }
+
     throw new Error('Could not download binary');
   }
 
   try {
     await exports.testBinary(tempLocation.path);
-  } catch (err) {
+  } catch (error) {
     await tempLocation.cleanup();
-    throw err;
+    throw error;
   }
 
   try {
     await exports.handleExisting(tempLocation.path);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     throw new Error('Not able to move binary');
   }
 

@@ -21,7 +21,7 @@ import DeploymentBar from '../components/deployment-bar';
 const Main = ({ router }) => {
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
-  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
+  const [darkMode, setDarkMode] = useState(Boolean(router.query.darkMode));
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
@@ -42,7 +42,10 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return logoutEffect(null, () => {
-      router.replace('/login');
+      const loginPath = window.location.href.includes('http')
+        ? '/login'
+        : `${window.appPath}/renderer/out/login/index.html`;
+      router.replace(loginPath);
     });
   });
 
@@ -56,7 +59,12 @@ const Main = ({ router }) => {
     }
 
     return aboutScreenEffect(null, () => {
-      router.replace(`/about?darkMode=${darkMode}`);
+      const aboutPath = window.location.href.includes('http')
+        ? `/about${darkMode ? '?darkMode=1' : ''}`
+        : `${window.appPath}/renderer/out/about/index.html${
+            darkMode ? '?darkMode=1' : ''
+          }`;
+      router.replace(aboutPath);
     });
   });
 

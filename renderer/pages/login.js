@@ -18,6 +18,7 @@ const getHost = () => {
   if (platform.toLowerCase().includes('mac')) {
     return ' on macOS';
   }
+
   if (platform.toLowerCase().includes('win')) {
     return ' on Windows';
   }
@@ -90,7 +91,13 @@ const Login = () => {
           'config'
         );
 
-        Router.replace(`/feed?darkMode=${darkMode}`);
+        const feedPath = window.location.href.includes('http')
+          ? `/feed${darkMode ? '?darkMode=1' : ''}`
+          : `${window.appPath}/renderer/out/feed/index.html${
+              darkMode ? '?darkMode=1' : ''
+            }`;
+
+        Router.replace(feedPath);
       }
     }, 3000);
   };

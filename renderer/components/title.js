@@ -35,16 +35,13 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
   const activeId = active ? active.id : null;
   const lastActive = getPrevious(activeId);
 
-  useEffect(
-    () => {
-      if (!activeId || (activeId && !lastActive)) {
-        return;
-      }
+  useEffect(() => {
+    if (!activeId || (activeId && !lastActive)) {
+      return;
+    }
 
-      onContextChange();
-    },
-    [activeId]
-  );
+    onContextChange();
+  }, [activeId]);
 
   const classes = [];
 
@@ -86,7 +83,11 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
           </>
         )}
         {title === 'About' && (
-          <Link href={`/feed?disableScopesAnimation=1&darkMode=${darkMode}`}>
+          <Link
+            href={`/feed?disableScopesAnimation=1${
+              darkMode ? '&darkMode=1' : ''
+            }`}
+          >
             <a className="close">
               <Close darkBg={darkMode} />
             </a>

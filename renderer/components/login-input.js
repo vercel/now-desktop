@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export const EMAIL_RX = /[A-Z0-9a-z._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,64}/;
 
 const LoginInput = ({
@@ -84,6 +86,15 @@ const LoginInput = ({
       </style>
     </>
   );
+};
+
+LoginInput.propTypes = {
+  onChange: PropTypes.func,
+  value: PropTypes.string,
+  darkMode: PropTypes.bool,
+  onSubmit: PropTypes.func,
+  disabled: PropTypes.bool,
+  error: PropTypes.string
 };
 
 export default LoginInput;
