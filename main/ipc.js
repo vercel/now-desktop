@@ -8,8 +8,8 @@ module.exports = (app, tray, window) => {
 
     try {
       config = await getConfig();
-    } catch (err) {
-      config = err;
+    } catch (error) {
+      config = error;
     }
 
     event.sender.send('config-get-response', config);
@@ -20,8 +20,8 @@ module.exports = (app, tray, window) => {
 
     try {
       config = await saveConfig(data, type, firstSave);
-    } catch (err) {
-      config = err;
+    } catch (error) {
+      config = error;
     }
 
     event.sender.send('config-save-response', config);

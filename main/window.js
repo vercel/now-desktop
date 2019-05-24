@@ -83,9 +83,9 @@ exports.getWindow = tray => {
     backgroundColor: darkMode ? '#1f1f1f' : '#ffffff',
     webPreferences: {
       backgroundThrottling: false,
-      nodeIntegration: false,
+      nodeIntegration: true,
       devTools: true,
-      preload: path.join(__dirname, './static/preload.js')
+      preload: path.join(electron.app.getAppPath(), 'main/static/preload.js')
     }
   });
 

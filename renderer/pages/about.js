@@ -1,69 +1,33 @@
+import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import ms from 'ms';
+import semVer from 'semver';
 import darkModeEffect from '../effects/dark-mode';
+import configEffect from '../effects/config';
+import versionEffect from '../effects/version';
 import Title from '../components/title';
-import ipc from '../utils/ipc';
+import Spinner from '../components/spinner';
+import Logo from '../vectors/logo-about';
 import pkg from '../../package.json'; // eslint-disable-line import/extensions
 
-const AUTHORS = [
-  { name: 'Leo Lamprecht', link: 'https://twitter.com/notquiteleo' },
-  { name: 'Evil Rabbit', link: 'https://twitter.com/evilrabbit_' },
-  { name: 'Max Rovensky', link: 'https://twitter.com/MaxRovensky' },
-  { name: 'Matheus Fernandes', link: 'https://twitter.com/matheusfrndes' }
-];
+const About = ({ router }) => {
+  const [config, setConfig] = useState(null);
+  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
+  const [latestVersion, setLatestVersion] = useState(null);
 
-const AuthorLink = ({ name, link, darkMode }) => (
-  <a
-    href={link}
-    className={darkMode ? 'dark' : ''}
-    onClick={e => {
-      e.preventDefault();
-      ipc.openURL(link);
-      e.target.blur();
-    }}
-  >
-    {name}
-    <style jsx>
-      {`
-        a {
-          font-size: 12px;
-          color: #333;
-          text-decoration: none;
-          margin-left: 10px;
-          line-height: 18px;
-          outline: 0;
-        }
+  useEffect(
+    () => {
+      return configEffect(config, setConfig);
+    },
 
-        a:hover,
-        a:focus {
-          color: black;
-        }
-        a:last-child {
-          margin-bottom: 10px;
-        }
+    // Never re-invoke this effect.
+    []
+  );
 
-        a.dark {
-          color: #ccc;
-        }
-
-        a.dark:hover,
-        a.dark:focus {
-          color: white;
-        }
-      `}
-    </style>
-  </a>
-);
-
-AuthorLink.propTypes = {
-  name: PropTypes.string,
-  link: PropTypes.string,
-  darkMode: PropTypes.bool
-};
-
-const About = () => {
-  const [darkMode, setDarkMode] = useState(null);
+  useEffect(() => {
+    return versionEffect(config, setLatestVersion);
+  });
 
   useEffect(() => {
     return darkModeEffect(darkMode, setDarkMode);
@@ -76,80 +40,49 @@ const About = () => {
       : `${ms(Date.now() - new Date(BUILD_DATE).getTime())} ago`;
   /* eslint-enable no-undef */
 
+  const checking = !latestVersion;
+  const hasLatest = latestVersion
+    ? semVer.gt(latestVersion, pkg.version)
+    : false;
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <Title darkMode={darkMode} title="About" />
 
       <section>
-        <img
-          src="/static/app-icon.png"
-          width="90px"
-          height="90px"
-          alt="Now Desktop Logo"
-          style={{ marginTop: 10 }}
-        />
+        <Logo darkMode={darkMode} style={{ marginBottom: 20 }} />
 
         <h1>Now</h1>
         <h2>
-          Version <b>{pkg.version}</b> ({ago})
+          {pkg.version}
+          <span>
+            {checking ? (
+              <Spinner darkBg={darkMode} width={14} />
+            ) : hasLatest ? (
+              `Update available: ${latestVersion}`
+            ) : (
+              `Latest (${ago})`
+            )}
+          </span>
         </h2>
-      </section>
+        <br />
+        <button
+          className={`check-updates ${checking ? 'disabled' : ''}`}
+          onClick={() => {
+            if (checking) {
+              return;
+            }
 
-      <section className="authors">
-        <h3>AUTHORS</h3>
-        {AUTHORS.map(author => (
-          <AuthorLink key={author.link} darkMode={darkMode} {...author} />
-        ))}
+            setLatestVersion(null);
+            versionEffect(config, setLatestVersion);
+          }}
+        >
+          Check for updates
+        </button>
       </section>
 
       <footer>
-        <span>
-          Made by{' '}
-          <a
-            href="https://zeit.co"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co');
-              e.target.blur();
-            }}
-          >
-            ZEIT
-          </a>
-        </span>
-        <nav>
-          <a
-            href="https://zeit.co/docs"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co/docs');
-              e.target.blur();
-            }}
-          >
-            Docs
-          </a>
-          <div className="divider" />
-          <a
-            href="https://zeit.co/guides"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co/guides');
-              e.target.blur();
-            }}
-          >
-            Guides
-          </a>
-          <div className="divider" />
-          <a
-            href="https://github.com/zeit/now-desktop"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://github.com/zeit/now-desktop');
-              e.target.blur();
-            }}
-          >
-            Source
-          </a>
-        </nav>
+        <span>© 2019 - ZEIT, Inc. All Rights Reserved.</span>
       </footer>
 
       <style jsx>{`
@@ -157,19 +90,37 @@ const About = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          background-color: #ececec;
+          background-color: white;
+        }
+
+        main > section {
+          margin-top: 20px;
         }
 
         h1 {
-          font-size: 16px;
-          color: #444;
+          font-size: 18px;
+          color: black;
         }
 
         h2 {
-          font-size: 12px;
-          font-weight: 400;
-          color: #444;
+          font-size: 16px;
+          font-weight: 600;
+          color: black;
           margin-top: 0;
+          text-align: center;
+          line-height: 18px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        h2 span {
+          font-size: 12px;
+          color: #666666;
+          margin-left: 5px;
+          margin-top: 2px;
+          line-height: 16px;
+          font-weight: 400;
         }
 
         main {
@@ -183,22 +134,25 @@ const About = () => {
           flex-direction: column;
         }
 
-        .authors {
+        .check-updates {
+          text-decoration: none;
+          color: white;
+          background-color: #0076ff;
           font-size: 12px;
-          background-color: white;
-          text-align: left;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          border-top: 1px solid #ccc;
-          border-bottom: 1px solid #ccc;
+          font-weight: 500;
+          line-height: 18px;
+          outline: 0;
+          border: 0;
+          border-radius: 5px;
+          padding: 5px 25px;
+          text-transform: uppercase;
+          margin: 0;
+          cursor: pointer;
         }
 
-        .authors h3 {
-          font-size: 12px;
-          color: #444;
-          margin-left: 10px;
+        .check-updates.disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
         }
 
         footer {
@@ -211,6 +165,8 @@ const About = () => {
           font-size: 12px;
           color: #444;
           font-weight: 500;
+          justify-content: flex-end;
+          padding-bottom: 20px;
         }
 
         footer a {
@@ -241,26 +197,27 @@ const About = () => {
         }
 
         main.dark {
-          background-color: #333;
+          background-color: #1f1f1f;
         }
 
-        .dark *,
-        .dark .authors h3 {
-          color: #ccc;
-        }
-
-        .dark footer a:hover,
-        .dark footer a:focus {
+        .dark * {
           color: white;
         }
 
-        .dark .authors {
-          background-color: #1f1f1f;
-          border-color: #444;
+        .dark h2 span {
+          color: #ccc;
+        }
+
+        .dark footer * {
+          color: #ccc;
         }
 
         .dark .divider {
-          border-color: #666;
+          border-color: #444;
+        }
+
+        .dark .check-updates {
+          color: white;
         }
       `}</style>
 
@@ -280,4 +237,8 @@ const About = () => {
   );
 };
 
-export default About;
+About.propTypes = {
+  router: PropTypes.object
+};
+
+export default withRouter(About);

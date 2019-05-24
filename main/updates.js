@@ -28,7 +28,7 @@ const localBinaryVersion = async () => {
 
   // If the binary is not there, but updates are enabled,
   // we should put it back into place (download it).
-  if (!await exists(fullPath)) {
+  if (!(await exists(fullPath))) {
     return null;
   }
 
@@ -36,7 +36,7 @@ const localBinaryVersion = async () => {
 
   try {
     cmd = await exec(`${fullPath} -v`, { cwd: homedir() });
-  } catch (err) {}
+  } catch (error) {}
 
   // This ensures the CLI gets re-installed if there's
   // no output. Later in the code, we also return `null` if
@@ -56,7 +56,7 @@ const localBinaryVersion = async () => {
   // The result will be a downgrade to the latest stable
   // release when the setting "Canary Updates" gets disabled.
 
-  if (output.includes('canary') && !await isCanary()) {
+  if (output.includes('canary') && !(await isCanary())) {
     console.log('Downgrading binary from canary to stable channel...');
     return null;
   }
@@ -104,11 +104,11 @@ const updateBinary = async config => {
   // Check if the binary is working before moving it into place
   try {
     await binaryUtils.testBinary(updateFile.path);
-  } catch (err) {
+  } catch (error) {
     console.log('The downloaded binary is broken');
     updateFile.cleanup();
 
-    throw err;
+    throw error;
   }
 
   // Make sure there's no existing binary in the way
@@ -134,7 +134,7 @@ const startBinaryUpdates = () => {
 
       try {
         config = await getConfig();
-      } catch (err) {}
+      } catch (error) {}
 
       // This needs to be explicit
       if (config.desktop && config.desktop.updateCLI === false) {
@@ -148,8 +148,8 @@ const startBinaryUpdates = () => {
       try {
         await updateBinary(config);
         binaryUpdateTimer(ms('10m'));
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error);
         binaryUpdateTimer(ms('1m'));
       }
     }, time);
@@ -165,7 +165,7 @@ const setUpdateURL = async () => {
 
   try {
     autoUpdater.setFeedURL(feedURL + '/' + app.getVersion());
-  } catch (err) {}
+  } catch (error) {}
 };
 
 const checkForUpdates = async () => {
@@ -178,7 +178,7 @@ const checkForUpdates = async () => {
   // Ensure we're pulling from the correct channel
   try {
     await setUpdateURL();
-  } catch (err) {
+  } catch (error) {
     // Retry later if setting the update URL failed
     return;
   }
@@ -202,7 +202,7 @@ const startAppUpdates = async mainWindow => {
 
   try {
     config = await getConfig();
-  } catch (err) {
+  } catch (error) {
     config = {};
   }
 

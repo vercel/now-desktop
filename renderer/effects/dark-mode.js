@@ -9,8 +9,8 @@ export default (darkMode, setDarkMode) => {
     ipc
       .getDarkModeStatus()
       .then(updateDarkModeStatus)
-      .catch(err => {
-        console.error(`Failed to retrieve dark mode status: ${err}`);
+      .catch(error => {
+        console.error(`Failed to retrieve dark mode status: ${error}`);
       });
   }
 
