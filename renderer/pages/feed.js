@@ -21,7 +21,7 @@ import DeploymentBar from '../components/deployment-bar';
 const Main = ({ router }) => {
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
-  const [darkMode, setDarkMode] = useState(Boolean(router.query.darkMode));
+  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
@@ -37,6 +37,7 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
+    console.log('dm', darkMode);
     return darkModeEffect(darkMode, setDarkMode);
   });
 
@@ -224,6 +225,8 @@ const Main = ({ router }) => {
         className="file-input"
         onChange={e => createDeployment(e.target.files)}
         multiple
+        directory=""
+        webkitdirectory=""
       />
 
       <style jsx>{`

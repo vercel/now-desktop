@@ -4263,7 +4263,7 @@ ignore@^4.0.3, ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
-ignore@^5.0.2, ignore@^5.0.5:
+ignore@^5.0.2, ignore@^5.0.5, ignore@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.1.tgz#2fc6b8f518aff48fef65a7f348ed85632448e4a5"
   integrity sha512-DWjnQIFLenVrwyRCKZT+7a7/U4Cqgar4WG8V++K3hw+lrW1hc/SIwdiGmtxKCVACmHULTuGeBbHJmbwW7/sAvA==
@@ -5787,12 +5787,13 @@ normalize-path@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-now-client@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.3.0.tgz#5d1f2642394d7180514d58ee0cdc10e0c65ca9f5"
-  integrity sha512-YBpA0GIhQx868ZILGwsIinTOaCmOoJpcAHtl9dZHEjb0ylW5Rl2JABj/1g4Gbgbdu+90tfvj0+BKwkZJQTQDMA==
+now-client@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.5.0.tgz#9837dbdcb113d6210b2281249ebc63876cff3281"
+  integrity sha512-ZUHAXNvJa3o2y2dW6Y4sAO9v6FbnsadrliUQAk05uieXYEtcxI+qvP8Sk+057xQt1Jo2LVp9ngfLY9uKA0nlJQ==
   dependencies:
     crypto-js "^3.1.9-1"
+    ignore "^5.1.1"
 
 npm-bundled@^1.0.1:
   version "1.0.6"

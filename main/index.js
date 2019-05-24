@@ -29,7 +29,7 @@ let tray = null;
 const { app } = electron;
 
 // Set the application's name
-app.setName('Now');
+app.name = 'Now';
 
 // Handle uncaught exceptions
 process.on('uncaughtException', error => console.log(error));

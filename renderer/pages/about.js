@@ -8,12 +8,12 @@ import configEffect from '../effects/config';
 import versionEffect from '../effects/version';
 import Title from '../components/title';
 import Spinner from '../components/spinner';
-import ipc from '../utils/ipc';
+import Logo from '../vectors/logo-about';
 import pkg from '../../package.json'; // eslint-disable-line import/extensions
 
 const About = ({ router }) => {
   const [config, setConfig] = useState(null);
-  const [darkMode, setDarkMode] = useState(Boolean(router.query.darkMode));
+  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
   const [latestVersion, setLatestVersion] = useState(null);
 
   useEffect(
@@ -50,34 +50,31 @@ const About = ({ router }) => {
       <Title darkMode={darkMode} title="About" />
 
       <section>
-        <img
-          src="/static/app-icon.png"
-          width="90px"
-          height="90px"
-          alt="Now Desktop Logo"
-          style={{ marginTop: 10 }}
-          draggable={false}
-        />
+        <Logo darkMode={darkMode} style={{ marginBottom: 20 }} />
 
         <h1>Now</h1>
         <h2>
+          {pkg.version}
           <span>
-            Version <b>{pkg.version}</b>
+            {checking ? (
+              <Spinner darkBg={darkMode} width={14} />
+            ) : hasLatest ? (
+              `Update available: ${latestVersion}`
+            ) : (
+              `Latest (${ago})`
+            )}
           </span>
-          {checking ? (
-            <Spinner darkBg={darkMode} width={14} style={{ marginTop: 4 }} />
-          ) : hasLatest ? (
-            `Update available: ${latestVersion}`
-          ) : (
-            `Latest (${ago})`
-          )}
         </h2>
         <br />
         <button
-          className="check-updates"
+          className={`check-updates ${checking ? 'disabled' : ''}`}
           onClick={() => {
+            if (checking) {
+              return;
+            }
+
             setLatestVersion(null);
-            ipc.checkLatestVersion();
+            versionEffect(config, setLatestVersion);
           }}
         >
           Check for updates
@@ -85,53 +82,7 @@ const About = ({ router }) => {
       </section>
 
       <footer>
-        <span>
-          Made by{' '}
-          <a
-            href="https://zeit.co"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co');
-              e.target.blur();
-            }}
-          >
-            ZEIT
-          </a>
-        </span>
-        <nav>
-          <a
-            href="https://zeit.co/docs"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co/docs');
-              e.target.blur();
-            }}
-          >
-            Docs
-          </a>
-          <div className="divider" />
-          <a
-            href="https://zeit.co/guides"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://zeit.co/guides');
-              e.target.blur();
-            }}
-          >
-            Guides
-          </a>
-          <div className="divider" />
-          <a
-            href="https://github.com/zeit/now-desktop"
-            onClick={e => {
-              e.preventDefault();
-              ipc.openURL('https://github.com/zeit/now-desktop');
-              e.target.blur();
-            }}
-          >
-            Source
-          </a>
-        </nav>
+        <span>© 2019 - ZEIT, Inc. All Rights Reserved.</span>
       </footer>
 
       <style jsx>{`
@@ -139,7 +90,7 @@ const About = ({ router }) => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          background-color: #ececec;
+          background-color: white;
         }
 
         main > section {
@@ -147,20 +98,29 @@ const About = ({ router }) => {
         }
 
         h1 {
-          font-size: 16px;
-          color: #444;
+          font-size: 18px;
+          color: black;
         }
 
         h2 {
-          font-size: 12px;
-          font-weight: 400;
-          color: #444;
+          font-size: 16px;
+          font-weight: 600;
+          color: black;
           margin-top: 0;
           text-align: center;
           line-height: 18px;
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           align-items: center;
+        }
+
+        h2 span {
+          font-size: 12px;
+          color: #666666;
+          margin-left: 5px;
+          margin-top: 2px;
+          line-height: 16px;
+          font-weight: 400;
         }
 
         main {
@@ -176,16 +136,23 @@ const About = ({ router }) => {
 
         .check-updates {
           text-decoration: none;
-          color: #111;
+          color: white;
+          background-color: #0076ff;
           font-size: 12px;
           font-weight: 500;
           line-height: 18px;
           outline: 0;
           border: 0;
-          background: 0;
-          padding: 0;
+          border-radius: 5px;
+          padding: 5px 25px;
+          text-transform: uppercase;
           margin: 0;
           cursor: pointer;
+        }
+
+        .check-updates.disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
         }
 
         footer {
@@ -230,24 +197,27 @@ const About = ({ router }) => {
         }
 
         main.dark {
-          background-color: #333;
+          background-color: #1f1f1f;
         }
 
         .dark * {
-          color: #ccc;
-        }
-
-        .dark footer a:hover,
-        .dark footer a:focus {
           color: white;
         }
 
+        .dark h2 span {
+          color: #ccc;
+        }
+
+        .dark footer * {
+          color: #ccc;
+        }
+
         .dark .divider {
-          border-color: #666;
+          border-color: #444;
         }
 
         .dark .check-updates {
-          color: #eee;
+          color: white;
         }
       `}</style>
 

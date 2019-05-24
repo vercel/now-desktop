@@ -44,8 +44,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
     prependItems.concat(
       [
         {
-          label:
-            process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
+          label: process.platform === 'darwin' ? `About ${app.name}` : 'About',
           click() {
             window.webContents.send('open-about-screen');
           }

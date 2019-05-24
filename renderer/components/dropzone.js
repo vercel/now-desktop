@@ -1,21 +1,72 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-const droppedFile = (event, hide, onDrop) => {
+const isFolder = fileOrFolder => {
+  return typeof fileOrFolder.getFilesAndDirectories === 'function';
+};
+
+const droppedFile = (e, hide, onDrop) => {
   hide();
 
-  if (!event.dataTransfer || !event.dataTransfer.files) {
+  if (!e.dataTransfer || !e.dataTransfer.files) {
     return;
   }
 
-  const { files } = event.dataTransfer;
+  e.stopPropagation();
+  e.preventDefault();
 
-  if (onDrop) {
-    onDrop(files);
+  const files = [];
+
+  const handleFile = (file, path) => {
+    file.fullPath = `${path}/${file.name}`;
+
+    // Trim all leading slashes
+    while (file.fullPath.startsWith('/')) {
+      file.fullPath = file.fullPath.slice(1);
+    }
+
+    files.push(file);
+  };
+
+  let initialPath;
+
+  const iterateFilesAndDirs = async (filesAndDirs, path, initial) => {
+    for (const fileOrFolder of filesAndDirs) {
+      if (isFolder(fileOrFolder)) {
+        let currentFolder;
+
+        // We want to trim the top level since we need the contents of it
+        if (initial) {
+          currentFolder = '/';
+          initialPath = fileOrFolder.path;
+        } else {
+          currentFolder = fileOrFolder.path.replace(initialPath, '/');
+        }
+
+        // Traverse subfolders
+        const contents = await fileOrFolder.getFilesAndDirectories();
+
+        await iterateFilesAndDirs(contents, currentFolder);
+      } else {
+        handleFile(fileOrFolder, path);
+      }
+    }
+  };
+
+  // Begin by traversing the chosen files and directories
+  if ('getFilesAndDirectories' in e.dataTransfer) {
+    e.dataTransfer.getFilesAndDirectories().then(async filesAndDirs => {
+      await iterateFilesAndDirs(filesAndDirs, '/', true);
+
+      // Handle dropped files
+      if (onDrop) {
+        onDrop(files);
+      }
+    });
+  } else if (onDrop) {
+    // We shouldn't be here, but if we are, something went horribly wrong and we need to default to files
+    onDrop(e.dataTransfer.files);
   }
-
-  // And prevent the window from loading the file inside it
-  event.preventDefault();
 };
 
 const preventDefault = event => {
