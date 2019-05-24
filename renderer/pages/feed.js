@@ -1,4 +1,5 @@
-import Router from 'next/router';
+import { withRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Deployment from 'now-client';
 import ipc from '../utils/ipc';
@@ -17,10 +18,10 @@ import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 import DeploymentBar from '../components/deployment-bar';
 
-const Main = () => {
+const Main = ({ router }) => {
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
-  const [darkMode, setDarkMode] = useState(null);
+  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
@@ -41,7 +42,10 @@ const Main = () => {
 
   useEffect(() => {
     return logoutEffect(null, () => {
-      Router.replace('/login');
+      const loginPath = window.location.href.includes('http')
+        ? '/login'
+        : `${window.appPath}/renderer/out/login/index.html`;
+      router.replace(loginPath);
     });
   });
 
@@ -50,12 +54,15 @@ const Main = () => {
   });
 
   useEffect(() => {
-    if (Router.query.disableScopesAnimation) {
-      Router.replace('/feed', '/feed', { shallow: true });
+    if (router.query.disableScopesAnimation) {
+      router.replace('/feed', '/feed', { shallow: true });
     }
 
     return aboutScreenEffect(null, () => {
-      Router.replace('/about');
+      const aboutPath = window.location.href.includes('http')
+        ? '/about'
+        : `${window.appPath}/renderer/out/about/index.html`;
+      router.replace(aboutPath);
     });
   });
 
@@ -255,4 +262,8 @@ const Main = () => {
   );
 };
 
-export default Main;
+Main.propTypes = {
+  router: PropTypes.object
+};
+
+export default withRouter(Main);

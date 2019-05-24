@@ -3,10 +3,10 @@ import { useRef, useReducer, useEffect, Fragment } from 'react';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import makeUnique from 'make-unique';
-import Loading from '../components/loading';
 import eventsEffect from '../effects/events';
 import scrollClearEffect from '../effects/clear-scroll';
 import ipc from '../utils/ipc';
+import Loading from './loading';
 import Event from './event';
 
 const loadingOlder = (loadingIndicator, events, active, darkMode) => {
@@ -124,8 +124,8 @@ const renderEvents = (
 
           setConfig(freshConfig);
         })
-        .catch(err => {
-          console.error(`Failed to update config: ${err}`);
+        .catch(error => {
+          console.error(`Failed to update config: ${error}`);
         });
     }
   };
@@ -361,7 +361,7 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         */
 
         section {
-          height: 100vh;
+          height: calc(100vh - 74px);
         }
       `}</style>
     </section>

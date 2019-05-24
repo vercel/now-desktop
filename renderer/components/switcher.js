@@ -21,8 +21,8 @@ const updateScope = (scope, config, setConfig) => {
 
       setConfig(freshConfig);
     })
-    .catch(err => {
-      console.error(`Failed to update scope: ${err}`);
+    .catch(error => {
+      console.error(`Failed to update scope: ${error}`);
     });
 };
 
@@ -198,8 +198,8 @@ const saveScopeOrder = (scopes, config, setConfig) => {
 
       console.log('Updated scope order');
     })
-    .catch(err => {
-      console.log(`Failed to update scope order: ${err}`);
+    .catch(error => {
+      console.log(`Failed to update scope order: ${error}`);
     });
 };
 
@@ -221,7 +221,7 @@ const onSortEnd = (scopes, config, setConfig, { oldIndex, newIndex }) => {
 };
 
 const onKeyDown = (event, scopes, config, setConfig) => {
-  const code = event.code;
+  const { code } = event;
   const number = code.includes('Digit') ? code.split('Digit')[1] : false;
 
   if (number && number <= 9 && scopes.length > 1) {
@@ -268,41 +268,35 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
     setConfig
   );
 
-  useEffect(
-    () => {
-      if (scopes === null) {
+  useEffect(() => {
+    if (scopes === null) {
+      return;
+    }
+
+    const when = 100 + 100 * scopes.length + 600;
+
+    setTimeout(() => {
+      // Ensure that the animations for the teams
+      // fading in works after recovering from offline mode
+      if (!online) {
         return;
       }
 
-      const when = 100 + 100 * scopes.length + 600;
+      setInitialized(true);
+    }, when);
+  }, [JSON.stringify(scopes)]);
 
-      setTimeout(() => {
-        // Ensure that the animations for the teams
-        // fading in works after recovering from offline mode
-        if (!online) {
-          return;
-        }
+  useEffect(() => {
+    const handleOnKeyDown = event => {
+      onKeyDown(event, scopes, config, setConfig);
+    };
 
-        setInitialized(true);
-      }, when);
-    },
-    [JSON.stringify(scopes)]
-  );
+    document.addEventListener('keydown', handleOnKeyDown);
 
-  useEffect(
-    () => {
-      const handleOnKeyDown = event => {
-        onKeyDown(event, scopes, config, setConfig);
-      };
-
-      document.addEventListener('keydown', handleOnKeyDown);
-
-      return () => {
-        document.removeEventListener('keydown', handleOnKeyDown);
-      };
-    },
-    [JSON.stringify(scopes)]
-  );
+    return () => {
+      document.removeEventListener('keydown', handleOnKeyDown);
+    };
+  }, [JSON.stringify(scopes)]);
 
   return (
     <span>
@@ -340,6 +334,11 @@ const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
           tabIndex={1}
           onClick={openMenu.bind(this, menu)}
           onContextMenu={openMenu.bind(this, menu)}
+          onMouseLeave={() => {
+            if (menu.current) {
+              menu.current.blur();
+            }
+          }}
           ref={menu}
         >
           <i />

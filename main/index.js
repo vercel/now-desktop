@@ -29,7 +29,7 @@ let tray = null;
 const { app } = electron;
 
 // Set the application's name
-app.setName('Now');
+app.name = 'Now';
 
 // Handle uncaught exceptions
 process.on('uncaughtException', error => console.log(error));
@@ -69,9 +69,11 @@ app.on('ready', async () => {
     const iconName =
       process.platform === 'win32'
         ? 'iconWhite'
-        : process.platform === 'linux' ? 'iconWhite' : 'iconTemplate';
+        : process.platform === 'linux'
+        ? 'iconWhite'
+        : 'iconTemplate';
     tray = new electron.Tray(resolvePath(`./main/static/tray/${iconName}.png`));
-  } catch (err) {
+  } catch (error) {
     return;
   }
 
@@ -81,7 +83,7 @@ app.on('ready', async () => {
   // Ensure that `next` works with `electron`
   try {
     await prepareNext('./renderer');
-  } catch (e) {
+  } catch (error) {
     // Next has failed to start but context menu should still work
   }
 

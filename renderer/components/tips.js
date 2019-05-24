@@ -40,7 +40,7 @@ const closeTip = async (tip, setShownTips) => {
       },
       'config'
     );
-  } catch (err) {
+  } catch (error) {
     // Nothing to do here, as there is a default
   }
 

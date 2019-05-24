@@ -68,7 +68,7 @@ exports.saveConfig = async (data, type) => {
 
   try {
     currentContent = await fs.readJSON(destination);
-  } catch (err) {}
+  } catch (error) {}
 
   if (type === 'config') {
     const existingShownTips = currentContent.shownTips;

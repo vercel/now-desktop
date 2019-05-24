@@ -10,13 +10,16 @@ const loadFreshConfig = setConfig => {
       console.timeEnd('Loaded fresh config');
 
       if (!config || !config.token) {
-        Router.replace('/login');
+        const loginPath = window.location.href.includes('http')
+          ? '/login'
+          : `${window.appPath}/renderer/out/login/index.html`;
+        Router.replace(loginPath);
       }
 
       setConfig(config);
     })
-    .catch(err => {
-      console.error(`Failed to retrieve config: ${err}`);
+    .catch(error => {
+      console.error(`Failed to retrieve config: ${error}`);
     });
 };
 

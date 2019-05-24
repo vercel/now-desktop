@@ -3,7 +3,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Deploy from '../vectors/deploy';
 import Done from '../vectors/done';
-import Close from '../vectors/close-window';
+import Back from '../vectors/back';
 import Tips from './tips';
 
 let contextMessageTimeout;
@@ -35,16 +35,13 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
   const activeId = active ? active.id : null;
   const lastActive = getPrevious(activeId);
 
-  useEffect(
-    () => {
-      if (!activeId || (activeId && !lastActive)) {
-        return;
-      }
+  useEffect(() => {
+    if (!activeId || (activeId && !lastActive)) {
+      return;
+    }
 
-      onContextChange();
-    },
-    [activeId]
-  );
+    onContextChange();
+  }, [activeId]);
 
   const classes = [];
 
@@ -86,9 +83,13 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
           </>
         )}
         {title === 'About' && (
-          <Link href="/feed?disableScopesAnimation=1">
-            <a className="close">
-              <Close darkBg={darkMode} />
+          <Link
+            href={`/feed?disableScopesAnimation=1${
+              darkMode ? '&darkMode=1' : ''
+            }`}
+          >
+            <a className="close back">
+              <Back darkMode={darkMode} />
             </a>
           </Link>
         )}
@@ -117,7 +118,7 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
         }
 
         aside.dark {
-          background: #3a3a3a;
+          background: ${title === 'About' ? '#1f1f1f' : '#3a3a3a'};
         }
 
         h1 {
@@ -164,6 +165,10 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
           opacity: 0.5;
           right: 0;
           cursor: default;
+        }
+
+        .back {
+          left: 0;
         }
 
         .deploy.hidden,

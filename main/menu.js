@@ -1,4 +1,8 @@
-const { Menu: { buildFromTemplate }, shell, clipboard } = require('electron');
+const {
+  Menu: { buildFromTemplate },
+  shell,
+  clipboard
+} = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
 const { removeConfig, getConfig, saveConfig } = require('./config');
@@ -9,7 +13,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
 
   try {
     config = await getConfig();
-  } catch (e) {}
+  } catch (error) {}
 
   const desktop = config.desktop || {};
   const isCanary = config.updateChannel === 'canary';
@@ -40,8 +44,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
     prependItems.concat(
       [
         {
-          label:
-            process.platform === 'darwin' ? `About ${app.getName()}` : 'About',
+          label: process.platform === 'darwin' ? `About ${app.name}` : 'About',
           click() {
             window.webContents.send('open-about-screen');
           }
@@ -145,8 +148,8 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               checked: updateCLI,
               click() {
                 if (updateCLI === false) {
-                  binaryUtils.install().catch(err => {
-                    console.error(err);
+                  binaryUtils.install().catch(error => {
+                    console.error(error);
                   });
                 }
 
