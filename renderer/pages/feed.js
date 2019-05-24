@@ -224,8 +224,6 @@ const Main = ({ router }) => {
         className="file-input"
         onChange={e => createDeployment(e.target.files)}
         multiple
-        directory=""
-        webkitdirectory=""
       />
 
       <style jsx>{`
