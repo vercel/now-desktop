@@ -37,7 +37,6 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    console.log('dm', darkMode);
     return darkModeEffect(darkMode, setDarkMode);
   });
 
