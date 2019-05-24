@@ -1844,7 +1844,7 @@ builder-util-runtime@8.2.1:
     fs-extra-p "^7.0.1"
     sax "^1.2.4"
 
-builder-util-runtime@^8.2.1, builder-util-runtime@^8.2.2:
+builder-util-runtime@^8.2.1:
   version "8.2.2"
   resolved "https://registry.yarnpkg.com/builder-util-runtime/-/builder-util-runtime-8.2.2.tgz#2b4b5c86cfb8b55b5a19ab90f1a39bdd6ac6f33e"
   integrity sha512-Z0NKlpa5VQBMVXAcZH9n4dx+CY5Ckyv7a0Yr/is1h5hwCWaJbQ2JN9PGT7g6YzE5gM3FyrgGDB4DTyJlLcRKNw==
@@ -1869,24 +1869,6 @@ builder-util@9.7.1, builder-util@~9.7.1:
     is-ci "^2.0.0"
     js-yaml "^3.13.0"
     source-map-support "^0.5.11"
-    stat-mode "^0.3.0"
-    temp-file "^3.3.2"
-
-builder-util@~10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-10.0.0.tgz#b80e347cbd21947fd50f7a0225149eeffc7307c0"
-  integrity sha512-7gBdyDprpb0QpVCCrSIf1nQhOpT8gp//f8f9o40zki00ePrBxJhvGwwkBXoorJfh3vSgIdMgpvHLAbV5xcnolA==
-  dependencies:
-    "7zip-bin" "~4.1.0"
-    app-builder-bin "2.6.6"
-    bluebird-lst "^1.0.7"
-    builder-util-runtime "^8.2.2"
-    chalk "^2.4.2"
-    debug "^4.1.1"
-    fs-extra-p "^7.0.1"
-    is-ci "^2.0.0"
-    js-yaml "^3.13.1"
-    source-map-support "^0.5.12"
     stat-mode "^0.3.0"
     temp-file "^3.3.2"
 
@@ -2801,14 +2783,14 @@ ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
 
-electron-builder-squirrel-windows@20.41.0:
-  version "20.41.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.41.0.tgz#cd5f2cbdbf256ce0b192e45bacd89bc54e496320"
-  integrity sha512-nkrmVREJO4QmpaZJi5hif1Wn1BSBTtf4XwN2D+Cxc06q1P0X0ojcmT0Gtlna6VsOouEqZ7Ka6HYZri2NpkZ+hw==
+electron-builder-squirrel-windows@20.40.0:
+  version "20.40.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-squirrel-windows/-/electron-builder-squirrel-windows-20.40.0.tgz#035731a138310182ba86fcc22d6555aaa999d6d0"
+  integrity sha512-oiuwywZpoWX0ZX7iJOHWWR6CfpE12+5FWd9rR1BtD9gWF1oRApwqTnFjexyj/Z75b1q+i1GED2uV2Tf3ZNefqg==
   dependencies:
     archiver "^3.0.0"
     bluebird-lst "^1.0.7"
-    builder-util "~10.0.0"
+    builder-util "~9.7.1"
     fs-extra-p "^7.0.1"
     sanitize-filename "^1.6.1"
   optionalDependencies:
@@ -7369,7 +7351,7 @@ source-map-resolve@^0.5.0, source-map-resolve@^0.5.2:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
-source-map-support@^0.5.11, source-map-support@^0.5.12, source-map-support@~0.5.10:
+source-map-support@^0.5.11, source-map-support@~0.5.10:
   version "0.5.12"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.12.tgz#b4f3b10d51857a5af0138d3ce8003b201613d599"
   integrity sha512-4h2Pbvyy15EE02G+JOZpUCmqWJuqrs+sEkzewTm++BPi7Hvn/HwcqLAcNxYAyI0x13CpPPn+kMjl+hplXMHITQ==

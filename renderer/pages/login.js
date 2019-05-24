@@ -92,10 +92,8 @@ const Login = () => {
         );
 
         const feedPath = window.location.href.includes('http')
-          ? `/feed${darkMode ? '?darkMode=1' : ''}`
-          : `${window.appPath}/renderer/out/feed/index.html${
-              darkMode ? '?darkMode=1' : ''
-            }`;
+          ? '/feed'
+          : `${window.appPath}/renderer/out/feed/index.html`;
 
         Router.replace(feedPath);
       }

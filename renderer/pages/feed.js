@@ -60,10 +60,8 @@ const Main = ({ router }) => {
 
     return aboutScreenEffect(null, () => {
       const aboutPath = window.location.href.includes('http')
-        ? `/about${darkMode ? '?darkMode=1' : ''}`
-        : `${window.appPath}/renderer/out/about/index.html${
-            darkMode ? '?darkMode=1' : ''
-          }`;
+        ? '/about'
+        : `${window.appPath}/renderer/out/about/index.html`;
       router.replace(aboutPath);
     });
   });
