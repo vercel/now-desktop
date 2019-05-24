@@ -122,7 +122,7 @@
     "classnames": "2.2.6",
     "cross-env": "5.2.0",
     "electron-builder": "20.40.2",
-    "electron-builder-squirrel-windows": "20.41.0",
+    "electron-builder-squirrel-windows": "20.28.3",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
     "husky": "2.3.0",
