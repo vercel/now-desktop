@@ -132,9 +132,9 @@ const Main = ({ router }) => {
     setActiveDeployment(deployment);
 
     const handleError = err => {
-      setActiveDeployment(null);
       setActiveDeploymentBuilds([]);
       setDeploymentError(err);
+      setActiveDeployment(null);
     };
 
     deployment.on('error', handleError);

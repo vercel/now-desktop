@@ -43,10 +43,11 @@ const DeploymentBar = ({
       setHiding(false);
       setHidden(false);
     }
-  });
+  }, [activeDeployment, error]);
 
   const readyBuilds = builds.filter(build => build.readyState).length;
-  const progress = builds && builds > 0 ? readyBuilds / builds.length * 100 : 0;
+  const progress =
+    builds && builds > 0 ? (readyBuilds / builds.length) * 100 : 0;
 
   return hidden ? null : (
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
