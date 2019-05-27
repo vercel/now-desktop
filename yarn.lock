@@ -5781,10 +5781,10 @@ normalize-path@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-now-client@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.5.0.tgz#9837dbdcb113d6210b2281249ebc63876cff3281"
-  integrity sha512-ZUHAXNvJa3o2y2dW6Y4sAO9v6FbnsadrliUQAk05uieXYEtcxI+qvP8Sk+057xQt1Jo2LVp9ngfLY9uKA0nlJQ==
+now-client@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-3.5.1.tgz#bad7ebcfa87136b547447df5ccf7199240246e2b"
+  integrity sha512-kJtLYSIZdMzKYXiqjtUUql/1z1tSvPylQOg5VQkYR262jN1SW09eOrpG3gG+H/FAWQR3Jh4l01iurjKH8rOFtA==
   dependencies:
     crypto-js "^3.1.9-1"
     ignore "^5.1.1"
