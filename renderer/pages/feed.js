@@ -137,6 +137,11 @@ const Main = ({ router }) => {
       setActiveDeploymentBuilds([]);
       setDeploymentError(err);
       setActiveDeployment(null);
+
+      // Hide error after 3 seconds
+      setTimeout(() => {
+        setDeploymentError(null);
+      }, 3000);
     };
 
     deployment.on('error', handleError);
