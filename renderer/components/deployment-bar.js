@@ -24,10 +24,22 @@ const getContent = (activeDeployment, builds, readyBuilds) => {
   );
 };
 
+const getProgress = (builds, readyBuilds, filesUploaded) => {
+  const progress =
+    builds && builds > 0 ? (readyBuilds / builds.length) * 100 + 20 : 0;
+
+  if (progress === 0 && filesUploaded) {
+    return 20;
+  }
+
+  return progress;
+};
+
 const DeploymentBar = ({
   activeDeployment,
   activeDeploymentBuilds: builds,
   error,
+  filesUploaded,
   onErrorClick
 }) => {
   const [hiding, setHiding] = useState(false);
@@ -46,8 +58,7 @@ const DeploymentBar = ({
   }, [activeDeployment, error]);
 
   const readyBuilds = builds.filter(build => build.readyState).length;
-  const progress =
-    builds && builds > 0 ? (readyBuilds / builds.length) * 100 : 0;
+  const progress = getProgress(builds, readyBuilds, filesUploaded);
 
   return hidden ? null : (
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
@@ -130,6 +141,7 @@ DeploymentBar.propTypes = {
   activeDeployment: PropTypes.object,
   activeDeploymentBuilds: PropTypes.array,
   error: PropTypes.object,
+  filesUploaded: PropTypes.bool,
   onErrorClick: PropTypes.func
 };
 
