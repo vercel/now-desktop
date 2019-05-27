@@ -1,7 +1,8 @@
 // Packages
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const Done = () => (
+const Done = ({ color }) => (
   <svg
     width="12"
     height="9"
@@ -9,7 +10,7 @@ const Done = () => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <g
-      stroke="#067DF7"
+      stroke={color || '#067DF7'}
       strokeWidth="2"
       fill="none"
       fillRule="evenodd"
@@ -19,5 +20,9 @@ const Done = () => (
     </g>
   </svg>
 );
+
+Done.propTypes = {
+  color: PropTypes.string
+};
 
 export default Done;

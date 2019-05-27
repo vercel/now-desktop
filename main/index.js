@@ -11,6 +11,7 @@ const { getMainMenu } = require('./menu');
 const autoUpdater = require('./updates');
 const { getWindow, toggleWindow } = require('./window');
 const prepareIpc = require('./ipc');
+const { getConfig } = require('./config');
 
 Sentry.init({
   dsn: sentryDsn
@@ -99,6 +100,9 @@ app.on('ready', async () => {
   const toggleActivity = () => toggleWindow(tray, window);
   const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
+  const config = await getConfig();
+  const afterUpdate = config.desktop && config.desktop.updatedFrom;
+
   // Only allow one instance of Now running
   // at the same time
   const gotInstanceLock = app.requestSingleInstanceLock();
@@ -114,10 +118,10 @@ app.on('ready', async () => {
   if (isFirstRun) {
     // Show the tutorial as soon as the content has finished rendering
     // This avoids a visual flash
-    if (!wasOpenedAtLogin) {
+    if (!wasOpenedAtLogin && !afterUpdate) {
       window.once('ready-to-show', toggleActivity);
     }
-  } else if (!window.isVisible() && !wasOpenedAtLogin) {
+  } else if (!window.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
     window.once('ready-to-show', toggleActivity);
   }
 

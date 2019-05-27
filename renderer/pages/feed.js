@@ -26,6 +26,7 @@ const Main = ({ router }) => {
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
   const [activeDeployment, setActiveDeployment] = useState(null);
+  const [filesUploaded, setFilesUploaded] = useState(false);
   const [activeDeploymentBuilds, setActiveDeploymentBuilds] = useState([]);
   const [deploymentError, setDeploymentError] = useState(null);
 
@@ -130,6 +131,7 @@ const Main = ({ router }) => {
 
     setDeploymentError(null);
     setActiveDeployment(deployment);
+    setFilesUploaded(false);
 
     const handleError = err => {
       setActiveDeploymentBuilds([]);
@@ -141,6 +143,8 @@ const Main = ({ router }) => {
 
     deployment.on('created', setActiveDeployment);
     deployment.on('deployment-state-changed', setActiveDeployment);
+
+    deployment.on('all-files-uploaded', () => setFilesUploaded(true));
 
     deployment.on('build-state-changed', build => {
       const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
@@ -203,6 +207,7 @@ const Main = ({ router }) => {
           activeDeployment={activeDeployment}
           activeDeploymentBuilds={activeDeploymentBuilds}
           error={deploymentError}
+          filesUploaded={filesUploaded}
           onErrorClick={() => setDeploymentError(null)}
         />
 
