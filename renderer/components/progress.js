@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
+import Done from '../vectors/done';
 
 const Progress = ({ progress = 0 }) => {
+  if (progress >= 100) {
+    return <Done color="white" />;
+  }
+
   return (
     <svg
       width="24"
@@ -34,7 +39,7 @@ const Progress = ({ progress = 0 }) => {
       </g>
       <style jsx>{`
         .progress {
-          stroke-dasharray: ${93 - progress * 0.32};
+          stroke-dasharray: ${91 - progress * 0.32};
           stroke-dashoffset: 120;
           transition: all 0.15s ease;
         }
