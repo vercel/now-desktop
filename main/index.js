@@ -121,7 +121,7 @@ app.on('ready', async () => {
     if (!wasOpenedAtLogin && !afterUpdate) {
       window.once('ready-to-show', toggleActivity);
     }
-  } else if (!window.isVisible() && !wasOpenedAtLogin && afterUpdate) {
+  } else if (!window.isVisible() && !wasOpenedAtLogin && !afterUpdate) {
     window.once('ready-to-show', toggleActivity);
   }
 
