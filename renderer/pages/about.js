@@ -9,7 +9,6 @@ import versionEffect from '../effects/version';
 import Title from '../components/title';
 import Spinner from '../components/spinner';
 import Logo from '../vectors/logo-about';
-import pkg from '../../package.json'; // eslint-disable-line import/extensions
 
 const About = ({ router }) => {
   const [config, setConfig] = useState(null);
@@ -41,9 +40,10 @@ const About = ({ router }) => {
   /* eslint-enable no-undef */
 
   const checking = !latestVersion;
-  const hasLatest = latestVersion
-    ? semVer.gt(latestVersion, pkg.version)
-    : false;
+  const hasLatest =
+    typeof window !== 'undefined' && latestVersion
+      ? semVer.gt(latestVersion, window.appVersion)
+      : false;
 
   return (
     <main className={darkMode ? 'dark' : ''}>
@@ -54,7 +54,7 @@ const About = ({ router }) => {
 
         <h1>Now</h1>
         <h2>
-          {pkg.version}
+          {typeof window === 'undefined' ? '' : window.appVersion}
           <span>
             {checking ? (
               <Spinner darkBg={darkMode} width={14} />
