@@ -120,13 +120,14 @@ const Main = ({ router }) => {
     [JSON.stringify(scopeOrder), JSON.stringify(scopes)]
   );
 
-  const createDeployment = async files => {
+  const createDeployment = async (files, defaultName) => {
     if (!files || files.length === 0) {
       return;
     }
 
     const deployment = new Deployment(files, config.token, {
-      teamId: config.currentTeam
+      teamId: config.currentTeam,
+      defaultName
     });
 
     setDeploymentError(null);
@@ -194,7 +195,9 @@ const Main = ({ router }) => {
           <DropZone
             darkMode={darkMode}
             hide={() => setShowDropZone(false)}
-            onDrop={files => createDeployment(files)}
+            onDrop={(files, defaultName) =>
+              createDeployment(files, defaultName)
+            }
           />
         )}
 
