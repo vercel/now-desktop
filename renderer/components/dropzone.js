@@ -60,7 +60,7 @@ const droppedFile = (e, hide, onDrop) => {
 
       // Handle dropped files
       if (onDrop) {
-        onDrop(files);
+        onDrop(files, initialPath.slice(1));
       }
     });
   } else if (onDrop) {
