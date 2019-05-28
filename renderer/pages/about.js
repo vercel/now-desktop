@@ -1,4 +1,3 @@
-import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import ms from 'ms';
@@ -10,9 +9,11 @@ import Title from '../components/title';
 import Spinner from '../components/spinner';
 import Logo from '../vectors/logo-about';
 
-const About = ({ router }) => {
+const About = () => {
   const [config, setConfig] = useState(null);
-  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
+  const [darkMode, setDarkMode] = useState(
+    (typeof window !== 'undefined' && document.cookie === '1') || null
+  );
   const [latestVersion, setLatestVersion] = useState(null);
 
   useEffect(
@@ -241,4 +242,4 @@ About.propTypes = {
   router: PropTypes.object
 };
 
-export default withRouter(About);
+export default About;

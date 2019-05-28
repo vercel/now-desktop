@@ -3,6 +3,7 @@ import ipc from '../utils/ipc';
 export default (darkMode, setDarkMode) => {
   const updateDarkModeStatus = (event, status) => {
     setDarkMode(typeof status === 'undefined' ? event : status);
+    document.cookie = event || status ? '1' : '0';
   };
 
   if (darkMode === null) {

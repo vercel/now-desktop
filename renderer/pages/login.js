@@ -27,7 +27,9 @@ const getHost = () => {
 };
 
 const Login = () => {
-  const [darkMode, setDarkMode] = useState(null);
+  const [darkMode, setDarkMode] = useState(
+    (typeof window !== 'undefined' && document.cookie === '1') || null
+  );
 
   const [inputValue, setInput] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);

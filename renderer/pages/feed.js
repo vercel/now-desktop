@@ -21,7 +21,9 @@ import DeploymentBar from '../components/deployment-bar';
 const Main = ({ router }) => {
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
-  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
+  const [darkMode, setDarkMode] = useState(
+    (typeof window !== 'undefined' && document.cookie === '1') || null
+  );
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
