@@ -95,6 +95,64 @@ const getDarkModeStatus = () => {
   );
 };
 
+const createDeployment = (path, opts) => {
+  return new Promise((resolve, reject) => {
+    window.ipc.once('deployment-response', (event, arg) =>
+      arg instanceof Error ? reject(arg) : resolve(arg)
+    );
+
+    window.ipc.send('deployment-request', path, opts);
+  });
+};
+
+const onDeploymentStateChanged = invoke => {
+  window.ipc.on('deployment-state-changed', invoke);
+};
+
+const clearDeploymentStateChanged = invoke => {
+  window.ipc.removeListener('deployment-state-changed', invoke);
+};
+
+const onBuildStateChanged = invoke => {
+  window.ipc.on('build-state-changed', invoke);
+};
+
+const clearBuildStateChanged = invoke => {
+  window.ipc.removeListener('build-state-changed', invoke);
+};
+
+const onAllFilesUploaded = invoke => {
+  window.ipc.on('all-files-uploaded', invoke);
+};
+
+const clearAllFilesUploaded = invoke => {
+  window.ipc.removeListener('all-files-uploaded', invoke);
+};
+
+const onDeploymentCreated = invoke => {
+  window.ipc.on('created', invoke);
+};
+
+const clearDeploymentCreated = invoke => {
+  window.ipc.removeListener('created', invoke);
+};
+
+const onDeploymentReady = invoke => {
+  window.ipc.on('ready', invoke);
+};
+
+const clearDeploymentReady = invoke => {
+  window.ipc.removeListener('ready', invoke);
+};
+
+const onDeploymentError = invoke => {
+  window.ipc.on('error', invoke);
+};
+
+const clearDeploymentError = invoke => {
+  window.ipc.removeListener('error', invoke);
+};
+
 export default {
   openURL,
   hideWindow,
@@ -112,5 +170,18 @@ export default {
   clearTrayDrag,
   getConfig,
   saveConfig,
-  getDarkModeStatus
+  getDarkModeStatus,
+  createDeployment,
+  onDeploymentStateChanged,
+  clearDeploymentStateChanged,
+  onBuildStateChanged,
+  clearBuildStateChanged,
+  onAllFilesUploaded,
+  clearAllFilesUploaded,
+  onDeploymentCreated,
+  clearDeploymentCreated,
+  onDeploymentReady,
+  clearDeploymentReady,
+  onDeploymentError,
+  clearDeploymentError
 };
