@@ -5891,10 +5891,10 @@ normalize-path@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-now-client@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.0.0.tgz#e351130839ad3f19ff7e5e24a4f7ed0ceb7448dd"
-  integrity sha512-0qj9FIivsgHtmG1UyA5n8EgqYHMCCju85yo/PX+uvnrfHI9MKWfKz/44Xz+kkeFN0EC0/e1G/UANi2p/EiqHdA==
+now-client@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.1.0.tgz#fc9a64262580129ee1192a3ce7ce4b8b3cfd2f93"
+  integrity sha512-HRHyv6k1Zg4qYULe7jmYZvL40z+Ukg5q6nsG686M/StnYf27o+Akibg0/gjso0gC2k1dHPTU25WMgOAM/1EHLQ==
   dependencies:
     "@zeit/fetch" "5.1.0"
     async-retry "1.2.3"
