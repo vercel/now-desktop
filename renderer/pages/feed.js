@@ -66,6 +66,7 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.error((_, err) => {
+      console.error(err);
       setActiveDeploymentBuilds([]);
       setDeploymentError(err);
       setActiveDeployment(null);
