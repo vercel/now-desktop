@@ -1,7 +1,6 @@
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import Deployment from 'now-client';
 import ipc from '../utils/ipc';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
@@ -14,6 +13,7 @@ import activeEffect from '../effects/active';
 import logoutEffect from '../effects/logout';
 import trayDragEffect from '../effects/tray-drag';
 import aboutScreenEffect from '../effects/about-screen';
+import * as deploymentEffects from '../effects/deployment';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 import DeploymentBar from '../components/deployment-bar';
@@ -53,6 +53,61 @@ const Main = ({ router }) => {
   useEffect(() => {
     return trayDragEffect(null, () => setShowDropZone(true));
   });
+
+  useEffect(() => {
+    return deploymentEffects.deploymentStateChanged((_, dpl) =>
+      setActiveDeployment(dpl)
+    );
+  }, []);
+
+  useEffect(() => {
+    return deploymentEffects.filesUploaded(() => setFilesUploaded(true));
+  }, []);
+
+  useEffect(() => {
+    return deploymentEffects.error((_, err) => {
+      console.error(err);
+      setActiveDeploymentBuilds([]);
+      setDeploymentError(err);
+      setActiveDeployment(null);
+
+      // Hide error after 3 seconds
+      setTimeout(() => {
+        setDeploymentError(null);
+      }, 3000);
+    });
+  }, []);
+
+  useEffect(() => {
+    return deploymentEffects.ready((_, dpl) => {
+      setActiveDeployment({ ready: true });
+      setActiveDeploymentBuilds([]);
+
+      if (fileInput.current) {
+        fileInput.current.value = null;
+      }
+
+      const notification = new Notification('Copied URL to Clipboard', {
+        body: 'Opening the deployment in your browser...'
+      });
+
+      notification.addEventListener('click', () => {
+        ipc.openURL(`https://${dpl.url}`);
+      });
+
+      ipc.openURL(`https://${dpl.url}`);
+      setTimeout(() => setActiveDeployment(null), 3000);
+    });
+  }, []);
+
+  useEffect(() => {
+    return deploymentEffects.buildStateChanged((_, build) => {
+      const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
+      nextBuilds.push(build);
+
+      setActiveDeploymentBuilds(nextBuilds);
+    });
+  }, []);
 
   useEffect(() => {
     if (router.query.disableScopesAnimation) {
@@ -120,65 +175,17 @@ const Main = ({ router }) => {
     [JSON.stringify(scopeOrder), JSON.stringify(scopes)]
   );
 
-  const createDeployment = async (files, defaultName) => {
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const deployment = new Deployment(files, config.token, {
-      teamId: config.currentTeam,
-      defaultName
-    });
-
+  const createDeployment = async path => {
+    setActiveDeployment(null);
     setDeploymentError(null);
-    setActiveDeployment(deployment);
     setFilesUploaded(false);
 
-    const handleError = err => {
-      setActiveDeploymentBuilds([]);
-      setDeploymentError(err);
-      setActiveDeployment(null);
-
-      // Hide error after 3 seconds
-      setTimeout(() => {
-        setDeploymentError(null);
-      }, 3000);
-    };
-
-    deployment.on('error', handleError);
-
-    deployment.on('created', setActiveDeployment);
-    deployment.on('deployment-state-changed', setActiveDeployment);
-
-    deployment.on('all-files-uploaded', () => setFilesUploaded(true));
-
-    deployment.on('build-state-changed', build => {
-      const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
-      nextBuilds.push(build);
-      setActiveDeploymentBuilds(nextBuilds);
+    await ipc.createDeployment(path, {
+      teamId: config.currentTeam,
+      token: config.token
     });
 
-    deployment.on('ready', dpl => {
-      setActiveDeployment({ ready: true });
-      setActiveDeploymentBuilds([]);
-
-      if (fileInput.current) {
-        fileInput.current.value = null;
-      }
-
-      const notification = new Notification('Copied URL to Clipboard', {
-        body: 'Opening the deployment in your browser...'
-      });
-
-      notification.addEventListener('click', () => {
-        ipc.openURL(`https://${dpl.url}`);
-      });
-
-      ipc.openURL(`https://${dpl.url}`);
-      setTimeout(() => setActiveDeployment(null), 3000);
-    });
-
-    deployment.deploy();
+    setActiveDeployment({});
   };
 
   return (
