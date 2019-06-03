@@ -64,7 +64,7 @@ const DeploymentBar = ({
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
       {error ? (
         <div className="content" onClick={() => onErrorClick()}>
-          <span>{error.message.replace('DeploymentError: ', '')}</span>
+          <span>{error.message}</span>
         </div>
       ) : (
         <div className="content">

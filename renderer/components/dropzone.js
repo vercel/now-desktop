@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-const isFolder = fileOrFolder => {
-  return typeof fileOrFolder.getFilesAndDirectories === 'function';
-};
-
 const droppedFile = (e, hide, onDrop) => {
   hide();
 
@@ -15,57 +11,17 @@ const droppedFile = (e, hide, onDrop) => {
   e.stopPropagation();
   e.preventDefault();
 
-  const files = [];
+  if (e.dataTransfer.files.length === 1) {
+    onDrop(e.dataTransfer.files[0].path);
+  } else {
+    const paths = [];
 
-  const handleFile = (file, path) => {
-    file.fullPath = `${path}/${file.name}`;
-
-    // Trim all leading slashes
-    while (file.fullPath.startsWith('/')) {
-      file.fullPath = file.fullPath.slice(1);
+    for (let i = 0; i < e.dataTransfer.files.length; i++) {
+      const { path } = e.dataTransfer.files.item(i);
+      paths.push(path);
     }
 
-    files.push(file);
-  };
-
-  let initialPath;
-
-  const iterateFilesAndDirs = async (filesAndDirs, path, initial) => {
-    for (const fileOrFolder of filesAndDirs) {
-      if (isFolder(fileOrFolder)) {
-        let currentFolder;
-
-        // We want to trim the top level since we need the contents of it
-        if (initial) {
-          currentFolder = '/';
-          initialPath = fileOrFolder.path;
-        } else {
-          currentFolder = fileOrFolder.path.replace(initialPath, '/');
-        }
-
-        // Traverse subfolders
-        const contents = await fileOrFolder.getFilesAndDirectories();
-
-        await iterateFilesAndDirs(contents, currentFolder);
-      } else {
-        handleFile(fileOrFolder, path);
-      }
-    }
-  };
-
-  // Begin by traversing the chosen files and directories
-  if ('getFilesAndDirectories' in e.dataTransfer) {
-    e.dataTransfer.getFilesAndDirectories().then(async filesAndDirs => {
-      await iterateFilesAndDirs(filesAndDirs, '/', true);
-
-      // Handle dropped files
-      if (onDrop) {
-        onDrop(files, initialPath.slice(1));
-      }
-    });
-  } else if (onDrop) {
-    // We shouldn't be here, but if we are, something went horribly wrong and we need to default to files
-    onDrop(e.dataTransfer.files);
+    onDrop(paths);
   }
 };
 
