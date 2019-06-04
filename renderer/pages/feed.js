@@ -26,6 +26,7 @@ const Main = ({ router }) => {
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
   const [activeDeployment, setActiveDeployment] = useState(null);
+  const [hashesCalculated, setHashesCalculated] = useState(false);
   const [filesUploaded, setFilesUploaded] = useState(false);
   const [activeDeploymentBuilds, setActiveDeploymentBuilds] = useState([]);
   const [deploymentError, setDeploymentError] = useState(null);
@@ -61,6 +62,13 @@ const Main = ({ router }) => {
   }, []);
 
   useEffect(() => {
+    return deploymentEffects.hashesCalculated(stuff => {
+      console.log('hashes', stuff);
+      setHashesCalculated(true);
+    });
+  }, []);
+
+  useEffect(() => {
     return deploymentEffects.filesUploaded(() => setFilesUploaded(true));
   }, []);
 
@@ -82,6 +90,8 @@ const Main = ({ router }) => {
     return deploymentEffects.ready((_, dpl) => {
       setActiveDeployment({ ready: true });
       setActiveDeploymentBuilds([]);
+      setHashesCalculated(false);
+      setFilesUploaded(false);
 
       if (fileInput.current) {
         fileInput.current.value = null;
@@ -179,6 +189,10 @@ const Main = ({ router }) => {
     setActiveDeployment(null);
     setDeploymentError(null);
     setFilesUploaded(false);
+    setHashesCalculated(false);
+
+    // Show "preparing" feedback immediately
+    setActiveDeployment({});
 
     await ipc.createDeployment(path, {
       teamId: config.currentTeam,
@@ -223,6 +237,7 @@ const Main = ({ router }) => {
           activeDeploymentBuilds={activeDeploymentBuilds}
           error={deploymentError}
           filesUploaded={filesUploaded}
+          hashesCalculated={hashesCalculated}
           onErrorClick={() => setDeploymentError(null)}
         />
 

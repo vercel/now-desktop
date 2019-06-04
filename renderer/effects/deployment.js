@@ -18,6 +18,14 @@ export const buildStateChanged = setActiveDeployment => {
   };
 };
 
+export const hashesCalculated = setHashesCalculated => {
+  ipc.onHashesCalculated(setHashesCalculated);
+
+  return () => {
+    ipc.clearHashesCalculated(setHashesCalculated);
+  };
+};
+
 export const filesUploaded = setFilesUploaded => {
   ipc.onAllFilesUploaded(setFilesUploaded);
 

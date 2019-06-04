@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Progress from './progress';
 
-const getContent = (activeDeployment, builds, readyBuilds) => {
+const getContent = (
+  activeDeployment,
+  builds,
+  readyBuilds,
+  hashesCalculated
+) => {
   if (!activeDeployment) {
     return null;
   }
@@ -20,19 +25,45 @@ const getContent = (activeDeployment, builds, readyBuilds) => {
       </strong>
     </span>
   ) : (
-    <span>Preparing...</span>
+    <span>{hashesCalculated ? 'Uploading files...' : 'Preparing...'}</span>
   );
 };
 
-const getProgress = (builds, readyBuilds, filesUploaded) => {
+const getProgress = (builds, readyBuilds, filesUploaded, hashesCalculated) => {
   const progress =
     builds && builds > 0 ? (readyBuilds / builds.length) * 100 + 20 : 0;
 
-  if (progress === 0 && filesUploaded) {
-    return 20;
+  if (progress === 0) {
+    if (hashesCalculated) {
+      return 10;
+    }
+
+    if (filesUploaded) {
+      return 20;
+    }
   }
 
   return progress;
+};
+
+const getErrorMessage = error => {
+  if (error.message) {
+    return error.message;
+  }
+
+  if (error.code) {
+    if (error.code === 'rate_limited') {
+      return 'Too many requests. Try again in a few minutes';
+    }
+
+    return error.code;
+  }
+
+  try {
+    return JSON.stringify(error);
+  } catch (error2) {
+    return error.code || error.toString();
+  }
 };
 
 const DeploymentBar = ({
@@ -40,6 +71,7 @@ const DeploymentBar = ({
   activeDeploymentBuilds: builds,
   error,
   filesUploaded,
+  hashesCalculated,
   onErrorClick
 }) => {
   const [hiding, setHiding] = useState(false);
@@ -58,17 +90,22 @@ const DeploymentBar = ({
   }, [activeDeployment, error]);
 
   const readyBuilds = builds.filter(build => build.readyState).length;
-  const progress = getProgress(builds, readyBuilds, filesUploaded);
+  const progress = getProgress(
+    builds,
+    readyBuilds,
+    filesUploaded,
+    hashesCalculated
+  );
 
   return hidden ? null : (
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
       {error ? (
         <div className="content" onClick={() => onErrorClick()}>
-          <span>{error.message}</span>
+          <span>{getErrorMessage(error)}</span>
         </div>
       ) : (
         <div className="content">
-          {getContent(activeDeployment, builds, readyBuilds)}
+          {getContent(activeDeployment, builds, readyBuilds, hashesCalculated)}
           <Progress
             progress={
               activeDeployment && activeDeployment.ready ? 100 : progress
@@ -142,6 +179,7 @@ DeploymentBar.propTypes = {
   activeDeploymentBuilds: PropTypes.array,
   error: PropTypes.object,
   filesUploaded: PropTypes.bool,
+  hashesCalculated: PropTypes.bool,
   onErrorClick: PropTypes.func
 };
 

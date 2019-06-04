@@ -121,6 +121,14 @@ const clearBuildStateChanged = invoke => {
   window.ipc.removeListener('build-state-changed', invoke);
 };
 
+const onHashesCalculated = invoke => {
+  window.ipc.on('hashes-calculated', invoke);
+};
+
+const clearHashesCalculated = invoke => {
+  window.ipc.removeListener('hashes-calculated', invoke);
+};
+
 const onAllFilesUploaded = invoke => {
   window.ipc.on('all-files-uploaded', invoke);
 };
@@ -176,6 +184,8 @@ export default {
   clearDeploymentStateChanged,
   onBuildStateChanged,
   clearBuildStateChanged,
+  onHashesCalculated,
+  clearHashesCalculated,
   onAllFilesUploaded,
   clearAllFilesUploaded,
   onDeploymentCreated,
