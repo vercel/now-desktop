@@ -56,14 +56,17 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    return deploymentEffects.deploymentStateChanged((_, dpl) =>
-      setActiveDeployment(dpl)
-    );
-  }, []);
+    return deploymentEffects.deploymentStateChanged((_, dpl) => {
+      setActiveDeployment(dpl);
+
+      if (activeDeploymentBuilds.length === 0) {
+        setActiveDeploymentBuilds(dpl.builds);
+      }
+    });
+  });
 
   useEffect(() => {
-    return deploymentEffects.hashesCalculated(stuff => {
-      console.log('hashes', stuff);
+    return deploymentEffects.hashesCalculated(() => {
       setHashesCalculated(true);
     });
   }, []);
@@ -117,7 +120,7 @@ const Main = ({ router }) => {
 
       setActiveDeploymentBuilds(nextBuilds);
     });
-  }, []);
+  });
 
   useEffect(() => {
     if (router.query.disableScopesAnimation) {
@@ -194,12 +197,10 @@ const Main = ({ router }) => {
     // Show "preparing" feedback immediately
     setActiveDeployment({});
 
-    await ipc.createDeployment(path, {
+    ipc.createDeployment(path, {
       teamId: config.currentTeam,
       token: config.token
     });
-
-    setActiveDeployment({});
   };
 
   return (

@@ -1545,6 +1545,11 @@ async-sema@2.2.0:
   resolved "https://registry.yarnpkg.com/async-sema/-/async-sema-2.2.0.tgz#b0de2bb11a2560d369aca975d24650cc05304979"
   integrity sha512-bI/JChXscebgVmAwTk+EQF4LIr4Hy6W5+B2AG1I9CmkfABmFEYyRrJGutfc816/Hd6LRzHFxpjGqZ/idwhJpRg==
 
+async-sema@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/async-sema/-/async-sema-3.0.0.tgz#9e22d6783f0ab66a1cf330e21a905e39b3b3a975"
+  integrity sha512-zyCMBDl4m71feawrxYcVbHxv/UUkqm4nKJiLu3+l9lfiQha6jQ/9dxhrXLnzzBXVFqCTDwiUkZOz9XFbdEGQsg==
+
 async@^2.0.0:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.2.tgz#18330ea7e6e313887f5d2f2a904bac6fe4dd5381"
@@ -5901,6 +5906,21 @@ now-client@4.1.2:
     fetch-h2 "2.2.0"
     fs-extra "8.0.1"
     node-fetch "2.6.0"
+    querystring "^0.2.0"
+    recursive-readdir "2.2.2"
+
+now-client@4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.2.0.tgz#189dbbac7dd5cac00b25bb7a8eed39e5c55bc5f2"
+  integrity sha512-9UFWYUr5+YhiiBH4AdSfmfgf9nidaNnew0BEIIPrwSO3z42Wmn1DaynvKY78sZautEV2Kyvtme63EkJgETVYhw==
+  dependencies:
+    "@zeit/fetch" "5.1.0"
+    async-retry "1.2.3"
+    async-sema "3.0.0"
+    fetch-h2 "2.2.0"
+    fs-extra "8.0.1"
+    node-fetch "2.6.0"
+    now-client "4.1.2"
     querystring "^0.2.0"
     recursive-readdir "2.2.2"
 

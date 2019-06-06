@@ -2,12 +2,19 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Progress from './progress';
 
-const getContent = (
-  activeDeployment,
-  builds,
-  readyBuilds,
-  hashesCalculated
-) => {
+const clamp = (num, min, max) => {
+  return Math.max(min, Math.min(num, max));
+};
+
+const getContent = options => {
+  const {
+    activeDeployment,
+    builds,
+    readyBuilds,
+    hashesCalculated,
+    filesUploaded
+  } = options;
+
   if (!activeDeployment) {
     return null;
   }
@@ -25,25 +32,41 @@ const getContent = (
       </strong>
     </span>
   ) : (
-    <span>{hashesCalculated ? 'Uploading files...' : 'Preparing...'}</span>
+    <span>
+      {filesUploaded
+        ? 'Deploying...'
+        : hashesCalculated
+        ? 'Uploading files...'
+        : 'Preparing...'}
+    </span>
   );
 };
 
-const getProgress = (builds, readyBuilds, filesUploaded, hashesCalculated) => {
+const getProgress = ({
+  builds,
+  readyBuilds,
+  filesUploaded,
+  hashesCalculated,
+  activeDeployment
+}) => {
   const progress =
-    builds && builds > 0 ? (readyBuilds / builds.length) * 100 + 20 : 0;
+    builds && builds > 0 ? (readyBuilds / builds.length) * 100 : 0;
 
   if (progress === 0) {
-    if (hashesCalculated) {
-      return 10;
+    if (activeDeployment && activeDeployment.name) {
+      return 40;
     }
 
     if (filesUploaded) {
       return 20;
     }
+
+    if (hashesCalculated) {
+      return 10;
+    }
   }
 
-  return progress;
+  return clamp(progress, 50, 95);
 };
 
 const getErrorMessage = error => {
@@ -90,12 +113,13 @@ const DeploymentBar = ({
   }, [activeDeployment, error]);
 
   const readyBuilds = builds.filter(build => build.readyState).length;
-  const progress = getProgress(
+  const progress = getProgress({
     builds,
     readyBuilds,
     filesUploaded,
-    hashesCalculated
-  );
+    hashesCalculated,
+    activeDeployment
+  });
 
   return hidden ? null : (
     <div className={`deployment-bar ${hiding ? 'hiding' : ''}`}>
@@ -105,7 +129,13 @@ const DeploymentBar = ({
         </div>
       ) : (
         <div className="content">
-          {getContent(activeDeployment, builds, readyBuilds, hashesCalculated)}
+          {getContent({
+            activeDeployment,
+            builds,
+            readyBuilds,
+            hashesCalculated,
+            filesUploaded
+          })}
           <Progress
             progress={
               activeDeployment && activeDeployment.ready ? 100 : progress

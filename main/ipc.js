@@ -1,5 +1,5 @@
 const { ipcMain, shell, systemPreferences, dialog } = require('electron');
-const { default: createDeployment, EVENTS } = require('now-client');
+const { default: createDeployment } = require('now-client');
 const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
 
@@ -100,12 +100,9 @@ module.exports = (app, tray, window) => {
   });
 
   ipcMain.on('deployment-request', async (event, path, opts) => {
-    const deployment = await createDeployment(path, opts);
-
-    event.sender.send('deployment-response', deployment);
-
-    EVENTS.forEach(evt => {
-      deployment.on(evt, payload => event.sender.send(evt, payload));
-    });
+    for await (const evt of createDeployment(path, opts)) {
+      const { type, payload } = evt;
+      event.sender.send(type, payload);
+    }
   });
 };

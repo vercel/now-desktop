@@ -96,13 +96,7 @@ const getDarkModeStatus = () => {
 };
 
 const createDeployment = (path, opts) => {
-  return new Promise((resolve, reject) => {
-    window.ipc.once('deployment-response', (event, arg) =>
-      arg instanceof Error ? reject(arg) : resolve(arg)
-    );
-
-    window.ipc.send('deployment-request', path, opts);
-  });
+  window.ipc.send('deployment-request', path, opts);
 };
 
 const onDeploymentStateChanged = invoke => {
