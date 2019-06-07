@@ -66,7 +66,7 @@ const getProgress = ({
     }
   }
 
-  return clamp(progress, 50, 95);
+  return builds && builds > 0 ? clamp(progress, 50, 95) : 0;
 };
 
 const getErrorMessage = error => {
@@ -82,11 +82,11 @@ const getErrorMessage = error => {
     return error.code;
   }
 
-  try {
+  if (error.toString() === '[object Object]') {
     return JSON.stringify(error);
-  } catch (error2) {
-    return error.code || error.toString();
   }
+
+  return error.toString();
 };
 
 const DeploymentBar = ({
