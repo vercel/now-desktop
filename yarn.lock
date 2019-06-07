@@ -5909,10 +5909,10 @@ now-client@4.1.2:
     querystring "^0.2.0"
     recursive-readdir "2.2.2"
 
-now-client@4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.2.0.tgz#189dbbac7dd5cac00b25bb7a8eed39e5c55bc5f2"
-  integrity sha512-9UFWYUr5+YhiiBH4AdSfmfgf9nidaNnew0BEIIPrwSO3z42Wmn1DaynvKY78sZautEV2Kyvtme63EkJgETVYhw==
+now-client@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.3.0.tgz#eb54652eb640e917f06e821cbc69b18545b07e00"
+  integrity sha512-r4lRjzjHKGUqIeyFPaYPAuR5j7pK6Q9K+E/Xy0kXz0Sbfz9sBzo4/azXzXexYTVTQSdfE+/HILUD+o/vWVB4Vw==
   dependencies:
     "@zeit/fetch" "5.1.0"
     async-retry "1.2.3"
