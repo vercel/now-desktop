@@ -11,10 +11,10 @@ export const deploymentStateChanged = setActiveDeployment => {
 };
 
 export const buildStateChanged = setActiveDeployment => {
-  ipc.onDeploymentStateChanged(setActiveDeployment);
+  ipc.onBuildStateChanged(setActiveDeployment);
 
   return () => {
-    ipc.clearDeploymentStateChanged(setActiveDeployment);
+    ipc.clearBuildStateChanged(setActiveDeployment);
   };
 };
 

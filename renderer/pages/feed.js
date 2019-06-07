@@ -58,10 +58,6 @@ const Main = ({ router }) => {
   useEffect(() => {
     return deploymentEffects.deploymentStateChanged((_, dpl) => {
       setActiveDeployment(dpl);
-
-      if (activeDeploymentBuilds.length === 0) {
-        setActiveDeploymentBuilds(dpl.builds);
-      }
     });
   });
 
@@ -115,7 +111,9 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.buildStateChanged((_, build) => {
-      const nextBuilds = activeDeploymentBuilds.filter(b => b.id !== build.id);
+      const nextBuilds = activeDeploymentBuilds.filter(
+        b => b.id !== build.id || b.use !== build.use
+      );
       nextBuilds.push(build);
 
       setActiveDeploymentBuilds(nextBuilds);

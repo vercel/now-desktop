@@ -112,6 +112,7 @@ const DeploymentBar = ({
     }
   }, [activeDeployment, error]);
 
+  console.log(builds);
   const readyBuilds = builds.filter(build => build.readyState).length;
   const progress = getProgress({
     builds,
