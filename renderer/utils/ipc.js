@@ -96,21 +96,7 @@ const getDarkModeStatus = () => {
 };
 
 const createDeployment = (path, opts) => {
-  return new Promise((resolve, reject) => {
-    window.ipc.once('deployment-response', (event, arg) =>
-      arg instanceof Error ? reject(arg) : resolve(arg)
-    );
-
-    window.ipc.send('deployment-request', path, opts);
-  });
-};
-
-const onDeploymentStateChanged = invoke => {
-  window.ipc.on('deployment-state-changed', invoke);
-};
-
-const clearDeploymentStateChanged = invoke => {
-  window.ipc.removeListener('deployment-state-changed', invoke);
+  window.ipc.send('deployment-request', path, opts);
 };
 
 const onBuildStateChanged = invoke => {
@@ -119,6 +105,14 @@ const onBuildStateChanged = invoke => {
 
 const clearBuildStateChanged = invoke => {
   window.ipc.removeListener('build-state-changed', invoke);
+};
+
+const onHashesCalculated = invoke => {
+  window.ipc.on('hashes-calculated', invoke);
+};
+
+const clearHashesCalculated = invoke => {
+  window.ipc.removeListener('hashes-calculated', invoke);
 };
 
 const onAllFilesUploaded = invoke => {
@@ -172,10 +166,10 @@ export default {
   saveConfig,
   getDarkModeStatus,
   createDeployment,
-  onDeploymentStateChanged,
-  clearDeploymentStateChanged,
   onBuildStateChanged,
   clearBuildStateChanged,
+  onHashesCalculated,
+  clearHashesCalculated,
   onAllFilesUploaded,
   clearAllFilesUploaded,
   onDeploymentCreated,

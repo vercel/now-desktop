@@ -38,9 +38,12 @@ const Progress = ({ progress = 0 }) => {
         />
       </g>
       <style jsx>{`
+        svg {
+          transform: scale(-1, 1) rotate(-90deg);
+        }
         .progress {
           stroke-dasharray: ${91 - progress * 0.32};
-          stroke-dashoffset: 120;
+          stroke-dashoffset: 122;
           transition: all 0.15s ease;
         }
       `}</style>
