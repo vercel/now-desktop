@@ -1,20 +1,26 @@
 import ipc from '../utils/ipc';
 
-export const deploymentStateChanged = setActiveDeployment => {
+export const deploymentCreated = setActiveDeployment => {
   ipc.onDeploymentCreated(setActiveDeployment);
-  ipc.onDeploymentStateChanged(setActiveDeployment);
 
   return () => {
     ipc.clearDeploymentCreated(setActiveDeployment);
-    ipc.clearDeploymentStateChanged(setActiveDeployment);
   };
 };
 
 export const buildStateChanged = setActiveDeployment => {
-  ipc.onDeploymentStateChanged(setActiveDeployment);
+  ipc.onBuildStateChanged(setActiveDeployment);
 
   return () => {
-    ipc.clearDeploymentStateChanged(setActiveDeployment);
+    ipc.clearBuildStateChanged(setActiveDeployment);
+  };
+};
+
+export const hashesCalculated = setHashesCalculated => {
+  ipc.onHashesCalculated(setHashesCalculated);
+
+  return () => {
+    ipc.clearHashesCalculated(setHashesCalculated);
   };
 };
 
