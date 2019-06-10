@@ -83,7 +83,7 @@ const getErrorMessage = error => {
   }
 
   if (error.toString() === '[object Object]') {
-    return JSON.stringify(error);
+    return error.message || 'An error occured with your deployment';
   }
 
   return error.toString();

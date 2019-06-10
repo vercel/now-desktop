@@ -79,6 +79,10 @@ const Main = ({ router }) => {
   useEffect(() => {
     return deploymentEffects.error((_, err) => {
       console.error(err);
+      if (activeDeployment && activeDeployment.url) {
+        ipc.openURL(`https://${activeDeployment.url}`);
+      }
+
       setActiveBuilds(0);
       setReadyBuilds({});
       setDeploymentError(err);
@@ -89,7 +93,7 @@ const Main = ({ router }) => {
         setDeploymentError(null);
       }, 3000);
     });
-  }, []);
+  }, [activeDeployment]);
 
   useEffect(() => {
     return deploymentEffects.ready((_, dpl) => {
