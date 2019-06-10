@@ -9,8 +9,8 @@ const clamp = (num, min, max) => {
 const getContent = options => {
   const {
     activeDeployment,
-    builds,
-    readyBuilds,
+    activeBuilds,
+    readyBuildsCount,
     hashesCalculated,
     filesUploaded
   } = options;
@@ -28,7 +28,7 @@ const getContent = options => {
       Deploying{' '}
       <strong>
         {activeDeployment.name}{' '}
-        {builds && builds.length > 0 ? `${readyBuilds} / ${builds.length}` : ''}
+        {activeBuilds > 0 ? `${readyBuildsCount} / ${activeBuilds}` : ''}
       </strong>
     </span>
   ) : (
@@ -43,14 +43,14 @@ const getContent = options => {
 };
 
 const getProgress = ({
-  builds,
-  readyBuilds,
+  activeBuilds,
+  readyBuildsCount,
   filesUploaded,
   hashesCalculated,
   activeDeployment
 }) => {
   const progress =
-    builds && builds > 0 ? (readyBuilds / builds.length) * 100 : 0;
+    activeBuilds > 0 ? (readyBuildsCount / activeBuilds) * 100 : 0;
 
   if (progress === 0) {
     if (activeDeployment && activeDeployment.name) {
@@ -66,7 +66,7 @@ const getProgress = ({
     }
   }
 
-  return builds && builds > 0 ? clamp(progress, 50, 95) : 0;
+  return activeBuilds > 0 ? clamp(progress, 50, 95) : 0;
 };
 
 const getErrorMessage = error => {
@@ -91,7 +91,8 @@ const getErrorMessage = error => {
 
 const DeploymentBar = ({
   activeDeployment,
-  activeDeploymentBuilds: builds,
+  activeBuilds,
+  readyBuilds,
   error,
   filesUploaded,
   hashesCalculated,
@@ -112,11 +113,11 @@ const DeploymentBar = ({
     }
   }, [activeDeployment, error]);
 
-  console.log(builds);
-  const readyBuilds = builds.filter(build => build.readyState).length;
+  const readyBuildsCount = Object.keys(readyBuilds).length;
+
   const progress = getProgress({
-    builds,
-    readyBuilds,
+    activeBuilds,
+    readyBuildsCount,
     filesUploaded,
     hashesCalculated,
     activeDeployment
@@ -132,8 +133,8 @@ const DeploymentBar = ({
         <div className="content">
           {getContent({
             activeDeployment,
-            builds,
-            readyBuilds,
+            activeBuilds,
+            readyBuildsCount,
             hashesCalculated,
             filesUploaded
           })}
@@ -207,7 +208,8 @@ const DeploymentBar = ({
 
 DeploymentBar.propTypes = {
   activeDeployment: PropTypes.object,
-  activeDeploymentBuilds: PropTypes.array,
+  activeBuilds: PropTypes.number,
+  readyBuilds: PropTypes.object,
   error: PropTypes.object,
   filesUploaded: PropTypes.bool,
   hashesCalculated: PropTypes.bool,

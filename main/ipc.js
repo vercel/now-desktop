@@ -102,6 +102,7 @@ module.exports = (app, tray, window) => {
   ipcMain.on('deployment-request', async (event, path, opts) => {
     for await (const evt of createDeployment(path, opts)) {
       const { type, payload } = evt;
+
       event.sender.send(type, payload);
     }
   });

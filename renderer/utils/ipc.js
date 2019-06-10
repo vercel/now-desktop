@@ -99,14 +99,6 @@ const createDeployment = (path, opts) => {
   window.ipc.send('deployment-request', path, opts);
 };
 
-const onDeploymentStateChanged = invoke => {
-  window.ipc.on('deployment-state-changed', invoke);
-};
-
-const clearDeploymentStateChanged = invoke => {
-  window.ipc.removeListener('deployment-state-changed', invoke);
-};
-
 const onBuildStateChanged = invoke => {
   window.ipc.on('build-state-changed', invoke);
 };
@@ -174,8 +166,6 @@ export default {
   saveConfig,
   getDarkModeStatus,
   createDeployment,
-  onDeploymentStateChanged,
-  clearDeploymentStateChanged,
   onBuildStateChanged,
   clearBuildStateChanged,
   onHashesCalculated,

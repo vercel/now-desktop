@@ -28,7 +28,8 @@ const Main = ({ router }) => {
   const [activeDeployment, setActiveDeployment] = useState(null);
   const [hashesCalculated, setHashesCalculated] = useState(false);
   const [filesUploaded, setFilesUploaded] = useState(false);
-  const [activeDeploymentBuilds, setActiveDeploymentBuilds] = useState([]);
+  const [activeBuilds, setActiveBuilds] = useState(0);
+  const [readyBuilds, setReadyBuilds] = useState({});
   const [deploymentError, setDeploymentError] = useState(null);
 
   const fileInput = useRef();
@@ -56,8 +57,12 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    return deploymentEffects.deploymentStateChanged((_, dpl) => {
+    return deploymentEffects.deploymentCreated((_, dpl) => {
       setActiveDeployment(dpl);
+
+      if (activeBuilds === 0) {
+        setActiveBuilds(dpl.builds.length);
+      }
     });
   });
 
@@ -74,7 +79,8 @@ const Main = ({ router }) => {
   useEffect(() => {
     return deploymentEffects.error((_, err) => {
       console.error(err);
-      setActiveDeploymentBuilds([]);
+      setActiveBuilds(0);
+      setReadyBuilds({});
       setDeploymentError(err);
       setActiveDeployment(null);
 
@@ -87,8 +93,10 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.ready((_, dpl) => {
+      console.log('READY', dpl);
       setActiveDeployment({ ready: true });
-      setActiveDeploymentBuilds([]);
+      setActiveBuilds(0);
+      setReadyBuilds({});
       setHashesCalculated(false);
       setFilesUploaded(false);
 
@@ -111,12 +119,13 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.buildStateChanged((_, build) => {
-      const nextBuilds = activeDeploymentBuilds.filter(
-        b => b.id !== build.id || b.use !== build.use
-      );
-      nextBuilds.push(build);
+      const nextReadyBuilds = { ...readyBuilds };
 
-      setActiveDeploymentBuilds(nextBuilds);
+      if (build.readyState === 'READY') {
+        nextReadyBuilds[build.id] = build;
+      }
+
+      setReadyBuilds(nextReadyBuilds);
     });
   });
 
@@ -233,7 +242,8 @@ const Main = ({ router }) => {
 
         <DeploymentBar
           activeDeployment={activeDeployment}
-          activeDeploymentBuilds={activeDeploymentBuilds}
+          activeBuilds={activeBuilds}
+          readyBuilds={readyBuilds}
           error={deploymentError}
           filesUploaded={filesUploaded}
           hashesCalculated={hashesCalculated}

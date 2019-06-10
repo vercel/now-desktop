@@ -1,12 +1,10 @@
 import ipc from '../utils/ipc';
 
-export const deploymentStateChanged = setActiveDeployment => {
+export const deploymentCreated = setActiveDeployment => {
   ipc.onDeploymentCreated(setActiveDeployment);
-  ipc.onDeploymentStateChanged(setActiveDeployment);
 
   return () => {
     ipc.clearDeploymentCreated(setActiveDeployment);
-    ipc.clearDeploymentStateChanged(setActiveDeployment);
   };
 };
 
