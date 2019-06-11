@@ -26,7 +26,7 @@ const Main = ({ router }) => {
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
-  const [activeDeployments, setActiveDeployments] = useState({});
+  const [activeDeployment, setActiveDeployment] = useState(null);
   const [queuedDeployments, setQueuedDeployments] = useState([]);
   const [hashesCalculated, setHashesCalculated] = useState({});
   const [filesUploaded, setFilesUploaded] = useState({});
@@ -35,7 +35,7 @@ const Main = ({ router }) => {
   const [deploymentErrors, setDeploymentErrors] = useState({});
 
   const fileInput = useRef();
-  const MAX_SIMULTANEOUS_DEPLOYMENTS = 10;
+  const MAX_QUEUED_DEPLOYMENTS = 10;
 
   // This effect (and read below)...
   useEffect(() => {
@@ -65,10 +65,7 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.deploymentCreated((_, { id, payload }) => {
-      setActiveDeployments({
-        ...activeDeployments,
-        [id]: payload
-      });
+      setActiveDeployment({ ...payload, tempId: id });
 
       if (activeBuilds === 0) {
         setActiveBuilds({
@@ -101,8 +98,6 @@ const Main = ({ router }) => {
     return deploymentEffects.error((_, { id, payload: err }) => {
       console.error(err);
 
-      const activeDeployment = activeDeployments[id];
-
       if (activeDeployment && activeDeployment.url) {
         ipc.openURL(`https://${activeDeployment.url}`);
       }
@@ -111,23 +106,27 @@ const Main = ({ router }) => {
       setReadyBuilds({ ...readyBuilds, [id]: {} });
       setDeploymentErrors({ ...deploymentErrors, [id]: err });
 
-      delete activeDeployments[id];
-      setActiveDeployments(activeDeployments);
+      setActiveDeployment(null);
 
       // Hide error after 3 seconds
       setTimeout(() => {
         setDeploymentErrors({ ...deploymentErrors, [id]: err });
+
+        if (queuedDeployments.length > 0) {
+          const [nextDeployment] = queuedDeployments;
+
+          if (nextDeployment) {
+            createDeployment(nextDeployment);
+          }
+        }
       }, 3000);
     });
-  }, [activeDeployments]);
+  }, [activeDeployment]);
 
   useEffect(() => {
     return deploymentEffects.ready((_, { id, payload: dpl }) => {
       console.log('READY', dpl);
-      setActiveDeployments({
-        ...activeDeployments,
-        [id]: { ready: true }
-      });
+      setActiveDeployment({ ready: true });
       setActiveBuilds({
         ...activeBuilds,
         [id]: 0
@@ -161,24 +160,22 @@ const Main = ({ router }) => {
 
       // Unqueue the next deployment if any
       if (queuedDeployments.length > 0) {
-        const nextDeploymentCount =
-          Object.keys(activeDeployments).length - queuedDeployments.length + 1;
+        const [nextDeployment] = queuedDeployments;
 
-        for (let i = 0; i < nextDeploymentCount; i++) {
-          const path = queuedDeployments[i];
-
-          if (path) {
-            createDeployment(path);
-          }
+        if (nextDeployment) {
+          createDeployment(nextDeployment);
+        } else {
+          setTimeout(() => {
+            setActiveDeployment(null);
+          }, 3000);
         }
+      } else {
+        setTimeout(() => {
+          setActiveDeployment(null);
+        }, 3000);
       }
-
-      setTimeout(() => {
-        delete activeDeployments[id];
-        setActiveDeployments(activeDeployments);
-      }, 3000);
     });
-  }, [queuedDeployments, activeDeployments]);
+  }, [queuedDeployments, activeDeployment]);
 
   useEffect(() => {
     return deploymentEffects.buildStateChanged((_, { id, payload: build }) => {
@@ -263,16 +260,14 @@ const Main = ({ router }) => {
   );
 
   const createDeployment = async path => {
-    if (!online) {
+    if (!online || queuedDeployments.length >= MAX_QUEUED_DEPLOYMENTS) {
       return;
     }
 
     // Check if we need to queue this deployment
     if (queuedDeployments.includes(path)) {
       setQueuedDeployments(queuedDeployments.filter(d => d !== path));
-    } else if (
-      Object.keys(activeDeployments).length >= MAX_SIMULTANEOUS_DEPLOYMENTS
-    ) {
+    } else if (activeDeployment) {
       setQueuedDeployments([...queuedDeployments, path]);
 
       return;
@@ -283,16 +278,15 @@ const Main = ({ router }) => {
     const id = await uid(10);
 
     // Show "preparing" feedback immediately
-    setActiveDeployments({
-      ...activeDeployments,
-      [id]: {}
-    });
+    setActiveDeployment({});
 
     ipc.createDeployment(id, path, {
       teamId: config.currentTeam,
       token: config.token
     });
   };
+
+  const tempId = activeDeployment ? activeDeployment.tempId : null;
 
   return (
     <main>
@@ -333,20 +327,17 @@ const Main = ({ router }) => {
         />
 
         <section className="deployment-progress-bars">
-          {Object.keys(activeDeployments).map(key => (
-            <DeploymentBar
-              key={key}
-              activeDeployment={activeDeployments[key]}
-              activeBuilds={activeBuilds[key]}
-              readyBuilds={readyBuilds[key] || {}}
-              error={deploymentErrors[key]}
-              filesUploaded={filesUploaded[key]}
-              hashesCalculated={hashesCalculated[key]}
-              onErrorClick={() =>
-                setDeploymentErrors({ ...deploymentErrors, [key]: null })
-              }
-            />
-          ))}
+          <DeploymentBar
+            activeDeployment={activeDeployment}
+            activeBuilds={tempId ? activeBuilds[tempId] : 0}
+            readyBuilds={tempId ? readyBuilds[tempId] || {} : {}}
+            error={tempId ? deploymentErrors[tempId] : null}
+            filesUploaded={tempId ? filesUploaded[tempId] : false}
+            hashesCalculated={tempId ? hashesCalculated[tempId] : false}
+            onErrorClick={() =>
+              setDeploymentErrors({ ...deploymentErrors, [tempId]: null })
+            }
+          />
           {queuedDeployments.map(key => (
             <DeploymentBar
               activeDeployment={{}}
