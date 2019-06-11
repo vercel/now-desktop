@@ -13,6 +13,7 @@ import scopesEffect from '../effects/scopes';
 import activeEffect from '../effects/active';
 import logoutEffect from '../effects/logout';
 import trayDragEffect from '../effects/tray-drag';
+import trayDropEffect from '../effects/tray-drop';
 import aboutScreenEffect from '../effects/about-screen';
 import * as deploymentEffects from '../effects/deployment';
 import scopeOrderMemo from '../memos/scope-order';
@@ -59,6 +60,15 @@ const Main = ({ router }) => {
     return trayDragEffect(null, () => {
       if (online) {
         setShowDropZone(true);
+      }
+    });
+  });
+
+  useEffect(() => {
+    return trayDropEffect(null, (_, files) => {
+      if (online) {
+        setShowDropZone(false);
+        createDeployment(files);
       }
     });
   });
@@ -273,12 +283,10 @@ const Main = ({ router }) => {
       return;
     }
 
-    console.log('creating', path);
-
     const id = await uid(10);
 
     // Show "preparing" feedback immediately
-    setActiveDeployment({});
+    setActiveDeployment({ tempId: id });
 
     ipc.createDeployment(id, path, {
       teamId: config.currentTeam,
@@ -287,6 +295,8 @@ const Main = ({ router }) => {
   };
 
   const tempId = activeDeployment ? activeDeployment.tempId : null;
+
+  console.log(activeDeployment);
 
   return (
     <main>
