@@ -6,8 +6,15 @@ import ms from 'ms';
 import * as Sentry from '@sentry/electron';
 import dateDiff from '../utils/date-diff';
 import ipc from '../utils/ipc';
+import pkg from '../../package';
 import Avatar from './avatar';
 import messageComponents from './messages';
+
+if (typeof window !== 'undefined') {
+  Sentry.init({
+    dsn: pkg.sentryDsn
+  });
+}
 
 const parseDate = date => {
   const current = new Date();
