@@ -156,9 +156,6 @@ const DeploymentBar = ({
             display: flex;
             align-items: center;
             font-size: 12px;
-            position: fixed;
-            left: 0;
-            bottom: 40px;
             opacity: 0;
             animation: 0.2s show ease forwards;
             z-index: 0;

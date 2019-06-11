@@ -1,6 +1,7 @@
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import uid from 'uid-promise';
 import ipc from '../utils/ipc';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
@@ -25,12 +26,12 @@ const Main = ({ router }) => {
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
-  const [activeDeployment, setActiveDeployment] = useState(null);
-  const [hashesCalculated, setHashesCalculated] = useState(false);
-  const [filesUploaded, setFilesUploaded] = useState(false);
-  const [activeBuilds, setActiveBuilds] = useState(0);
+  const [activeDeployments, setActiveDeployments] = useState({});
+  const [hashesCalculated, setHashesCalculated] = useState({});
+  const [filesUploaded, setFilesUploaded] = useState({});
+  const [activeBuilds, setActiveBuilds] = useState({});
   const [readyBuilds, setReadyBuilds] = useState({});
-  const [deploymentError, setDeploymentError] = useState(null);
+  const [deploymentErrors, setDeploymentErrors] = useState({});
 
   const fileInput = useRef();
 
@@ -57,52 +58,86 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    return deploymentEffects.deploymentCreated((_, dpl) => {
-      setActiveDeployment(dpl);
+    return deploymentEffects.deploymentCreated((_, { id, payload }) => {
+      setActiveDeployments({
+        ...activeDeployments,
+        [id]: payload
+      });
 
       if (activeBuilds === 0) {
-        setActiveBuilds(dpl.builds.length);
+        setActiveBuilds({
+          ...activeBuilds,
+          [id]: payload.builds
+        });
       }
     });
   });
 
   useEffect(() => {
-    return deploymentEffects.hashesCalculated(() => {
-      setHashesCalculated(true);
+    return deploymentEffects.hashesCalculated((_, { id }) => {
+      setHashesCalculated({
+        ...hashesCalculated,
+        [id]: true
+      });
     });
   }, []);
 
   useEffect(() => {
-    return deploymentEffects.filesUploaded(() => setFilesUploaded(true));
+    return deploymentEffects.filesUploaded((_, { id }) =>
+      setFilesUploaded({
+        ...filesUploaded,
+        [id]: true
+      })
+    );
   }, []);
 
   useEffect(() => {
-    return deploymentEffects.error((_, err) => {
+    return deploymentEffects.error((_, { id, payload: err }) => {
       console.error(err);
+
+      const activeDeployment = activeDeployments[id];
+
       if (activeDeployment && activeDeployment.url) {
         ipc.openURL(`https://${activeDeployment.url}`);
       }
 
       setActiveBuilds(0);
       setReadyBuilds({});
-      setDeploymentError(err);
-      setActiveDeployment(null);
+      setDeploymentErrors({ ...deploymentErrors, [id]: err });
+
+      delete activeDeployments[id];
+      setActiveDeployments(activeDeployments);
 
       // Hide error after 3 seconds
       setTimeout(() => {
-        setDeploymentError(null);
+        setDeploymentErrors({ ...deploymentErrors, [id]: err });
       }, 3000);
     });
-  }, [activeDeployment]);
+  }, [activeDeployments]);
 
   useEffect(() => {
-    return deploymentEffects.ready((_, dpl) => {
+    return deploymentEffects.ready((_, { id, payload: dpl }) => {
       console.log('READY', dpl);
-      setActiveDeployment({ ready: true });
-      setActiveBuilds(0);
-      setReadyBuilds({});
-      setHashesCalculated(false);
-      setFilesUploaded(false);
+      setActiveDeployments({
+        ...activeDeployments,
+        [id]: { ready: true }
+      });
+      setActiveBuilds({
+        ...activeBuilds,
+        [id]: 0
+      });
+      setReadyBuilds({
+        ...readyBuilds,
+        [id]: {}
+      });
+      setHashesCalculated({
+        ...hashesCalculated,
+        [id]: false
+      });
+      setFilesUploaded({
+        ...filesUploaded,
+        [id]: false
+      });
 
       if (fileInput.current) {
         fileInput.current.value = null;
@@ -117,16 +152,23 @@ const Main = ({ router }) => {
       });
 
       ipc.openURL(`https://${dpl.url}`);
-      setTimeout(() => setActiveDeployment(null), 3000);
+      setTimeout(() => {
+        delete activeDeployments[id];
+        setActiveDeployments(activeDeployments);
+      }, 3000);
     });
   }, []);
 
   useEffect(() => {
-    return deploymentEffects.buildStateChanged((_, build) => {
+    return deploymentEffects.buildStateChanged((_, { id, payload: build }) => {
       const nextReadyBuilds = { ...readyBuilds };
 
+      if (!nextReadyBuilds[id]) {
+        nextReadyBuilds[id] = {};
+      }
+
       if (build.readyState === 'READY') {
-        nextReadyBuilds[build.id] = build;
+        nextReadyBuilds[id][build.id] = build;
       }
 
       setReadyBuilds(nextReadyBuilds);
@@ -200,15 +242,15 @@ const Main = ({ router }) => {
   );
 
   const createDeployment = async path => {
-    setActiveDeployment(null);
-    setDeploymentError(null);
-    setFilesUploaded(false);
-    setHashesCalculated(false);
+    const id = await uid(10);
 
     // Show "preparing" feedback immediately
-    setActiveDeployment({});
+    setActiveDeployments({
+      ...activeDeployments,
+      [id]: {}
+    });
 
-    ipc.createDeployment(path, {
+    ipc.createDeployment(id, path, {
       teamId: config.currentTeam,
       token: config.token
     });
@@ -244,15 +286,22 @@ const Main = ({ router }) => {
           setActive={setActive}
         />
 
-        <DeploymentBar
-          activeDeployment={activeDeployment}
-          activeBuilds={activeBuilds}
-          readyBuilds={readyBuilds}
-          error={deploymentError}
-          filesUploaded={filesUploaded}
-          hashesCalculated={hashesCalculated}
-          onErrorClick={() => setDeploymentError(null)}
-        />
+        <section className="deployment-progress-bars">
+          {Object.keys(activeDeployments).map(key => (
+            <DeploymentBar
+              key={key}
+              activeDeployment={activeDeployments[key]}
+              activeBuilds={activeBuilds[key]}
+              readyBuilds={readyBuilds[key] || {}}
+              error={deploymentErrors[key]}
+              filesUploaded={filesUploaded[key]}
+              hashesCalculated={hashesCalculated[key]}
+              onErrorClick={() =>
+                setDeploymentErrors({ ...deploymentErrors, [key]: null })
+              }
+            />
+          ))}
+        </section>
 
         <Switcher
           config={config}
@@ -292,6 +341,15 @@ const Main = ({ router }) => {
           position: absolute;
           left: -999px;
           top: -999px;
+        }
+
+        .deployment-progress-bars {
+          max-height: 126px;
+          width: 100%;
+          overflow: scroll;
+          position: fixed;
+          left: 0;
+          bottom: 40px;
         }
       `}</style>
 

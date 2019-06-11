@@ -99,11 +99,11 @@ module.exports = (app, tray, window) => {
     event.sender.send('dark-mode-response', isEnabled);
   });
 
-  ipcMain.on('deployment-request', async (event, path, opts) => {
+  ipcMain.on('deployment-request', async (event, id, path, opts) => {
     for await (const evt of createDeployment(path, opts)) {
       const { type, payload } = evt;
 
-      event.sender.send(type, payload);
+      event.sender.send(type, { id, payload });
     }
   });
 };
