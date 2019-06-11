@@ -11,7 +11,7 @@ import Avatar from './avatar';
 import messageComponents from './messages';
 
 if (typeof window !== 'undefined') {
-  Sentry.init.init({
+  Sentry.init({
     dsn: pkg.sentryDsn
   });
 }
