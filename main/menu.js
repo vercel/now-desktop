@@ -50,6 +50,12 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
           }
         },
         {
+          label: 'Give Us Feedback',
+          click() {
+            shell.openExternal('https://zeit.co/feedback/desktop');
+          }
+        },
+        {
           type: 'separator'
         },
         {
