@@ -155,4 +155,8 @@ app.on('ready', async () => {
     window.show();
     window.webContents.send('open-dropzone');
   });
+
+  tray.on('drop-files', (_, files) => {
+    window.webContents.send('tray-drop', files.length === 1 ? files[0] : files);
+  });
 });
