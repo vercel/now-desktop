@@ -12,7 +12,9 @@ const osNames = {
 
 export default class Login extends Message {
   render() {
-    const { event: { payload } } = this.props;
+    const {
+      event: { payload }
+    } = this.props;
     let { userAgent, geolocation } = payload;
 
     userAgent = parseUA(userAgent);
@@ -26,7 +28,9 @@ export default class Login extends Message {
       } else {
         from = userAgent.browser
           ? userAgent.browser.name
-          : userAgent.program ? 'Now CLI' : null;
+          : userAgent.program
+          ? 'Now CLI'
+          : null;
       }
 
       os = osNames[userAgent.os.name] || userAgent.os.name;
@@ -42,7 +46,9 @@ export default class Login extends Message {
     if (geolocation) {
       const city =
         geolocation.city && typeof geolocation.city === 'object'
-          ? geolocation.city.names.en
+          ? geolocation.city.names
+            ? geolocation.city.names.en
+            : geolocation.city
           : geolocation.city;
       const region =
         geolocation.most_specific_subdivision &&

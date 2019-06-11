@@ -5,6 +5,7 @@ const {
 } = require('electron');
 const isDev = require('electron-is-dev');
 const binaryUtils = require('./binary');
+const logout = require('./logout');
 const { removeConfig, getConfig, saveConfig } = require('./config');
 
 exports.getMainMenu = async (app, tray, window, inRenderer) => {
@@ -93,10 +94,15 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               }
             },
             {
+              type: 'separator'
+            },
+            {
               label: 'Log Out',
               click() {
-                removeConfig().then(() => {
-                  window.webContents.send('logged-out');
+                logout().then(() => {
+                  removeConfig().then(() => {
+                    window.webContents.send('logged-out');
+                  });
                 });
               }
             }
