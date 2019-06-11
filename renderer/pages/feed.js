@@ -1,6 +1,7 @@
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import * as Sentry from '@sentry/electron';
 import ipc from '../utils/ipc';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
@@ -17,6 +18,13 @@ import * as deploymentEffects from '../effects/deployment';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 import DeploymentBar from '../components/deployment-bar';
+import pkg from '../../package';
+
+if (typeof window !== 'undefined') {
+  Sentry.init({
+    dsn: pkg.sentryDsn
+  });
+}
 
 const Main = ({ router }) => {
   const [scopes, setScopes] = useState(null);
