@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import dotProp from 'dot-prop';
@@ -37,245 +37,262 @@ const parseDate = date => {
   return null;
 };
 
-const urlEffect = (event, setUrl) => {
-  const urlProps = [
-    'payload.cn',
-    'payload.alias',
-    'payload.url',
-    'payload.domain',
-    'payload.deploymentUrl'
-  ];
-
-  for (const prop of urlProps) {
-    const url = dotProp.get(event, prop);
-
-    if (url) {
-      setUrl(url);
-      break;
-    }
-  }
-};
-
-const menuEffect = (event, url, setMenu) => {
-  let dashboardUrl = null;
-  let id = null;
-
-  if (event.type === 'deployment') {
-    const { deploymentUrl, url } = event.payload;
-    const host = deploymentUrl || url;
-
-    dashboardUrl = `https://zeit.co/deployments/${host}`;
+class Event extends React.Component {
+  static getDerivedStateFromError() {
+    return {
+      error: true
+    };
   }
 
-  const props = [
-    'payload.deletedUser.username',
-    'payload.slug',
-    'payload.aliasId',
-    'payload.deploymentId'
-  ];
+  state = {
+    url: null,
+    menu: null,
+    error: null
+  };
 
-  for (const prop of props) {
-    id = dotProp.get(event, prop);
+  componentDidMount = () => {
+    this.setUrl();
+    this.setMenu();
+  };
 
-    if (id) {
-      break;
-    }
-  }
+  setUrl = () => {
+    const { event } = this.props;
 
-  setMenu({
-    url,
-    id,
-    dashboardUrl
-  });
-};
+    // Set URL
+    const urlProps = [
+      'payload.cn',
+      'payload.alias',
+      'payload.url',
+      'payload.domain',
+      'payload.deploymentUrl'
+    ];
 
-const rightClick = (menu, event) => {
-  event.preventDefault();
+    for (const prop of urlProps) {
+      const url = dotProp.get(event, prop);
 
-  ipc.openEventMenu(
-    {
-      x: event.clientX,
-      y: event.clientY
-    },
-    menu
-  );
-};
+      this.setState({ url });
 
-const click = (event, setScopeWithSlug, url) => {
-  if (event.type === 'team' && setScopeWithSlug) {
-    setScopeWithSlug(event.payload.slug);
-    return;
-  }
-
-  if (!url) {
-    return;
-  }
-
-  ipc.openURL(`https://${url}`);
-};
-
-const Event = ({ event, active, user, setScopeWithSlug, darkMode }) => {
-  const [url, setUrl] = useState(null);
-  const [menu, setMenu] = useState(null);
-
-  const Message = useMemo(() => messageComponents.get(event.type), []);
-  const parsedDate = useMemo(() => parseDate(parseDate), []);
-
-  const avatarHash = event.user && event.user.avatar;
-
-  if (!Message) {
-    return null;
-  }
-
-  const classes = classNames({
-    event: true,
-    darkMode
-  });
-
-  useEffect(
-    () => {
-      return urlEffect(event, setUrl);
-    },
-
-    // Never re-invoke.
-    []
-  );
-
-  useEffect(
-    () => {
-      if (event === null) {
-        return;
+      if (url) {
+        break;
       }
+    }
+  };
 
-      return menuEffect(event, url, setMenu);
-    },
+  setMenu = () => {
+    const { event } = this.props;
 
-    // Re-invoke if url changes or event becomes defined.
-    [url, JSON.stringify(event)]
-  );
+    let dashboardUrl = null;
+    let id = null;
 
-  return (
-    <figure
-      className={classes}
-      onClick={click.bind(this, event, setScopeWithSlug, url)}
-      onContextMenu={rightClick.bind(this, menu)}
-    >
-      <Avatar
-        event={event}
-        scope={active}
-        hash={avatarHash}
-        darkMode={darkMode}
-      />
+    if (event.type === 'deployment') {
+      const { deploymentUrl, url } = event.payload;
+      const host = deploymentUrl || url;
 
-      <figcaption>
-        <Message user={user} event={event} active={active} />
-        <span>{parsedDate}</span>
-      </figcaption>
+      dashboardUrl = `https://zeit.co/deployments/${host}`;
+    }
 
-      <style jsx>{`
-        figure {
-          margin: 0;
-          display: flex;
-          justify-content: space-between;
-          background: #ffffff;
+    const props = [
+      'payload.deletedUser.username',
+      'payload.slug',
+      'payload.aliasId',
+      'payload.deploymentId'
+    ];
+
+    for (const prop of props) {
+      id = dotProp.get(event, prop);
+
+      if (id) {
+        break;
+      }
+    }
+
+    this.setState({
+      menu: {
+        url: this.state.url,
+        id,
+        dashboardUrl
+      }
+    });
+  };
+
+  click = (event, setScopeWithSlug, url) => {
+    if (event.type === 'team' && setScopeWithSlug) {
+      setScopeWithSlug(event.payload.slug);
+      return;
+    }
+
+    if (!url) {
+      return;
+    }
+
+    ipc.openURL(`https://${url}`);
+  };
+
+  rightClick = (menu, event) => {
+    event.preventDefault();
+
+    ipc.openEventMenu(
+      {
+        x: event.clientX,
+        y: event.clientY
+      },
+      menu
+    );
+  };
+
+  render() {
+    const { event, active, user, setScopeWithSlug, darkMode } = this.props;
+    const { url, menu, error } = this.state;
+
+    const Message = messageComponents.get(event.type);
+    const parsedDate = parseDate(parseDate);
+
+    const avatarHash = event.user && event.user.avatar;
+
+    if (!Message) {
+      return null;
+    }
+
+    const classes = classNames({
+      event: true,
+      darkMode
+    });
+
+    return (
+      <figure
+        className={classes}
+        onClick={
+          error ? () => {} : () => this.click(event, setScopeWithSlug, url)
         }
-
-        figure.darkMode {
-          background: #1f1f1f;
+        onContextMenu={
+          error ? e => e.preventDefault() : e => this.rightClick(menu, e)
         }
+      >
+        {error ? (
+          <figcaption>
+            <p style={{ marginLeft: 12 }}>This event could not be displayed</p>
+          </figcaption>
+        ) : (
+          <>
+            <Avatar
+              event={event}
+              scope={active}
+              hash={avatarHash}
+              darkMode={darkMode}
+            />
 
-        figure:hover {
-          background: #f0f0f0;
-        }
+            <figcaption>
+              <Message user={user} event={event} active={active} />
+              <span>{parsedDate}</span>
+            </figcaption>
+          </>
+        )}
 
-        figure.darkMode:hover {
-          background: #333;
-        }
+        <style jsx>{`
+          figure {
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            background: #ffffff;
+          }
 
-        figure figcaption {
-          border-top: 1px solid #f5f5f5;
-          padding: 10px 10px 10px 0;
-          box-sizing: border-box;
-          display: flex;
-          justify-content: space-between;
-          flex-shrink: 1;
-          word-break: break-word;
-          flex-grow: 1;
-        }
+          figure.darkMode {
+            background: #1f1f1f;
+          }
 
-        figure.darkMode figcaption {
-          border-top: 1px solid #333;
-        }
+          figure:hover {
+            background: #f0f0f0;
+          }
 
-        figure:last-child figcaption {
-          padding-bottom: 10px;
-        }
+          figure.darkMode:hover {
+            background: #333;
+          }
 
-        figure:last-child figcaption {
-          border-bottom: 0;
-        }
+          figure figcaption {
+            border-top: 1px solid #f5f5f5;
+            padding: 10px 10px 10px 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            flex-shrink: 1;
+            word-break: break-word;
+            flex-grow: 1;
+          }
 
-        figure figcaption span {
-          font-size: 10px;
-          color: #9b9b9b;
-          flex-shrink: 0;
-        }
-      `}</style>
+          figure.darkMode figcaption {
+            border-top: 1px solid #333;
+          }
 
-      <style jsx global>{`
-        h1 + .event figcaption {
-          border-top: 0 !important;
-        }
+          figure:last-child figcaption {
+            padding-bottom: 10px;
+          }
 
-        .event p {
-          font-size: 12px;
-          margin: 0;
-          line-height: 17px;
-          display: block;
-          color: #666;
-          padding-right: 10px;
-          flex-shrink: 1;
-        }
+          figure:last-child figcaption {
+            border-bottom: 0;
+          }
 
-        .event.darkMode p {
-          color: #999;
-        }
+          figure figcaption span {
+            font-size: 10px;
+            color: #9b9b9b;
+            flex-shrink: 0;
+          }
+        `}</style>
 
-        .event p b {
-          font-weight: normal;
-          color: #000;
-        }
+        <style jsx global>{`
+          h1 + .event figcaption {
+            border-top: 0 !important;
+          }
 
-        .event.darkMode p b {
-          color: #fff;
-        }
+          .event p {
+            font-size: 12px;
+            margin: 0;
+            line-height: 17px;
+            display: block;
+            color: #666;
+            padding-right: 10px;
+            flex-shrink: 1;
+          }
 
-        .event p code {
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
-          background: #f5f5f5;
-          padding: 2px 5px;
-          border-radius: 3px;
-          font-size: 12px;
-          margin: 5px 0;
-          display: block;
-        }
+          .event.darkMode p {
+            color: #999;
+          }
 
-        .event.darkMode p code {
-          background: #333;
-          color: #ccc;
-        }
+          .event p b {
+            font-weight: normal;
+            color: #000;
+          }
 
-        .event:hover p code {
-          background: #e8e8e8;
-        }
+          .event.darkMode p b {
+            color: #fff;
+          }
 
-        .event.darkMode:hover p code {
-          background: #464646;
-        }
-      `}</style>
-    </figure>
-  );
-};
+          .event p code {
+            font-family: Menlo, Monaco, Lucida Console, Liberation Mono, serif;
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin: 5px 0;
+            display: block;
+          }
+
+          .event.darkMode p code {
+            background: #333;
+            color: #ccc;
+          }
+
+          .event:hover p code {
+            background: #e8e8e8;
+          }
+
+          .event.darkMode:hover p code {
+            background: #464646;
+          }
+        `}</style>
+      </figure>
+    );
+  }
+}
 
 Event.propTypes = {
   event: PropTypes.object,
