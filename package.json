@@ -82,6 +82,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@sentry/browser": "5.4.0",
     "@sentry/electron": "0.17.1",
     "app-root-path": "2.2.1",
     "async-retry": "1.2.3",
