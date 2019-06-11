@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import dotProp from 'dot-prop';
 import ms from 'ms';
-import * as Sentry from '@sentry/electron';
+import * as Sentry from '@sentry/browser';
 import dateDiff from '../utils/date-diff';
 import ipc from '../utils/ipc';
 import pkg from '../../package';
@@ -11,7 +11,7 @@ import Avatar from './avatar';
 import messageComponents from './messages';
 
 if (typeof window !== 'undefined') {
-  Sentry.init({
+  Sentry.init.init({
     dsn: pkg.sentryDsn
   });
 }
