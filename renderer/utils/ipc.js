@@ -95,8 +95,8 @@ const getDarkModeStatus = () => {
   );
 };
 
-const createDeployment = (path, opts) => {
-  window.ipc.send('deployment-request', path, opts);
+const createDeployment = (id, path, opts) => {
+  window.ipc.send('deployment-request', id, path, opts);
 };
 
 const onBuildStateChanged = invoke => {

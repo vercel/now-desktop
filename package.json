@@ -115,6 +115,7 @@
     "tmp-promise": "2.0.1",
     "trim": "0.0.1",
     "ua-parser-js": "0.7.19",
+    "uid-promise": "1.1.0",
     "winreg": "1.2.4"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import uid from 'uid-promise';
 import ipc from '../utils/ipc';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
@@ -26,13 +27,15 @@ const Main = ({ router }) => {
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
   const [activeDeployment, setActiveDeployment] = useState(null);
-  const [hashesCalculated, setHashesCalculated] = useState(false);
-  const [filesUploaded, setFilesUploaded] = useState(false);
-  const [activeBuilds, setActiveBuilds] = useState(0);
+  const [queuedDeployments, setQueuedDeployments] = useState([]);
+  const [hashesCalculated, setHashesCalculated] = useState({});
+  const [filesUploaded, setFilesUploaded] = useState({});
+  const [activeBuilds, setActiveBuilds] = useState({});
   const [readyBuilds, setReadyBuilds] = useState({});
-  const [deploymentError, setDeploymentError] = useState(null);
+  const [deploymentErrors, setDeploymentErrors] = useState({});
 
   const fileInput = useRef();
+  const MAX_QUEUED_DEPLOYMENTS = 10;
 
   // This effect (and read below)...
   useEffect(() => {
@@ -53,56 +56,93 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    return trayDragEffect(null, () => setShowDropZone(true));
-  });
-
-  useEffect(() => {
-    return deploymentEffects.deploymentCreated((_, dpl) => {
-      setActiveDeployment(dpl);
-
-      if (activeBuilds === 0) {
-        setActiveBuilds(dpl.builds.length);
+    return trayDragEffect(null, () => {
+      if (online) {
+        setShowDropZone(true);
       }
     });
   });
 
   useEffect(() => {
-    return deploymentEffects.hashesCalculated(() => {
-      setHashesCalculated(true);
+    return deploymentEffects.deploymentCreated((_, { id, payload }) => {
+      setActiveDeployment({ ...payload, tempId: id });
+
+      if (activeBuilds === 0) {
+        setActiveBuilds({
+          ...activeBuilds,
+          [id]: payload.builds
+        });
+      }
+    });
+  });
+
+  useEffect(() => {
+    return deploymentEffects.hashesCalculated((_, { id }) => {
+      setHashesCalculated({
+        ...hashesCalculated,
+        [id]: true
+      });
     });
   }, []);
 
   useEffect(() => {
-    return deploymentEffects.filesUploaded(() => setFilesUploaded(true));
+    return deploymentEffects.filesUploaded((_, { id }) =>
+      setFilesUploaded({
+        ...filesUploaded,
+        [id]: true
+      })
+    );
   }, []);
 
   useEffect(() => {
-    return deploymentEffects.error((_, err) => {
+    return deploymentEffects.error((_, { id, payload: err }) => {
       console.error(err);
+
       if (activeDeployment && activeDeployment.url) {
         ipc.openURL(`https://${activeDeployment.url}`);
       }
 
-      setActiveBuilds(0);
-      setReadyBuilds({});
-      setDeploymentError(err);
+      setActiveBuilds({ ...activeBuilds, [id]: 0 });
+      setReadyBuilds({ ...readyBuilds, [id]: {} });
+      setDeploymentErrors({ ...deploymentErrors, [id]: err });
+
       setActiveDeployment(null);
 
       // Hide error after 3 seconds
       setTimeout(() => {
-        setDeploymentError(null);
+        setDeploymentErrors({ ...deploymentErrors, [id]: err });
+
+        if (queuedDeployments.length > 0) {
+          const [nextDeployment] = queuedDeployments;
+
+          if (nextDeployment) {
+            createDeployment(nextDeployment);
+          }
+        }
       }, 3000);
     });
   }, [activeDeployment]);
 
   useEffect(() => {
-    return deploymentEffects.ready((_, dpl) => {
+    return deploymentEffects.ready((_, { id, payload: dpl }) => {
       console.log('READY', dpl);
       setActiveDeployment({ ready: true });
-      setActiveBuilds(0);
-      setReadyBuilds({});
-      setHashesCalculated(false);
-      setFilesUploaded(false);
+      setActiveBuilds({
+        ...activeBuilds,
+        [id]: 0
+      });
+      setReadyBuilds({
+        ...readyBuilds,
+        [id]: {}
+      });
+      setHashesCalculated({
+        ...hashesCalculated,
+        [id]: false
+      });
+      setFilesUploaded({
+        ...filesUploaded,
+        [id]: false
+      });
 
       if (fileInput.current) {
         fileInput.current.value = null;
@@ -117,16 +157,36 @@ const Main = ({ router }) => {
       });
 
       ipc.openURL(`https://${dpl.url}`);
-      setTimeout(() => setActiveDeployment(null), 3000);
+
+      // Unqueue the next deployment if any
+      if (queuedDeployments.length > 0) {
+        const [nextDeployment] = queuedDeployments;
+
+        if (nextDeployment) {
+          createDeployment(nextDeployment);
+        } else {
+          setTimeout(() => {
+            setActiveDeployment(null);
+          }, 3000);
+        }
+      } else {
+        setTimeout(() => {
+          setActiveDeployment(null);
+        }, 3000);
+      }
     });
-  }, []);
+  }, [queuedDeployments, activeDeployment]);
 
   useEffect(() => {
-    return deploymentEffects.buildStateChanged((_, build) => {
+    return deploymentEffects.buildStateChanged((_, { id, payload: build }) => {
       const nextReadyBuilds = { ...readyBuilds };
 
+      if (!nextReadyBuilds[id]) {
+        nextReadyBuilds[id] = {};
+      }
+
       if (build.readyState === 'READY') {
-        nextReadyBuilds[build.id] = build;
+        nextReadyBuilds[id][build.id] = build;
       }
 
       setReadyBuilds(nextReadyBuilds);
@@ -200,33 +260,55 @@ const Main = ({ router }) => {
   );
 
   const createDeployment = async path => {
-    setActiveDeployment(null);
-    setDeploymentError(null);
-    setFilesUploaded(false);
-    setHashesCalculated(false);
+    if (!online || queuedDeployments.length >= MAX_QUEUED_DEPLOYMENTS) {
+      return;
+    }
+
+    // Check if we need to queue this deployment
+    if (queuedDeployments.includes(path)) {
+      setQueuedDeployments(queuedDeployments.filter(d => d !== path));
+    } else if (activeDeployment) {
+      setQueuedDeployments([...queuedDeployments, path]);
+
+      return;
+    }
+
+    console.log('creating', path);
+
+    const id = await uid(10);
 
     // Show "preparing" feedback immediately
     setActiveDeployment({});
 
-    ipc.createDeployment(path, {
+    ipc.createDeployment(id, path, {
       teamId: config.currentTeam,
       token: config.token
     });
   };
 
+  const tempId = activeDeployment ? activeDeployment.tempId : null;
+
   return (
     <main>
-      <div onDragEnter={() => setShowDropZone(true)}>
+      <div
+        onDragEnter={() => {
+          if (online) {
+            setShowDropZone(true);
+          }
+        }}
+      >
         <Title
           config={config}
           active={active}
           darkMode={darkMode}
           fileInput={fileInput.current}
+          online={online}
         />
 
         {showDropZone && (
           <DropZone
             darkMode={darkMode}
+            online={online}
             hide={() => setShowDropZone(false)}
             onDrop={(files, defaultName) =>
               createDeployment(files, defaultName)
@@ -244,15 +326,27 @@ const Main = ({ router }) => {
           setActive={setActive}
         />
 
-        <DeploymentBar
-          activeDeployment={activeDeployment}
-          activeBuilds={activeBuilds}
-          readyBuilds={readyBuilds}
-          error={deploymentError}
-          filesUploaded={filesUploaded}
-          hashesCalculated={hashesCalculated}
-          onErrorClick={() => setDeploymentError(null)}
-        />
+        <section className="deployment-progress-bars">
+          <DeploymentBar
+            activeDeployment={activeDeployment}
+            activeBuilds={tempId ? activeBuilds[tempId] : 0}
+            readyBuilds={tempId ? readyBuilds[tempId] || {} : {}}
+            error={tempId ? deploymentErrors[tempId] : null}
+            filesUploaded={tempId ? filesUploaded[tempId] : false}
+            hashesCalculated={tempId ? hashesCalculated[tempId] : false}
+            onErrorClick={() =>
+              setDeploymentErrors({ ...deploymentErrors, [tempId]: null })
+            }
+          />
+          {queuedDeployments.map(key => (
+            <DeploymentBar
+              activeDeployment={{}}
+              key={key}
+              readyBuilds={{}}
+              queued={key}
+            />
+          ))}
+        </section>
 
         <Switcher
           config={config}
@@ -292,6 +386,15 @@ const Main = ({ router }) => {
           position: absolute;
           left: -999px;
           top: -999px;
+        }
+
+        .deployment-progress-bars {
+          max-height: 126px;
+          width: 100%;
+          overflow: scroll;
+          position: fixed;
+          left: 0;
+          bottom: 40px;
         }
       `}</style>
 

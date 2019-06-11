@@ -8,7 +8,7 @@ import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({ darkMode, active, config, title, fileInput }) => {
+const Title = ({ darkMode, active, config, title, fileInput, online }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -73,7 +73,7 @@ const Title = ({ darkMode, active, config, title, fileInput }) => {
             <button
               className="deploy"
               onClick={() => {
-                if (fileInput) {
+                if (fileInput && online) {
                   fileInput.click();
                 }
               }}
@@ -267,7 +267,8 @@ Title.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   contextChanged: PropTypes.bool,
-  fileInput: PropTypes.object
+  fileInput: PropTypes.object,
+  online: PropTypes.bool
 };
 
 export default Title;

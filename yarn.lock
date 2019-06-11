@@ -8259,6 +8259,11 @@ ua-parser-js@0.7.19:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.19.tgz#94151be4c0a7fb1d001af7022fdaca4642659e4b"
   integrity sha512-T3PVJ6uz8i0HzPxOF9SWzWAlfN/DavlpQqepn22xgve/5QecC+XMCAtmUNnY7C9StehaV6exjUCI801lOI7QlQ==
 
+uid-promise@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/uid-promise/-/uid-promise-1.1.0.tgz#af6dee53e887834e9b0da3f705bc9d7b0d002b7c"
+  integrity sha512-8xlDRzI5YFQhoCaGvA/zZTZffX+7J916fVAnIBCVIcHlsHeXiDyrO8Kutb8zn5Azm3143hKlvmnf6eLEl9+hJQ==
+
 unfetch@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.1.0.tgz#6ec2dd0de887e58a4dee83a050ded80ffc4137db"
