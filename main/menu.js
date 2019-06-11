@@ -94,6 +94,9 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               }
             },
             {
+              type: 'separator'
+            },
+            {
               label: 'Log Out',
               click() {
                 logout().then(() => {
