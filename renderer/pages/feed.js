@@ -27,6 +27,7 @@ const Main = ({ router }) => {
   const [online, setOnline] = useState(true);
   const [showDropZone, setShowDropZone] = useState(false);
   const [activeDeployments, setActiveDeployments] = useState({});
+  const [queuedDeployments, setQueuedDeployments] = useState([]);
   const [hashesCalculated, setHashesCalculated] = useState({});
   const [filesUploaded, setFilesUploaded] = useState({});
   const [activeBuilds, setActiveBuilds] = useState({});
@@ -34,6 +35,7 @@ const Main = ({ router }) => {
   const [deploymentErrors, setDeploymentErrors] = useState({});
 
   const fileInput = useRef();
+  const MAX_SIMULTANEOUS_DEPLOYMENTS = 10;
 
   // This effect (and read below)...
   useEffect(() => {
@@ -156,12 +158,27 @@ const Main = ({ router }) => {
       });
 
       ipc.openURL(`https://${dpl.url}`);
+
+      // Unqueue the next deployment if any
+      if (queuedDeployments.length > 0) {
+        const nextDeploymentCount =
+          Object.keys(activeDeployments).length - queuedDeployments.length + 1;
+
+        for (let i = 0; i < nextDeploymentCount; i++) {
+          const path = queuedDeployments[i];
+
+          if (path) {
+            createDeployment(path);
+          }
+        }
+      }
+
       setTimeout(() => {
         delete activeDeployments[id];
         setActiveDeployments(activeDeployments);
       }, 3000);
     });
-  }, []);
+  }, [queuedDeployments, activeDeployments]);
 
   useEffect(() => {
     return deploymentEffects.buildStateChanged((_, { id, payload: build }) => {
@@ -250,6 +267,19 @@ const Main = ({ router }) => {
       return;
     }
 
+    // Check if we need to queue this deployment
+    if (queuedDeployments.includes(path)) {
+      setQueuedDeployments(queuedDeployments.filter(d => d !== path));
+    } else if (
+      Object.keys(activeDeployments).length >= MAX_SIMULTANEOUS_DEPLOYMENTS
+    ) {
+      setQueuedDeployments([...queuedDeployments, path]);
+
+      return;
+    }
+
+    console.log('creating', path);
+
     const id = await uid(10);
 
     // Show "preparing" feedback immediately
@@ -315,6 +345,14 @@ const Main = ({ router }) => {
               onErrorClick={() =>
                 setDeploymentErrors({ ...deploymentErrors, [key]: null })
               }
+            />
+          ))}
+          {queuedDeployments.map(key => (
+            <DeploymentBar
+              activeDeployment={{}}
+              key={key}
+              readyBuilds={{}}
+              queued={key}
             />
           ))}
         </section>

@@ -12,8 +12,20 @@ const getContent = options => {
     activeBuilds,
     readyBuildsCount,
     hashesCalculated,
-    filesUploaded
+    filesUploaded,
+    queued
   } = options;
+
+  if (queued) {
+    const nameSegments =
+      typeof queued === 'string'
+        ? queued.split('/')
+        : Array.isArray(queued)
+        ? queued[0].split('/')
+        : [''];
+
+    return <span>Queued {nameSegments[nameSegments.length - 1]}...</span>;
+  }
 
   if (!activeDeployment) {
     return null;
@@ -47,8 +59,13 @@ const getProgress = ({
   readyBuildsCount,
   filesUploaded,
   hashesCalculated,
-  activeDeployment
+  activeDeployment,
+  queued
 }) => {
+  if (queued) {
+    return 0;
+  }
+
   const progress =
     activeBuilds > 0 ? (readyBuildsCount / activeBuilds) * 100 : 0;
 
@@ -96,7 +113,8 @@ const DeploymentBar = ({
   error,
   filesUploaded,
   hashesCalculated,
-  onErrorClick
+  onErrorClick,
+  queued
 }) => {
   const [hiding, setHiding] = useState(false);
   const [hidden, setHidden] = useState(true);
@@ -120,7 +138,8 @@ const DeploymentBar = ({
     readyBuildsCount,
     filesUploaded,
     hashesCalculated,
-    activeDeployment
+    activeDeployment,
+    queued
   });
 
   return hidden ? null : (
@@ -136,7 +155,8 @@ const DeploymentBar = ({
             activeBuilds,
             readyBuildsCount,
             hashesCalculated,
-            filesUploaded
+            filesUploaded,
+            queued
           })}
           <Progress
             progress={
@@ -210,6 +230,7 @@ DeploymentBar.propTypes = {
   error: PropTypes.object,
   filesUploaded: PropTypes.bool,
   hashesCalculated: PropTypes.bool,
+  queued: PropTypes.string,
   onErrorClick: PropTypes.func
 };
 
