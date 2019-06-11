@@ -54,7 +54,11 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    return trayDragEffect(null, () => setShowDropZone(true));
+    return trayDragEffect(null, () => {
+      if (online) {
+        setShowDropZone(true);
+      }
+    });
   });
 
   useEffect(() => {
@@ -101,8 +105,8 @@ const Main = ({ router }) => {
         ipc.openURL(`https://${activeDeployment.url}`);
       }
 
-      setActiveBuilds(0);
-      setReadyBuilds({});
+      setActiveBuilds({ ...activeBuilds, [id]: 0 });
+      setReadyBuilds({ ...readyBuilds, [id]: {} });
       setDeploymentErrors({ ...deploymentErrors, [id]: err });
 
       delete activeDeployments[id];
@@ -242,6 +246,10 @@ const Main = ({ router }) => {
   );
 
   const createDeployment = async path => {
+    if (!online) {
+      return;
+    }
+
     const id = await uid(10);
 
     // Show "preparing" feedback immediately
@@ -258,17 +266,25 @@ const Main = ({ router }) => {
 
   return (
     <main>
-      <div onDragEnter={() => setShowDropZone(true)}>
+      <div
+        onDragEnter={() => {
+          if (online) {
+            setShowDropZone(true);
+          }
+        }}
+      >
         <Title
           config={config}
           active={active}
           darkMode={darkMode}
           fileInput={fileInput.current}
+          online={online}
         />
 
         {showDropZone && (
           <DropZone
             darkMode={darkMode}
+            online={online}
             hide={() => setShowDropZone(false)}
             onDrop={(files, defaultName) =>
               createDeployment(files, defaultName)
