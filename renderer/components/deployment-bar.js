@@ -24,7 +24,11 @@ const getContent = options => {
         ? queued[0].split('/')
         : [''];
 
-    return <span>Queued {nameSegments[nameSegments.length - 1]}...</span>;
+    return (
+      <span>
+        Queued <strong>{nameSegments[nameSegments.length - 1] || ''}</strong>
+      </span>
+    );
   }
 
   if (!activeDeployment) {
