@@ -296,8 +296,6 @@ const Main = ({ router }) => {
 
   const tempId = activeDeployment ? activeDeployment.tempId : null;
 
-  console.log(activeDeployment);
-
   return (
     <main>
       <div
