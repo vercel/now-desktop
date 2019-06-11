@@ -12,8 +12,25 @@ const getContent = options => {
     activeBuilds,
     readyBuildsCount,
     hashesCalculated,
-    filesUploaded
+    filesUploaded,
+    queued
   } = options;
+
+  if (queued) {
+    const nameSegments =
+      typeof queued === 'string'
+        ? queued.split('/')
+        : Array.isArray(queued)
+        ? queued[0].split('/')
+        : [''];
+    const name = nameSegments[nameSegments.length - 1] || null;
+
+    return (
+      <span>
+        Queued <strong>{name}</strong>
+      </span>
+    );
+  }
 
   if (!activeDeployment) {
     return null;
@@ -47,8 +64,13 @@ const getProgress = ({
   readyBuildsCount,
   filesUploaded,
   hashesCalculated,
-  activeDeployment
+  activeDeployment,
+  queued
 }) => {
+  if (queued) {
+    return 0;
+  }
+
   const progress =
     activeBuilds > 0 ? (readyBuildsCount / activeBuilds) * 100 : 0;
 
@@ -96,7 +118,8 @@ const DeploymentBar = ({
   error,
   filesUploaded,
   hashesCalculated,
-  onErrorClick
+  onErrorClick,
+  queued
 }) => {
   const [hiding, setHiding] = useState(false);
   const [hidden, setHidden] = useState(true);
@@ -120,7 +143,8 @@ const DeploymentBar = ({
     readyBuildsCount,
     filesUploaded,
     hashesCalculated,
-    activeDeployment
+    activeDeployment,
+    queued
   });
 
   return hidden ? null : (
@@ -136,7 +160,8 @@ const DeploymentBar = ({
             activeBuilds,
             readyBuildsCount,
             hashesCalculated,
-            filesUploaded
+            filesUploaded,
+            queued
           })}
           <Progress
             progress={
@@ -156,9 +181,6 @@ const DeploymentBar = ({
             display: flex;
             align-items: center;
             font-size: 12px;
-            position: fixed;
-            left: 0;
-            bottom: 40px;
             opacity: 0;
             animation: 0.2s show ease forwards;
             z-index: 0;
@@ -213,6 +235,7 @@ DeploymentBar.propTypes = {
   error: PropTypes.object,
   filesUploaded: PropTypes.bool,
   hashesCalculated: PropTypes.bool,
+  queued: PropTypes.string,
   onErrorClick: PropTypes.func
 };
 
