@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import dotProp from 'dot-prop';
 import ms from 'ms';
+import * as Sentry from '@sentry/electron';
 import dateDiff from '../utils/date-diff';
 import ipc from '../utils/ipc';
 import Avatar from './avatar';
@@ -38,12 +39,6 @@ const parseDate = date => {
 };
 
 class Event extends React.Component {
-  static getDerivedStateFromError() {
-    return {
-      error: true
-    };
-  }
-
   state = {
     url: null,
     menu: null,
@@ -53,6 +48,18 @@ class Event extends React.Component {
   componentDidMount = () => {
     this.setUrl();
     this.setMenu();
+  };
+
+  componentDidCatch = (error, errorInfo) => {
+    console.error('Failed to handle event:', error);
+    this.setState({ error: true });
+
+    Sentry.withScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key]);
+      });
+      Sentry.captureException(error);
+    });
   };
 
   setUrl = () => {
