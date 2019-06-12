@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import uid from 'uid-promise';
 import ipc from '../utils/ipc';
+import About from '../components/about-screen';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
 import Events from '../components/events';
@@ -21,11 +22,18 @@ import DropZone from '../components/dropzone';
 import DeploymentBar from '../components/deployment-bar';
 
 const Main = ({ router }) => {
+  // Application states
   const [scopes, setScopes] = useState(null);
   const [active, setActive] = useState(null);
   const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
+
+  // Navigation
+  const [isAboutVisible, setAboutVisible] = useState(false);
+  const [disableScopesAnimation, setDisableScopesAnimation] = useState(false);
+
+  // Deployments
   const [showDropZone, setShowDropZone] = useState(false);
   const [activeDeployment, setActiveDeployment] = useState(null);
   const [queuedDeployments, setQueuedDeployments] = useState([]);
@@ -204,15 +212,9 @@ const Main = ({ router }) => {
   });
 
   useEffect(() => {
-    if (router.query.disableScopesAnimation) {
-      router.replace('/feed', '/feed', { shallow: true });
-    }
-
     return aboutScreenEffect(null, () => {
-      const aboutPath = window.location.href.includes('http')
-        ? '/about'
-        : `${window.appPath}/renderer/out/about/index.html`;
-      router.replace(aboutPath);
+      setAboutVisible(true);
+      setDisableScopesAnimation(true);
     });
   });
 
@@ -296,6 +298,19 @@ const Main = ({ router }) => {
 
   const tempId = activeDeployment ? activeDeployment.tempId : null;
 
+  if (isAboutVisible) {
+    return (
+      <About
+        config={config}
+        darkMode={darkMode}
+        onBackClick={() => {
+          setAboutVisible(false);
+          setTimeout(() => setDisableScopesAnimation(false), 300);
+        }}
+      />
+    );
+  }
+
   return (
     <main>
       <div
@@ -363,6 +378,7 @@ const Main = ({ router }) => {
           active={active}
           scopes={orderedScopes}
           setConfig={setConfig}
+          disableScopesAnimation={disableScopesAnimation}
         />
       </div>
 

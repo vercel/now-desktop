@@ -1,35 +1,17 @@
-import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import ms from 'ms';
 import semVer from 'semver';
-import darkModeEffect from '../effects/dark-mode';
-import configEffect from '../effects/config';
 import versionEffect from '../effects/version';
-import Title from '../components/title';
-import Spinner from '../components/spinner';
 import Logo from '../vectors/logo-about';
+import Title from './title';
+import Spinner from './spinner';
 
-const About = ({ router }) => {
-  const [config, setConfig] = useState(null);
-  const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
+const About = ({ darkMode, config, onBackClick }) => {
   const [latestVersion, setLatestVersion] = useState(null);
-
-  useEffect(
-    () => {
-      return configEffect(config, setConfig);
-    },
-
-    // Never re-invoke this effect.
-    []
-  );
 
   useEffect(() => {
     return versionEffect(config, setLatestVersion);
-  });
-
-  useEffect(() => {
-    return darkModeEffect(darkMode, setDarkMode);
   });
 
   /* eslint-disable no-undef */
@@ -47,7 +29,7 @@ const About = ({ router }) => {
 
   return (
     <main className={darkMode ? 'dark' : ''}>
-      <Title darkMode={darkMode} title="About" />
+      <Title darkMode={darkMode} title="About" onBackClick={onBackClick} />
 
       <section>
         <Logo darkMode={darkMode} style={{ marginBottom: 20 }} />
@@ -238,7 +220,9 @@ const About = ({ router }) => {
 };
 
 About.propTypes = {
-  router: PropTypes.object
+  darkMode: PropTypes.bool,
+  config: PropTypes.object,
+  onBackClick: PropTypes.func
 };
 
-export default withRouter(About);
+export default About;
