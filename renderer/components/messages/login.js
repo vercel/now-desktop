@@ -46,14 +46,17 @@ export default class Login extends Message {
     if (geolocation) {
       const city =
         geolocation.city && typeof geolocation.city === 'object'
-          ? geolocation.city.names
+          ? geolocation.city && geolocation.city.names
             ? geolocation.city.names.en
-            : geolocation.city
+            : null
           : geolocation.city;
       const region =
         geolocation.most_specific_subdivision &&
         typeof geolocation.most_specific_subdivision === 'object'
-          ? geolocation.most_specific_subdivision.names.en
+          ? geolocation.most_specific_subdivision &&
+            geolocation.most_specific_subdivision.names
+            ? geolocation.most_specific_subdivision.names.en
+            : null
           : geolocation.regionName;
       if (city) {
         if (city === region) {
