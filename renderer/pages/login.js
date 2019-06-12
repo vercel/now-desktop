@@ -119,7 +119,7 @@ const Login = () => {
           </>
         ) : (
           <>
-            <h2>Log in to ZEIT Now</h2>
+            <h2>Login</h2>
             <span className="start">
               To start using the app, enter your email address below:
             </span>
@@ -143,7 +143,7 @@ const Login = () => {
                   style={{ marginTop: 2, marginRight: 3 }}
                   onChange={(event, checked) => setUpdateCLI(checked)}
                 />{' '}
-                Install&nbsp;<strong>ZEIT Now Command Line Interface</strong>
+                Install&nbsp;<strong>Now Command Line Interface</strong>
               </span>
               <span className="auto-update-permissions">
                 May require extra permissions
