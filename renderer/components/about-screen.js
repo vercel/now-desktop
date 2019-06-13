@@ -32,7 +32,7 @@ const About = ({ darkMode, config, onBackClick }) => {
       <Title darkMode={darkMode} title="About" onBackClick={onBackClick} />
 
       <section>
-        <Logo darkMode={darkMode} style={{ marginBottom: 20 }} />
+        <Logo darkMode={darkMode} style={{ marginBottom: 15, marginTop: 10 }} />
 
         <h1>Now</h1>
         <h2>
@@ -80,7 +80,6 @@ const About = ({ darkMode, config, onBackClick }) => {
         }
 
         h1 {
-          margin-top: 25px;
           font-size: 18px;
           color: black;
         }
