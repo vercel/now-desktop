@@ -96,6 +96,8 @@ const Login = () => {
           : `${window.appPath}/renderer/out/feed/index.html`;
 
         Router.replace(feedPath);
+
+        ipc.showWindow();
       }
     }, 3000);
   };

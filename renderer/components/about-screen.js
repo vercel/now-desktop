@@ -80,6 +80,7 @@ const About = ({ darkMode, config, onBackClick }) => {
         }
 
         h1 {
+          margin-top: 25px;
           font-size: 18px;
           color: black;
         }
