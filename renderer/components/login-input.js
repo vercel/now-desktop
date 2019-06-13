@@ -159,6 +159,11 @@ const LoginInput = ({
             color: red;
           }
 
+          .dark input.error {
+            border-color: #ff6363;
+            color: #ff6363;
+          }
+
           .suggestion {
             color: #666;
             position: absolute;

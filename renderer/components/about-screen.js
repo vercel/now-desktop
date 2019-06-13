@@ -32,7 +32,7 @@ const About = ({ darkMode, config, onBackClick }) => {
       <Title darkMode={darkMode} title="About" onBackClick={onBackClick} />
 
       <section>
-        <Logo darkMode={darkMode} style={{ marginBottom: 20 }} />
+        <Logo darkMode={darkMode} style={{ marginBottom: 15, marginTop: 10 }} />
 
         <h1>Now</h1>
         <h2>
@@ -92,8 +92,9 @@ const About = ({ darkMode, config, onBackClick }) => {
           text-align: center;
           line-height: 18px;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           align-items: center;
+          line-height: 24px;
         }
 
         h2 span {
