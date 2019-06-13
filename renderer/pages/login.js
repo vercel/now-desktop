@@ -108,18 +108,18 @@ const Login = () => {
         <Logo darkMode={darkMode} />
         {securityCode ? (
           <>
-            <h3>Awaiting confirmation</h3>
+            <h2>Verify your identity</h2>
             <span className="notice">
               We sent an email to <b>{inputValue}</b>
               <br />
-              <br />
-              Please follow the steps provided and make sure security code
-              matches the following:
+              Please follow the instructions.
             </span>
+            <span className="code-label">Your security code is:</span>
             <span className="code">{securityCode}</span>
           </>
         ) : (
           <>
+            <h2>Login</h2>
             <span className="start">
               To start using the app, enter your email address below:
             </span>
@@ -134,19 +134,21 @@ const Login = () => {
             <span className={`error ${inputError ? 'visible' : ''}`}>
               {inputError}
             </span>
-            <span className="auto-update-cli">
-              <Checkbox
-                checked={updateCLI}
-                label="Auto-Update Now CLI"
-                name="Auto-Update Now CLI"
-                style={{ marginTop: 2, marginRight: 3 }}
-                onChange={(event, checked) => setUpdateCLI(checked)}
-              />{' '}
-              Install Now command line interface
-            </span>
-            <span className="auto-update-permissions">
-              May require extra permissions
-            </span>
+            <div style={{ textAlign: 'left' }}>
+              <span className="auto-update-cli">
+                <Checkbox
+                  checked={updateCLI}
+                  label="Auto-Update Now CLI"
+                  name="Auto-Update Now CLI"
+                  style={{ marginTop: 2, marginRight: 3 }}
+                  onChange={(event, checked) => setUpdateCLI(checked)}
+                />{' '}
+                Install&nbsp;<strong>Now Command Line Interface</strong>
+              </span>
+              <span className="auto-update-permissions">
+                May require extra permissions
+              </span>
+            </div>
           </>
         )}
       </section>
@@ -175,10 +177,17 @@ const Login = () => {
           line-height: 20px;
         }
 
+        h2 {
+          color: black;
+          font-size: 20px;
+        }
+
         .start {
           margin-top: 15px;
+          line-height: 24px;
           color: black;
         }
+
         .dark .start {
           color: white;
         }
@@ -196,8 +205,8 @@ const Login = () => {
         }
 
         .notice {
-          font-size: 12px;
-          line-height: 16px;
+          font-size: 14px;
+          line-height: 24px;
         }
 
         .code {
@@ -209,10 +218,14 @@ const Login = () => {
           align-items: center;
           padding-top: 10px;
           padding-bottom: 10px;
-          margin-top: 20px;
+          margin-top: 15px;
           border-radius: 4px;
           font-weight: 600;
           font-size: 16px;
+        }
+
+        .dark h2 {
+          color: white;
         }
 
         .dark .code {
@@ -237,9 +250,19 @@ const Login = () => {
         .auto-update-permissions {
           font-size: 12px;
           color: #999;
+          margin-left: 20px;
         }
-        .dark .auto-update-permissions {
-          color: #666;
+
+        .code-label {
+          font-size: 13px;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: black;
+          margin-top: 50px;
+        }
+
+        .dark .code-label {
+          color: white;
         }
       `}</style>
 
