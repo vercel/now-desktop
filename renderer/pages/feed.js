@@ -298,21 +298,20 @@ const Main = ({ router }) => {
 
   const tempId = activeDeployment ? activeDeployment.tempId : null;
 
-  if (isAboutVisible) {
-    return (
-      <About
-        config={config}
-        darkMode={darkMode}
-        onBackClick={() => {
-          setAboutVisible(false);
-          setTimeout(() => setDisableScopesAnimation(false), 300);
-        }}
-      />
-    );
-  }
-
   return (
     <main>
+      {isAboutVisible && (
+        <div className="about-overlay">
+          <About
+            config={config}
+            darkMode={darkMode}
+            onBackClick={() => {
+              setAboutVisible(false);
+              setTimeout(() => setDisableScopesAnimation(false), 300);
+            }}
+          />
+        </div>
+      )}
       <div
         onDragEnter={() => {
           if (online) {
@@ -419,6 +418,11 @@ const Main = ({ router }) => {
           position: fixed;
           left: 0;
           bottom: 40px;
+        }
+
+        .about-overlay {
+          z-index: 999;
+          position: fixed;
         }
       `}</style>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const CHECKBOX_SVG_LIGHT = {
@@ -28,7 +28,7 @@ const CHECKBOX_SVG_DARK = {
 
 const Checkbox = ({
   disabled,
-  checked: checked_,
+  checked,
   darkMode,
   onChange,
   className,
@@ -36,16 +36,11 @@ const Checkbox = ({
   label,
   ...props
 }) => {
-  const [checked, setChecked] = useState(checked_);
-
   const SVG = darkMode ? CHECKBOX_SVG_DARK : CHECKBOX_SVG_LIGHT;
 
   function handleToggle(event) {
-    if (!disabled) {
-      setChecked(!checked);
-      if (onChange) {
-        onChange(event, !checked);
-      }
+    if (!disabled && onChange) {
+      onChange(event, !checked);
     }
   }
 

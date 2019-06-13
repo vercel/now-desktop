@@ -8,6 +8,10 @@ const hideWindow = () => {
   return window.ipc.send('hide-window-request');
 };
 
+const showWindow = () => {
+  return window.ipc.send('show-window');
+};
+
 const openMainMenu = bounds => {
   return window.ipc.send('open-main-menu-request', bounds);
 };
@@ -187,5 +191,6 @@ export default {
   onDeploymentReady,
   clearDeploymentReady,
   onDeploymentError,
-  clearDeploymentError
+  clearDeploymentError,
+  showWindow
 };

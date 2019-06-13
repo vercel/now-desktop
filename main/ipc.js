@@ -106,4 +106,8 @@ module.exports = (app, tray, window) => {
       event.sender.send(type, { id, payload });
     }
   });
+
+  ipcMain.on('show-window', () => {
+    window.show();
+  });
 };
