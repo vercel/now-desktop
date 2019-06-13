@@ -422,6 +422,7 @@ const Main = ({ router }) => {
 
         .about-overlay {
           z-index: 999;
+          position: fixed;
         }
       `}</style>
 
