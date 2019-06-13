@@ -58,7 +58,7 @@ const CreateTeam = ({ darkMode, delay, disableScale = false }) => {
           flex-shrink: 0;
           margin: 0 20px 0 10px;
           display: block;
-          transition: all 0.2s ease;
+          transition: all 0.1s ease;
           transform: scale(0);
           outline: 0;
           background: 0;
@@ -69,7 +69,7 @@ const CreateTeam = ({ darkMode, delay, disableScale = false }) => {
         }
 
         button.darkMode {
-          border-color: #3a3a3a;
+          border-color: #666;
         }
 
         button:hover,
@@ -83,7 +83,7 @@ const CreateTeam = ({ darkMode, delay, disableScale = false }) => {
 
         button.darkMode:hover,
         button.darkMode:focus {
-          border-color: #666;
+          border-color: #999;
         }
 
         button i {
