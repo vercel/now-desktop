@@ -9,7 +9,7 @@ class Message extends PureComponent {
       event.user = user;
     }
 
-    if (event.user.username) {
+    if (event.user && event.user.username) {
       return [<b key="username">{event.user.username}</b>, ' '];
     }
 
