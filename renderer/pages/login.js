@@ -108,7 +108,7 @@ const Login = () => {
         <Logo darkMode={darkMode} />
         {securityCode ? (
           <>
-            <h2>Verify your identity</h2>
+            <h2>Verify Your Identity</h2>
             <span className="notice">
               We sent an email to <b>{inputValue}</b>
               <br />
@@ -134,7 +134,10 @@ const Login = () => {
             <span className={`error ${inputError ? 'visible' : ''}`}>
               {inputError}
             </span>
-            <div style={{ textAlign: 'left' }}>
+            <div
+              style={{ textAlign: 'left', cursor: 'pointer' }}
+              onClick={() => setUpdateCLI(!updateCLI)}
+            >
               <span className="auto-update-cli">
                 <Checkbox
                   checked={updateCLI}
@@ -200,8 +203,13 @@ const Login = () => {
           height: 12px;
           margin-top: 5px;
         }
+
         .error.visible {
           opacity: 1;
+        }
+
+        .dark .error {
+          color: #ff6363;
         }
 
         .notice {
@@ -258,7 +266,7 @@ const Login = () => {
           font-weight: bold;
           text-transform: uppercase;
           color: black;
-          margin-top: 50px;
+          margin-top: 35px;
         }
 
         .dark .code-label {

@@ -92,8 +92,9 @@ const About = ({ darkMode, config, onBackClick }) => {
           text-align: center;
           line-height: 18px;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           align-items: center;
+          line-height: 24px;
         }
 
         h2 span {
