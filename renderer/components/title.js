@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Deploy from '../vectors/deploy';
 import Done from '../vectors/done';
@@ -8,7 +7,15 @@ import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({ darkMode, active, config, title, fileInput, online }) => {
+const Title = ({
+  darkMode,
+  active,
+  config,
+  title,
+  fileInput,
+  online,
+  onBackClick
+}) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -83,15 +90,9 @@ const Title = ({ darkMode, active, config, title, fileInput, online }) => {
           </>
         )}
         {title === 'About' && (
-          <Link
-            href={`/feed?disableScopesAnimation=1${
-              darkMode ? '&darkMode=1' : ''
-            }`}
-          >
-            <a className="close back">
-              <Back darkMode={darkMode} />
-            </a>
-          </Link>
+          <button className="close back" onClick={onBackClick}>
+            <Back darkMode={darkMode} />
+          </button>
         )}
       </div>
 
@@ -268,7 +269,8 @@ Title.propTypes = {
   config: PropTypes.object,
   contextChanged: PropTypes.bool,
   fileInput: PropTypes.object,
-  online: PropTypes.bool
+  online: PropTypes.bool,
+  onBackClick: PropTypes.func
 };
 
 export default Title;

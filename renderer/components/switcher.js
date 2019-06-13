@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
 import * as sortable from 'react-sortable-hoc';
 import ipc from '../utils/ipc';
 import CreateTeam from './create-team';
@@ -250,10 +249,17 @@ const openMenu = menu => {
   });
 };
 
-const Switcher = ({ online, darkMode, scopes, active, config, setConfig }) => {
+const Switcher = ({
+  online,
+  darkMode,
+  scopes,
+  active,
+  config,
+  setConfig,
+  disableScopesAnimation
+}) => {
   const [initialized, setInitialized] = useState(
-    typeof window !== 'undefined' &&
-      Boolean(Router.query.disableScopesAnimation)
+    Boolean(disableScopesAnimation)
   );
 
   const menu = useRef(null);
@@ -498,7 +504,8 @@ Switcher.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   scopes: PropTypes.array,
-  setConfig: PropTypes.func
+  setConfig: PropTypes.func,
+  disableScopesAnimation: PropTypes.bool
 };
 
 export default Switcher;
