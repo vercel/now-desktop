@@ -17,7 +17,7 @@ class Message extends PureComponent {
       return [<b key="username">{event.user.slug}</b>, ' '];
     }
 
-    return [<b key="username">{event.user ? event.user.email : ''}</b>, ' '];
+    return [<b key="username">{event.user ? event.user.email : 'You'}</b>, ' '];
   }
 }
 
