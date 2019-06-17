@@ -124,10 +124,9 @@ const Main = ({ router }) => {
       setReadyBuilds({ ...readyBuilds, [id]: {} });
       setDeploymentErrors({ ...deploymentErrors, [id]: err });
 
-      setActiveDeployment(null);
-
       // Hide error after 3 seconds
       setTimeout(() => {
+        setActiveDeployment(null);
         setDeploymentErrors({ ...deploymentErrors, [id]: err });
 
         if (queuedDeployments.length > 0) {
@@ -356,9 +355,10 @@ const Main = ({ router }) => {
             error={tempId ? deploymentErrors[tempId] : null}
             filesUploaded={tempId ? filesUploaded[tempId] : false}
             hashesCalculated={tempId ? hashesCalculated[tempId] : false}
-            onErrorClick={() =>
-              setDeploymentErrors({ ...deploymentErrors, [tempId]: null })
-            }
+            onErrorClick={() => {
+              setDeploymentErrors({ ...deploymentErrors, [tempId]: null });
+              setActiveDeployment(null);
+            }}
           />
           {queuedDeployments.map(key => (
             <DeploymentBar
