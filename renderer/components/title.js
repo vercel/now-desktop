@@ -3,19 +3,12 @@ import PropTypes from 'prop-types';
 import Deploy from '../vectors/deploy';
 import Done from '../vectors/done';
 import Back from '../vectors/back';
+import ipc from '../utils/ipc';
 import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({
-  darkMode,
-  active,
-  config,
-  title,
-  fileInput,
-  online,
-  onBackClick
-}) => {
+const Title = ({ darkMode, active, config, title, onBackClick }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -80,9 +73,7 @@ const Title = ({
             <button
               className="deploy"
               onClick={() => {
-                if (fileInput && online) {
-                  fileInput.click();
-                }
+                ipc.openURL('https://zeit.co/new');
               }}
             >
               <Deploy darkBg={darkMode} />
@@ -268,8 +259,6 @@ Title.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   contextChanged: PropTypes.bool,
-  fileInput: PropTypes.object,
-  online: PropTypes.bool,
   onBackClick: PropTypes.func
 };
 
