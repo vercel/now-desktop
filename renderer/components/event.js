@@ -157,9 +157,8 @@ class Event extends React.Component {
   render() {
     const { event, active, user, setScopeWithSlug, darkMode } = this.props;
     const { url, menu, error } = this.state;
-
     const Message = messageComponents.get(event.type);
-    const parsedDate = parseDate(parseDate);
+    const parsedDate = parseDate(event.createdAt);
 
     const avatarHash = event.user && event.user.avatar;
 

@@ -4,36 +4,33 @@ import PropTypes from 'prop-types';
 
 const Deploy = ({ darkBg }) => (
   <svg
-    width="18"
-    height="17"
-    viewBox="0 0 18 17"
-    fill="none"
+    width="13px"
+    height="12px"
+    viewBox="0 0 13 12"
+    version="1.1"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M4.75 5.41176L9.16176 1"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M13.5735 5.41176L9.1617 1"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M9.16173 12.4706V1.88235"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M1 10.2647V13.7941C1 14.5294 1.44118 16 3.20588 16C4.97059 16 8.7114 16 9.74081 16H14.5937C15.329 16 16.7996 15.5588 16.7996 13.7941C16.7996 12.0294 16.7996 10.7059 16.7996 10.2647"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
+    <g
+      id="Page-1"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="square"
+    >
+      <g
+        id="Plus"
+        transform="translate(1.000000, 0.000000)"
+        stroke={darkBg ? '#dddddd' : '#666666'}
+      >
+        <path d="M5.5,0.5 L5.5,11.5" id="Line" />
+        <path
+          d="M5.5,0.5 L5.5,11.5"
+          id="Line-Copy"
+          transform="translate(5.500000, 6.000000) rotate(-90.000000) translate(-5.500000, -6.000000) "
+        />
+      </g>
+    </g>
   </svg>
 );
 
