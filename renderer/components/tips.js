@@ -6,28 +6,6 @@ import ipc from '../utils/ipc';
 
 const tips = [];
 
-if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel') {
-  tips.push({
-    id: 'pasteFromClipboard',
-    component: (
-      <span>
-        Use <kbd>⌘</kbd> + <kbd>V</kbd> to deploy files
-        <style>{`
-          kbd {
-            font-family: Monaco, Lucida Console, Liberation Mono, serif;
-            padding: 1px 4px 0 4px;
-            border-radius: 3px;
-            background-color: rgba(0, 0, 0, 0.10);
-            font-size: 10px;
-            margin: 5px 0;
-            display: inline-block;
-          }
-        `}</style>
-      </span>
-    )
-  });
-}
-
 const closeTip = async (tip, setShownTips) => {
   const desktop = {
     shownTips: { [tip.id]: true }
