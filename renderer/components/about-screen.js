@@ -136,6 +136,7 @@ const About = ({ darkMode, config, onBackClick }) => {
         .check-updates.disabled {
           background-color: #ccc;
           cursor: not-allowed;
+          margin-top: 2px;
         }
 
         footer {
