@@ -12,9 +12,10 @@
   "scripts": {
     "start": "electron .",
     "build": "yarn build-renderer && yarn build-app",
+    "debian": "NODE_ENV=production electron-packager . now-desktop --platform linux --arch x64 --out dist/",
     "build-app": "build",
     "build-renderer": "cross-env NODE_ENV=production next build renderer && next export renderer",
-    "deb64": "electron-installer-debian --config debian.json",
+    "postdebian": "electron-installer-debian --config debian.json",
     "precommit": "lint-staged",
     "test": "yarn test-lint",
     "test-lint": "xo"

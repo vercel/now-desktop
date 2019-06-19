@@ -1,5 +1,5 @@
 {
-    "src": "dist/linux-unpacked/",
+    "src": "dist/now-desktop-linux-x64/",
     "dest": "dist/debian/",
     "arch": "amd64",
     "revision": "1",
