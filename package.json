@@ -12,8 +12,10 @@
   "scripts": {
     "start": "electron .",
     "build": "yarn build-renderer && yarn build-app",
+    "debian": "NODE_ENV=production electron-packager . now-desktop --platform linux --arch x64 --out dist/",
     "build-app": "build",
     "build-renderer": "cross-env NODE_ENV=production next build renderer && next export renderer",
+    "postdebian": "electron-installer-debian --config debian.json",
     "precommit": "lint-staged",
     "test": "yarn test-lint",
     "test-lint": "xo"
@@ -124,7 +126,9 @@
     "cross-env": "5.2.0",
     "electron-builder": "20.40.2",
     "electron-builder-squirrel-windows": "20.40.0",
+    "electron-installer-debian": "2.0.0",
     "electron-nightly": "7.0.0-nightly.20190521",
+    "electron-packager": "13.1.1",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
     "husky": "2.3.0",
