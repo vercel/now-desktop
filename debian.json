@@ -1,0 +1,17 @@
+{
+    "src": "dist/app-linux-x64/",
+    "dest": "dist/installers/",
+    "arch": "amd64",
+    "icon": "renderer/static/app-icon.png",
+    "revision": "1",
+    "section": "Internet",
+    "maintainer":"Ademar Arvati Filho <arvati@hotmail.com>",
+    "homepage":"https://github.com/arvati/now-desktop",
+
+    "categories": [
+      "GNOME", "GTK","Utility"
+    ],
+    "lintianOverrides": [
+      "changelog-file-missing-in-native-package"
+    ]
+  }

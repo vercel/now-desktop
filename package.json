@@ -14,6 +14,7 @@
     "build": "yarn build-renderer && yarn build-app",
     "build-app": "build",
     "build-renderer": "cross-env NODE_ENV=production next build renderer && next export renderer",
+    "deb64": "electron-installer-debian --config debian.json",
     "precommit": "lint-staged",
     "test": "yarn test-lint",
     "test-lint": "xo"
@@ -124,6 +125,7 @@
     "cross-env": "5.2.0",
     "electron-builder": "20.40.2",
     "electron-builder-squirrel-windows": "20.40.0",
+    "electron-installer-debian": "2.0.0",
     "electron-nightly": "7.0.0-nightly.20190521",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
