@@ -55,12 +55,9 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
   const [title, setTitle] = useState(null);
   const [scaled, setScaled] = useState(null);
 
-  const url = useMemo(
-    () => {
-      return avatarMemo(event, hash, scope);
-    },
-    [event, hash, scope]
-  );
+  const url = useMemo(() => {
+    return avatarMemo(event, hash, scope);
+  }, [event, hash, scope]);
 
   const classes = classNames({
     inEvent: Boolean(event),
@@ -120,7 +117,7 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
         }
 
         .inEvent {
-          margin: 8px 10px 0 10px;
+          margin: 14px 10px 0 10px;
         }
       `}</style>
     </div>
