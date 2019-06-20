@@ -62,11 +62,14 @@ const loadEvents = (
 ) => {
   idb.get(`last-events-${scope.id}`).then(lastEvents => {
     if (lastEvents) {
-      dispatchEvents({
-        type,
-        scope: scope.id,
-        events: lastEvents
-      });
+      // Ignore old event format cache
+      if (lastEvents[0].entities) {
+        dispatchEvents({
+          type,
+          scope: scope.id,
+          events: lastEvents
+        });
+      }
 
       idb.set(`last-events-${scope.id}`, null);
     }
