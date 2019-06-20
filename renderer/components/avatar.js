@@ -117,7 +117,7 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
         }
 
         .inEvent {
-          margin: 14px 10px 0 10px;
+          margin: 8px 10px 0 10px;
         }
       `}</style>
     </div>
