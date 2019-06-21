@@ -13,6 +13,8 @@ const Message = ({ text, entities }) => {
     lastPartIndex = entity.end + 1;
   });
 
+  parts.push(text.substring(lastPartIndex, text.length));
+
   parts = parts.filter(p => p.length > 0);
 
   let lastEntityIndex = 0;

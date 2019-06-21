@@ -63,7 +63,7 @@ const loadEvents = (
   idb.get(`last-events-${scope.id}`).then(lastEvents => {
     if (lastEvents) {
       // Ignore old event format cache
-      if (lastEvents[0].entities) {
+      if (lastEvents[0] && lastEvents[0].entities) {
         dispatchEvents({
           type,
           scope: scope.id,

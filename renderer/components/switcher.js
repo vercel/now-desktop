@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as sortable from 'react-sortable-hoc';
 import ipc from '../utils/ipc';
+import Menu from '../vectors/menu';
 import CreateTeam from './create-team';
 import Avatar from './avatar';
 
@@ -347,8 +348,7 @@ const Switcher = ({
           }}
           ref={menu}
         >
-          <i />
-          <i />
+          <Menu />
         </button>
       </aside>
 
@@ -376,7 +376,7 @@ const Switcher = ({
 
         aside .toggle-menu {
           display: block;
-          width: 40px;
+          width: 32px;
           height: 40px;
           display: flex;
           justify-content: center;
@@ -389,34 +389,18 @@ const Switcher = ({
           border: 0;
         }
 
+        aside .toggle-menu:hover :global(.dots-menu),
+        aside .toggle-menu:focus :global(.dots-menu) {
+          fill: #222;
+        }
+
+        aside.dark .toggle-menu:hover :global(.dots-menu),
+        aside.dark .toggle-menu:focus :global(.dots-menu) {
+          fill: #ccc;
+        }
+
         aside.dark .toggle-menu {
           background: #3a3a3a;
-        }
-
-        aside .toggle-menu i {
-          width: 18px;
-          height: 1px;
-          background: #999;
-          display: block;
-          transition: background 0.2s ease;
-        }
-
-        aside.dark .toggle-menu i {
-          background: #999;
-        }
-
-        aside .toggle-menu i:nth-child(2) {
-          margin-top: 6px;
-        }
-
-        aside .toggle-menu:hover i,
-        aside .toggle-menu:focus i {
-          background: #333;
-        }
-
-        aside.dark .toggle-menu:hover i,
-        aside.dark .toggle-menu:focus i {
-          background: #ccc;
         }
 
         .list-scroll {
