@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useRef, useReducer, useEffect, Fragment } from 'react';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
+import makeUnique from 'make-unique';
 import eventsEffect from '../effects/events';
 import scrollClearEffect from '../effects/clear-scroll';
 import ipc from '../utils/ipc';
@@ -20,9 +21,6 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   // events we're loading in one pull), we already know
   // that there is no need for loading more.
   if (!events || !events[active.id] || events[active.id].length < 30) {
-    console.log(events);
-    console.log(events[active.id]);
-    console.log(events[active.id] ? events[active.id].length : '');
     return null;
   }
 
@@ -240,7 +238,7 @@ const eventReducer = (state, action) => {
   }
 
   return Object.assign({}, state, {
-    [action.scope]: [...new Set(updated)]
+    [action.scope]: makeUnique(updated, (a, b) => a.id === b.id)
   });
 };
 

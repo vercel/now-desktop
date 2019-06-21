@@ -10,8 +10,12 @@ const avatarMemo = (event, hash, scope) => {
   }
 
   if (event) {
+    if (event.githubLogin) {
+      return `https://github.com/${event.githubLogin}.png`;
+    }
+
     const id = event.user ? event.user.uid || event.user.id : event.userId;
-    return `${urlPrefix}${id}?s=80`;
+    return `${urlPrefix}${event.githubLogin || id}?s=80`;
   }
 
   if (!scope) {
