@@ -158,7 +158,9 @@ class Event extends React.Component {
     const { event, active, setScopeWithSlug, darkMode } = this.props;
     const { url, menu, error } = this.state;
 
-    const parsedDate = parseDate(event.createdAt);
+    const parsedDate = parseDate(
+      event.createdAt || new Date(event.created).getTime()
+    );
 
     const githubLoginEntity = event.entities.find(
       ({ type }) => type === 'github_login'
