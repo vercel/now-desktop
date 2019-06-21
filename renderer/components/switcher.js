@@ -366,11 +366,13 @@ const Switcher = ({
           flex-grow: 0;
           display: flex;
           background: #fff;
+          border-top: 1px solid #eaeaea;
           user-select: none;
           justify-content: space-between;
         }
 
         aside.dark {
+          border-top: 1px solid transparent;
           background: #3a3a3a;
         }
 
@@ -429,7 +431,7 @@ const Switcher = ({
           display: block;
           height: 40px;
           width: 20px;
-          background: linear-gradient(to right, transparent, #fff);
+          background: linear-gradient(to right, transparent, #f5f5f5;);
           position: fixed;
           left: calc(290px - 20px);
           bottom: 0;
