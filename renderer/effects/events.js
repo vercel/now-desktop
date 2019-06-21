@@ -2,9 +2,55 @@ import queryString from 'query-string';
 import * as idb from 'idb-keyval';
 import loadData from '../utils/load';
 import { API_EVENTS } from '../utils/endpoints';
-import Messages from '../components/messages';
 
-const types = [...new Set(Messages.keys())];
+const types = [
+  'alias',
+  'alias-chown',
+  'alias-delete',
+  'alias-system',
+  'avatar',
+  'cert',
+  'cert-autorenew',
+  'cert-chown',
+  'cert-clone',
+  'cert-delete',
+  'cert-renew',
+  'cert-replace',
+  'deployment',
+  'deployment-chown',
+  'deployment-delete',
+  'dns-add',
+  'dns-delete',
+  'dns-update',
+  'domain',
+  'domain-buy',
+  'domain-chown',
+  'domain-delete',
+  'domain-move-in',
+  'domain-move-out-request-sent',
+  'domain-move-out',
+  'domain-transfer-in-canceled',
+  'domain-transfer-in-completed',
+  'domain-transfer-in',
+  'login',
+  'plan',
+  'scale',
+  'scale-auto',
+  'set-scale',
+  'signup',
+  'secret-add',
+  'secret-delete',
+  'secret-rename',
+  'team',
+  'team-avatar-update',
+  'team-member-add',
+  'team-member-delete',
+  'team-member-role-update',
+  'team-name-update',
+  'team-slug-update',
+  'team-delete',
+  'username'
+];
 
 const loadEvents = (
   setLoading,
@@ -16,11 +62,14 @@ const loadEvents = (
 ) => {
   idb.get(`last-events-${scope.id}`).then(lastEvents => {
     if (lastEvents) {
-      dispatchEvents({
-        type,
-        scope: scope.id,
-        events: lastEvents
-      });
+      // Ignore old event format cache
+      if (lastEvents[0] && lastEvents[0].entities) {
+        dispatchEvents({
+          type,
+          scope: scope.id,
+          events: lastEvents
+        });
+      }
 
       idb.set(`last-events-${scope.id}`, null);
     }

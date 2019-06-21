@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import dotProp from 'dot-prop';
 import ms from 'ms';
 import * as Sentry from '@sentry/browser';
 import dateDiff from '../utils/date-diff';
 import ipc from '../utils/ipc';
 import pkg from '../../package';
 import Avatar from './avatar';
-import messageComponents from './messages';
+import Message from './message';
 
 if (typeof window !== 'undefined') {
   Sentry.init({
@@ -25,7 +24,7 @@ const parseDate = date => {
     '1 hour': 'minutes',
     '1 day': 'hours',
     '7 days': 'days',
-    '30 days': 'weeks',
+    '31 days': 'weeks',
     '1 year': 'months'
   };
 
@@ -38,6 +37,10 @@ const parseDate = date => {
     const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0);
 
     if (difference < ms(check)) {
+      if (dateDiff(current, date, unit) === 0) {
+        console.log(current.getTime(), date);
+      }
+
       return dateDiff(current, date, unit) + shortUnit;
     }
   }
@@ -72,23 +75,14 @@ class Event extends React.Component {
   setUrl = () => {
     const { event } = this.props;
 
-    // Set URL
-    const urlProps = [
-      'payload.cn',
-      'payload.alias',
-      'payload.url',
-      'payload.domain',
-      'payload.deploymentUrl'
-    ];
+    const linkEntity =
+      event.entities.find(e => e.type === 'link') ||
+      event.entities.find(e => e.type === 'deployment_host');
 
-    for (const prop of urlProps) {
-      const url = dotProp.get(event, prop);
+    if (linkEntity) {
+      const url = event.text.substring(linkEntity.start, linkEntity.end);
 
       this.setState({ url });
-
-      if (url) {
-        break;
-      }
     }
   };
 
@@ -98,26 +92,32 @@ class Event extends React.Component {
     let dashboardUrl = null;
     let id = null;
 
-    if (event.type === 'deployment') {
-      const { deploymentUrl, url } = event.payload;
-      const host = deploymentUrl || url;
+    const deploymentEntity = event.entities.find(
+      e => e.type === 'deployment_host'
+    );
+
+    if (deploymentEntity) {
+      const host = event.text.substring(
+        deploymentEntity.start,
+        deploymentEntity.end
+      );
 
       dashboardUrl = `https://zeit.co/deployments/${host}`;
     }
 
-    const props = [
-      'payload.deletedUser.username',
-      'payload.slug',
-      'payload.aliasId',
-      'payload.deploymentId'
-    ];
+    // Deleted user / created team
+    if (event.text.includes('deleted') || event.text.includes('created team')) {
+      const slugEntity = event.entities[event.entities.length - 1];
+      id = event.text.substring(slugEntity.start, slugEntity.end);
+    }
 
-    for (const prop of props) {
-      id = dotProp.get(event, prop);
+    // Alias / deployment
+    const linkEntity =
+      event.entities.find(e => e.type === 'link') ||
+      event.entities.find(e => e.type === 'deployment_host');
 
-      if (id) {
-        break;
-      }
+    if (linkEntity) {
+      id = event.text.substring(linkEntity.start, linkEntity.end);
     }
 
     this.setState({
@@ -155,16 +155,20 @@ class Event extends React.Component {
   };
 
   render() {
-    const { event, active, user, setScopeWithSlug, darkMode } = this.props;
+    const { event, active, setScopeWithSlug, darkMode } = this.props;
     const { url, menu, error } = this.state;
-    const Message = messageComponents.get(event.type);
-    const parsedDate = parseDate(event.createdAt);
 
-    const avatarHash = event.user && event.user.avatar;
+    const parsedDate = parseDate(
+      event.createdAt || new Date(event.created).getTime()
+    );
 
-    if (!Message) {
-      return null;
-    }
+    const githubLoginEntity = event.entities.find(
+      ({ type }) => type === 'github_login'
+    );
+
+    const githubLogin = githubLoginEntity ? githubLoginEntity.login : null;
+
+    const avatarHash = githubLogin ? null : event.user && event.user.avatar;
 
     const classes = classNames({
       event: true,
@@ -195,7 +199,7 @@ class Event extends React.Component {
             />
 
             <figcaption>
-              <Message user={user} event={event} active={active} />
+              <Message {...event} />
               <span>{parsedDate}</span>
             </figcaption>
           </>

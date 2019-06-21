@@ -10,8 +10,18 @@ const avatarMemo = (event, hash, scope) => {
   }
 
   if (event) {
+    const githubLoginEntity = event.entities.find(
+      ({ type }) => type === 'github_login'
+    );
+
+    const githubLogin = githubLoginEntity ? githubLoginEntity.login : null;
+
+    if (githubLogin) {
+      return `https://github.com/${githubLogin}.png`;
+    }
+
     const id = event.user ? event.user.uid || event.user.id : event.userId;
-    return `${urlPrefix}${id}?s=80`;
+    return `${urlPrefix}${event.githubLogin || id}?s=80`;
   }
 
   if (!scope) {
@@ -55,12 +65,9 @@ const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
   const [title, setTitle] = useState(null);
   const [scaled, setScaled] = useState(null);
 
-  const url = useMemo(
-    () => {
-      return avatarMemo(event, hash, scope);
-    },
-    [event, hash, scope]
-  );
+  const url = useMemo(() => {
+    return avatarMemo(event, hash, scope);
+  }, [event, hash, scope]);
 
   const classes = classNames({
     inEvent: Boolean(event),

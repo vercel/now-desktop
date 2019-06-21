@@ -16,7 +16,7 @@ export default async (path, token = null, opts = {}) => {
   headers['user-agent'] = 'Now Desktop';
 
   // Accept path to be a full url or a relative path
-  const url = path[0] === '/' ? 'https://zeit.co' + path : path;
+  const url = path[0] === '/' ? 'https://api.zeit.co' + path : path;
 
   let res;
   let data;
