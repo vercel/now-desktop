@@ -10,7 +10,7 @@ const Message = ({ text, entities }) => {
     }
 
     parts.push(text.substring(lastPartIndex, entity.start));
-    lastPartIndex = entity.end + 1;
+    lastPartIndex = entity.end;
   });
 
   parts.push(text.substring(lastPartIndex, text.length));
@@ -26,7 +26,7 @@ const Message = ({ text, entities }) => {
     // Create entity component
     const component = (
       <b key={JSON.stringify(entity)}>
-        {text.substring(entity.start, entity.end)}{' '}
+        {text.substring(entity.start, entity.end)}
       </b>
     );
 
