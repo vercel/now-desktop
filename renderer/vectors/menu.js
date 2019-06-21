@@ -16,8 +16,8 @@ const Menu = ({ darkBg }) => (
             transform="translate(882.000000, 20.000000) rotate(-270.000000) translate(-882.000000, -20.000000) translate(876.000000, 19.000000)"
           >
             <rect x="0" y="0" width="1.84615385" height="2" />
-            <rect x="5.07692308" y="0" width="1.84615385" height="2" />
-            <rect x="10.1538462" y="0" width="1.84615385" height="2" />
+            <rect x="5.07692308" y="0" width="2" height="2" rx="1" />
+            <rect x="10.1538462" y="0" width="2" height="2" rx="1" />
           </g>
         </g>
       </g>
