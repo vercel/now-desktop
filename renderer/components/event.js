@@ -156,9 +156,11 @@ class Event extends React.Component {
 
     const parsedDate = parseDate(event.createdAt);
 
-    const { login: githubLogin } = event.entities.find(
+    const githubLoginEntity = event.entities.find(
       ({ type }) => type === 'github_login'
     );
+
+    const githubLogin = githubLoginEntity ? githubLoginEntity.login : null;
 
     const avatarHash = githubLogin ? null : event.user && event.user.avatar;
 
