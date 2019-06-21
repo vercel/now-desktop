@@ -10,8 +10,12 @@ const avatarMemo = (event, hash, scope) => {
   }
 
   if (event) {
-    if (event.githubLogin) {
-      return `https://github.com/${event.githubLogin}.png`;
+    const { login: githubLogin } = event.entities.find(
+      ({ type }) => type === 'github_login'
+    );
+
+    if (githubLogin) {
+      return `https://github.com/${githubLogin}.png`;
     }
 
     const id = event.user ? event.user.uid || event.user.id : event.userId;
