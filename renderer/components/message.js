@@ -30,8 +30,15 @@ const Message = ({ text, entities }) => {
       </b>
     );
 
-    parts.splice(lastEntityIndex, 0, component);
-    lastEntityIndex += 2;
+    // If first entity isn't an author, offset the whole construct by one
+    if (lastEntityIndex === 0 && entity.start !== 0) {
+      parts.splice(1, 0, component);
+
+      lastEntityIndex += 3;
+    } else {
+      parts.splice(lastEntityIndex, 0, component);
+      lastEntityIndex += 2;
+    }
   });
 
   return <p>{parts}</p>;
