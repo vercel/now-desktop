@@ -433,7 +433,7 @@ const Switcher = ({
           width: 20px;
           background: linear-gradient(to right, transparent, #f5f5f5;);
           position: fixed;
-          left: calc(290px - 20px);
+          left: calc(290px - 12px);
           bottom: 0;
           z-index: 2000;
         }
