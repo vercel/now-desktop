@@ -131,12 +131,20 @@ const About = ({ darkMode, config, onBackClick }) => {
           text-transform: uppercase;
           margin: 0;
           cursor: pointer;
+          border: 1px solid transparent;
         }
 
         .check-updates.disabled {
           background-color: #ccc;
           cursor: not-allowed;
           margin-top: 2px;
+          border: 1px solid transparent;
+        }
+
+        .dark .check-updates.disabled {
+          color: #999;
+          border-color: #666;
+          background-color: #333;
         }
 
         footer {
