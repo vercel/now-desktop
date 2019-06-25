@@ -40,12 +40,14 @@ exports.getConfig = async () => {
 
     return assignUpdate(config || {}, { token });
   } catch (error) {
-    try {
+    if (error.code === 'ENOENT') {
       await exports.saveConfig({}, 'config');
       await exports.saveConfig({}, 'auth');
-    } catch (e) {}
 
-    return {};
+      return {};
+    }
+
+    throw error;
   }
 };
 
