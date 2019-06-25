@@ -123,7 +123,7 @@
     "cross-env": "5.2.0",
     "electron-builder": "20.40.2",
     "electron-builder-squirrel-windows": "20.40.0",
-    "electron-nightly": "7.0.0-nightly.20190521",
+    "electron": "5.0.5",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
     "husky": "2.3.0",
