@@ -40,8 +40,10 @@ exports.getConfig = async () => {
 
     return assignUpdate(config || {}, { token });
   } catch (error) {
-    await exports.saveConfig({}, 'config');
-    await exports.saveConfig({}, 'auth');
+    try {
+      await exports.saveConfig({}, 'config');
+      await exports.saveConfig({}, 'auth');
+    } catch (e) {}
 
     return {};
   }
