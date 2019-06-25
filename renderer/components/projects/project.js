@@ -71,11 +71,11 @@ const Project = ({ project, scope, config, setSelectedProject, darkMode }) => {
           article {
             min-height: 74px;
             max-height: 74px;
-            width: 270px;
+            width: 280px;
             border-radius: 5px;
             background: white;
             margin-bottom: 10px;
-            padding: 0 20px;
+            padding: 0 15px;
             display: flex;
             flex-direction: column;
             justify-content: center;
