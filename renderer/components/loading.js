@@ -1,10 +1,26 @@
 import PropTypes from 'prop-types';
 
-const Loading = ({ offline, darkMode }) => (
+const getViewName = ({ projects, deployments }) => {
+  if (projects) {
+    return 'Projects';
+  }
+
+  if (deployments) {
+    return 'Deployments';
+  }
+
+  return 'Events';
+};
+
+const Loading = ({ offline, darkMode, projects, deployments }) => (
   <aside className={darkMode ? 'dark' : ''}>
     <section>
       <img src="/static/loading.gif" />
-      <p>{offline ? 'Waiting for a Connection...' : 'Loading Events...'}</p>
+      <p>
+        {offline
+          ? 'Waiting for a Connection...'
+          : `Loading ${getViewName({ projects, deployments })}...`}
+      </p>
     </section>
 
     <style jsx>{`
@@ -40,7 +56,9 @@ const Loading = ({ offline, darkMode }) => (
 
 Loading.propTypes = {
   darkMode: PropTypes.bool,
-  offline: PropTypes.bool
+  offline: PropTypes.bool,
+  projects: PropTypes.array,
+  deployments: PropTypes.array
 };
 
 export default Loading;

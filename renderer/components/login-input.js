@@ -126,7 +126,7 @@ const LoginInput = ({
           input {
             color: black;
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
             width: 70%;
             border: 1px solid ${darkMode ? '#565656' : '#eaeaea'};
             border-radius: 3px;

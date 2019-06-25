@@ -1,40 +1,37 @@
 import PropTypes from 'prop-types';
 import { useRef, useReducer, useEffect, Fragment } from 'react';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
 import makeUnique from 'make-unique';
-import eventsEffect from '../effects/events';
-import scrollClearEffect from '../effects/clear-scroll';
-import ipc from '../utils/ipc';
-import Loading from './loading';
-import Event from './event';
+import projectsEffect from '../../effects/projects';
+import scrollClearEffect from '../../effects/clear-scroll';
+import Loading from '../loading';
+import Project from './project';
 
-const loadingOlder = (loadingIndicator, events, active, darkMode) => {
+const loadingOlder = (loadingIndicator, projects, active, darkMode) => {
   // If no active scope has been chosen yet,
   // there's no need for this component to show.
   if (!active) {
     return null;
   }
 
-  // If there are no events in total, no events for this shope
-  // or less than 30 events for this scope (which is the number of
-  // events we're loading in one pull), we already know
+  // If there are no projects in total, no projects for this scope
+  // or less than 10 projects for this scope (which is the number of
+  // projects we're loading in one pull), we already know
   // that there is no need for loading more.
-  if (!events || !events[active.id] || events[active.id].length < 30) {
+  if (!projects || !projects[active.id] || projects[active.id].length < 10) {
     return null;
   }
 
-  const last = events[active.id][events[active.id].length - 1];
+  const last = projects[active.id][projects[active.id].length - 1];
   const isEnd = last && last.id === 'end';
 
   return (
     <aside ref={loadingIndicator} className={darkMode ? 'dark' : ''}>
       {isEnd ? (
-        <span key="description">That’s it. No events left to show!</span>
+        <span key="description">That’s it. No more projects to load!</span>
       ) : (
         <Fragment>
           <img key="animation" src="/static/loading.gif" />
-          <span key="description">Loading Older Events...</span>
+          <span key="description">Loading Older Projects...</span>
         </Fragment>
       )}
       <style jsx>{`
@@ -42,15 +39,18 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
           font-size: 12px;
           color: #666666;
           text-align: center;
-          background: #f5f5f5;
+          background: transparent;
           display: flex;
           justify-content: center;
           align-items: center;
           height: 42px;
+          padding-top: 5px;
+          padding-bottom: 10px;
+          width: 100%;
         }
 
         aside.dark {
-          background: #333;
+          background: #1f1f1f;
           color: #999;
         }
 
@@ -63,118 +63,47 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   );
 };
 
-const renderEvents = (
-  scopes,
-  setConfig,
-  config,
-  user,
-  events,
+const renderProjects = (
+  projects,
+  setSelectedProject,
   active,
   online,
+  config,
   darkMode
 ) => {
   if (!online) {
-    return <Loading darkMode={darkMode} offline />;
+    return <Loading darkMode={darkMode} offline projects />;
   }
 
   if (!active) {
-    return <Loading darkMode={darkMode} />;
+    return <Loading darkMode={darkMode} projects />;
   }
 
-  const scopedEvents = events[active.id];
+  const scopedProjects = projects[active.id];
 
-  if (!scopedEvents) {
-    return <Loading darkMode={darkMode} />;
+  if (!scopedProjects) {
+    return <Loading darkMode={darkMode} projects />;
   }
 
-  const months = {};
-
-  for (const message of scopedEvents) {
-    // This is a placeholder that we are adding to
-    // the end to know that we reached the end.
-    if (message.id === 'end') {
-      continue;
-    }
-
-    const created = parse(message.created);
-    const month = format(created, 'MMMM YYYY');
-
-    if (!months[month]) {
-      months[month] = [];
-    }
-
-    months[month].push(message);
-  }
-
-  const setScopeWithSlug = slug => {
-    const related = scopes.find(scope => scope.slug === slug);
-
-    if (related) {
-      ipc
-        .saveConfig(
-          {
-            currentTeam: related.isCurrentUser ? null : related.id
-          },
-          'config'
-        )
-        .then(newConfig => {
-          const freshConfig = Object.assign({}, newConfig, {
-            token: config.token
-          });
-
-          setConfig(freshConfig);
-        })
-        .catch(error => {
-          console.error(`Failed to update config: ${error}`);
-        });
-    }
-  };
-
-  // We can't just use `month` as the ID for each heading,
-  // because they would glitch around in that case (as
-  // the month is the same across scopes)
-  return Object.keys(months).map(month => [
-    <h1 className={darkMode ? 'dark' : ''} key={active.id + month}>
-      {month}
-      <style jsx>{`
-        h1 {
-          background: #f3f3f3;
-          font-size: 10px;
-          height: 23px;
-          line-height: 23px;
-          padding: 0 10px;
-          color: #666;
-          margin: 0;
-          position: sticky;
-          top: 0;
-          text-transform: uppercase;
-          font-weight: 500;
-        }
-
-        h1.dark {
-          background: #2e2e2e;
-          color: #999999;
-        }
-      `}</style>
-    </h1>,
-    months[month].map(event => (
-      <Event
-        event={event}
+  return scopedProjects.map(project => {
+    return (
+      <Project
+        project={project}
+        key={project.id}
+        scope={active}
+        config={config}
         darkMode={darkMode}
-        active={active}
-        user={user}
-        key={event.id}
-        setScopeWithSlug={setScopeWithSlug}
+        setSelectedProject={setSelectedProject}
       />
-    ))
-  ]);
+    );
+  });
 };
 
 const scrolled = (
   setLoading,
   scopes,
-  events,
-  dispatchEvents,
+  projects,
+  dispatchProjects,
   config,
   loading,
   active,
@@ -189,14 +118,14 @@ const scrolled = (
     return;
   }
 
-  // If there are already events being loaded for the
+  // If there are already projects being loaded for the
   // currently active scope, we do not want to trigger
   // loading even more now.
   if (loading.has(active.id)) {
     return;
   }
 
-  const last = events[active.id][events[active.id].length - 1];
+  const last = projects[active.id][projects[active.id].length - 1];
   const isEnd = last && last.id === 'end';
 
   // We have reached the end, so stop pulling more.
@@ -210,32 +139,21 @@ const scrolled = (
   const distance = section.scrollHeight - section.scrollTop;
 
   if (distance < offset + 300) {
-    eventsEffect(
+    projectsEffect(
       setLoading,
       scopes,
       active,
-      events,
-      dispatchEvents,
+      projects,
+      dispatchProjects,
       config,
       'append'
     );
   }
 };
 
-const eventReducer = (state, action) => {
+const projectsReducer = (state, action) => {
   const existing = state[action.scope] || [];
-  let updated = null;
-
-  switch (action.type) {
-    case 'prepend':
-      updated = action.events.concat(existing).slice(0, 50);
-      break;
-    case 'append':
-      updated = existing.concat(action.events);
-      break;
-    default:
-      throw new Error('Action type not allowed');
-  }
+  const updated = [...existing, ...action.projects];
 
   return Object.assign({}, state, {
     [action.scope]: makeUnique(updated, (a, b) => a.id === b.id)
@@ -259,13 +177,18 @@ const loadingReducer = (state, action) => {
   return existing;
 };
 
-const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
-  const user = scopes && scopes.find(scope => scope.isCurrentUser);
-
+const Projects = ({
+  online,
+  darkMode,
+  scopes,
+  active,
+  config,
+  setSelectedProject
+}) => {
   const scrollingSection = useRef(null);
   const loadingIndicator = useRef(null);
 
-  const [events, dispatchEvents] = useReducer(eventReducer, {});
+  const [projects, dispatchProjects] = useReducer(projectsReducer, {});
   const [loading, setLoading] = useReducer(loadingReducer, new Set());
 
   useEffect(
@@ -275,12 +198,12 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         return;
       }
 
-      return eventsEffect(
+      return projectsEffect(
         setLoading,
         scopes,
         active,
-        events,
-        dispatchEvents,
+        projects,
+        dispatchProjects,
         config,
         'prepend'
       );
@@ -316,8 +239,8 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         scrolled(
           setLoading,
           scopes,
-          events,
-          dispatchEvents,
+          projects,
+          dispatchProjects,
           config,
           loading,
           active,
@@ -326,28 +249,29 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         );
       }}
     >
-      {renderEvents(
-        scopes,
-        setConfig,
-        config,
-        user,
-        events,
+      {renderProjects(
+        projects,
+        setSelectedProject,
         active,
         online,
+        config,
         darkMode
       )}
-      {loadingOlder(loadingIndicator, events, active, darkMode)}
+      {loadingOlder(loadingIndicator, projects, active, darkMode)}
 
       <style jsx>{`
         section {
           overflow-y: auto;
           overflow-x: hidden;
-          background: #fff;
+          background: #f0f0f0;
           user-select: none;
           cursor: default;
           flex-shrink: 1;
           position: relative;
           margin-top: -1px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         section.dark {
@@ -368,13 +292,14 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
   );
 };
 
-Events.propTypes = {
+Projects.propTypes = {
   online: PropTypes.bool,
   darkMode: PropTypes.bool,
   scopes: PropTypes.array,
   active: PropTypes.object,
   config: PropTypes.object,
-  setConfig: PropTypes.func
+  setConfig: PropTypes.func,
+  setSelectedProject: PropTypes.func
 };
 
-export default Events;
+export default Projects;

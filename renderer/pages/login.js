@@ -4,7 +4,7 @@ import Title from '../components/title';
 import LoginInput, { EMAIL_RX } from '../components/login-input';
 import Checkbox from '../components/checkbox';
 import darkModeEffect from '../effects/dark-mode';
-import Logo from '../vectors/logo';
+import Logo from '../vectors/logo-about';
 import loadData from '../utils/load';
 import ipc from '../utils/ipc';
 import { API_REGISTRATION } from '../utils/endpoints';
@@ -92,8 +92,8 @@ const Login = () => {
         );
 
         const feedPath = window.location.href.includes('http')
-          ? '/feed'
-          : `${window.appPath}/renderer/out/feed/index.html`;
+          ? '/main'
+          : `${window.appPath}/renderer/out/main/index.html`;
 
         Router.replace(feedPath);
 
@@ -121,23 +121,17 @@ const Login = () => {
           </>
         ) : (
           <>
-            <h2>Login</h2>
+            <h2>Login with Email</h2>
             <span className="start">
-              To start using the app, enter your email address below:
-            </span>
-            <LoginInput
-              darkMode={darkMode}
-              value={inputValue}
-              onChange={handleInput}
-              onSubmit={handleSubmit}
-              disabled={inputDisabled}
-              error={inputError}
-            />
-            <span className={`error ${inputError ? 'visible' : ''}`}>
-              {inputError}
+              To start using the app, enter your email address below
             </span>
             <div
-              style={{ textAlign: 'left', cursor: 'pointer' }}
+              style={{
+                textAlign: 'left',
+                cursor: 'pointer',
+                width: '85%',
+                marginTop: 15
+              }}
               onClick={() => setUpdateCLI(!updateCLI)}
             >
               <span className="auto-update-cli">
@@ -154,6 +148,17 @@ const Login = () => {
                 May require extra permissions
               </span>
             </div>
+            <LoginInput
+              darkMode={darkMode}
+              value={inputValue}
+              onChange={handleInput}
+              onSubmit={handleSubmit}
+              disabled={inputDisabled}
+              error={inputError}
+            />
+            <span className={`error ${inputError ? 'visible' : ''}`}>
+              {inputError}
+            </span>
           </>
         )}
       </section>
@@ -167,6 +172,7 @@ const Login = () => {
 
         main {
           height: 100vh;
+          background-color: #ffffff;
         }
 
         section {
@@ -188,13 +194,17 @@ const Login = () => {
         }
 
         .start {
-          margin-top: 15px;
+          margin-top: 10px;
           line-height: 24px;
           color: black;
         }
 
         .dark .start {
           color: white;
+        }
+
+        main.dark {
+          background-color: #1f1f1f;
         }
 
         .error {

@@ -93,7 +93,7 @@ exports.getWindow = tray => {
 
   exports.positionWindow(tray, win);
 
-  loadPage(win, 'feed');
+  loadPage(win, 'main');
   attachTrayState(win, tray);
 
   // Hide window if it's not focused anymore

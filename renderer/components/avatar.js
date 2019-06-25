@@ -4,9 +4,17 @@ import PropTypes from 'prop-types';
 
 const urlPrefix = 'https://zeit.co/api/www/avatar/';
 
-const avatarMemo = (event, hash, scope) => {
+const avatarMemo = (event, hash, username, uid, githubUsername, scope) => {
   if (hash) {
     return `${urlPrefix}${hash}?s=80`;
+  }
+
+  if (username || uid) {
+    return `${urlPrefix}${username || uid}?s=80`;
+  }
+
+  if (githubUsername) {
+    return `https://github.com/${githubUsername}.png`;
   }
 
   if (event) {
@@ -20,7 +28,9 @@ const avatarMemo = (event, hash, scope) => {
       return `https://github.com/${githubLogin}.png`;
     }
 
-    const id = event.user ? event.user.uid || event.user.id : event.userId;
+    const id = event.user
+      ? event.user.uid || event.user.id || event.user.username
+      : event.userId;
     return `${urlPrefix}${event.githubLogin || id}?s=80`;
   }
 
@@ -61,13 +71,28 @@ const scaleEffect = (delay, setScaled) => {
   };
 };
 
-const Avatar = ({ darkMode, scale, delay, event, scope, hash }) => {
+const Avatar = ({
+  darkMode,
+  scale,
+  delay,
+  event,
+  scope,
+  hash,
+  username,
+  uid,
+  githubUsername,
+  gitlabUrl,
+  url: url_
+}) => {
   const [title, setTitle] = useState(null);
   const [scaled, setScaled] = useState(null);
 
-  const url = useMemo(() => {
-    return avatarMemo(event, hash, scope);
-  }, [event, hash, scope]);
+  const url =
+    url_ ||
+    gitlabUrl ||
+    useMemo(() => {
+      return avatarMemo(event, hash, username, uid, githubUsername, scope);
+    }, [event, hash, scope]);
 
   const classes = classNames({
     inEvent: Boolean(event),
@@ -140,7 +165,12 @@ Avatar.propTypes = {
   scope: PropTypes.object,
   scale: PropTypes.bool,
   delay: PropTypes.number,
-  darkMode: PropTypes.bool
+  darkMode: PropTypes.bool,
+  username: PropTypes.string,
+  uid: PropTypes.string,
+  githubUsername: PropTypes.string,
+  gitlabUrl: PropTypes.string,
+  url: PropTypes.string
 };
 
 export default Avatar;
