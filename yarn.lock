@@ -2985,15 +2985,6 @@ electron-next@3.1.5:
     app-root-path ">=2.0.1"
     electron-is-dev ">=0.3.0"
 
-electron-nightly@7.0.0-nightly.20190521:
-  version "7.0.0-nightly.20190521"
-  resolved "https://registry.yarnpkg.com/electron-nightly/-/electron-nightly-7.0.0-nightly.20190521.tgz#40eb11d866e482a502f7c6c17b033eaea01819b5"
-  integrity sha512-/mEyElb+Uji8n2PbE9/z2hLQ5G9G5X7ljzpfo1h9wRnGCxqS+7nVqMLtAFYHD0MngjB0ediQ1h7QuNHfuxY2mA==
-  dependencies:
-    "@types/node" "^10.12.18"
-    electron-download "^4.1.0"
-    extract-zip "^1.0.3"
-
 electron-osx-sign@0.4.11:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/electron-osx-sign/-/electron-osx-sign-0.4.11.tgz#8377732fe7b207969f264b67582ee47029ce092f"
@@ -3043,6 +3034,15 @@ electron-to-chromium@^1.3.124:
   version "1.3.124"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.124.tgz#861fc0148748a11b3e5ccebdf8b795ff513fa11f"
   integrity sha512-glecGr/kFdfeXUHOHAWvGcXrxNU+1wSO/t5B23tT1dtlvYB26GY8aHzZSWD7HqhqC800Lr+w/hQul6C5AF542w==
+
+electron@5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.5.tgz#2d04499064d3f6c89c4642e47cfe9ea151d794eb"
+  integrity sha512-GzVQhImBX3rSCFPyJ1u1KbxquoidAHzGeCH2FTs3lzAh1H8m4vd7xh6CNC111mT/I8pxFk5D8s3atJlJQLPAeg==
+  dependencies:
+    "@types/node" "^10.12.18"
+    electron-download "^4.1.0"
+    extract-zip "^1.0.3"
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
