@@ -28,16 +28,27 @@ const assignUpdate = (...parts) =>
   });
 
 exports.getConfig = async () => {
-  const authContent = await fs.readJSON(paths.auth);
-  const config = await fs.readJSON(paths.config);
+  try {
+    const authContent = await fs.readJSON(paths.auth);
+    const config = await fs.readJSON(paths.config);
 
-  let token = null;
+    let token = null;
 
-  if (authContent) {
-    token = authContent.token;
+    if (authContent) {
+      token = authContent.token;
+    }
+
+    return assignUpdate(config || {}, { token });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      await exports.saveConfig({}, 'config');
+      await exports.saveConfig({}, 'auth');
+
+      return {};
+    }
+
+    throw error;
   }
-
-  return assignUpdate(config || {}, { token });
 };
 
 exports.removeConfig = async () => {
