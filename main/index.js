@@ -88,8 +88,10 @@ app.on('ready', async () => {
     // Next has failed to start but context menu should still work
   }
 
+  const config = await getConfig();
+
   // Generate the browser window
-  const window = getWindow(tray);
+  const window = getWindow(tray, config);
 
   // Provide application and the CLI with automatic updates
   autoUpdater(window);
@@ -100,7 +102,6 @@ app.on('ready', async () => {
   const toggleActivity = () => toggleWindow(tray, window);
   const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
-  const config = await getConfig();
   const afterUpdate = config.desktop && config.desktop.updatedFrom;
 
   // Only allow one instance of Now running
