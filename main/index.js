@@ -33,7 +33,32 @@ const { app } = electron;
 app.name = 'Now';
 
 // Handle uncaught exceptions
-process.on('uncaughtException', error => console.log(error));
+process.on('uncaughtException', error => {
+  console.log(error);
+  electron.dialog.showMessageBox({
+    title: 'Unexpected Error',
+    type: 'error',
+    message: 'An Error Has Occurred',
+    detail: error.toString(),
+    buttons: ['Quit Now']
+  });
+
+  process.exit();
+});
+
+process.on('unhandledRejection', error => {
+  console.log(error);
+  electron.dialog.showMessageBox({
+    title: 'Unexpected Error',
+    type: 'error',
+    message: 'An Error Has Occurred',
+    detail: error.toString(),
+
+    buttons: ['Quit Now']
+  });
+
+  process.exit();
+});
 
 // Hide dock icon before the app starts
 // This is only required for development because

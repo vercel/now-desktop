@@ -361,7 +361,7 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         */
 
         section {
-          height: calc(100vh - 74px);
+          height: calc(100vh - 75px);
         }
       `}</style>
     </section>
