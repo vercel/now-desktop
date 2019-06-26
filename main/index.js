@@ -34,7 +34,7 @@ app.name = 'Now';
 
 // Handle uncaught exceptions
 process.on('uncaughtException', error => {
-  console.log(error);
+  console.error(error);
   electron.dialog.showMessageBox({
     title: 'Unexpected Error',
     type: 'error',
@@ -47,13 +47,12 @@ process.on('uncaughtException', error => {
 });
 
 process.on('unhandledRejection', error => {
-  console.log(error);
+  console.error(error);
   electron.dialog.showMessageBox({
     title: 'Unexpected Error',
     type: 'error',
     message: 'An Error Has Occurred',
     detail: error.toString(),
-
     buttons: ['Quit Now']
   });
 
