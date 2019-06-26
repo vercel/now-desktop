@@ -35,6 +35,9 @@ app.name = 'Now';
 // Handle uncaught exceptions
 process.on('uncaughtException', error => {
   console.error(error);
+
+  Sentry.captureException(error);
+
   electron.dialog.showMessageBox({
     title: 'Unexpected Error',
     type: 'error',
@@ -48,6 +51,9 @@ process.on('uncaughtException', error => {
 
 process.on('unhandledRejection', error => {
   console.error(error);
+
+  Sentry.captureException(error);
+
   electron.dialog.showMessageBox({
     title: 'Unexpected Error',
     type: 'error',
