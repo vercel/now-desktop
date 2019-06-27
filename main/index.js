@@ -46,7 +46,7 @@ process.on('uncaughtException', error => {
     buttons: ['Quit Now']
   });
 
-  process.exit();
+  process.exit(1);
 });
 
 process.on('unhandledRejection', error => {
@@ -62,7 +62,7 @@ process.on('unhandledRejection', error => {
     buttons: ['Quit Now']
   });
 
-  process.exit();
+  process.exit(1);
 });
 
 // Hide dock icon before the app starts
