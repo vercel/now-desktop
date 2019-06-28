@@ -297,6 +297,7 @@ const Login = () => {
           outline: 0;
           font-size: 14px;
           color: #0076ff;
+          cursor: pointer;
         }
 
         .dark button.cancel {
