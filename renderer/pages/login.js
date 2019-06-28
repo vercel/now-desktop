@@ -44,6 +44,9 @@ const Login = () => {
     setInput(value);
   };
 
+  // Timer
+  let checker = null;
+
   const handleSubmit = async () => {
     if (!EMAIL_RX.test(inputValue)) {
       return setInputError('Please enter a valid email');
@@ -73,12 +76,13 @@ const Login = () => {
     setSecurityCode(code);
     setInputDisabled(false);
 
-    const checker = setInterval(async () => {
+    checker = setInterval(async () => {
       const { token } = await loadData(
         `${API_REGISTRATION}/verify?email=${inputValue}&token=${preauthToken}`
       );
 
-      if (token) {
+      // If token is valid and user didn't cancel the login
+      if (token && securityCode) {
         clearInterval(checker);
 
         await ipc.saveConfig({ token }, 'auth');
@@ -102,6 +106,14 @@ const Login = () => {
     }, 3000);
   };
 
+  const reset = () => {
+    clearInterval(checker);
+    setInput('');
+    setInputDisabled(false);
+    setInputError(false);
+    setSecurityCode(null);
+  };
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <Title darkMode={darkMode} title="Welcome to Now" />
@@ -118,6 +130,9 @@ const Login = () => {
             </span>
             <span className="code-label">Your security code is:</span>
             <span className="code">{securityCode}</span>
+            <button className="cancel" onClick={reset}>
+              ← Use a different email address
+            </button>
           </>
         ) : (
           <>
@@ -222,8 +237,8 @@ const Login = () => {
         .code {
           display: flex;
           width: 80%;
-          color: black;
-          background-color: #f7f7f7;
+          color: white;
+          background-color: black;
           justify-content: center;
           align-items: center;
           padding-top: 10px;
@@ -239,8 +254,8 @@ const Login = () => {
         }
 
         .dark .code {
-          color: white;
-          background-color: #333;
+          color: black;
+          background-color: white;
         }
 
         .auto-update-cli {
@@ -272,6 +287,19 @@ const Login = () => {
         }
 
         .dark .code-label {
+          color: white;
+        }
+
+        button.cancel {
+          margin-top: 20px;
+          border: 0;
+          background: 0;
+          outline: 0;
+          font-size: 14px;
+          color: #0076ff;
+        }
+
+        .dark button.cancel {
           color: white;
         }
       `}</style>
