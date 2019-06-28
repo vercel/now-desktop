@@ -406,6 +406,7 @@ const Switcher = ({
         }
 
         .list-scroll {
+          height: 38px;
           display: flex;
           flex-direction: row;
           align-items: center;
