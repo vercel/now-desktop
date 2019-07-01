@@ -47,7 +47,6 @@ const About = ({ darkMode, config, onBackClick }) => {
             )}
           </span>
         </h2>
-        <br />
         <button
           className={`check-updates ${checking ? 'disabled' : ''}`}
           onClick={() => {
@@ -130,6 +129,7 @@ const About = ({ darkMode, config, onBackClick }) => {
           padding: 5px 25px;
           text-transform: uppercase;
           margin: 0;
+          margin-top: 5px;
           cursor: pointer;
           border: 1px solid transparent;
         }
@@ -148,14 +148,14 @@ const About = ({ darkMode, config, onBackClick }) => {
         }
 
         footer {
-          flex-grow: 1;
+          margin-top: 30px;
           display: flex;
           width: 100%;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           font-size: 12px;
-          color: #444;
+          color: #666666;
           font-weight: 500;
           justify-content: flex-end;
           padding-bottom: 20px;
