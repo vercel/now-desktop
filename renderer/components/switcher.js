@@ -391,9 +391,13 @@ const Switcher = ({
           border: 0;
         }
 
+        aside .toggle-menu :global(.dots-menu) {
+          transition: fill 0.15s ease;
+        }
+
         aside .toggle-menu:hover :global(.dots-menu),
         aside .toggle-menu:focus :global(.dots-menu) {
-          fill: #222;
+          fill: #0f0f0f;
         }
 
         aside.dark .toggle-menu:hover :global(.dots-menu),
