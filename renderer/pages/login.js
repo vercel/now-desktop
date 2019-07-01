@@ -26,12 +26,14 @@ const getHost = () => {
   return '';
 };
 
+let checker = null;
+
 const Login = () => {
   const [darkMode, setDarkMode] = useState(null);
 
   const [inputValue, setInput] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);
-  const [inputError, setInputError] = useState(false);
+  const [inputError, setInputError] = useState(null);
   const [securityCode, setSecurityCode] = useState(null);
   const [updateCLI, setUpdateCLI] = useState(true);
 
@@ -45,7 +47,6 @@ const Login = () => {
   };
 
   // Timer
-  let checker = null;
 
   const handleSubmit = async () => {
     if (!EMAIL_RX.test(inputValue)) {
@@ -82,7 +83,7 @@ const Login = () => {
       );
 
       // If token is valid and user didn't cancel the login
-      if (token && securityCode) {
+      if (token) {
         clearInterval(checker);
 
         await ipc.saveConfig({ token }, 'auth');
@@ -297,6 +298,7 @@ const Login = () => {
 
         button.cancel {
           margin-top: 13px;
+          margin-bottom: 13px;
           border: 0;
           background: 0;
           outline: 0;
