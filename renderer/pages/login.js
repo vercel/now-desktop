@@ -296,7 +296,7 @@ const Login = () => {
         }
 
         button.cancel {
-          margin-top: 20px;
+          margin-top: 13px;
           border: 0;
           background: 0;
           outline: 0;
