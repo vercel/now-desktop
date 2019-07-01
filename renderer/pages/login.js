@@ -4,7 +4,7 @@ import Title from '../components/title';
 import LoginInput, { EMAIL_RX } from '../components/login-input';
 import Checkbox from '../components/checkbox';
 import darkModeEffect from '../effects/dark-mode';
-import Logo from '../vectors/logo';
+import Logo from '../vectors/logo-about';
 import loadData from '../utils/load';
 import ipc from '../utils/ipc';
 import { API_REGISTRATION } from '../utils/endpoints';
@@ -140,19 +140,8 @@ const Login = () => {
             <span className="start">
               To start using the app, enter your email address below:
             </span>
-            <LoginInput
-              darkMode={darkMode}
-              value={inputValue}
-              onChange={handleInput}
-              onSubmit={handleSubmit}
-              disabled={inputDisabled}
-              error={inputError}
-            />
-            <span className={`error ${inputError ? 'visible' : ''}`}>
-              {inputError}
-            </span>
             <div
-              style={{ textAlign: 'left', cursor: 'pointer' }}
+              style={{ textAlign: 'left', cursor: 'pointer', width: 250 }}
               onClick={() => setUpdateCLI(!updateCLI)}
             >
               <span className="auto-update-cli">
@@ -169,6 +158,17 @@ const Login = () => {
                 May require extra permissions
               </span>
             </div>
+            <LoginInput
+              darkMode={darkMode}
+              value={inputValue}
+              onChange={handleInput}
+              onSubmit={handleSubmit}
+              disabled={inputDisabled}
+              error={inputError}
+            />
+            <span className={`error ${inputError ? 'visible' : ''}`}>
+              {inputError}
+            </span>
           </>
         )}
       </section>
@@ -182,6 +182,7 @@ const Login = () => {
 
         main {
           height: 100vh;
+          background-color: white;
         }
 
         section {
@@ -195,6 +196,10 @@ const Login = () => {
           font-size: 14px;
           text-align: center;
           line-height: 20px;
+        }
+
+        .dark {
+          background-color: #1f1f1f;
         }
 
         h2 {
