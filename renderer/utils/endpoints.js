@@ -3,5 +3,5 @@ module.exports = {
   API_USER: '/www/user',
   API_TEAMS: '/teams',
   API_EVENTS: '/v2/events',
-  API_USER_TOKENS: '/user/tokens'
+  API_USER_TOKENS: '/v3/user/tokens'
 };
