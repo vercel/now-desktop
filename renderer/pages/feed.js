@@ -28,6 +28,7 @@ const Main = ({ router }) => {
   const [darkMode, setDarkMode] = useState(router.query.darkMode || null);
   const [config, setConfig] = useState(null);
   const [online, setOnline] = useState(true);
+  const [pasteNoticeVisible, setPasteNoticeVisible] = useState(false);
 
   // Navigation
   const [isAboutVisible, setAboutVisible] = useState(false);
@@ -240,6 +241,23 @@ const Main = ({ router }) => {
     [config && config.lastUpdate]
   );
 
+  const onKeyDown = event => {
+    const { keyCode, metaKey } = event;
+
+    if (keyCode === 86 && metaKey) {
+      setPasteNoticeVisible(true);
+      setTimeout(() => setPasteNoticeVisible(false), 4000);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
   useEffect(
     () => {
       // Wait until the scopes are defined.
@@ -355,6 +373,7 @@ const Main = ({ router }) => {
             error={tempId ? deploymentErrors[tempId] : null}
             filesUploaded={tempId ? filesUploaded[tempId] : false}
             hashesCalculated={tempId ? hashesCalculated[tempId] : false}
+            pasteNoticeVisible={pasteNoticeVisible}
             onErrorClick={() => {
               setDeploymentErrors({ ...deploymentErrors, [tempId]: null });
               setActiveDeployment(null);
