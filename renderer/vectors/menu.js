@@ -8,7 +8,7 @@ const Menu = ({ darkBg }) => (
       <g
         transform="translate(-1151.000000, -341.000000)"
         className="dots-menu"
-        fill={darkBg ? '#dddddd' : '#666666'}
+        fill={darkBg ? '#999' : '#666'}
       >
         <g transform="translate(270.000000, 327.000000)">
           <g

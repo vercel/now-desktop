@@ -21,7 +21,7 @@ const Deploy = ({ darkBg }) => (
       <g
         id="Plus"
         transform="translate(1.000000, 0.000000)"
-        stroke={darkBg ? '#dddddd' : '#666666'}
+        stroke={darkBg ? '#999' : '#666'}
       >
         <path d="M5.5,0.5 L5.5,11.5" id="Line" />
         <path

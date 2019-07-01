@@ -138,7 +138,7 @@ const renderEvents = (
       {month}
       <style jsx>{`
         h1 {
-          background: #e1e1e1;
+          background: #f3f3f3;
           font-size: 10px;
           height: 23px;
           line-height: 23px;
@@ -149,6 +149,7 @@ const renderEvents = (
           top: 0;
           text-transform: uppercase;
           font-weight: 200;
+          font-weight: 600;
         }
 
         h1.dark {
