@@ -38,6 +38,7 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "main/static/icons/mac.icns",
+      "darkModeSupport": true,
       "extendInfo": {
         "LSUIElement": 1
       }
