@@ -29,6 +29,7 @@ const Spinner = ({
       <style jsx>
         {`
           .geist-spinner {
+            margin-top: 2px;
             height: ${width}px;
             width: ${width}px;
           }
