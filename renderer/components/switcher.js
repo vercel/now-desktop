@@ -426,6 +426,7 @@ const Switcher = ({
           overflow-y: hidden;
           padding-left: 10px;
           position: relative;
+          scroll-behavior: smooth;
         }
 
         .list-container::-webkit-scrollbar {
