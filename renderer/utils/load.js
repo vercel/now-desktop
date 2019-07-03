@@ -1,5 +1,6 @@
 import ms from 'ms';
 import { API_REGISTRATION } from './endpoints';
+import ipc from './ipc';
 
 const NETWORK_ERR_CODE = 'network_error';
 const NETWORK_ERR_MESSAGE = 'A network error has occurred. Please retry';
@@ -31,7 +32,7 @@ export default async (path, token = null, opts = {}) => {
 
     if (res.status === 403) {
       // We need to log out here
-      return false;
+      return ipc.logOut();
     }
 
     if (res.status === 500) {
