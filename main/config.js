@@ -47,7 +47,7 @@ exports.getConfig = async () => {
       }
 
       await exports.saveConfig(newConfig, 'config');
-      await exports.saveConfig(newConfig, 'auth');
+      await exports.saveConfig({}, 'auth');
 
       return {};
     }
