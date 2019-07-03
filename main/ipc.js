@@ -1,7 +1,13 @@
 const { ipcMain, shell, systemPreferences, dialog } = require('electron');
 const { default: createDeployment } = require('now-client');
-const { getConfig, getDarkModeStatus, saveConfig } = require('./config');
+const {
+  getConfig,
+  getDarkModeStatus,
+  saveConfig,
+  removeConfig
+} = require('./config');
 const { getMainMenu, getEventMenu } = require('./menu');
+const logout = require('./logout');
 
 module.exports = (app, tray, window) => {
   ipcMain.on('config-get-request', async event => {
@@ -105,6 +111,14 @@ module.exports = (app, tray, window) => {
 
       event.sender.send(type, { id, payload });
     }
+  });
+
+  ipcMain.on('logout-request', async () => {
+    logout().then(() => {
+      removeConfig().then(() => {
+        window.webContents.send('logged-out');
+      });
+    });
   });
 
   ipcMain.on('show-window', () => {

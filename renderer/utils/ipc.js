@@ -159,6 +159,10 @@ const clearDeploymentError = invoke => {
   window.ipc.removeListener('error', invoke);
 };
 
+const logOut = () => {
+  window.ipc.send('logout-request');
+};
+
 export default {
   openURL,
   hideWindow,
@@ -192,5 +196,6 @@ export default {
   clearDeploymentReady,
   onDeploymentError,
   clearDeploymentError,
-  showWindow
+  showWindow,
+  logOut
 };
