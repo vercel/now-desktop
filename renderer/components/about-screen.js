@@ -35,18 +35,20 @@ const About = ({ darkMode, config, onBackClick }) => {
         <Logo darkMode={darkMode} style={{ marginBottom: 15, marginTop: 10 }} />
 
         <h1>Now</h1>
-        <h2>
-          {typeof window === 'undefined' ? '' : window.appVersion}
-          <span>
-            {checking ? (
-              <Spinner darkBg={darkMode} width={14} />
-            ) : hasLatest ? (
-              `Update available: ${latestVersion}`
-            ) : (
-              `Latest (${ago})`
-            )}
-          </span>
-        </h2>
+        <div className="version">
+          <h2>
+            {typeof window === 'undefined' ? '' : window.appVersion}
+            <span>
+              {checking ? (
+                <Spinner darkBg={darkMode} width={14} />
+              ) : hasLatest ? (
+                `Update available: ${latestVersion}`
+              ) : (
+                `Latest (${ago})`
+              )}
+            </span>
+          </h2>
+        </div>
         <button
           className={`check-updates ${checking ? 'disabled' : ''}`}
           onClick={() => {
@@ -134,10 +136,13 @@ const About = ({ darkMode, config, onBackClick }) => {
           border: 1px solid transparent;
         }
 
+        .version {
+          height: 54px;
+        }
+
         .check-updates.disabled {
           background-color: #ccc;
           cursor: not-allowed;
-          margin-top: 5px;
           border: 1px solid transparent;
         }
 
