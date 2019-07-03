@@ -1,6 +1,6 @@
 const path = require('path');
 const { homedir } = require('os');
-const { systemPreferences } = require('electron');
+const { systemPreferences, app } = require('electron');
 const fs = require('fs-extra');
 const groom = require('groom');
 const deepExtend = require('deep-extend');
@@ -41,8 +41,13 @@ exports.getConfig = async () => {
     return assignUpdate(config || {}, { token });
   } catch (error) {
     if (error.code === 'ENOENT') {
-      await exports.saveConfig({}, 'config');
-      await exports.saveConfig({}, 'auth');
+      const newConfig = {};
+      if (app.getVersion().includes('canary')) {
+        newConfig.updateChannel = 'canary';
+      }
+
+      await exports.saveConfig(newConfig, 'config');
+      await exports.saveConfig(newConfig, 'auth');
 
       return {};
     }
