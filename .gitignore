@@ -9,3 +9,5 @@ node_modules
 # logs
 npm-debug.log
 yarn-error.log
+
+.DS_Store
