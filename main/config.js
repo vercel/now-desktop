@@ -1,9 +1,10 @@
 const path = require('path');
 const { homedir } = require('os');
-const { systemPreferences, app } = require('electron');
+const { systemPreferences } = require('electron');
 const fs = require('fs-extra');
 const groom = require('groom');
 const deepExtend = require('deep-extend');
+const pkg = require('../package.json');
 
 const paths = {
   auth: '.now/auth.json',
@@ -42,7 +43,7 @@ exports.getConfig = async () => {
   } catch (error) {
     if (error.code === 'ENOENT') {
       const newConfig = {};
-      if (app.getVersion().includes('canary')) {
+      if (pkg.version.includes('canary')) {
         newConfig.updateChannel = 'canary';
       }
 
