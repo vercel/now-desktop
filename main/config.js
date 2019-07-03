@@ -50,7 +50,7 @@ exports.getConfig = async () => {
       await exports.saveConfig(newConfig, 'config');
       await exports.saveConfig({}, 'auth');
 
-      return {};
+      return newConfig;
     }
 
     throw error;
