@@ -87,6 +87,33 @@ const renderEvents = (
     return <Loading darkMode={darkMode} />;
   }
 
+  if (scopedEvents.length === 0) {
+    return (
+      <div>
+        <span>
+          <strong>No Events to Show</strong>
+          <br />
+          Drag and drop a project to deploy
+        </span>
+        <style jsx>
+          {`
+            div {
+              width: 100%;
+              height: 100%;
+              text-align: center;
+              color: ${darkMode ? '#999' : '#666'};
+              font-size: 14px;
+              line-height: 22px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          `}
+        </style>
+      </div>
+    );
+  }
+
   const months = {};
 
   for (const message of scopedEvents) {
