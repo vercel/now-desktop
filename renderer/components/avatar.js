@@ -38,11 +38,15 @@ const avatarMemo = (event, hash, scope) => {
 const titleEffect = (event, scope, setTitle) => {
   let title = null;
 
-  if (event && event.user) {
-    title = event.user.name || event.user.username;
-  }
+  if (event) {
+    const authorEntity = event.entities.find(({ type }) => type === 'author');
 
-  if (scope) {
+    if (authorEntity) {
+      title = event.text.substring(authorEntity.start, authorEntity.end);
+    } else if (event.user) {
+      title = event.user.name || event.user.username || event.user.email;
+    }
+  } else if (scope) {
     title = scope.name || scope.slug || scope.username;
   }
 
