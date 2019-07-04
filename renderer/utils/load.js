@@ -30,7 +30,7 @@ export default async (path, token = null, opts = {}) => {
       timeout: ms('20s')
     });
 
-    if (res.status === 403) {
+    if (res.status === 403 && !path.includes(API_REGISTRATION)) {
       // We need to log out here
       return ipc.logOut();
     }

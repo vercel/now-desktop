@@ -78,13 +78,14 @@ const Login = () => {
     setInputDisabled(false);
 
     checker = setInterval(async () => {
-      const { token } = await loadData(
+      const res = await loadData(
         `${API_REGISTRATION}/verify?email=${inputValue}&token=${preauthToken}`
       );
 
       // If token is valid and user didn't cancel the login
-      if (token) {
+      if (res && res.token) {
         clearInterval(checker);
+        const { token } = res;
 
         await ipc.saveConfig({ token }, 'auth');
         await ipc.saveConfig(
