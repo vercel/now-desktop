@@ -30,7 +30,7 @@ const loadingOlder = (loadingIndicator, events, active, darkMode) => {
   return (
     <aside ref={loadingIndicator} className={darkMode ? 'dark' : ''}>
       {isEnd ? (
-        <span key="description">{`That's it. No events left to show!`}</span>
+        <span key="description">That’s it. No events left to show!</span>
       ) : (
         <Fragment>
           <img key="animation" src="/static/loading.gif" />
@@ -175,7 +175,6 @@ const renderEvents = (
           position: sticky;
           top: 0;
           text-transform: uppercase;
-          font-weight: 200;
           font-weight: 600;
         }
 
@@ -389,7 +388,7 @@ const Events = ({ online, darkMode, scopes, setConfig, active, config }) => {
         */
 
         section {
-          height: calc(100vh - 75px);
+          height: calc(100vh - 109px);
         }
       `}</style>
     </section>
