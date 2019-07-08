@@ -29,7 +29,7 @@ const Loading = ({ offline, darkMode, projects, deployments }) => (
         width: 100%;
         height: 100%;
         position: absolute;
-        background: #f5f5f5;
+        background: #f0f0f0;
         align-items: center;
         justify-content: center;
         flex-direction: column;

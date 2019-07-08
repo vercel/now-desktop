@@ -35,19 +35,20 @@ const About = ({ darkMode, config, onBackClick }) => {
         <Logo darkMode={darkMode} style={{ marginBottom: 15, marginTop: 10 }} />
 
         <h1>Now</h1>
-        <h2>
-          {typeof window === 'undefined' ? '' : window.appVersion}
-          <span>
-            {checking ? (
-              <Spinner darkBg={darkMode} width={14} />
-            ) : hasLatest ? (
-              `Update available: ${latestVersion}`
-            ) : (
-              `Latest (${ago})`
-            )}
-          </span>
-        </h2>
-        <br />
+        <div className="version">
+          <h2>
+            {typeof window === 'undefined' ? '' : window.appVersion}
+            <span>
+              {checking ? (
+                <Spinner darkBg={darkMode} width={14} />
+              ) : hasLatest ? (
+                `Update available: ${latestVersion}`
+              ) : (
+                `Latest (${ago})`
+              )}
+            </span>
+          </h2>
+        </div>
         <button
           className={`check-updates ${checking ? 'disabled' : ''}`}
           onClick={() => {
@@ -130,14 +131,18 @@ const About = ({ darkMode, config, onBackClick }) => {
           padding: 5px 25px;
           text-transform: uppercase;
           margin: 0;
+          margin-top: 5px;
           cursor: pointer;
           border: 1px solid transparent;
+        }
+
+        .version {
+          height: 54px;
         }
 
         .check-updates.disabled {
           background-color: #ccc;
           cursor: not-allowed;
-          margin-top: 2px;
           border: 1px solid transparent;
         }
 
@@ -148,14 +153,14 @@ const About = ({ darkMode, config, onBackClick }) => {
         }
 
         footer {
-          flex-grow: 1;
+          margin-top: 30px;
           display: flex;
           width: 100%;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           font-size: 12px;
-          color: #444;
+          color: #666666;
           font-weight: 500;
           justify-content: flex-end;
           padding-bottom: 20px;

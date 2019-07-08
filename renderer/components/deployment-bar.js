@@ -119,13 +119,14 @@ const DeploymentBar = ({
   filesUploaded,
   hashesCalculated,
   onErrorClick,
+  pasteNoticeVisible,
   queued
 }) => {
   const [hiding, setHiding] = useState(false);
   const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
-    if (!activeDeployment && !error) {
+    if (!activeDeployment && !error && !pasteNoticeVisible) {
       setHiding(true);
       setTimeout(() => {
         setHidden(true);
@@ -134,7 +135,7 @@ const DeploymentBar = ({
       setHiding(false);
       setHidden(false);
     }
-  }, [activeDeployment, error]);
+  }, [activeDeployment, error, pasteNoticeVisible]);
 
   const readyBuildsCount = Object.keys(readyBuilds).length;
 
@@ -152,6 +153,13 @@ const DeploymentBar = ({
       {error ? (
         <div className="content" onClick={() => onErrorClick()}>
           <span>{getErrorMessage(error)}</span>
+        </div>
+      ) : pasteNoticeVisible ? (
+        <div className="content">
+          <span>
+            Paste to deploy is no longer supported. Drop your files into this
+            area to deploy.
+          </span>
         </div>
       ) : (
         <div className="content">
@@ -173,7 +181,11 @@ const DeploymentBar = ({
       <style jsx>
         {`
           .deployment-bar {
-            background-color: ${error ? 'red' : '#0076FF'};
+            background-color: ${error
+              ? 'red'
+              : pasteNoticeVisible
+              ? '#ffb917'
+              : '#0076FF'};
             width: 100%;
             height: 42px;
             maxheight: 60px;
@@ -235,6 +247,7 @@ DeploymentBar.propTypes = {
   error: PropTypes.object,
   filesUploaded: PropTypes.bool,
   hashesCalculated: PropTypes.bool,
+  pasteNoticeVisible: PropTypes.bool,
   queued: PropTypes.string,
   onErrorClick: PropTypes.func
 };

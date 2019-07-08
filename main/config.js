@@ -4,6 +4,7 @@ const { systemPreferences } = require('electron');
 const fs = require('fs-extra');
 const groom = require('groom');
 const deepExtend = require('deep-extend');
+const pkg = require('../package.json');
 
 const paths = {
   auth: '.now/auth.json',
@@ -28,16 +29,32 @@ const assignUpdate = (...parts) =>
   });
 
 exports.getConfig = async () => {
-  const authContent = await fs.readJSON(paths.auth);
-  const config = await fs.readJSON(paths.config);
+  try {
+    const authContent = await fs.readJSON(paths.auth);
+    const config = await fs.readJSON(paths.config);
 
-  let token = null;
+    let token = null;
 
-  if (authContent) {
-    token = authContent.token;
+    if (authContent) {
+      token = authContent.token;
+    }
+
+    return assignUpdate(config || {}, { token });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      const newConfig = {};
+      if (pkg.version.includes('canary')) {
+        newConfig.updateChannel = 'canary';
+      }
+
+      await exports.saveConfig(newConfig, 'config');
+      await exports.saveConfig({}, 'auth');
+
+      return newConfig;
+    }
+
+    throw error;
   }
-
-  return assignUpdate(config || {}, { token });
 };
 
 exports.removeConfig = async () => {

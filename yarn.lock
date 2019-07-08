@@ -992,9 +992,9 @@
   integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
 
 "@types/node@^10.12.18":
-  version "10.14.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.7.tgz#1854f0a9aa8d2cd6818d607b3d091346c6730362"
-  integrity sha512-on4MmIDgHXiuJDELPk1NFaKVUxxCFr37tm8E9yN6rAiF5Pzp/9bBfBHkoexqRiY+hk/Z04EJU9kKEb59YqJ82A==
+  version "10.14.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.10.tgz#e491484c6060af8d461e12ec81c0da8a3282b8de"
+  integrity sha512-V8wj+w2YMNvGuhgl/MA5fmTxgjmVHVoasfIaxMMZJV6Y8Kk+Ydpi1z2whoShDCJ2BuNVoqH/h1hrygnBxkrw/Q==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -2985,15 +2985,6 @@ electron-next@3.1.5:
     app-root-path ">=2.0.1"
     electron-is-dev ">=0.3.0"
 
-electron-nightly@7.0.0-nightly.20190521:
-  version "7.0.0-nightly.20190521"
-  resolved "https://registry.yarnpkg.com/electron-nightly/-/electron-nightly-7.0.0-nightly.20190521.tgz#40eb11d866e482a502f7c6c17b033eaea01819b5"
-  integrity sha512-/mEyElb+Uji8n2PbE9/z2hLQ5G9G5X7ljzpfo1h9wRnGCxqS+7nVqMLtAFYHD0MngjB0ediQ1h7QuNHfuxY2mA==
-  dependencies:
-    "@types/node" "^10.12.18"
-    electron-download "^4.1.0"
-    extract-zip "^1.0.3"
-
 electron-osx-sign@0.4.11:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/electron-osx-sign/-/electron-osx-sign-0.4.11.tgz#8377732fe7b207969f264b67582ee47029ce092f"
@@ -3043,6 +3034,15 @@ electron-to-chromium@^1.3.124:
   version "1.3.124"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.124.tgz#861fc0148748a11b3e5ccebdf8b795ff513fa11f"
   integrity sha512-glecGr/kFdfeXUHOHAWvGcXrxNU+1wSO/t5B23tT1dtlvYB26GY8aHzZSWD7HqhqC800Lr+w/hQul6C5AF542w==
+
+electron@5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.4.tgz#2e0d09055363e983f4a73317cde4821c39617b02"
+  integrity sha512-7QaKorvANvP+azMT7wElx33oLlqw8QxmLs7/outfH7LC5amErk4EUtWDesQ6Zgr+s5pYFbykl8ZtJ4ZGXER05g==
+  dependencies:
+    "@types/node" "^10.12.18"
+    electron-download "^4.1.0"
+    extract-zip "^1.0.3"
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
@@ -5966,10 +5966,10 @@ now-client@4.1.2:
     querystring "^0.2.0"
     recursive-readdir "2.2.2"
 
-now-client@4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.3.1.tgz#d0e46211b5fefc1f8e65fc7c85eb721410802820"
-  integrity sha512-QFlcMV11h327Xw/qLUd1sX/X/RY2CB4l/lZYncNvzBSgzDGJuDZx1YBTmnZxeELRRMXENOgLRw4m/O8lLf69mQ==
+now-client@4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/now-client/-/now-client-4.4.1.tgz#e8711118bbcc675d7853c70dee1d4bbafcf6eaa8"
+  integrity sha512-rriIhk6cgcC91LAYLB9kxTU28Enk1H/6Q5peyPIr6aMsyS9LZd8hvQCkd8lG1EBSy5plTxqbkqbjZjJOJ5mIkg==
   dependencies:
     "@zeit/fetch" "5.1.0"
     async-retry "1.2.3"

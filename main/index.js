@@ -33,7 +33,37 @@ const { app } = electron;
 app.name = 'Now';
 
 // Handle uncaught exceptions
-process.on('uncaughtException', error => console.log(error));
+process.on('uncaughtException', error => {
+  console.error(error);
+
+  Sentry.captureException(error);
+
+  electron.dialog.showMessageBox({
+    title: 'Unexpected Error',
+    type: 'error',
+    message: 'An Error Has Occurred',
+    detail: error.toString(),
+    buttons: ['Quit Now']
+  });
+
+  process.exit(1);
+});
+
+process.on('unhandledRejection', error => {
+  console.error(error);
+
+  Sentry.captureException(error);
+
+  electron.dialog.showMessageBox({
+    title: 'Unexpected Error',
+    type: 'error',
+    message: 'An Error Has Occurred',
+    detail: error.toString(),
+    buttons: ['Quit Now']
+  });
+
+  process.exit(1);
+});
 
 // Hide dock icon before the app starts
 // This is only required for development because
@@ -88,8 +118,10 @@ app.on('ready', async () => {
     // Next has failed to start but context menu should still work
   }
 
+  const config = await getConfig();
+
   // Generate the browser window
-  const window = getWindow(tray);
+  const window = getWindow(tray, config);
 
   // Provide application and the CLI with automatic updates
   autoUpdater(window);
@@ -100,7 +132,6 @@ app.on('ready', async () => {
   const toggleActivity = () => toggleWindow(tray, window);
   const { wasOpenedAtLogin } = app.getLoginItemSettings();
 
-  const config = await getConfig();
   const afterUpdate = config.desktop && config.desktop.updatedFrom;
 
   // Only allow one instance of Now running

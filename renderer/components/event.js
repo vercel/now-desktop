@@ -75,7 +75,7 @@ class Event extends React.Component {
       event.entities.find(e => e.type === 'link') ||
       event.entities.find(e => e.type === 'deployment_host');
 
-    if (linkEntity) {
+    if (linkEntity && !event.text.includes('deleted')) {
       const url = event.text.substring(linkEntity.start, linkEntity.end);
 
       this.setState({ url });
@@ -112,7 +112,7 @@ class Event extends React.Component {
       event.entities.find(e => e.type === 'link') ||
       event.entities.find(e => e.type === 'deployment_host');
 
-    if (linkEntity) {
+    if (linkEntity && !event.text.includes('deleted')) {
       id = event.text.substring(linkEntity.start, linkEntity.end);
     }
 

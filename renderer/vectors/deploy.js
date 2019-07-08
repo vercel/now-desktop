@@ -10,16 +10,27 @@ const Deploy = ({ darkBg }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M15.5601 8.05601L1.00006 8.05602"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeLinecap="round"
-    />
-    <path
-      d="M8.27991 15L8.27991 1"
-      stroke={darkBg ? '#dddddd' : '#666666'}
-      strokeLinecap="round"
-    />
+    <g
+      id="Page-1"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="square"
+    >
+      <g
+        id="Plus"
+        transform="translate(1.000000, 0.000000)"
+        stroke={darkBg ? '#999' : '#666'}
+      >
+        <path d="M5.5,0.5 L5.5,11.5" id="Line" />
+        <path
+          d="M5.5,0.5 L5.5,11.5"
+          id="Line-Copy"
+          transform="translate(5.500000, 6.000000) rotate(-90.000000) translate(-5.500000, -6.000000) "
+        />
+      </g>
+    </g>
   </svg>
 );
 

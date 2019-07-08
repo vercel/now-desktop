@@ -61,7 +61,7 @@ const attachTrayState = (win, tray) => {
   });
 };
 
-exports.getWindow = tray => {
+exports.getWindow = (tray, config) => {
   let windowHeight = 380;
 
   if (isWinOS) {
@@ -93,7 +93,7 @@ exports.getWindow = tray => {
 
   exports.positionWindow(tray, win);
 
-  loadPage(win, 'main');
+  loadPage(win, config.token ? 'main' : 'login');
   attachTrayState(win, tray);
 
   // Hide window if it's not focused anymore

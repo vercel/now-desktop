@@ -2,7 +2,7 @@
   "name": "now-desktop",
   "productName": "Now",
   "description": "Create deployments right from the tray menu",
-  "version": "5.0.0-canary.17",
+  "version": "5.0.0-canary.29",
   "author": {
     "name": "ZEIT, Inc.",
     "email": "team@zeit.co"
@@ -38,6 +38,7 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "main/static/icons/mac.icns",
+      "darkModeSupport": true,
       "extendInfo": {
         "LSUIElement": 1
       }
@@ -104,7 +105,7 @@
     "mkdirp": "0.5.1",
     "ms": "2.1.1",
     "node-fetch": "2.6.0",
-    "now-client": "4.3.1",
+    "now-client": "4.4.1",
     "path-exists": "4.0.0",
     "promisepipe": "3.0.0",
     "react-fast-compare": "2.0.4",
@@ -121,9 +122,9 @@
     "babel-plugin-transform-define": "1.3.1",
     "classnames": "2.2.6",
     "cross-env": "5.2.0",
+    "electron": "5.0.4",
     "electron-builder": "20.40.2",
     "electron-builder-squirrel-windows": "20.40.0",
-    "electron-nightly": "7.0.0-nightly.20190521",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
     "husky": "2.3.0",

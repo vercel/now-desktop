@@ -142,7 +142,9 @@ const Title = ({
         }
 
         aside.dark {
-          background: ${title === 'About' ? '#1f1f1f' : '#3a3a3a'};
+          background: ${title === 'About' || title === 'Welcome to Now'
+            ? '#1f1f1f'
+            : '#3a3a3a'};
         }
 
         h1 {

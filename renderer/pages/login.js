@@ -26,12 +26,14 @@ const getHost = () => {
   return '';
 };
 
+let checker = null;
+
 const Login = () => {
   const [darkMode, setDarkMode] = useState(null);
 
   const [inputValue, setInput] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);
-  const [inputError, setInputError] = useState(false);
+  const [inputError, setInputError] = useState(null);
   const [securityCode, setSecurityCode] = useState(null);
   const [updateCLI, setUpdateCLI] = useState(true);
 
@@ -43,6 +45,8 @@ const Login = () => {
     setInputError(false);
     setInput(value);
   };
+
+  // Timer
 
   const handleSubmit = async () => {
     if (!EMAIL_RX.test(inputValue)) {
@@ -73,13 +77,15 @@ const Login = () => {
     setSecurityCode(code);
     setInputDisabled(false);
 
-    const checker = setInterval(async () => {
-      const { token } = await loadData(
+    checker = setInterval(async () => {
+      const res = await loadData(
         `${API_REGISTRATION}/verify?email=${inputValue}&token=${preauthToken}`
       );
 
-      if (token) {
+      // If token is valid and user didn't cancel the login
+      if (res && res.token) {
         clearInterval(checker);
+        const { token } = res;
 
         await ipc.saveConfig({ token }, 'auth');
         await ipc.saveConfig(
@@ -102,6 +108,14 @@ const Login = () => {
     }, 3000);
   };
 
+  const reset = () => {
+    clearInterval(checker);
+    setInput('');
+    setInputDisabled(false);
+    setInputError(false);
+    setSecurityCode(null);
+  };
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <Title darkMode={darkMode} title="Welcome to Now" />
@@ -118,20 +132,18 @@ const Login = () => {
             </span>
             <span className="code-label">Your security code is:</span>
             <span className="code">{securityCode}</span>
+            <button className="cancel" onClick={reset}>
+              ← Use a different email address
+            </button>
           </>
         ) : (
           <>
             <h2>Login with Email</h2>
             <span className="start">
-              To start using the app, enter your email address below
+              To start using the app, enter your email address below:
             </span>
             <div
-              style={{
-                textAlign: 'left',
-                cursor: 'pointer',
-                width: '85%',
-                marginTop: 15
-              }}
+              style={{ textAlign: 'left', cursor: 'pointer', width: 250 }}
               onClick={() => setUpdateCLI(!updateCLI)}
             >
               <span className="auto-update-cli">
@@ -172,7 +184,7 @@ const Login = () => {
 
         main {
           height: 100vh;
-          background-color: #ffffff;
+          background-color: white;
         }
 
         section {
@@ -186,6 +198,10 @@ const Login = () => {
           font-size: 14px;
           text-align: center;
           line-height: 20px;
+        }
+
+        .dark {
+          background-color: #1f1f1f;
         }
 
         h2 {
@@ -232,8 +248,8 @@ const Login = () => {
         .code {
           display: flex;
           width: 80%;
-          color: black;
-          background-color: #f7f7f7;
+          color: white;
+          background-color: black;
           justify-content: center;
           align-items: center;
           padding-top: 10px;
@@ -249,8 +265,8 @@ const Login = () => {
         }
 
         .dark .code {
-          color: white;
-          background-color: #333;
+          color: black;
+          background-color: white;
         }
 
         .auto-update-cli {
@@ -282,6 +298,21 @@ const Login = () => {
         }
 
         .dark .code-label {
+          color: white;
+        }
+
+        button.cancel {
+          margin-top: 13px;
+          margin-bottom: 13px;
+          border: 0;
+          background: 0;
+          outline: 0;
+          font-size: 14px;
+          color: #0076ff;
+          cursor: pointer;
+        }
+
+        .dark button.cancel {
           color: white;
         }
       `}</style>

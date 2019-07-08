@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const { getConfig } = require('./config');
 
-const API_USER_TOKENS = 'https://api.zeit.co/user/tokens';
+const API_USER_TOKENS = 'https://api.zeit.co/v3/user/tokens';
 
 module.exports = async function() {
   try {
