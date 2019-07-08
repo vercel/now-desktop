@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import LoginArrow from '../vectors/login-arrow';
 import emailProviders from '../utils/email-providers';
@@ -15,6 +15,13 @@ const LoginInput = ({
 }) => {
   const [suggestion, setSuggestion] = useState('');
   const [focused, setFocused] = useState(false);
+  const [isWindows, setWindows] = useState(false);
+
+  useEffect(() => {
+    if (navigator.platform.toLowerCase() === 'win32') {
+      setWindows(true);
+    }
+  }, []);
 
   const onFocus = async () => {
     setFocused(true);
@@ -98,7 +105,7 @@ const LoginInput = ({
   const suggestionClass = focused ? 'suggestion' : 'suggestion hidden';
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div className={`${isWindows ? 'windows' : ''} ${darkMode ? 'dark' : ''}`}>
       <input
         onFocus={onFocus}
         onBlur={onBlur}
@@ -124,6 +131,9 @@ const LoginInput = ({
           }
 
           input {
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+              Oxygen, Helvetica Neue, sans-serif;
+            -webkit-font-smoothing: antialiased;
             color: black;
             font-size: 14px;
             font-weight: 400;
@@ -170,6 +180,12 @@ const LoginInput = ({
             top: 25px;
             left: 45px;
             letter-spacing: -0.1px;
+          }
+
+          .windows .suggestion {
+            top: 25.8px;
+            left: 45px;
+            letter-spacing: 0px;
           }
 
           .hidden {
