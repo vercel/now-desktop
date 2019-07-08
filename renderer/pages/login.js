@@ -98,8 +98,8 @@ const Login = () => {
         );
 
         const feedPath = window.location.href.includes('http')
-          ? '/main'
-          : `${window.appPath}/renderer/out/main/index.html`;
+          ? '/feed'
+          : `${window.appPath}/renderer/out/feed/index.html`;
 
         Router.replace(feedPath);
 
@@ -138,7 +138,7 @@ const Login = () => {
           </>
         ) : (
           <>
-            <h2>Login with Email</h2>
+            <h2>Login</h2>
             <span className="start">
               To start using the app, enter your email address below:
             </span>
@@ -210,17 +210,13 @@ const Login = () => {
         }
 
         .start {
-          margin-top: 10px;
+          margin-top: 15px;
           line-height: 24px;
           color: black;
         }
 
         .dark .start {
           color: white;
-        }
-
-        main.dark {
-          background-color: #1f1f1f;
         }
 
         .error {

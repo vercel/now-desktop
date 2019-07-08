@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 const Deploy = ({ darkBg }) => (
   <svg
-    width="17"
-    height="16"
-    viewBox="0 0 17 16"
-    fill="none"
+    width="13px"
+    height="12px"
+    viewBox="0 0 13 12"
+    version="1.1"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g

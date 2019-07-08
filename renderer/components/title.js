@@ -8,15 +8,7 @@ import Tips from './tips';
 
 let contextMessageTimeout;
 
-const Title = ({
-  darkMode,
-  active,
-  config,
-  title,
-  onBackClick,
-  selectedProject,
-  setSelectedProject
-}) => {
+const Title = ({ darkMode, active, config, title, onBackClick }) => {
   const [contextChanged, setContextChanged] = useState(false);
 
   const onContextChange = () => {
@@ -64,34 +56,8 @@ const Title = ({
   return (
     <aside className={classes.join(' ')}>
       <div className="title-top-container">
-        {selectedProject && (
-          <button
-            className="close back"
-            onClick={() => setSelectedProject(null)}
-          >
-            <Back darkMode={darkMode} />
-          </button>
-        )}
-
         {active && (
-          <h1 className={contextChanged ? 'hide' : ''}>
-            {active.name}
-            {selectedProject ? (
-              <>
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ margin: '0 5px' }}
-                >
-                  <path d="M3.64648 13.1465L10.6465 1.14645" stroke="#CCCCCC" />
-                </svg>
-                {selectedProject.name}
-              </>
-            ) : null}
-          </h1>
+          <h1 className={contextChanged ? 'hide' : ''}>{active.name}</h1>
         )}
         {contextChanged && (
           <div className="context-changed">
@@ -102,15 +68,17 @@ const Title = ({
 
         {title ? (
           <h1>{title}</h1>
-        ) : selectedProject ? null : (
-          <button
-            className="deploy"
-            onClick={() => {
-              ipc.openURL('https://zeit.co/new');
-            }}
-          >
-            <Deploy darkBg={darkMode} />
-          </button>
+        ) : (
+          <>
+            <button
+              className="deploy"
+              onClick={() => {
+                ipc.openURL('https://zeit.co/new');
+              }}
+            >
+              <Deploy darkBg={darkMode} />
+            </button>
+          </>
         )}
         {title === 'About' && (
           <button className="close back" onClick={onBackClick}>
@@ -150,11 +118,9 @@ const Title = ({
         h1 {
           margin: 0;
           color: #000000;
-          font-size: 14px;
+          font-size: 13px;
           letter-spacing: 0.02em;
           font-weight: 600;
-          display: flex;
-          align-items: center;
         }
 
         h1.hide {
@@ -295,9 +261,7 @@ Title.propTypes = {
   active: PropTypes.object,
   config: PropTypes.object,
   contextChanged: PropTypes.bool,
-  onBackClick: PropTypes.func,
-  selectedProject: PropTypes.object,
-  setSelectedProject: PropTypes.func
+  onBackClick: PropTypes.func
 };
 
 export default Title;

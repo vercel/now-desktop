@@ -93,7 +93,7 @@ exports.getWindow = (tray, config) => {
 
   exports.positionWindow(tray, win);
 
-  loadPage(win, config.token ? 'main' : 'login');
+  loadPage(win, config.token ? 'feed' : 'login');
   attachTrayState(win, tray);
 
   // Hide window if it's not focused anymore

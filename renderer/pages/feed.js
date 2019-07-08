@@ -6,9 +6,7 @@ import ipc from '../utils/ipc';
 import About from '../components/about-screen';
 import Title from '../components/title';
 import Switcher from '../components/switcher';
-import ViewSwitcher from '../components/view-switcher';
 import Events from '../components/events';
-import Projects from '../components/projects';
 import onlineEffect from '../effects/online';
 import configEffect from '../effects/config';
 import darkModeEffect from '../effects/dark-mode';
@@ -22,7 +20,6 @@ import * as deploymentEffects from '../effects/deployment';
 import scopeOrderMemo from '../memos/scope-order';
 import DropZone from '../components/dropzone';
 import DeploymentBar from '../components/deployment-bar';
-import ProjectDeployments from '../components/projects/project-deployments';
 
 const Main = ({ router }) => {
   // Application states
@@ -34,8 +31,6 @@ const Main = ({ router }) => {
   const [pasteNoticeVisible, setPasteNoticeVisible] = useState(false);
 
   // Navigation
-  const [activeView, setActiveView] = useState('projects');
-  const [selectedProject, setSelectedProject] = useState(null);
   const [isAboutVisible, setAboutVisible] = useState(false);
   const [disableScopesAnimation, setDisableScopesAnimation] = useState(false);
 
@@ -148,6 +143,7 @@ const Main = ({ router }) => {
 
   useEffect(() => {
     return deploymentEffects.ready((_, { id, payload: dpl }) => {
+      console.log('READY', dpl);
       setActiveDeployment({ ready: true });
       setActiveBuilds({
         ...activeBuilds,
@@ -236,10 +232,6 @@ const Main = ({ router }) => {
       // Wait until the config is defined.
       if (config === null) {
         return;
-      }
-
-      if (config.currentTeam !== active) {
-        setSelectedProject(null);
       }
 
       return scopesEffect(config, setScopes);
@@ -350,17 +342,6 @@ const Main = ({ router }) => {
           darkMode={darkMode}
           fileInput={fileInput.current}
           online={online}
-          selectedProject={selectedProject}
-          setSelectedProject={setSelectedProject}
-        />
-
-        <ViewSwitcher
-          activeView={activeView}
-          darkMode={darkMode}
-          onViewChange={viewName => {
-            setSelectedProject(null);
-            setActiveView(viewName);
-          }}
         />
 
         {showDropZone && (
@@ -374,39 +355,15 @@ const Main = ({ router }) => {
           />
         )}
 
-        {activeView === 'projects' ? (
-          selectedProject ? (
-            <ProjectDeployments
-              config={config}
-              setConfig={setConfig}
-              online={online}
-              scopes={scopes}
-              active={active}
-              darkMode={darkMode}
-              project={selectedProject}
-            />
-          ) : (
-            <Projects
-              config={config}
-              setConfig={setConfig}
-              online={online}
-              scopes={scopes}
-              active={active}
-              darkMode={darkMode}
-              setSelectedProject={setSelectedProject}
-            />
-          )
-        ) : (
-          <Events
-            config={config}
-            setConfig={setConfig}
-            online={online}
-            scopes={scopes}
-            active={active}
-            darkMode={darkMode}
-            setActive={setActive}
-          />
-        )}
+        <Events
+          config={config}
+          setConfig={setConfig}
+          online={online}
+          scopes={scopes}
+          active={active}
+          darkMode={darkMode}
+          setActive={setActive}
+        />
 
         <section className="deployment-progress-bars">
           <DeploymentBar

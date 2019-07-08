@@ -37,6 +37,10 @@ const parseDate = date => {
     const shortUnit = unit === 'months' ? 'mo' : unit.charAt(0);
 
     if (difference < ms(check)) {
+      if (dateDiff(current, date, unit) === 0) {
+        console.log(current.getTime(), date);
+      }
+
       return dateDiff(current, date, unit) + shortUnit;
     }
   }
