@@ -433,7 +433,8 @@ const Main = ({ router }) => {
         .deployment-progress-bars {
           max-height: 126px;
           width: 100%;
-          overflow: scroll;
+          overflow-y: scroll;
+          overflow-x: hidden;
           position: fixed;
           left: 0;
           bottom: 40px;
