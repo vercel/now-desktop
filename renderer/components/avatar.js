@@ -17,7 +17,7 @@ const avatarMemo = (event, hash, scope) => {
     const githubLogin = githubLoginEntity ? githubLoginEntity.login : null;
 
     if (githubLogin) {
-      return `https://github.com/${githubLogin}.png`;
+      return `https://github.com/${githubLogin.replace('[bot]', '')}.png`;
     }
 
     const id = event.user ? event.user.uid || event.user.id : event.userId;
