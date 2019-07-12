@@ -56,7 +56,7 @@ const Login = () => {
     setInputDisabled(true);
 
     const { token: preauthToken, securityCode: code, error } = await loadData(
-      API_REGISTRATION,
+      `${API_REGISTRATION}?mode=login`,
       null,
       {
         method: 'POST',
@@ -69,7 +69,7 @@ const Login = () => {
 
     if (!preauthToken) {
       setInputDisabled(false);
-      setInputError(error || 'The email you entered is invalid');
+      setInputError(error.message || 'The email you entered is invalid');
 
       return;
     }
@@ -169,7 +169,24 @@ const Login = () => {
               error={inputError}
             />
             <span className={`error ${inputError ? 'visible' : ''}`}>
-              {inputError}
+              {inputError && inputError.includes('no ZEIT account') ? (
+                <>
+                  Account doesn’t exist. Please{' '}
+                  <a
+                    href="https://zeit.co/signup"
+                    style={{ color: 'red' }}
+                    onClick={e => {
+                      e.preventDefault();
+                      ipc.openURL('https://zeit.co/signup');
+                    }}
+                  >
+                    sign up
+                  </a>{' '}
+                  first.
+                </>
+              ) : (
+                inputError
+              )}
             </span>
           </>
         )}
