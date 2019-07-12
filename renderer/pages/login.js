@@ -171,7 +171,7 @@ const Login = () => {
             <span className={`error ${inputError ? 'visible' : ''}`}>
               {inputError && inputError.includes('no ZEIT account') ? (
                 <>
-                  Account doesn’t exist. Please{' '}
+                  No user found. Please{' '}
                   <a
                     href="https://zeit.co/signup"
                     style={{ color: 'red' }}
