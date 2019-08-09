@@ -8,7 +8,7 @@ For more details about Now and why you should use it, head to [this page](https:
 
 ## Usage
 
-You can download the latest release [here](https://zeit.co/download).
+You can download the latest release [here](https://github.com/zeit/now-desktop/releases).
 
 If you're using [Homebrew Cask](https://caskroom.github.io), you can install it by running these commands:
 
