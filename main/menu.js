@@ -4,7 +4,6 @@ const {
   clipboard
 } = require('electron');
 const isDev = require('electron-is-dev');
-const binaryUtils = require('./binary');
 const logout = require('./logout');
 const { removeConfig, getConfig, saveConfig } = require('./config');
 
@@ -16,16 +15,7 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
     config = await getConfig();
   } catch (error) {}
 
-  const desktop = config.desktop || {};
   const isCanary = config.updateChannel === 'canary';
-
-  let updateCLI = true;
-
-  // This check needs to be explicit (updates should be
-  // enabled by default if the config property is not set)
-  if (desktop && desktop.updateCLI === false) {
-    updateCLI = false;
-  }
 
   // We have to explicitly add a "Main" item on linux, otherwise
   // there would be no way to toggle the main window
@@ -155,23 +145,9 @@ exports.getMainMenu = async (app, tray, window, inRenderer) => {
               }
             },
             {
-              label: 'Auto-Update Now CLI',
-              type: 'checkbox',
-              checked: updateCLI,
+              label: 'Learn How to Update CLI',
               click() {
-                if (updateCLI === false) {
-                  binaryUtils.install().catch(error => {
-                    console.error(error);
-                  });
-                }
-
-                const configUpdate = {
-                  desktop: {
-                    updateCLI: !updateCLI
-                  }
-                };
-
-                saveConfig(configUpdate, 'config');
+                shell.openExternal('https://zeit.co/guides/updating-now-cli');
               }
             }
           ]
