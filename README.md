@@ -1,4 +1,11 @@
-![](https://assets.zeit.co/image/upload/v1561730357/repositories/now-desktop/now-desktop-repo-banner.png)
+# Now Desktop
+
+
+**IMPORTANT:** Now Desktop is no longer under active development (with the exception of receiving security updates).
+
+We recommend using [our Git Integration](https://vercel.com/import) instead, or installing our [command-line interface](https://vercel.com/download) if you'd like to deploy from your terminal.
+
+---
 
 [![macOS CI Status](https://circleci.com/gh/zeit/now-desktop.svg?style=shield)](https://circleci.com/gh/zeit/now-desktop)
 [![Windows CI status](https://dev.azure.com/zeit-builds/Now%20Desktop/_apis/build/status/now-desktop)](https://dev.azure.com/zeit-builds/Now%20Desktop/_build/latest?definitionId=1)
