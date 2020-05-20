@@ -2,7 +2,7 @@
 
 ---
 
-**IMPORTANT:** Now Desktop will not be improved further (with the exception of receiving security updates).
+**IMPORTANT:** Now Desktop is no longer under active development (with the exception of receiving security updates).
 
 In turn, we recommend using [our Git Integration](https://vercel.com/import) instead or installing our [command-line interface](https://vercel.com/download) if you'd like to deploy from your terminal.
 
