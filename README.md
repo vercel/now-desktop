@@ -1,6 +1,5 @@
 # Now Desktop
 
----
 
 **IMPORTANT:** Now Desktop is no longer under active development (with the exception of receiving security updates).
 
