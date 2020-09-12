@@ -104,7 +104,7 @@
     "make-unique": "1.0.4",
     "mkdirp": "0.5.1",
     "ms": "2.1.1",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "now-client": "4.4.1",
     "path-exists": "4.0.0",
     "promisepipe": "3.0.0",
