@@ -21,7 +21,7 @@ If you're using [Homebrew Cask](https://caskroom.github.io), you can install it 
 
 ```bash
 brew update
-brew cask install now
+brew install --cask now
 ```
 
 ## Caught a bug?
