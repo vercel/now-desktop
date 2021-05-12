@@ -113,7 +113,7 @@
     "sudo-prompt": "8.2.5",
     "time-ago": "0.2.1",
     "tmp-promise": "2.0.1",
-    "trim": "0.0.1",
+    "trim": "0.0.3",
     "ua-parser-js": "0.7.19",
     "uid-promise": "1.1.0",
     "winreg": "1.2.4"
